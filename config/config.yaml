@@ -1,0 +1,17 @@
+name: "yoyo-plugin"
+title: "寒悠悠小助手"
+subTitle: "yoyo-plugin (群:882552331)"
+version: "1.0.0"
+
+# pixiv
+pixivImageProxy: i.pixiv.re
+hibiAPI: https://hibi.Yunzai-Bot.com
+
+# 指令前缀
+rulePrefix:
+- ">"
+- "›"
+- "＞"
+- "#?蓝原"
+- "#?旅谣"
+- "#?蓝色星原"
