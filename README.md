@@ -5,6 +5,7 @@
 ### 开发说明
 
 插件开发中...
+招募会代码开发、Wiki图鉴编辑、UI设计、绘画、AI绘画等小伙伴一起开发插件...
 
 ### 交流群
 
@@ -34,6 +35,12 @@ github
 
 ```shell
 git clone --depth=1 https://github.com/ZyeAlex/yoyo-plugin.git ./plugins/yoyo-plugin
+```
+
+3. 安装环境
+
+```shell
+pnpm install
 ```
 
 安装完成后，发送 `悠悠更新` 即可更新 yoyo-plugin
