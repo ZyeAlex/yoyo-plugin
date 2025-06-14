@@ -46,9 +46,9 @@
 
 3. 安装环境
 
-```shell
-pnpm install
-```
+  ```shell
+  pnpm install
+  ```
 
 安装完成后，发送 `悠悠更新` 即可更新 yoyo-plugin
 
