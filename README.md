@@ -1,10 +1,12 @@
-<div align=center> <h1>云崽QQ机器人的《蓝色星原：旅谣》插件</h1> </div>
+<div align=center> <h1>悠悠小助手 （ yoyo-plugin ）</h1> </div>
+<div align=center> <i>云崽QQ机器人的「蓝色星原：旅谣」插件</i> </div>
+<br/>
 <div align=center>
 <img src="https://img.shields.io/badge/QQ群-882552331-blue"  />
 <img src="https://img.shields.io/badge/作者-子叶-red"  />
 <img src="https://komarev.com/ghpvc/?username=ZyeAlex"  />
 </div>
-
+<br/>
 <div align=center>
  <img src="https://api.moedog.org/count/@ZyeAlex.readme"  />
 </div>
@@ -32,18 +34,15 @@
 1. 进入Yunzai根目录
 
 2. 推荐使用git进行安装，方便后续升级，在Yunzai根目录内打开终端执行以下命令
+  - gitee
 
-gitee
-
-```shell
-git clone --depth=1 https://gitee.com/ZyeAlex/yoyo-plugin.git ./plugins/yoyo-plugin
-```
-
-github
-
-```shell
-git clone --depth=1 https://github.com/ZyeAlex/yoyo-plugin.git ./plugins/yoyo-plugin
-```
+    ```shell
+    git clone --depth=1 https://gitee.com/ZyeAlex/yoyo-plugin.git ./plugins/yoyo-plugin
+    ```
+  - github
+    ```shell
+    git clone --depth=1 https://github.com/ZyeAlex/yoyo-plugin.git ./plugins/yoyo-plugin
+    ```
 
 3. 安装环境
 
