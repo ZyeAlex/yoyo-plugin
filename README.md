@@ -1,15 +1,23 @@
 <div align=center> <h1>云崽QQ机器人的《蓝色星原：旅谣》插件</h1> </div>
 <div align=center>
+<img src="https://img.shields.io/badge/QQ群-882552331-blue"  />
+<img src="https://img.shields.io/badge/作者-子叶-red"  />
+<img src="https://komarev.com/ghpvc/?username=ZyeAlex"  />
+</div>
+
+<div align=center>
+ <img src="https://api.moedog.org/count/@ZyeAlex.readme"  />
 </div>
 
 ### 开发说明
 
 插件开发中...
+
 招募会代码开发、Wiki图鉴编辑、UI设计、绘画、AI绘画等小伙伴一起开发插件...
 
 ### 交流群
 
-插件交流群(QQ):882552331
+> 插件交流群(QQ): [882552331](https://qm.qq.com/q/h970mqW2KA)
 
 ### 使用说明
 
@@ -44,6 +52,20 @@ pnpm install
 ```
 
 安装完成后，发送 `悠悠更新` 即可更新 yoyo-plugin
+
+---
+
+<div>   
+
+<a href="https://github.com/ZyeAlex/yoyo-plugin/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ZyeAlex/yoyo-plugin" />
+</a>
+
+
+![Alt](https://repobeats.axiom.co/api/embed/2ea99ed765b7cbc37c5375c5644fe816096f3966.svg "Repobeats analytics image")
+
+
+</div>
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
