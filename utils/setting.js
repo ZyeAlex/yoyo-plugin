@@ -68,7 +68,7 @@ class Setting {
       return YAML.parse(fs.readFileSync(`${path}${filename}.yaml`, 'utf8'))
     } catch (error) {
       logger.error(`[${filename}] 读取失败 ${error}`)
-      return false
+      return {}
     }
   }
 

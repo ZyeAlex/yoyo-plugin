@@ -1,16 +1,16 @@
 import runtimeRender from '../utils/runtime-render.js'
-import setting from '#ap.setting'
+import setting from '#utils.setting'
 
 export class help extends plugin {
   constructor() {
     super({
-      name: '[悠悠助手]帮助',
+      name: '[悠悠小助手]帮助',
       dsc: '悠悠帮助',
       event: 'message',
       priority: 100,
       rule: [
         {
-          reg: `^${setting.rulePrefix}(帮助|help)$`,
+          reg: `^${setting.rulePrefix}(帮助|help|小?助手)$`,
           fnc: 'help'
         },
       ]

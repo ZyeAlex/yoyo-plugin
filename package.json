@@ -6,8 +6,10 @@
   "main": "main.js",
   "type": "module",
   "imports": {
-    "#ap.data": "./utils/data.js",
-    "#ap.setting": "./utils/setting.js"
+    "#utils.data": "./utils/data.js",
+    "#utils.setting": "./utils/setting.js",
+    "#utils": "./utils/other.js",
+    "#api.manjuu":"./api/manjuu.js"
   },
   "keywords": [
     "Yunzai-Bot",

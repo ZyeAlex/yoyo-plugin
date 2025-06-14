@@ -1,19 +1,19 @@
-import setting from '#ap.setting'
-import data from '#ap.data'
+import setting from '#utils.setting'
+import data from '#utils.data'
 import axios from 'axios'
-
+// 图片缓存
+const _img_cache = {}
 export class image extends plugin {
-    // 图片缓存
-    _img_cache = {}
+
     constructor() {
         super({
-            name: '[悠悠]角色图片',
+            name: '[悠悠小助手]角色图片',
             dsc: '悠悠角色图片',
             event: 'message',
             priority: 100,
             rule: [
                 {
-                    reg: `^${setting.rulePrefix}?.{0,10}图片$`, 
+                    reg: `^${setting.rulePrefix}?.{0,10}图片$`,
                     fnc: 'getRoleImage'
                 },
                 {
@@ -30,17 +30,19 @@ export class image extends plugin {
         // 查询是否有此角色
         roleName = data.getRoleName(roleName)
         if (!roleName) return
-        e.reply(`正在从Pixiv获取${roleName}图片~`, false, { recallMsg: 5 })
-        const img = await this.pixiv(roleName)
-        // const img = await this.lolicon(roleName)
-
-        if (img) {
-            e.reply(segment.image(img))
-            return false
-        } else {
-            e.reply('什么都没查到呢~')
-            return true
+        // 从   await this.pixiv(roleName) 和 await this.lolicon(roleName) 获取图片列表，将成功返回列表的放进 _img_cache[roleName]
+        if (!_img_cache[roleName] || _img_cache[roleName].length == 0) {
+            e.reply(`正在从Pixiv获取${roleName}图片~`, false, { recallMsg: 5 })
+            _img_cache[roleName] = await Promise.all([...await this.pixiv(roleName), ...await this.lolicon(roleName)])
         }
+        if (_img_cache[roleName].length == 0) {
+            e.reply('什么都没查到呢~')
+        }
+        let index = Math.floor(Math.random() * _img_cache[roleName].length)
+        let img = _img_cache[roleName][index]
+        _img_cache[roleName].splice(index, 1)
+        e.reply(segment.image(img))
+
     }
     // 随机角色图片
     async getRandomRoleImage(e) {
@@ -53,7 +55,7 @@ export class image extends plugin {
 
     // https://docs.api.lolicon.app/#/setu
     async lolicon(roleName, keyword = '蓝色星原') {
-        if (!this._img_cache[roleName]?.length) {
+        try {
             const res = await axios.get('https://api.lolicon.app/setu/v2', {
                 params: {
                     num: 20,
@@ -63,10 +65,10 @@ export class image extends plugin {
                     r18: 0
                 }
             })
-            this._img_cache[roleName] = res.data?.data.map(({ urls: { original } }) => original)
-            if (!this._img_cache[roleName]?.length) return
+            return res.data?.data.map(({ urls: { original } }) => original) || []
+        } catch (error) {
+            return []
         }
-        return this._img_cache[roleName][Math.floor(Math.random() * this._img_cache[roleName].length)]
     }
 
 
@@ -74,24 +76,26 @@ export class image extends plugin {
      * @param {string} tag 关键词
      */
     async pixiv(roleName) {
-        if (!this._img_cache[roleName]?.length) {
-            const params = {
-                word: roleName,
-                page: 1,
-                order: "date_desc",
-                tag: "蓝色星原"
-                // search_ai_type:false
-            }
+        const params = {
+            word: roleName,
+            page: 1,
+            order: "date_desc",
+            tag: "蓝色星原"
+            // search_ai_type:false
+        }
+        try {
             let res = await axios.get(`${setting.config.hibiAPI}/api/pixiv/search`, { params })
+            logger.info(res.data?.illusts?.[0])
+
             // x_restrict   image_urls.large
-            this._img_cache[roleName] = res.data?.illusts.filter(({ x_restrict }) => !x_restrict).map(({ image_urls: { large } }) => {
+            return res.data?.illusts.filter(({ x_restrict }) => !x_restrict).map(({ image_urls: { large } }) => {
                 const img = new URL(large)
                 // 反代
                 img.host = setting.config.pixivImageProxy
                 return img.href
-            })
-            if (!this._img_cache[roleName]?.length) return
+            }) || []
+        } catch (error) {
+            return []
         }
-        return this._img_cache[roleName][Math.floor(Math.random() * this._img_cache[roleName].length)]
     }
 }

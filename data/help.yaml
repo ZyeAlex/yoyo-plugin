@@ -3,22 +3,31 @@ helpGroup:
   "list":
   - "icon": 1
     "title": ">寒悠悠攻略"
-    "desc": "寒悠悠攻略"
+    "desc": "寒悠悠攻略(未开发)"
   - "icon": 2
     "title": ">寒悠悠图鉴"
-    "desc": "查看寒悠悠角色图鉴"
+    "desc": "查看寒悠悠角色图鉴(未开发)"
   - "icon": 3
     "title": ">寒悠悠图片"
     "desc": "随机获取一张寒悠悠图片"
-  - "icon": 4
-    "title": ">活动"
+  - "icon": 3
+    "title": ">角色列表"
+    "desc": "查询所有角色列表"
+  - "icon": 5
+    "title": ">新闻"
     "desc": "查看蓝色星原近期活动"
   - "icon": 5
-    "title": ">动态"
-    "desc": "查看蓝色星原近期动态"
+    "title": ">公告"
+    "desc": "查看蓝色星原近期新闻"
+  - "icon": 5
+    "title": ">活动"
+    "desc": "查看蓝色星原近期活动"
   - "icon": 6
     "title": ">兑换码"
-    "desc": "查看蓝色星原兑换码"
+    "desc": "查看蓝色星原兑换码(未开发)"
+  - "icon": 7
+    "title": ">预约人数"
+    "desc": "查看蓝色星原预约人数"
 - "group": "管理功能"
   "auth": "master"
   "list":

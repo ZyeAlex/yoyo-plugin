@@ -7,7 +7,7 @@ class Data {
     // 获取所有角色
     getAllRole() {
         const role = setting.getData('role')
-        return role.keys()
+        return Object.keys(role)
     }
     // 查询是否有此角色，有则返回角色原本名称
     getRoleName(name) {
