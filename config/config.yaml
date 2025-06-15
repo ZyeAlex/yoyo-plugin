@@ -8,6 +8,7 @@ version: "1.0.0"
 # pixiv
 pixivImageProxy: i.pixiv.re
 hibiAPI: https://hibi.Yunzai-Bot.com
+excludeAI: true # 包含AI图片
 
 # 指令前缀
 rulePrefix:

@@ -1,9 +1,9 @@
 import setting from '#utils.setting'
-import { bookingnum, announce } from '#api.manjuu'
+import { bookingnum, announce } from '../api/manjuu.js'
+import { getUserInfo, getVideoInfo } from '../api/bilibili.js'
 import utils from '#utils'
 
-let _reservation_cache = null
-
+let _data_cache = null
 /**
  * 新闻
  */
@@ -16,8 +16,8 @@ export class news extends plugin {
             priority: 100,
             rule: [
                 {
-                    reg: `^${setting.rulePrefix}(全平台)?预约(人数|量)$`,
-                    fnc: 'reservation'
+                    reg: `^${setting.rulePrefix}数据(信息)?$`,
+                    fnc: 'data'
                 },
                 {
                     reg: `^${setting.rulePrefix}(最新|最近|近期)?新闻$`,
@@ -35,27 +35,37 @@ export class news extends plugin {
             ]
         })
     }
-
-    _reservation_cache = null
-    // 预约人数
-    async reservation(e) {
-        try {
-            const data = await bookingnum()
-            let str = '《蓝色星原旅谣》当前全平台预约人数：【' + data + "】人"
-            logger.info(_reservation_cache?.num)
-            logger.info(data)
-            if (_reservation_cache && _reservation_cache.num != data) {
-                str += `\n距离上次查询过去了【${utils.formatTimeDiff(new Date().getTime() - _reservation_cache.time)}】，订阅数增加了【${data - _reservation_cache.num}】人`
-            }
-            _reservation_cache = {
-                time: new Date().getTime(),
-                num: data
-            }
-            e.reply(str)
-        } catch (error) {
-            logger.error(error)
-            e.reply('没有查到哦~')
+    async data(e) {
+        const [d1, d2, d3] = await Promise.allSettled([await bookingnum(), await getUserInfo(3546569016085336), await getVideoInfo('BV1Jr421n7n4')])
+        let str = `——「蓝色星原旅谣」当前数据`
+        if (d1.status == 'fulfilled') {
+            str += `\n预约人数：${d1.value}`
         }
+        if (d2.status == 'fulfilled') {
+            str += `\nB站粉丝数：${d2.value.data.card.fans}`
+        }
+        if (d3.status == 'fulfilled') {
+            str += `\nPV播放量：${d3.value.data.stat.view}`
+        }
+        if (_data_cache) {
+            str += `\n——距离上次查询过去了${utils.formatTimeDiff(new Date().getTime() - _data_cache.time)}`
+            if (_data_cache.bookingnum) {
+                str += `\n预约人数增加了：${d1.value - _data_cache.bookingnum}人`
+            }
+            if (_data_cache.fans) {
+                str += `\nB站粉丝数增加了：${d2.value.data.card.fans - _data_cache.fans}人`
+            }
+            if (_data_cache.pv) {
+                str += `\nPV播放量增加了：${new Date(_data_cache.time).toLocaleString()}次`
+            }
+        }
+        _data_cache = {
+            time: new Date().getTime(),
+            bookingnum: d1?.value,
+            fans: d2?.value?.data?.card?.fans,
+            pv: d3?.value?.data?.stat?.view
+        }
+        e.reply(str)
     }
 
 
@@ -68,7 +78,7 @@ export class news extends plugin {
             e.reply(`蓝原近期没有${match[1]}哦~`)
             return false
         }
-        e.reply(`蓝原近期有${total}条${match[1]}哦~\n\n${list.map((v, i) => `${i + 1}.${utils.formatDate(new Date(v.show_time),'YYYY-M-D') } ${v.title}`).join('\n')}`)
+        e.reply(`蓝原近期有${total}条${match[1]}哦~\n\n${list.map((v, i) => `${i + 1}.${utils.formatDate(new Date(v.show_time), 'YYYY-M-D')} ${v.title}`).join('\n')}`)
         return true
     }
 

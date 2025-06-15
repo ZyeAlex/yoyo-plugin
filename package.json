@@ -8,8 +8,7 @@
   "imports": {
     "#utils.data": "./utils/data.js",
     "#utils.setting": "./utils/setting.js",
-    "#utils": "./utils/other.js",
-    "#api.manjuu":"./api/manjuu.js"
+    "#utils": "./utils/other.js"
   },
   "keywords": [
     "Yunzai-Bot",

@@ -63,4 +63,4 @@ export const createHttp = ({
     return http
 }
 
-
+export const http = createHttp({})

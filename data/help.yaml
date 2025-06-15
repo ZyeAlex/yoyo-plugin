@@ -1,6 +1,7 @@
 # 通过setting.getData('help')获取本配置
 
 helpGroup:
+
 - "group": "基础功能"
   "list":
   - "icon": 1
@@ -15,6 +16,15 @@ helpGroup:
   - "icon": 3
     "title": ">角色列表"
     "desc": "查询所有角色列表"
+  - "icon": 6
+    "title": ">兑换码"
+    "desc": "查看蓝色星原兑换码(未开发)"
+
+- "group": "动态查询"
+  "list":
+  - "icon": 7
+    "title": ">数据"
+    "desc": "查看蓝色星原预约人数、粉丝量、PV播放量"
   - "icon": 5
     "title": ">新闻"
     "desc": "查看蓝色星原近期活动"
@@ -24,12 +34,7 @@ helpGroup:
   - "icon": 5
     "title": ">活动"
     "desc": "查看蓝色星原近期活动"
-  - "icon": 6
-    "title": ">兑换码"
-    "desc": "查看蓝色星原兑换码(未开发)"
-  - "icon": 7
-    "title": ">预约人数"
-    "desc": "查看蓝色星原预约人数"
+
 - "group": "管理功能"
   "auth": "master"
   "list":
