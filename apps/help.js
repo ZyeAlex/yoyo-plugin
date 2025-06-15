@@ -1,5 +1,5 @@
 import runtimeRender from '../utils/runtime-render.js'
-import setting from '#utils.setting'
+import setting from '#setting'
 
 export class help extends plugin {
   constructor() {

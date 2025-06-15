@@ -1,9 +1,7 @@
-import setting from '#utils.setting'
+import setting from '#setting'
 import { bookingnum, announce } from '../api/manjuu.js'
 import { getUserInfo, getVideoInfo } from '../api/bilibili.js'
 import utils from '#utils'
-
-let _data_cache = null
 /**
  * 新闻
  */
@@ -47,24 +45,26 @@ export class news extends plugin {
         if (d3.status == 'fulfilled') {
             str += `\nPV播放量：${d3.value.data.stat.view}`
         }
+        let _data_cache = await redis.get('yoyo:news:data')
         if (_data_cache) {
-            str += `\n——距离上次查询过去了${utils.formatTimeDiff(new Date().getTime() - _data_cache.time)}`
-            if (_data_cache.bookingnum) {
+            _data_cache = JSON.parse(_data_cache)
+            str += `\n—— 距离上次查询${utils.formatTimeDiff(new Date().getTime() - _data_cache.time)}`
+            if (_data_cache.bookingnum !== d1.value) {
                 str += `\n预约人数增加了：${d1.value - _data_cache.bookingnum}人`
             }
-            if (_data_cache.fans) {
+            if (_data_cache.fans !== d2.value.data.card.fans) {
                 str += `\nB站粉丝数增加了：${d2.value.data.card.fans - _data_cache.fans}人`
             }
-            if (_data_cache.pv) {
-                str += `\nPV播放量增加了：${new Date(_data_cache.time).toLocaleString()}次`
+            if (_data_cache.pv !== d3.value.data.stat.view) {
+                str += `\nPV播放量增加了：${d3.value.data.stat.view - _data_cache.pv}次`
             }
         }
-        _data_cache = {
+        redis.set('yoyo:news:data', JSON.stringify({
             time: new Date().getTime(),
             bookingnum: d1?.value,
             fans: d2?.value?.data?.card?.fans,
             pv: d3?.value?.data?.stat?.view
-        }
+        }))
         e.reply(str)
     }
 

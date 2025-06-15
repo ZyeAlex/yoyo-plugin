@@ -1,5 +1,4 @@
-import data from '#utils.data'
-import setting from '#utils.setting'
+import setting from '#setting'
 
 export class role extends plugin {
     constructor() {
@@ -18,6 +17,6 @@ export class role extends plugin {
     }
 
     roleList(e) {
-        return e.reply(data.getAllRole().map((role, index) => ` ${index + 1}. ${role}`).join('\n'))
+        return e.reply(setting.getAllRole().map((role, index) => ` ${index + 1}. ${role}`).join('\n'))
     }
 }

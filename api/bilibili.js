@@ -1,5 +1,5 @@
 import { http } from '../utils/http.js'
-import setting from '#utils.setting'
+import setting from '#setting'
 
 
 // 获取用户信息

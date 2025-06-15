@@ -1,7 +1,7 @@
 import { execSync } from 'child_process'
 import plugin from '../../../lib/plugins/plugin.js'
 import { update } from '../../other/update.js'
-import setting from '#utils.setting'
+import setting from '#setting'
 
 export class ql_update extends plugin {
   constructor() {

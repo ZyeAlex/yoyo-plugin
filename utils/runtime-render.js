@@ -1,5 +1,5 @@
-import Version from './version.js'
 import setting from './setting.js'
+import Version from './version.js'
 const decimalAdjust = (type, value, exp = 0) => {
   type = String(type)
   if (!['round', 'floor', 'ceil'].includes(type)) {

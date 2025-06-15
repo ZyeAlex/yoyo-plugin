@@ -5,6 +5,10 @@ title: "悠悠小助手"
 subTitle: "yoyo-plugin (群:882552331)"
 version: "1.0.0"
 
+
+# 图片
+imgMaxSize: 5 #上传图片大小限制 MB
+
 # pixiv
 pixivImageProxy: i.pixiv.re
 hibiAPI: https://hibi.Yunzai-Bot.com

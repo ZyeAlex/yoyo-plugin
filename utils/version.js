@@ -1,8 +1,7 @@
 import fs from 'fs'
 import lodash from 'lodash'
-
-const _path = process.cwd().replace(/\\/g, '/')
-const _logPath = `${_path}/plugins/StarRail-plugin/CHANGELOG.md`
+import setting from './setting.js'
+const _logPath = setting.path + `/CHANGELOG.md`
 
 let logs = {}
 let changelogs = []
@@ -86,13 +85,13 @@ let Version = {
   isV3,
   isMiao,
   name,
-  get version () {
+  get version() {
     return currentVersion
   },
-  get yunzai () {
+  get yunzai() {
     return yunzaiVersion
   },
-  get changelogs () {
+  get changelogs() {
     return changelogs
   }
 }
