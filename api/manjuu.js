@@ -13,7 +13,7 @@ const http = createHttp({ response })
  */
 export const bookingnum = () => {
     return http.get('https://api-grp.manjuu.com/passportv2/web/booking/bookingnum', {}, {
-        headers: { Sign: '360dc1f2307d34145bd9a2e7144e1365', Timestamp: 1749898714675 },
+        headers: { Sign: '590fff07503c6862fd88da860dc1ef96', Timestamp: 1749993608796 },
     })
 }
 /**
@@ -25,5 +25,8 @@ export const announce = (type) => {
     return http.get('https://api-grp.manjuu.com/announce/client/announce/pagelist', { type, pageSize: 5, page: 1 })
 }
 
+
+
+export const announcePage = id => `https://azurpromilia.manjuu.com/announcement/${id}/`
 
 

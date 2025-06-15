@@ -11,4 +11,3 @@ export const getVideoInfo = (bvid) => {
     return http.get(`https://api.bilibili.com/x/web-interface/wbi/view`, { bvid })
 }
 
-

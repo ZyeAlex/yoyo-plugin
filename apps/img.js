@@ -16,34 +16,39 @@ export class image extends plugin {
                     fnc: 'uploadRoleImage'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?(?<!上传|添加).{0,10}(图片|照片|美图|美照|图)$`,
-                    fnc: 'getRoleImage'
-                },
-                {
                     reg: `^${setting.rulePrefix}随机(角色)?(图片|照片|美图|美照|图)$`,
                     fnc: 'getRandomRoleImage'
-                }
+                },
+                {
+                    reg: `^${setting.rulePrefix}?(?<!上传|添加|随机(角色)?).{0,10}(图片|照片|美图|美照|图)$`,
+                    fnc: 'getRoleImage'
+                },
             ]
         })
     }
 
     // 角色图片
-    async getRoleImage(e) {
+    async getRoleImage(e, roleName) {
         // 从e.msg字符串里面匹配(\w)
-        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{0,10})(图片|照片|美图|美照|图)$`))[1]
-        // 查询是否有此角色
-        roleName = setting.getRoleName(roleName)
+        if (!roleName) {
+            roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{0,10})(图片|照片|美图|美照|图)$`))[1]
+            // 查询是否有此角色
+            roleName = setting.getRoleName(roleName)
+
+        }
         if (!roleName) return
         // 从Redis中获取角色图片列表
         let roleImgs = JSON.parse((await redis.get('yoyo:img:role:' + roleName)) || '[]')
         if (!roleImgs || roleImgs.length == 0) {
             roleImgs = setting.getRoleImgs(roleName)
-            const msg = await e.reply(`正在从Pixiv获取${roleName}图片~`, true)
-            roleImgs = roleImgs.concat(await Promise.all([...await img.pixiv(roleName), ...await img.lolicon(roleName)]))
+            const msg = await e.reply(`正在从网络获取${roleName}图片~`, true)
+            roleImgs = roleImgs.concat(await img.lolicon(roleName))
             e?.group?.recallMsg(msg?.data?.message_id)
+
         }
         if (roleImgs.length == 0) {
-            e.reply('什么都没查到呢~')
+            e.reply(`什么都没查到呢~\n请【>上传${roleName}图片】`)
+            return
         }
         let index = Math.floor(Math.random() * roleImgs.length)
         let img_url = roleImgs[index]
@@ -55,8 +60,12 @@ export class image extends plugin {
     // 随机角色图片
     async getRandomRoleImage(e) {
         const roles = await setting.getAllRole()
-        e.reply('功能暂未开发')
-        return true
+        if (roles.length == 0) {
+            e.reply('没有角色呢~')
+            return false
+        }
+        // lodash 随机选一个
+        this.getRoleImage(e, lodash.sample(roles))
     }
     // 上传角色图片
     async uploadRoleImage(e) {
@@ -90,7 +99,7 @@ export class image extends plugin {
                 for (let val of source.message) {
                     if (val.type === 'image') {
                         imgs.push(val)
-                    } else if (val.type === 'xml' || val.type === 'forward') {// 支持合并转发消息内置的图片批量上传，喵喵 喵喵喵？ 喵喵喵喵
+                    } else if (val.type === 'xml' || val.type === 'forward') {// 支持合并转发消息内置的图片批量上传
                         let resid
                         try {
                             resid = val.data.match(/m_resid="(\d|\w|\/|\+)*"/)[0].replace(/m_resid=|"/g, '')

@@ -1,3 +1,6 @@
+/**
+ * 重写后的http   http.get(url,params,config)  http.post(url,data,config)
+ */
 import axios from 'axios'
 export const createHttp = ({
     config = {},

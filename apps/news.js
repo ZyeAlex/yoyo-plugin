@@ -1,5 +1,5 @@
 import setting from '#setting'
-import { bookingnum, announce } from '../api/manjuu.js'
+import { bookingnum, announce, announcePage } from '../api/manjuu.js'
 import { getUserInfo, getVideoInfo } from '../api/bilibili.js'
 import utils from '#utils'
 /**
@@ -34,7 +34,7 @@ export class news extends plugin {
         })
     }
     async data(e) {
-        const [d1, d2, d3] = await Promise.allSettled([await bookingnum(), await getUserInfo(3546569016085336), await getVideoInfo('BV1Jr421n7n4')])
+        const [d1, d2, ...PVs] = await Promise.allSettled([await bookingnum(), await getUserInfo(3546569016085336), ...setting.config.PVList.map(async (bvid) => await getVideoInfo(bvid))])
         let str = `——「蓝色星原旅谣」当前数据`
         if (d1.status == 'fulfilled') {
             str += `\n预约人数：${d1.value}`
@@ -42,9 +42,11 @@ export class news extends plugin {
         if (d2.status == 'fulfilled') {
             str += `\nB站粉丝数：${d2.value.data.card.fans}`
         }
-        if (d3.status == 'fulfilled') {
-            str += `\nPV播放量：${d3.value.data.stat.view}`
-        }
+        let obj = {}
+        PVs.forEach(({ value: { data: { stat: { view } } } }, index) => {
+            obj['PV' + (index + 1)] = view
+            str += `\nPV${index + 1}播放量：${view}`
+        })
         let _data_cache = await redis.get('yoyo:news:data')
         if (_data_cache) {
             _data_cache = JSON.parse(_data_cache)
@@ -55,15 +57,18 @@ export class news extends plugin {
             if (_data_cache.fans !== d2.value.data.card.fans) {
                 str += `\nB站粉丝数增加了：${d2.value.data.card.fans - _data_cache.fans}人`
             }
-            if (_data_cache.pv !== d3.value.data.stat.view) {
-                str += `\nPV播放量增加了：${d3.value.data.stat.view - _data_cache.pv}次`
-            }
+            PVs.forEach(({ value: { data: { stat: { view } } } }, index) => {
+                let viewCache = _data_cache['PV' + (index + 1)]
+                if (viewCache && viewCache != view) {
+                    str += `\nPV${index + 1}播放量增加了：${view - viewCache}次`
+                }
+            })
         }
         redis.set('yoyo:news:data', JSON.stringify({
             time: new Date().getTime(),
             bookingnum: d1?.value,
             fans: d2?.value?.data?.card?.fans,
-            pv: d3?.value?.data?.stat?.view
+            ...obj
         }))
         e.reply(str)
     }
@@ -76,10 +81,9 @@ export class news extends plugin {
         const { total, list } = await announce({ 动态: 'latest', 新闻: 'news', 公告: 'announce', 活动: 'activity' }[match[1]])
         if (!total) {
             e.reply(`蓝原近期没有${match[1]}哦~`)
-            return false
+            return
         }
-        e.reply(`蓝原近期有${total}条${match[1]}哦~\n\n${list.map((v, i) => `${i + 1}.${utils.formatDate(new Date(v.show_time), 'YYYY-M-D')} ${v.title}`).join('\n')}`)
-        return true
+        e.reply(`蓝原近期有${total}条${match[1]}哦~\n\n${list.map((v, i) => `${i + 1}.${utils.formatDate(new Date(v.show_time), 'YYYY-M-D')} ${v.title}\n${announcePage(v.id)}`).join('\n')}`)
     }
 
 
