@@ -31,10 +31,11 @@ export class image extends plugin {
     async getRoleImage(e, roleName) {
         // 从e.msg字符串里面匹配(\w)
         if (!roleName) {
-            roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{0,10})(图片|照片|美图|美照|图)$`))[1]
+            roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})(?:图片|照片|美图|美照)$`))[1]
+            logger.info(roleName)
             // 查询是否有此角色
             roleName = setting.getRoleName(roleName)
-
+            logger.info(roleName)
         }
         if (!roleName) return
         // 从Redis中获取角色图片列表
