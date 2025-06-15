@@ -3,8 +3,6 @@
 <br/>
 <div align=center>
 <img src="https://img.shields.io/badge/QQ群-882552331-blue"  />
-<img src="https://img.shields.io/badge/作者-子叶-red"  />
-<img src="https://komarev.com/ghpvc/?username=ZyeAlex"  />
 </div>
 <br/>
 <div align=center>
@@ -16,6 +14,10 @@
 插件开发中...
 
 招募会代码开发、Wiki图鉴编辑、UI设计、绘画、AI绘画等小伙伴一起开发插件...
+
+Gitee可能更新不及时，请至[GitHub](https://github.com/ZyeAlex/yoyo-plugin)查看最新代码
+
+提交代码：请在[GitHub](https://github.com/ZyeAlex/yoyo-plugin) fork 本仓库，修改并测试完成后提交PR
 
 ### 交流群
 
