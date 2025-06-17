@@ -160,8 +160,9 @@ class Setting {
       fs.writeFileSync(`${path}${filename}.yaml`, YAML.stringify(data), 'utf8')
     } catch (error) {
       logger.error(`[${filename}] 写入失败 ${error}`)
-      return false
+      return
     }
+    return true
   }
   // 获取所有角色
   getAllRole() {
@@ -181,6 +182,22 @@ class Setting {
         return roleName
       }
     }
+  }
+  // 设置昵称
+  setRoleNickname(name, nickname) {
+    const role = this.getData('role')
+    if (!role[name].includes(nickname)) {
+      role[name].push(nickname)
+    }
+    return this.setData('role', role)
+  }
+  // 删除昵称
+  delRoleNickname(name, nickname) {
+    const role = this.getData('role')
+    if (role[name].includes(nickname)) {
+      role[name].splice(role[name].indexOf(nickname), 1)
+    }
+    return this.setData('role', role)
   }
 
 

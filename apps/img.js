@@ -1,8 +1,12 @@
 import setting from '#setting'
 import lodash from 'lodash'
 import img from '../components/img.js'
+
+const imgReg = '(?:图片|照片|美图|美照)'
+
+
 // 图片缓存
-export class image extends plugin {
+export class img extends plugin {
 
     constructor() {
         super({
@@ -12,43 +16,48 @@ export class image extends plugin {
             priority: 100,
             rule: [
                 {
-                    reg: `^${setting.rulePrefix}(上传|添加).{0,10}(图片|照片|美图|美照|图)$`,
-                    fnc: 'uploadRoleImage'
+                    reg: `^${setting.rulePrefix}(上传|添加).{0,10}${imgReg}$`,
+                    fnc: 'uploadRoleImg'
                 },
                 {
-                    reg: `^${setting.rulePrefix}随机(角色)?(图片|照片|美图|美照|图)$`,
-                    fnc: 'getRandomRoleImage'
+                    reg: `^${setting.rulePrefix}随机(角色)?${imgReg}$`,
+                    fnc: 'getRandomRoleImg'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?(?<!上传|添加|随机(角色)?).{0,10}(图片|照片|美图|美照|图)$`,
-                    fnc: 'getRoleImage'
+                    reg: `^${setting.rulePrefix}?(?<!上传|添加|随机(角色)?).{0,10}${imgReg}$`,
+                    fnc: 'getRoleImg'
                 },
+                {
+                    reg: `^${setting.rulePrefix}角色图片列表$`,
+                    fnc: 'getRoleImgList'
+                }
             ]
         })
     }
 
     // 角色图片
-    async getRoleImage(e, roleName) {
+    async getRoleImg(e, roleName) {
         // 从e.msg字符串里面匹配(\w)
         if (!roleName) {
-            roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})(?:图片|照片|美图|美照)$`))[1]
+            roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}$`))[1]
             logger.info(roleName)
             // 查询是否有此角色
             roleName = setting.getRoleName(roleName)
-            logger.info(roleName)
         }
         if (!roleName) return
         // 从Redis中获取角色图片列表
         let roleImgs = JSON.parse((await redis.get('yoyo:img:role:' + roleName)) || '[]')
         if (!roleImgs || roleImgs.length == 0) {
             roleImgs = setting.getRoleImgs(roleName)
-            const msg = await e.reply(`正在从网络获取${roleName}图片~`, true)
-            roleImgs = roleImgs.concat(await img.lolicon(roleName))
-            e?.group?.recallMsg(msg?.data?.message_id)
-
+            // 从pixiv获取图片
+            if (setting.config.pixiv) {
+                const msg = await e.reply(`正在从网络获取${roleName}图片~`, true)
+                roleImgs = roleImgs.concat(await img.lolicon(roleName))
+                e?.group?.recallMsg(msg?.data?.message_id)
+            }
         }
         if (roleImgs.length == 0) {
-            e.reply(`什么都没查到呢~\n请【>上传${roleName}图片】`)
+            e.reply(`什么都没查到呢~\n请「>上传${roleName}图片」`)
             return
         }
         let index = Math.floor(Math.random() * roleImgs.length)
@@ -58,20 +67,36 @@ export class image extends plugin {
         e.reply(segment.image(img_url))
 
     }
+    // 角色图片列表
+    async getRoleImgList(e) {
+        // 从e.msg字符串里面匹配(\w)
+        if (!roleName) {
+            roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}$`))[1]
+            logger.info(roleName)
+            // 查询是否有此角色
+            roleName = setting.getRoleName(roleName)
+        }
+        if (!roleName) return
+        roleImgs = setting.getRoleImgs(roleName)
+        if (roleImgs.length == 0) {
+            e.reply(`什么都没查到呢~\n请「>上传${roleName}图片」`)
+            return
+        }
+    }
     // 随机角色图片
-    async getRandomRoleImage(e) {
+    async getRandomRoleImg(e) {
         const roles = await setting.getAllRole()
         if (roles.length == 0) {
             e.reply('没有角色呢~')
             return false
         }
         // lodash 随机选一个
-        this.getRoleImage(e, lodash.sample(roles))
+        this.getRoleImg(e, lodash.sample(roles))
     }
     // 上传角色图片
-    async uploadRoleImage(e) {
+    async uploadRoleImg(e) {
         // 从e.msg字符串里面匹配(\w)
-        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}(?:上传|添加)(.{0,10})(图片|照片|美图|美照|图)$`))[1]
+        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}(?:上传|添加)(.{0,10})${imgReg}$`))[1]
         // 查询是否有此角色
         roleName = setting.getRoleName(roleName)
         if (!roleName) {
