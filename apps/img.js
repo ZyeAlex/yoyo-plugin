@@ -28,7 +28,7 @@ export class img extends plugin {
                     fnc: 'getRoleImg'
                 },
                 {
-                    reg: `^${setting.rulePrefix}角色图片列表$`,
+                    reg: `^${setting.rulePrefix}.{1,10}${imgReg}列表$`,
                     fnc: 'getRoleImgList'
                 }
             ]
@@ -40,11 +40,10 @@ export class img extends plugin {
         // 从e.msg字符串里面匹配(\w)
         if (!roleName) {
             roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}$`))[1]
-            logger.info(roleName)
             // 查询是否有此角色
             roleName = setting.getRoleName(roleName)
         }
-        if (!roleName) return
+        if (!roleName) return true
         // 从Redis中获取角色图片列表
         let roleImgs = JSON.parse((await redis.get('yoyo:img:role:' + roleName)) || '[]')
         if (!roleImgs || roleImgs.length == 0) {
@@ -70,18 +69,19 @@ export class img extends plugin {
     // 角色图片列表
     async getRoleImgList(e) {
         // 从e.msg字符串里面匹配(\w)
-        if (!roleName) {
-            roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}$`))[1]
-            logger.info(roleName)
-            // 查询是否有此角色
-            roleName = setting.getRoleName(roleName)
-        }
-        if (!roleName) return
+        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}$`))[1]
+        // 查询是否有此角色
+        roleName = setting.getRoleName(roleName)
+        if (!roleName) return true
         roleImgs = setting.getRoleImgs(roleName)
         if (roleImgs.length == 0) {
             e.reply(`什么都没查到呢~\n请「>上传${roleName}图片」`)
             return
         }
+        const msg = e.group.makeForwardMsg(roleImgs.map((img_url, index) => ({
+            message: [index + 1 + '.', segment.image(img_url)]
+        })))
+        e.reply(msg)
     }
     // 随机角色图片
     async getRandomRoleImg(e) {
