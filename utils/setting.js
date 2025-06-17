@@ -216,7 +216,7 @@ class Setting {
     return imgList
   }
   // 保存角色图片
-  async setRoleImgs(roleName, imageMessages) {
+  async setRoleImgs(roleName, imageMessages) { 
     let str = ''
     let imgCount = 0
     for (let val of imageMessages) {
@@ -269,11 +269,19 @@ class Setting {
     return str
   }
   // 删除图片
-  delRoleImg() {
-
+  delRoleImg(roleName, imgFile) {
+    let roleImgPath = `${this.path}/resources/img/role/${roleName}`
+    if (!fs.existsSync(roleImgPath)) {
+      return
+    }
+    if (imgFile.startsWith('file://')) {
+      imgFile = imgFile.replace('file://', '')
+    }
+    if (fs.existsSync(imgFile)) {
+      fs.unlinkSync(imgFile)
+      return true
+    }
   }
-
-
 }
 
 export default new Setting()
