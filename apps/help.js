@@ -1,7 +1,7 @@
 import runtimeRender from '../utils/runtime-render.js'
 import setting from '#setting'
 
-export class help extends plugin {
+export class Help extends plugin {
   constructor() {
     super({
       name: '[悠悠小助手]帮助',

@@ -1,6 +1,6 @@
 import setting from '#setting'
 
-export class role extends plugin {
+export class Role extends plugin {
     constructor() {
         super({
             name: '[悠悠小助手]角色',

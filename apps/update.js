@@ -3,7 +3,7 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { update } from '../../other/update.js'
 import setting from '#setting'
 
-export class ql_update extends plugin {
+export class Update extends plugin {
   constructor() {
     super({
       name: '[悠悠小助手]更新',

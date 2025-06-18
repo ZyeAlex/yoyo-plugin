@@ -5,7 +5,7 @@ import utils from '#utils'
 /**
  * 新闻
  */
-export class news extends plugin {
+export class News extends plugin {
     constructor() {
         super({
             name: '[悠悠小助手]资讯',

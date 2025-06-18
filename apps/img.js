@@ -6,7 +6,9 @@ const imgReg = '(?:图片|照片|美图|美照)'
 
 
 // 图片缓存
-export class img extends plugin {
+export class Img extends plugin {
+
+
 
     constructor() {
         super({
@@ -18,6 +20,10 @@ export class img extends plugin {
                 {
                     reg: `^${setting.rulePrefix}(上传|添加).{0,10}${imgReg}$`,
                     fnc: 'uploadRoleImg'
+                },
+                {
+                    reg: `^${setting.rulePrefix}删除.{1,10}${imgReg}[0-9,， ]+$`,
+                    fnc: 'delRoleImg'
                 },
                 {
                     reg: `^${setting.rulePrefix}随机(角色)?${imgReg}$`,
@@ -33,6 +39,11 @@ export class img extends plugin {
                 }
             ]
         })
+
+        // 缓存角色面板图片列表,给delRoleImg用，防止出现删除过程中索引变动问题
+        this.roleImgs = []
+        // 查看列表一次最多发送的图片数量
+        this.maxImgs = 30
     }
 
     // 角色图片
@@ -69,18 +80,38 @@ export class img extends plugin {
     // 角色图片列表
     async getRoleImgList(e) {
         // 从e.msg字符串里面匹配(\w)
-        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}$`))[1]
+        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}列表$`))[1]
         // 查询是否有此角色
         roleName = setting.getRoleName(roleName)
         if (!roleName) return true
-        roleImgs = setting.getRoleImgs(roleName)
-        if (roleImgs.length == 0) {
+        this.roleImgs = setting.getRoleImgs(roleName)
+        e.reply('正在查询角色' + roleName + '图片列表，请稍后...', true)
+        if (this.roleImgs.length == 0) {
             e.reply(`什么都没查到呢~\n请「>上传${roleName}图片」`)
             return
         }
-        const msg = e.group.makeForwardMsg(roleImgs.map((img_url, index) => ({
-            message: [index + 1 + '.', segment.image(img_url)]
-        })))
+        // 分批发送
+        if (this.roleImgs.length > this.maxImgs) {
+            for (let i = 0; i * this.maxImgs < this.roleImgs.length; i++) {
+                const msg = e.group.makeForwardMsg(
+                    [
+                        ...this.roleImgs.slice(i * this.maxImgs, Math.min(this.roleImgs.length, (i + 1) * this.maxImgs)).map((img_url, index) => ({
+                            message: [index + 1 + '.', segment.image(img_url)]
+                        }))
+                    ]
+                )
+                e.reply(msg)
+                // 等待2秒
+                await Promise(req => setTimeout(() => req(), 2000))
+            }
+        }
+        const msg = e.group.makeForwardMsg(
+            [
+                ...this.roleImgs.map((img_url, index) => ({
+                    message: [index + 1 + '.', segment.image(img_url)]
+                }))
+            ]
+        )
         e.reply(msg)
     }
     // 随机角色图片
@@ -108,7 +139,6 @@ export class img extends plugin {
                 imgs.push(val)
             }
         }
-        logger.info(imgs)
         if (imgs.length === 0) {
             let source
             if (e.getReply) {
@@ -154,5 +184,20 @@ export class img extends plugin {
         const msg = e.reply([segment.at(e.user_id, lodash.truncate(e.sender.card, { length: 8 })), '\n正在上传图片，请稍候...'])
         e.reply(await setting.setRoleImgs(roleName, imgs))
         e?.group?.recallMsg(msg?.data?.message_id)
+    }
+    // 删除角色图片
+    async delRoleImg(e) {
+        if (!this.roleImgs.length) {
+            this.getRoleImgList(e)
+        }
+        // 从e.msg字符串里面匹配(\w)
+        let [_, roleName, select] = e.msg.match(new RegExp(`^${setting.rulePrefix}删除(.{1,10})${imgReg}([0-9,， ]+)$`))
+        // 查询是否有此角色
+        roleName = setting.getRoleName(roleName)
+        if (!roleName) {
+            return e.reply('未找到此角色', true)
+        }
+        if (!select) return
+        select = select.trim().split(/[,， ]/).sort((a, b) => b - a)
     }
 }

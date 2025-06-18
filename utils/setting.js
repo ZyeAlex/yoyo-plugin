@@ -33,7 +33,7 @@ class Setting {
     // 初始化config
     this.config = this.getConfig('config')
     // 匹配前缀
-    this.rulePrefix = '(?:' + this.config.rulePrefix.join('|') + ')'
+    this.rulePrefix = '(?:(?:' + this.config.rulePrefix.join('|') + ') *)'
   }
 
   /** 初始化配置 */
@@ -212,11 +212,11 @@ class Setting {
       fs.mkdirSync(roleImgPath, { recursive: true })
     }
     // 查询文件夹下的所有图片列表
-    const imgList = fs.readdirSync(roleImgPath).map(fileName => `file://${this.path}/resources/img/role/${roleName}/${fileName}`)
-    return imgList
+    const roleImgs = fs.readdirSync(roleImgPath).map(fileName => `file://${this.path}/resources/img/role/${roleName}/${fileName}`)
+    return roleImgs
   }
   // 保存角色图片
-  async setRoleImgs(roleName, imageMessages) { 
+  async setRoleImgs(roleName, imageMessages) {
     let str = ''
     let imgCount = 0
     for (let val of imageMessages) {
