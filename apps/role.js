@@ -35,14 +35,13 @@ export class Role extends plugin {
     roleCard(e) {
         // 从e.msg字符串里面匹配(\w)
         let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}(.{1,10})(?:卡片|card|Card)?$`))[1]
-        // 查询是否有此角色
         roleName = setting.getRoleName(roleName)
         if (!roleName) return true
     }
     // 设置角色别名
     setNickname(e) {
-        const [_, roleName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}(.{1,10})设置(?:别名|昵称|称号|外号)(.{1,10})$`))
-        roleName = setting.getRoleName(role)
+        let [_, roleName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}(.{1,10})设置(?:别名|昵称|称号|外号)(.{1,10})$`))
+        roleName = setting.getRoleName(roleName)
         if (!roleName) {
             return e.reply('未找到此角色')
         }
@@ -54,8 +53,8 @@ export class Role extends plugin {
     }
     // 删除角色别名
     delNickname(e) {
-        const [_, roleName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}(.{1,10})删除(?:别名|昵称|称号|外号)(.{1,10})$`))
-        roleName = setting.getRoleName(role)
+        let [_, roleName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}(.{1,10})删除(?:别名|昵称|称号|外号)(.{1,10})$`))
+        roleName = setting.getRoleName(roleName)
         if (!roleName) {
             return e.reply('未找到此角色')
         }
