@@ -212,7 +212,7 @@ class Setting {
       fs.mkdirSync(roleImgPath, { recursive: true })
     }
     // 查询文件夹下的所有图片列表
-    const roleImgs = fs.readdirSync(roleImgPath).map(fileName => `file://${this.path}/resources/img/role/${roleName}/${fileName}`)
+    const roleImgs = fs.readdirSync(roleImgPath).map(fileName => `${this.path}/resources/img/role/${roleName}/${fileName}`)
     return roleImgs
   }
   // 保存角色图片
@@ -269,18 +269,20 @@ class Setting {
     return str
   }
   // 删除图片
-  delRoleImg(roleName, imgFile) {
+  delRoleImg(roleName, imgFiles) {
     let roleImgPath = `${this.path}/resources/img/role/${roleName}`
     if (!fs.existsSync(roleImgPath)) {
       return
     }
-    if (imgFile.startsWith('file://')) {
-      imgFile = imgFile.replace('file://', '')
-    }
-    if (fs.existsSync(imgFile)) {
-      fs.unlinkSync(imgFile)
-      return true
-    }
+    imgFiles.forEach(imgFile => {
+      // if (imgFile.startsWith('file://')) { //头部不添加file，此处注释
+      //   imgFile = imgFile.replace('file://', '')
+      // }
+      if (fs.existsSync(imgFile)) {
+        fs.unlinkSync(imgFile)
+      }
+    })
+    return true
   }
 }
 
