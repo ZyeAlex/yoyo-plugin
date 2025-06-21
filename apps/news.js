@@ -18,18 +18,9 @@ export class News extends plugin {
                     fnc: 'data'
                 },
                 {
-                    reg: `^${setting.rulePrefix}(最新|最近|近期)?新闻$`,
+                    reg: `^${setting.rulePrefix}(最新|最近|近期)?(新闻|公告|活动)$`,
                     fnc: 'announce'
-                },
-                {
-                    reg: `^${setting.rulePrefix}(最新|最近|近期)?公告$`,
-                    fnc: 'announce'
-                },
-                {
-                    reg: `^${setting.rulePrefix}(最新|最近|近期)?活动$`,
-                    fnc: 'announce'
-                },
-
+                }
             ]
         })
     }

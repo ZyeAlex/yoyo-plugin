@@ -1,0 +1,24 @@
+.head-box {
+    padding-top: 10px;
+}
+
+.head-box .title {
+    font-size: 50px;
+}
+
+
+
+.role-imgs {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 10px 0 10px;
+}
+
+.role-img {
+    margin: 10px 0 0 10px;
+}
+
+.role-img .role-text {
+    width: 100%;
+    text-align: center;
+}

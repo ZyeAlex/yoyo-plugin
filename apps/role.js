@@ -13,7 +13,7 @@ export class Role extends plugin {
                     fnc: 'roleList'
                 },
                 {
-                    reg: `^${setting.rulePrefix}.{1,10}(卡片|card|Card)$`,
+                    reg: `^${setting.rulePrefix}?.{1,10}(角色)?(图鉴|卡片|card|Card)$`,
                     fnc: 'roleCard'
                 },
                 {
@@ -34,9 +34,10 @@ export class Role extends plugin {
     // 角色卡片
     roleCard(e) {
         // 从e.msg字符串里面匹配(\w)
-        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}(.{1,10})(?:卡片|card|Card)?$`))[1]
+        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})(?:卡片|card|Card)?$`))[1]
         roleName = setting.getRoleName(roleName)
         if (!roleName) return true
+        logger.info(roleName)
     }
     // 设置角色别名
     setNickname(e) {

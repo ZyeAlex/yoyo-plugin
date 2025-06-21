@@ -58,8 +58,6 @@ export class Help extends plugin {
             roleImg,
             username: e.sender.nickname || e.sender.card || '你',
             day: userSignList.length
-        }, {
-            scale: 1.6
         })
     }
 }

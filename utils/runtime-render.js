@@ -35,10 +35,6 @@ export default function runtimeRender (e, path, renderData = {}, cfg = {}) {
   if (!e.runtime) {
     console.log('未找到e.runtime，请升级至最新版Yunzai')
   }
-  let scale =  100
-  scale = Math.min(2, Math.max(0.5, scale / 100))
-  scale = (cfg.scale || 1) * scale
-  const pct = `style='transform:scale(${scale})'`
   const layoutPath =
     process.cwd() + '/plugins/yoyo-plugin/resources/common/'
   const name = setting.config.name || 'yoyo-plugin'
@@ -53,7 +49,6 @@ export default function runtimeRender (e, path, renderData = {}, cfg = {}) {
         _layout_path: layoutPath,
         defaultLayout: layoutPath + 'layout.html',
         sys: {
-          scale: pct,
           copyright: `Created By ${Version.name} & ${name}<span class="version">${version}</span>`,
           createdby: `Created By ${Version.name} & ${name}`
         },

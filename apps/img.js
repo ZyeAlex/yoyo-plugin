@@ -1,21 +1,13 @@
 import setting from '#setting'
 import lodash from 'lodash'
 import img from '../components/img.js'
-import fs from 'fs'
-import fsPromises from "node:fs/promises"
-import common from "../../../lib/common/common.js"
+import runtimeRender from '../utils/runtime-render.js'
 
 const imgReg = '(?:图片|照片|美图|美照)'
 // 缓存角色面板图片列表,给delRoleImg用，防止出现删除过程中索引变动问题
 const rolesImgs = {}
-// 查看列表一次最多发送的图片数量
-const maxImgs = 30
 
-// 图片缓存
 export class Img extends plugin {
-
-
-
     constructor() {
         super({
             name: '[悠悠小助手]图片',
@@ -40,7 +32,7 @@ export class Img extends plugin {
                     fnc: 'getRoleImg'
                 },
                 {
-                    reg: `^${setting.rulePrefix}.{1,10}${imgReg}列表$`,
+                    reg: `^${setting.rulePrefix}.{1,10}${imgReg}(列表|表列|合集|集合)$`,
                     fnc: 'getRoleImgList'
                 }
             ]
@@ -90,32 +82,10 @@ export class Img extends plugin {
             e.reply(`什么都没查到呢~\n请「>上传${roleName}图片」`)
             return
         }
-        // 分批发送
-        for (let i = 0; i * maxImgs < rolesImgs[roleName].length; i++) {
-            let title = `「${roleName}」图片列表`
-            if (rolesImgs[roleName].length >= maxImgs) {
-                let start = i * maxImgs + 1
-                let end = Math.min(i * maxImgs + 1 + maxImgs, rolesImgs[roleName].length)
-                let count = rolesImgs[roleName].length
-                title += `[${start}-${end}/${count}]`
-            }
-            const msg = await common.makeForwardMsg(
-                e,
-                [
-                    // 图片
-                    ...(await Promise.all(rolesImgs[roleName].slice(i * maxImgs, Math.min(rolesImgs[roleName].length, (i + 1) * maxImgs)).map(async (img_url, index) => {
-                        await fsPromises.access(img_url, fs.constants.R_OK)
-                        return [
-                            index + 1 + '.',
-                            segment.image(`file://${img_url}`)
-                        ]
-                    })))
-                ],
-                title
-            )
-            e.reply(msg)
-            await common.sleep(2000)// 等待2秒
-        }
+        return await runtimeRender(e, 'role/imgs', {
+            roleName,
+            roleImgs: rolesImgs[roleName].map(roleImg => roleImg.split('/resources')[1]),
+        })
     }
     // 随机角色图片
     async getRandomRoleImg(e) {

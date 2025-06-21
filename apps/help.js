@@ -25,8 +25,6 @@ export class Help extends plugin {
         subTitle: setting.config.subTitle
       },
       helpGroup,
-    }, {
-      scale: 1.6
     })
   }
 }

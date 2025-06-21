@@ -29,6 +29,7 @@ body {
 .container {
   width: 830px;
   background-size: contain;
+  padding-bottom: 10px;
 }
 
 .head-box {
