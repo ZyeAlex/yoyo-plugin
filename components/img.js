@@ -1,5 +1,4 @@
 import { lolicon } from '../api/img.js'
-import setting from '#setting'
 class Img {
     // https://docs.api.lolicon.app/#/setu
     async lolicon(roleName) {

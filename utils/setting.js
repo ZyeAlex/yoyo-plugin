@@ -34,6 +34,9 @@ class Setting {
     this.config = this.getConfig('config')
     // 匹配前缀
     this.rulePrefix = '(?:(?:' + this.config.rulePrefix.join('|') + ') *)'
+
+    // 签到缓存
+    this.userSignData = {}
   }
 
   /** 初始化配置 */
@@ -199,6 +202,18 @@ class Setting {
     }
     return this.setData('role', role)
   }
+  // 获取用户签到数据列表
+  getUserSignList(group_id, user_id) {
+    if (!this.userSignData[group_id]) {
+      this.userSignData[group_id] = this.getData(group_id, '/sign') || {}
+    }
+    return this.userSignData[group_id][user_id] || []
+  }
+  // 保存用户签到数据
+  saveUserSignData(group_id,user_id,userSignList){
+    this.userSignData[group_id][user_id] = userSignList
+    this.setData(group_id, this.userSignData[group_id], '/sign')
+  }
 
 
   /**
@@ -275,9 +290,6 @@ class Setting {
       return
     }
     imgFiles.forEach(imgFile => {
-      // if (imgFile.startsWith('file://')) { //头部不添加file，此处注释
-      //   imgFile = imgFile.replace('file://', '')
-      // }
       if (fs.existsSync(imgFile)) {
         fs.unlinkSync(imgFile)
       }

@@ -54,7 +54,7 @@ export default function runtimeRender (e, path, renderData = {}, cfg = {}) {
         defaultLayout: layoutPath + 'layout.html',
         sys: {
           scale: pct,
-          copyright: `Created By ${Version.name}<span class="version">${Version.yunzai}</span> & ${name}<span class="version">${version}</span>`,
+          copyright: `Created By ${Version.name} & ${name}<span class="version">${version}</span>`,
           createdby: `Created By ${Version.name} & ${name}`
         },
         Math,

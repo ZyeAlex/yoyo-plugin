@@ -11,6 +11,7 @@
   font-family: "YS";
   src: url("./font/YS.ttf") format("truetype");
 }
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -22,12 +23,11 @@ body {
   transform: scale(1.4);
   transform-origin: 0 0;
   font-size: 18px;
-  width: 600px;
+  width: 830px;
 }
 
 .container {
-  width: 600px;
-  padding: 20px 15px 10px 15px;
+  width: 830px;
   background-size: contain;
 }
 

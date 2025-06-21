@@ -1,0 +1,14 @@
+{{extend defaultLayout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/sign/index.css" />
+{{/block}}
+
+{{block 'main'}}
+<img class="sign-img" src="{{pluResPath}}{{roleImg}}" alt="">
+<div class="sign-text">
+    <div>签到成功！{{username}}的今日老婆是</div>
+    <div class="sign-role">「{{roleName}}」</div>
+    <div>你已连续在本群签到{{day}}天！</div>
+</div>
+{{/block}}

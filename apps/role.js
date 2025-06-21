@@ -4,7 +4,7 @@ export class Role extends plugin {
     constructor() {
         super({
             name: '[悠悠小助手]角色',
-            dsc: '角色帮助',
+            dsc: '悠悠角色帮助',
             event: 'message',
             priority: 101,
             rule: [

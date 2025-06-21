@@ -1,6 +1,9 @@
 import setting from '#setting'
 import lodash from 'lodash'
 import img from '../components/img.js'
+import fs from 'fs'
+import fsPromises from "node:fs/promises"
+import common from "../../../lib/common/common.js"
 
 const imgReg = '(?:图片|照片|美图|美照)'
 // 缓存角色面板图片列表,给delRoleImg用，防止出现删除过程中索引变动问题
@@ -15,7 +18,7 @@ export class Img extends plugin {
 
     constructor() {
         super({
-            name: '[悠悠小助手]角色图片',
+            name: '[悠悠小助手]图片',
             dsc: '悠悠角色图片',
             event: 'message',
             priority: 100,
@@ -73,7 +76,6 @@ export class Img extends plugin {
         roleImgs.splice(index, 1)
         redis.set('yoyo:img:role:' + roleName, JSON.stringify(roleImgs))
         e.reply(segment.image(img_url))
-
     }
     // 角色图片列表
     async getRoleImgList(e) {
@@ -89,28 +91,31 @@ export class Img extends plugin {
             return
         }
         // 分批发送
-        if (rolesImgs[roleName]?.length > maxImgs) {
-            for (let i = 0; i * maxImgs < rolesImgs[roleName].length; i++) {
-                const msg = e.group.makeForwardMsg(
-                    [
-                        ...rolesImgs[roleName].slice(i * maxImgs, Math.min(rolesImgs[roleName].length, (i + 1) * maxImgs)).map((img_url, index) => ({
-                            message: [index + 1 + '.', segment.image(img_url)]
-                        }))
-                    ]
-                )
-                e.reply(msg)
-                // 等待2秒
-                await Promise(req => setTimeout(() => req(), 2000))
+        for (let i = 0; i * maxImgs < rolesImgs[roleName].length; i++) {
+            let title = `「${roleName}」图片列表`
+            if (rolesImgs[roleName].length >= maxImgs) {
+                let start = i * maxImgs + 1
+                let end = Math.min(i * maxImgs + 1 + maxImgs, rolesImgs[roleName].length)
+                let count = rolesImgs[roleName].length
+                title += `[${start}-${end}/${count}]`
             }
+            const msg = await common.makeForwardMsg(
+                e,
+                [
+                    // 图片
+                    ...(await Promise.all(rolesImgs[roleName].slice(i * maxImgs, Math.min(rolesImgs[roleName].length, (i + 1) * maxImgs)).map(async (img_url, index) => {
+                        await fsPromises.access(img_url, fs.constants.R_OK)
+                        return [
+                            index + 1 + '.',
+                            segment.image(`file://${img_url}`)
+                        ]
+                    })))
+                ],
+                title
+            )
+            e.reply(msg)
+            await common.sleep(2000)// 等待2秒
         }
-        const msg = e.group.makeForwardMsg(
-            [
-                ...rolesImgs[roleName].map((img_url, index) => ({
-                    message: [index + 1 + '.', segment.image(img_url)]
-                }))
-            ]
-        )
-        e.reply(msg)
     }
     // 随机角色图片
     async getRandomRoleImg(e) {

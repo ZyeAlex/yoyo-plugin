@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.sign-img {
+    width: 830px;
+}
+.sign-text{
+    padding-top: 12px;
+    text-align: center;
+    font-size: 36px;
+    font-family: "SR";
+}
+.sign-role {
+    font-size: 56px;
+    font-family: "tttgbnumber";
+}
