@@ -24,7 +24,7 @@ export class Img extends plugin {
                     fnc: 'delRoleImg'
                 },
                 {
-                    reg: `^${setting.rulePrefix}随机(角色)?${imgReg}$`,
+                    reg: `^${setting.rulePrefix}?随机(角色)?${imgReg}$`,
                     fnc: 'getRandomRoleImg'
                 },
                 {
@@ -32,7 +32,7 @@ export class Img extends plugin {
                     fnc: 'getRoleImg'
                 },
                 {
-                    reg: `^${setting.rulePrefix}.{1,10}${imgReg}(列表|表列|合集|集合)$`,
+                    reg: `^${setting.rulePrefix}?.{1,10}${imgReg}(列表|表列|合集|集合)$`,
                     fnc: 'getRoleImgList'
                 }
             ]
@@ -100,7 +100,7 @@ export class Img extends plugin {
     // 上传角色图片
     async uploadRoleImg(e) {
         // 从e.msg字符串里面匹配(\w)
-        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}(?:上传|添加)(.{0,10})${imgReg}$`))[1]
+        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(?:上传|添加)(.{0,10})${imgReg}$`))[1]
         // 查询是否有此角色
         roleName = setting.getRoleName(roleName)
         if (!roleName) {
@@ -161,7 +161,7 @@ export class Img extends plugin {
     // 删除角色图片
     async delRoleImg(e) {
         // 从e.msg字符串里面匹配(\w)
-        let [_, roleName, select] = e.msg.match(new RegExp(`^${setting.rulePrefix}删除(.{1,10})${imgReg}([0-9,， ]+)$`))
+        let [_, roleName, select] = e.msg.match(new RegExp(`^${setting.rulePrefix}?删除(.{1,10})${imgReg}([0-9,， ]+)$`))
         // 查询是否有此角色
         roleName = setting.getRoleName(roleName)
         if (!roleName) {

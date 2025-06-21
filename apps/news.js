@@ -14,11 +14,11 @@ export class News extends plugin {
             priority: 100,
             rule: [
                 {
-                    reg: `^${setting.rulePrefix}数据(信息)?$`,
+                    reg: `^${setting.rulePrefix}?数据(信息)?$`,
                     fnc: 'data'
                 },
                 {
-                    reg: `^${setting.rulePrefix}(最新|最近|近期)?(新闻|公告|活动)$`,
+                    reg: `^${setting.rulePrefix}?(最新|最近|近期)?(新闻|公告|活动)$`,
                     fnc: 'announce'
                 }
             ]
@@ -67,7 +67,7 @@ export class News extends plugin {
 
     // 
     async announce(e) {
-        const match = e.msg.match(new RegExp(`^${setting.rulePrefix}(?:最新|最近|近期)?(.{2})$`))
+        const match = e.msg.match(new RegExp(`^${setting.rulePrefix}?(?:最新|最近|近期)?(.{2})$`))
         logger.info(`^${setting.rulePrefix}(?:最新|最近|近期)?(.{2})$`)
         const { total, list } = await announce({ 动态: 'latest', 新闻: 'news', 公告: 'announce', 活动: 'activity' }[match[1]])
         if (!total) {

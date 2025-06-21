@@ -9,7 +9,7 @@ export class Role extends plugin {
             priority: 101,
             rule: [
                 {
-                    reg: `^${setting.rulePrefix}(角色列表|全部角色|所有角色)$`,
+                    reg: `^${setting.rulePrefix}?(角色列表|全部角色|所有角色)$`,
                     fnc: 'roleList'
                 },
                 {
@@ -17,11 +17,11 @@ export class Role extends plugin {
                     fnc: 'roleCard'
                 },
                 {
-                    reg: `^${setting.rulePrefix}.{1,10}设置(别名|昵称|称号|外号).{1,10}$`,
+                    reg: `^${setting.rulePrefix}?.{1,10}设置(别名|昵称|称号|外号).{1,10}$`,
                     fnc: 'setNickname'
                 },
                 {
-                    reg: `^${setting.rulePrefix}.{1,10}删除(别名|昵称|称号|外号).{1,10}$`,
+                    reg: `^${setting.rulePrefix}?.{1,10}删除(别名|昵称|称号|外号).{1,10}$`,
                     fnc: 'delNickname'
                 },
             ]
@@ -41,7 +41,7 @@ export class Role extends plugin {
     }
     // 设置角色别名
     setNickname(e) {
-        let [_, roleName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}(.{1,10})设置(?:别名|昵称|称号|外号)(.{1,10})$`))
+        let [_, roleName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})设置(?:别名|昵称|称号|外号)(.{1,10})$`))
         roleName = setting.getRoleName(roleName)
         if (!roleName) {
             return e.reply('未找到此角色')
@@ -54,7 +54,7 @@ export class Role extends plugin {
     }
     // 删除角色别名
     delNickname(e) {
-        let [_, roleName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}(.{1,10})删除(?:别名|昵称|称号|外号)(.{1,10})$`))
+        let [_, roleName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})删除(?:别名|昵称|称号|外号)(.{1,10})$`))
         roleName = setting.getRoleName(roleName)
         if (!roleName) {
             return e.reply('未找到此角色')

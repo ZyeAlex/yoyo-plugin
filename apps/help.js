@@ -10,7 +10,7 @@ export class Help extends plugin {
       priority: 100,
       rule: [
         {
-          reg: `^${setting.rulePrefix}(帮助|help|小?助手)$`,
+          reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)(帮助|help|小?助手)$`,
           fnc: 'help'
         },
       ]
@@ -25,6 +25,7 @@ export class Help extends plugin {
         subTitle: setting.config.subTitle
       },
       helpGroup,
+      rulePrefix: setting.config.rulePrefix[0] || '$'
     })
   }
 }

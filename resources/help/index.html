@@ -22,7 +22,7 @@
       {{each group.list help idx}}
       <div class="td">
         <span class="help-icon" style="{{help.css}}"></span>
-        <strong class="help-title">{{help.title}}</strong>
+        <strong class="help-title">{{help.title.replace(/\$/g, rulePrefix)}}</strong>
         <span class="help-desc">{{help.desc}}</span>
       </div>
       {{/each}}
