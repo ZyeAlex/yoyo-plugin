@@ -12,7 +12,7 @@ export class Help extends plugin {
             priority: 100,
             rule: [
                 {
-                    reg: `^${setting.rulePrefix}?签到$`,
+                    reg: `^${setting.rulePrefix}?(签到|打卡)$`,
                     fnc: 'sign'
                 }
             ]

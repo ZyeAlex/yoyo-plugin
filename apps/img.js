@@ -2,7 +2,7 @@ import setting from '#setting'
 import lodash from 'lodash'
 import img from '../components/img.js'
 import runtimeRender from '../utils/runtime-render.js'
-
+import common from '../../../lib/common/common.js'
 const imgReg = '(?:图片|照片|美图|美照)'
 // 缓存角色面板图片列表,给delRoleImg用，防止出现删除过程中索引变动问题
 const rolesImgs = {}
@@ -16,11 +16,11 @@ export class Img extends plugin {
             priority: 100,
             rule: [
                 {
-                    reg: `^${setting.rulePrefix}(上传|添加).{0,10}${imgReg}$`,
+                    reg: `^${setting.rulePrefix}?(上传|添加).{0,10}${imgReg}$`,
                     fnc: 'uploadRoleImg'
                 },
                 {
-                    reg: `^${setting.rulePrefix}删除.{1,10}${imgReg}[0-9,， ]+$`,
+                    reg: `^${setting.rulePrefix}?删除.{1,10}${imgReg}[0-9,， ]+$`,
                     fnc: 'delRoleImg'
                 },
                 {
@@ -28,7 +28,7 @@ export class Img extends plugin {
                     fnc: 'getRandomRoleImg'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?(?<!上传|添加|随机(角色)?).{0,10}${imgReg}$`,
+                    reg: `^${setting.rulePrefix}?(?!上传|添加|随机(角色)?).{0,10}${imgReg}$`,
                     fnc: 'getRoleImg'
                 },
                 {
@@ -59,7 +59,8 @@ export class Img extends plugin {
                 e?.group?.recallMsg(msg?.data?.message_id)
             }
         }
-        if (roleImgs.length == 0) {
+        if (roleImgs.length == 0) { 
+            await common.sleep(500)
             e.reply(`什么都没查到呢~\n请「>上传${roleName}图片」`)
             return
         }
