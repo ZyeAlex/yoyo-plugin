@@ -10,7 +10,6 @@ imgMaxSize: 5 #上传图片大小限制 MB
 
 # pixiv
 pixiv: false # 角色图片是否从pixiv获取  (质量不稳定)
-hibiAPI: https://hibi.Yunzai-Bot.com
 excludeAI: true # 包含AI图片
 
 # 监测PV播放量

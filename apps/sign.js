@@ -2,7 +2,7 @@ import runtimeRender from '../utils/runtime-render.js'
 import utils from '#utils'
 import setting from '#setting'
 import lodash from 'lodash'
-
+import { hitokoto } from '../api/other.js'
 export class Help extends plugin {
     constructor() {
         super({
@@ -19,45 +19,109 @@ export class Help extends plugin {
         })
     }
 
+
     async sign(e) {
         if (!e.group_id) {
             return e.reply('请在群聊中使用签到功能')
         }
         // 用户签到数据
         let userSignList = setting.getUserSignList(e.group_id, e.user_id)
+        // 当前时间
         let time = new Date().getTime()
-        // {
-        //     time: new Date().getTime(),
-        //     roleName:'',
-        //     roleImg:''
-        // }
+        // 角色名 , 图片 , 中断
+        let roleName, roleImg, interrupt
+        // 今日是否签到
+        let hasSign = false
+
+
         if (userSignList?.length) {
+            // 已签到
             let diff = utils.getDateDiffDays(userSignList[0].time, time)
             if (diff == 0) {
-                e.reply(['今天已经签到过了哦，\n请明天再来吧~'])
-                return
+                roleName = userSignList[0].roleName
+                roleImg = userSignList[0].roleImg
+                hasSign = true
+                userSignList.shift()
+                // 未连续签到
             } else if (diff != 1) {
+                interrupt = userSignList.length
                 userSignList = []
             }
         }
-        const roleName = lodash.sample(setting.getAllRole())
-        const img_urls = setting.getRoleImgs(roleName)
-        let roleImg = lodash.sample(img_urls)
-        if (roleImg) {
-            roleImg = roleImg.split('/resources')[1]
+
+        if (!roleName) {
+            roleName = lodash.sample(setting.getAllRole())
         }
-        else {
-            roleImg = ''
+
+        if (!roleImg) {
+            roleImg = lodash.sample(setting.getRoleImgs(roleName))
+            if (roleImg) {
+                roleImg = roleImg.split('/resources')[1]
+            } else {
+                roleImg = ''
+            }
         }
+
+
+
         // 保存签到数据
-        userSignList.unshift({ time, roleName })
+        userSignList.unshift({ time, roleName, roleImg })
+
         setting.saveUserSignData(e.group_id, e.user_id, userSignList)
+
+        // 每日一言
+        let daily
+        try {
+            daily = await hitokoto()
+        } catch (error) {
+        }
+        logger.info(daily)
         // 发送签到数据
         return await runtimeRender(e, 'sign/index', {
-            roleName,
-            roleImg,
+            hasSign, roleName, roleImg, interrupt,daily,
+            hisRoles: userSignList.length > 1 ? this._countAndSortRoles(userSignList) : [],
             username: e.sender.nickname || e.sender.card || '你',
+            userIcon: `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`,
             day: userSignList.length
         })
+    }
+
+    // 获取roleName次数
+    _countAndSortRoles(list) {
+        // 存储统计结果和首次出现索引
+        const countMap = new Map();
+        const firstOccurrence = new Map();
+
+        // 遍历列表进行统计
+        list.forEach((item, index) => {
+            const roleName = item.roleName;
+
+            // 更新计数
+            if (countMap.has(roleName)) {
+                countMap.set(roleName, countMap.get(roleName) + 1);
+            } else {
+                countMap.set(roleName, 1);
+                // 记录首次出现位置
+                firstOccurrence.set(roleName, index);
+            }
+        });
+
+        // 转换为数组格式
+        const resultArray = Array.from(countMap, ([roleName, count]) => ({
+            roleName,
+            count,
+            firstIndex: firstOccurrence.get(roleName)
+        }));
+
+        // 排序：先按次数降序，次数相同按首次出现顺序
+        resultArray.sort((a, b) => {
+            if (b.count !== a.count) {
+                return b.count - a.count; // 次数降序
+            }
+            return a.firstIndex - b.firstIndex; // 相同次数按首次出现顺序
+        });
+
+        // 转换为最终输出格式
+        return resultArray.map(item => [item.roleName, item.count]);
     }
 }

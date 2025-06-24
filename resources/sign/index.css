@@ -6,14 +6,75 @@
 
 .sign-img {
     width: 830px;
+    /* 从上向下透明渐变 */
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
+    margin-bottom: -5%;
 }
-.sign-text{
-    padding-top: 12px;
+
+.sign-text {
     text-align: center;
     font-size: 36px;
-    font-family: "SR";
+    font-family: "ys";
+    color: rgba(0, 0, 0, 0.9);
 }
+
+.sign-user-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    transform: translate(0, 10px);
+}
+
+.sign-name {
+    font-family: 黑体;
+    font-weight: bold;
+    font-size: 38px;
+    /* 斜体 */
+    font-style: italic;
+}
+
 .sign-role {
-    font-size: 56px;
-    font-family: "tttgbnumber";
+    font-size: 65px;
+    font-family: "nzbz";
+    color: rgba(0, 0, 0);
+}
+
+.has-sign {
+    color: #ff3300;
+}
+
+.sign-history {
+    margin: 10px;
+    color: grey;
+    width: 100%;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.sign-interrupt {
+    margin-top: 10px;
+}
+
+.sign-daily {
+   /* 使用 rgba 来设置半透明背景颜色 */
+   background-color: rgba(240, 240, 255, 0.8); /* 浅蓝色调，带80%的透明度 */
+    /* 浅灰偏白 */
+    border-radius: 30px;
+    box-shadow:
+        10px 10px 20px rgba(0, 0, 0, 0.1), /* 深色阴影 */
+        -10px -10px 20px rgba(255, 255, 255, 0.7); /* 白色高光 */
+    color: rgb(0, 0, 0, 0.9);
+    /* 可选：添加边框圆角 */
+    border-radius: 10px;
+    margin: 20px 30px;
+    padding: 20px;
+    font-size: 24px;
+}
+
+.sign-daily-from {
+    text-align: right;
+    font-size: 20px;
 }
