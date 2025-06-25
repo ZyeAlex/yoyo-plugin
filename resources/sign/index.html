@@ -10,21 +10,16 @@
     <div><span class="{{hasSign&&'has-sign'}}">{{hasSign?'今日已签到！':'签到成功！'}}</span><img class="sign-user-img"
             src="{{userIcon}}" /><span class="sign-name">{{username}}</span> 的今日老婆是</div>
     <div style="font-size:60px">「<span class="sign-role">{{roleName}}</span>」</div>
-    {{if !interrupt}}
-    <div> 你已连续在本群签到{{day}}天！</div>
-    {{/if}}
+    <div> 你已在本群签到{{day}}天！</div>
     {{if hisRoles?.length}}
     <div class="sign-history">
         <div>签到历史：</div>
         <div class="sign-history-roles">
             <% for(var i=0; i < hisRoles.length; i++){ %>
-               <span>&nbsp;{{hisRoles[i][0]}}×{{hisRoles[i][1]}}&nbsp;</span>
-            <% } %>
+                <span>&nbsp;{{hisRoles[i][0]}}×{{hisRoles[i][1]}}&nbsp;</span>
+                <% } %>
         </div>
     </div>
-    {{/if}}
-    {{if interrupt}}
-    <div class="has-sign sign-interrupt">签到中断啦！你失去了{{interrupt}}天连续签到！</div>
     {{/if}}
     {{if daily}}
     <div class="sign-daily">

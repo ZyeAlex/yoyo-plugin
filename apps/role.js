@@ -1,5 +1,6 @@
 import setting from '#setting'
-
+import render from '#render'
+import lodash from 'lodash'
 export class Role extends plugin {
     constructor() {
         super({
@@ -29,15 +30,31 @@ export class Role extends plugin {
     }
     // 角色列表
     roleList(e) {
-        return e.reply(setting.getAllRole().map((role, index) => ` ${index + 1}. ${role}`).join('\n'))
+        return e.reply(Object.keys(setting.roles).map((role, index) => ` ${index + 1}. ${role}`).join('\n'))
     }
     // 角色卡片
-    roleCard(e) {
-        // 从e.msg字符串里面匹配(\w)
-        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})(?:卡片|card|Card)?$`))[1]
+    async roleCard(e) {
+        // 角色名
+        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})(角色)?(图鉴|卡片|card|Card)$`))[1]
         roleName = setting.getRoleName(roleName)
         if (!roleName) return true
-        logger.info(roleName)
+
+        // 角色图片
+        let roleImg = lodash.sample(setting.getRoleImgs(roleName))
+        if (roleImg) {
+            roleImg = roleImg.split('/resources')[1]
+        } else {
+            roleImg = ''
+        }
+
+        // 角色信息
+        let roleMsg = setting.roles[roleName] || {}
+
+        return await render(e, 'role/card', {
+            roleName,
+            roleImg,
+            ...roleMsg
+        })
     }
     // 设置角色别名
     setNickname(e) {

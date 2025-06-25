@@ -7,6 +7,7 @@
   "type": "module",
   "imports": {
     "#setting": "./utils/setting.js",
+    "#render": "./utils/render.js",
     "#utils": "./utils/other.js"
   },
   "keywords": [

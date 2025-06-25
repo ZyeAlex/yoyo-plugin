@@ -1,4 +1,4 @@
-import runtimeRender from '../utils/runtime-render.js'
+import render from '../utils/render.js'
 import utils from '#utils'
 import setting from '#setting'
 import lodash from 'lodash'
@@ -29,7 +29,7 @@ export class Help extends plugin {
         // 当前时间
         let time = new Date().getTime()
         // 角色名 , 图片 , 中断
-        let roleName, roleImg, interrupt
+        let roleName, roleImg
         // 今日是否签到
         let hasSign = false
 
@@ -42,15 +42,11 @@ export class Help extends plugin {
                 roleImg = userSignList[0].roleImg
                 hasSign = true
                 userSignList.shift()
-                // 未连续签到
-            } else if (diff != 1) {
-                interrupt = userSignList.length
-                userSignList = []
             }
         }
 
         if (!roleName) {
-            roleName = lodash.sample(setting.getAllRole())
+            roleName = lodash.sample(Object.keys(setting.roles))
         }
 
         if (!roleImg) {
@@ -65,6 +61,10 @@ export class Help extends plugin {
 
 
         // 保存签到数据
+        if (userSignList[0]) {
+            delete userSignList[0].roleImg
+            delete userSignList[0].time
+        }
         userSignList.unshift({ time, roleName, roleImg })
 
         setting.saveUserSignData(e.group_id, e.user_id, userSignList)
@@ -77,8 +77,8 @@ export class Help extends plugin {
         }
         logger.info(daily)
         // 发送签到数据
-        return await runtimeRender(e, 'sign/index', {
-            hasSign, roleName, roleImg, interrupt,daily,
+        return await render(e, 'sign/index', {
+            hasSign, roleName, roleImg, daily,
             hisRoles: userSignList.length > 1 ? this._countAndSortRoles(userSignList) : [],
             username: e.sender.nickname || e.sender.card || '你',
             userIcon: `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`,

@@ -35,8 +35,14 @@ class Setting {
     // 匹配前缀
     this.rulePrefix = '(?:(?:' + this.config.rulePrefix.join('|') + ') *)'
 
+
+
+    // 角色缓存
+    this.roles = this.getData('role')
+
     // 签到缓存
     this.userSignData = {}
+
   }
 
   /** 初始化配置 */
@@ -167,41 +173,36 @@ class Setting {
     }
     return true
   }
-  // 获取所有角色
-  getAllRole() {
-    const role = this.getData('role')
-    return Object.keys(role)
-  }
+
+
   // 查询是否有此角色，有则返回角色原本名称
   getRoleName(name) {
-    const roleObj = this.getData('role')
     // 直接返回角色名
-    if (name in roleObj) {
+    if (name in this.roles) {
       return name
     }
     // 遍历
-    for (let roleName in roleObj) {
-      if (roleObj[roleName]?.includes?.(name)) {
+    for (let roleName in this.roles) {
+      if (this.roles[roleName]?.nickname.includes?.(name)) {
         return roleName
       }
     }
   }
   // 设置昵称
   setRoleNickname(name, nickname) {
-    const role = this.getData('role')
-    if (!role[name].includes(nickname)) {
-      role[name].push(nickname)
+    if (!this.roles[name].nickname.includes(nickname)) {
+      this.roles[name].nickname.push(nickname)
     }
-    return this.setData('role', role)
+    return this.setData('role', this.roles)
   }
   // 删除昵称
   delRoleNickname(name, nickname) {
-    const role = this.getData('role')
-    if (role[name].includes(nickname)) {
-      role[name].splice(role[name].indexOf(nickname), 1)
+    if (this.roles[name].nickname.includes(nickname)) {
+      this.roles[name].nickname.splice(this.roles[name].nickname.indexOf(nickname), 1)
     }
-    return this.setData('role', role)
+    return this.setData('role', this.roles)
   }
+
   // 获取用户签到数据列表
   getUserSignList(group_id, user_id) {
     if (!this.userSignData[group_id]) {
@@ -210,7 +211,7 @@ class Setting {
     return this.userSignData[group_id][user_id] || []
   }
   // 保存用户签到数据
-  saveUserSignData(group_id,user_id,userSignList){
+  saveUserSignData(group_id, user_id, userSignList) {
     this.userSignData[group_id][user_id] = userSignList
     this.setData(group_id, this.userSignData[group_id], '/sign')
   }

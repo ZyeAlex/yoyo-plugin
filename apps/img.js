@@ -1,7 +1,7 @@
 import setting from '#setting'
+import render from '#render'
 import lodash from 'lodash'
 import img from '../components/img.js'
-import runtimeRender from '../utils/runtime-render.js'
 import common from '../../../lib/common/common.js'
 const imgReg = '(?:图片|照片|美图|美照)'
 // 缓存角色面板图片列表,给delRoleImg用，防止出现删除过程中索引变动问题
@@ -83,14 +83,14 @@ export class Img extends plugin {
             e.reply(`什么都没查到呢~\n请「>上传${roleName}图片」`)
             return
         }
-        return await runtimeRender(e, 'role/imgs', {
+        return await render(e, 'role/imgs', {
             roleName,
             roleImgs: rolesImgs[roleName].map(roleImg => roleImg.split('/resources')[1]),
         })
     }
     // 随机角色图片
     async getRandomRoleImg(e) {
-        const roles = await setting.getAllRole()
+        const roles = Object.keys( setting.roles )
         if (roles.length == 0) {
             e.reply('没有角色呢~')
             return false

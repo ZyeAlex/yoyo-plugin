@@ -1,4 +1,4 @@
-import runtimeRender from '../utils/runtime-render.js'
+import render from '#render'
 import setting from '#setting'
 
 export class Help extends plugin {
@@ -19,7 +19,7 @@ export class Help extends plugin {
 
   async help(e) {
     const { helpGroup } = setting.getData('help')
-    return await runtimeRender(e, 'help/index', {
+    return await render(e, 'help/index', {
       helpCfg: {
         title: setting.config.title,
         subTitle: setting.config.subTitle

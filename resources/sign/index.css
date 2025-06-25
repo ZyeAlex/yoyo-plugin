@@ -59,13 +59,20 @@
 }
 
 .sign-daily {
-   /* 使用 rgba 来设置半透明背景颜色 */
-   background-color: rgba(240, 240, 255, 0.8); /* 浅蓝色调，带80%的透明度 */
     /* 浅灰偏白 */
     border-radius: 30px;
+    background-image: url(https://plat-cdn.manjuu.com/platform/P3OfficialWebsite/prod/_next/static/media/background_detail.209134db.png);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: cover;
+    -webkit-backdrop-filter: blur(.05rem);
+    backdrop-filter: blur(0.05rem);
+    background-color: rgba(0, 0, 0, 0.05);
     box-shadow:
-        10px 10px 20px rgba(0, 0, 0, 0.1), /* 深色阴影 */
-        -10px -10px 20px rgba(255, 255, 255, 0.7); /* 白色高光 */
+        10px 10px 20px rgba(0, 0, 0, 0.1),
+        /* 深色阴影 */
+        -10px -10px 20px rgba(255, 255, 255, 0.7);
+    /* 白色高光 */
     color: rgb(0, 0, 0, 0.9);
     /* 可选：添加边框圆角 */
     border-radius: 10px;

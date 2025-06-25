@@ -31,7 +31,7 @@ const MathPro = {
     return decimalAdjust('round', value, exp)
   }
 }
-export default function runtimeRender (e, path, renderData = {}, cfg = {}) {
+export default function render (e, path, renderData = {}, cfg = {}) {
   if (!e.runtime) {
     console.log('未找到e.runtime，请升级至最新版Yunzai')
   }

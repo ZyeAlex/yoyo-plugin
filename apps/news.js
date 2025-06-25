@@ -1,11 +1,10 @@
 import setting from '#setting'
+import utils from '#utils'
+import axios from 'axios'
+import puppeteer from 'puppeteer'
 import { bookingnum, announce, announcePage } from '../api/manjuu.js'
 import { getUserInfo, getVideoInfo, getVideoOnline } from '../api/bilibili.js'
 import common from '../../../lib/common/common.js'
-import puppeteer from 'puppeteer'
-import utils from '#utils'
-import axios from 'axios'
-import fs from 'fs'
 /**
  * 新闻
  */
@@ -38,13 +37,12 @@ export class News extends plugin {
             str += `\nB站粉丝数：${d2.value.data.card.fans}`
         }
         let obj = {}
-        await Promise.all(
-            PVs.map(async ({ value: { data: { bvid, cid, stat: { view } } } }, index) => {
-                const { data: { total } } = await getVideoOnline(bvid, cid)
-                obj['PV' + (index + 1)] = view
-                str += `\nPV${index + 1}播放量 / 在看人数：\n                    ${view} / ${total}`
-            })
-        )
+        for (let i = 0; i < PVs.length; i++) {
+            const { value: { data: { bvid, cid, stat: { view } } } } = PVs[i]
+            const { data: { total } } = await getVideoOnline(bvid, cid)
+            obj['PV' + (i + 1)] = view
+            str += `\nPV${i + 1}数据：${view}(${total})`
+        }
         let _data_cache = await redis.get('yoyo:news:data')
         if (_data_cache) {
             _data_cache = JSON.parse(_data_cache)
