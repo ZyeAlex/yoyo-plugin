@@ -38,7 +38,12 @@ class Setting {
 
 
     // 角色缓存
-    this.roles = this.getData('role')
+    let _default = this.getData('default', 'role')
+    let _list = this.getData('list', 'role')
+    this.roles = Object.assign(_default, _list || {})
+    if (!_list) {
+      this.setData('list', this.roles, 'role')
+    }
 
 
     // 签到缓存
@@ -194,14 +199,14 @@ class Setting {
     if (!this.roles[name].nickname.includes(nickname)) {
       this.roles[name].nickname.push(nickname)
     }
-    return this.setData('role', this.roles)
+    return this.setData('list', this.roles, 'role')
   }
   // 删除昵称
   delRoleNickname(name, nickname) {
     if (this.roles[name].nickname.includes(nickname)) {
       this.roles[name].nickname.splice(this.roles[name].nickname.indexOf(nickname), 1)
     }
-    return this.setData('role', this.roles)
+    return this.setData('list', this.roles, 'role')
   }
 
   // 获取用户签到数据列表
