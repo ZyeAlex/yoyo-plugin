@@ -12,7 +12,7 @@
 
 .role-img {
     width: 500px;
-    min-height: 500px;
+    min-height: 600px;
     position: absolute;
     z-index: 0;
     /* 从上向下透明渐变 */
@@ -23,7 +23,7 @@
 
 .role-img-img {
     width: 500px;
-    min-height: 500px;
+    min-height: 600px;
     /* 背景左右70%，上下居上 cover */
     background-position: 70% top;
     background-size: cover;

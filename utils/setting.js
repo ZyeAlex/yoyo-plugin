@@ -40,6 +40,7 @@ class Setting {
     // 角色缓存
     this.roles = this.getData('role')
 
+
     // 签到缓存
     this.userSignData = {}
 
@@ -155,7 +156,7 @@ class Setting {
       return YAML.parse(fs.readFileSync(`${path}${filename}.yaml`, 'utf8'))
     } catch (error) {
       logger.error(`[${filename}] 读取失败 ${error}`)
-      return {}
+      return false
     }
   }
   // 写入对应模块数据文件

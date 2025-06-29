@@ -7,8 +7,8 @@
 .sign-img {
     width: 830px;
     /* 从上向下透明渐变 */
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
-    mask-image: linear-gradient(to bottom, black 0%, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.9) 85%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.9) 85%, transparent 100%);
     margin-bottom: -5%;
 }
 
@@ -45,13 +45,23 @@
 }
 
 .sign-history {
-    margin: 10px;
+    margin: 10px 10px 10px 30px;
     color: grey;
-    width: 100%;
     font-size: 24px;
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    /* 文本不换行 */
+    white-space: nowrap;
+}
+
+.sign-history-roles {
+    /* 文本换行 */
+    white-space: normal;
+}
+
+.sign-history-roles span {
+    white-space: nowrap;
 }
 
 .sign-interrupt {
