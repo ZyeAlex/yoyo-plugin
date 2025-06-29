@@ -5,7 +5,9 @@ import img from '../components/img.js'
 import common from '../../../lib/common/common.js'
 const imgReg = '(?:图片|照片|美图|美照)'
 // 缓存角色面板图片列表,给delRoleImg用，防止出现删除过程中索引变动问题
-const rolesImgs = {}
+const getRoleImgList = {}
+// 缓存角色面板图片列表,给getRoleImg用，遍历展示所有图片
+const getRoleImg = {}
 
 export class Img extends plugin {
     constructor() {
@@ -48,26 +50,25 @@ export class Img extends plugin {
             roleName = setting.getRoleName(roleName)
         }
         if (!roleName) return true
-        // 从Redis中获取角色图片列表
-        let roleImgs = JSON.parse((await redis.get('yoyo:img:role:' + roleName)) || '[]')
-        if (!roleImgs || roleImgs.length == 0) {
-            roleImgs = setting.getRoleImgs(roleName)
+        // 当前角色图片
+        let roleImg = getRoleImg[roleName]
+        if (!roleImg?.length) {
+            roleImg = setting.getRoleImgs(roleName)
             // 从pixiv获取图片
             if (setting.config.pixiv) {
                 const msg = await e.reply(`正在从网络获取${roleName}图片~`, true)
-                roleImgs = roleImgs.concat(await img.lolicon(roleName))
+                roleImg = roleImg.concat(await img.lolicon(roleName))
                 e?.group?.recallMsg(msg?.data?.message_id)
             }
         }
-        if (roleImgs.length == 0) { 
+        if (roleImg.length == 0) {
             await common.sleep(500)
             e.reply(`什么都没查到呢~\n请「>上传${roleName}图片」`)
             return
         }
-        let index = Math.floor(Math.random() * roleImgs.length)
-        let img_url = roleImgs[index]
-        roleImgs.splice(index, 1)
-        redis.set('yoyo:img:role:' + roleName, JSON.stringify(roleImgs))
+        let index = Math.floor(Math.random() * roleImg.length)
+        let img_url = roleImg[index]
+        roleImg.splice(index, 1)
         e.reply(segment.image(img_url))
     }
     // 角色图片列表
@@ -77,20 +78,20 @@ export class Img extends plugin {
         // 查询是否有此角色
         roleName = setting.getRoleName(roleName)
         if (!roleName) return true
-        rolesImgs[roleName] = setting.getRoleImgs(roleName)
+        getRoleImgList[roleName] = setting.getRoleImgs(roleName)
         e.reply('正在查询角色' + roleName + '图片列表，请稍后...', true)
-        if (!rolesImgs[roleName]?.length) {
+        if (!getRoleImgList[roleName]?.length) {
             e.reply(`什么都没查到呢~\n请「>上传${roleName}图片」`)
             return
         }
         return await render(e, 'role/imgs', {
             roleName,
-            roleImgs: rolesImgs[roleName].map(roleImg => roleImg.split('/resources')[1]),
+            roleImgs: getRoleImgList[roleName].map(roleImg => roleImg.split('/resources')[1]),
         })
     }
     // 随机角色图片
     async getRandomRoleImg(e) {
-        const roles = Object.keys( setting.roles )
+        const roles = Object.keys(setting.roles)
         if (roles.length == 0) {
             e.reply('没有角色呢~')
             return false

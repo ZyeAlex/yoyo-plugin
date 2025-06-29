@@ -9,7 +9,7 @@ import fs from 'node:fs'
 import MD5 from 'md5'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
-
+import lodash from 'lodash'
 class Setting {
   constructor() {
     // 云崽地址
@@ -40,7 +40,7 @@ class Setting {
     // 角色缓存
     let _default = this.getData('default', 'role')
     let _list = this.getData('list', 'role')
-    this.roles = Object.assign(_default, _list || {})
+    this.roles = lodash.cloneDeep(_default, _list || {})
     if (!_list) {
       this.setData('list', this.roles, 'role')
     }
