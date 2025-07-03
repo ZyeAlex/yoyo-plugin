@@ -1,22 +1,28 @@
-{{extend defaultLayout}}
-
 {{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/common.css" />
 <link rel="stylesheet" type="text/css" href="{{pluResPath}}/role/imgs.css" />
 {{/block}}
 
 {{block 'main'}}
-
-<div class="head-box">
-    <div class="title">{{roleName}}图片列表</div>
-    <div class="label">共{{roleImgs.length}}张</div>
-</div>
-<div class="role-imgs">
-    {{each roleImgs roleImg idx}}
-    <div class="role-img">
-        <img height="180" src="{{pluResPath}}{{roleImg}}" alt="" />
-        <div class="role-text">编号：{{idx+1}}</div>
+<div class="container" id="container">
+    <div class="background" style="background-image: url({{pluResPath}}{{roleImg}})"></div>
+    <div class="head-box">
+        <div class="title">{{roleName}}图片列表 <span class="label">共{{roleImgs.length}}张</span> </div>
+        <div class="head-label">
+            <div class="label item">发送 <mark>{{rulePrefix}}查看{{roleName}}图片</mark> 获取图片 </div>
+            <div class="label item">发送 <mark>{{rulePrefix}}上传{{roleName}}图片</mark> 上传图片(请将图片一起发送或引用图片，支持批量上传) </div>
+            <div class="label item">发送 <mark>{{rulePrefix}}删除{{roleName}}图片1</mark> 删除对应编号图片 </div>
+        </div>
     </div>
-    {{/each}}
+    <div class="role-imgs">
+        {{each roleImgs roleImg idx}}
+        <div class="role-img">
+            <img height="180" src="{{pluResPath}}{{roleImg}}" alt="" />
+            <div class="role-text">编号：{{idx+1}}</div>
+        </div>
+        {{/each}}
+    </div>
+    <div class="copyright">{{@sys.copyright}}</div>
 </div>
 
 {{/block}}

@@ -14,7 +14,7 @@ export class Help extends plugin {
                 {
                     reg: `^${setting.rulePrefix}?(签到|打卡)$`,
                     fnc: 'sign'
-                }
+                },
             ]
         })
     }
@@ -23,6 +23,10 @@ export class Help extends plugin {
     async sign(e) {
         if (!e.group_id) {
             return e.reply('请在群聊中使用签到功能')
+        }
+        // 签到过滤
+        if (setting.config.signInclude?.length && !setting.config.signInclude.includes(e.group_id) || setting.config.signExclude?.length && setting.config.signExclude.includes(e.group_id)) {
+            return true
         }
         // 用户签到数据
         let userSignList = setting.getUserSignList(e.group_id, e.user_id)

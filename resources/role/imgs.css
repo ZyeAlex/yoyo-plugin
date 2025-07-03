@@ -1,9 +1,39 @@
-.head-box {
-    padding-top: 10px;
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+    /* 或 'contain'，根据你的需求调整 */
+    background-repeat: no-repeat;
+    filter: blur(10px);
+    /* 调整模糊程度 */
+    opacity: 0.6;
+    /* 调整半透明程度 */
+    z-index: -1;
+    /* 确保伪元素位于内容之下 */
 }
 
-.head-box .title {
-    font-size: 50px;
+
+.head-box {
+    padding-top: 50px;
+}
+
+.head-label {
+    padding:12px;
+    border-radius: 10px;
+    -webkit-backdrop-filter: blur(.05rem);
+    backdrop-filter: blur(0.05rem);
+    background-color: rgba(0, 0, 0, 0.15);
+    box-shadow:
+        10px 10px 20px rgba(0, 0, 0, 0.1),
+        /* 深色阴影 */
+        -10px -10px 20px rgba(255, 255, 255, 0.7);
+    /* 白色高光 */
 }
 
 
@@ -11,14 +41,28 @@
 .role-imgs {
     display: flex;
     flex-wrap: wrap;
-    padding: 0 10px 0 10px;
+    padding: 12px;
+    padding-right: 5px;
+    margin:10px 20px;
+    border-radius: 10px;
+    -webkit-backdrop-filter: blur(.05rem);
+    backdrop-filter: blur(0.05rem);
+    background-color: rgba(0, 0, 0, 0.15);
+    box-shadow:
+        10px 10px 20px rgba(0, 0, 0, 0.1),
+        /* 深色阴影 */
+        -10px -10px 20px rgba(255, 255, 255, 0.7);
+    /* 白色高光 */
+
 }
 
 .role-img {
     margin: 10px 0 0 10px;
 }
 
-.role-img .role-text {
+.role-text {
     width: 100%;
     text-align: center;
+    /* 白色的描边 */
+    text-shadow: 0 0 1px #fff, 1px 1px 3px rgba(255, 255, 255, 0.9);
 }

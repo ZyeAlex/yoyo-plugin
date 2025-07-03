@@ -44,8 +44,6 @@ class Setting {
     if (!_list) {
       this.setData('list', this.roles, 'role')
     }
-
-
     // 签到缓存
     this.userSignData = {}
 

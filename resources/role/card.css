@@ -1,8 +1,4 @@
-.role-card {
-    min-height: 800px;
-}
-
-.role-box-1 {
+.role-box {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -56,7 +52,7 @@
     align-items: flex-end;
 }
 
-.role-name {
+.role-basic-message .role-name {
     font-size: 65px;
     font-family: "nzbz";
     text-align: right;
@@ -64,17 +60,29 @@
 
 }
 
-.role-race {
+.role-basic-message .role-race {
     text-align: right;
     padding-right: 20px;
     font-size: 24px;
 }
 
-.role-introduce {
+.role-basic-message .role-nickname {
+    padding-top: 10px;
+    padding-right: 20px;
+    display: flex;
+}
+.role-basic-message .role-nickname :last-child {
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+
+.role-basic-message .role-introduce {
     padding: 10px 10px 20px 20px;
     /* 文本换行 */
-    max-width: 395px;
-    font-size: 32px;
+    width: 395px;
+    min-height: 400px;
+    font-size: 24px;
     text-align: justify;
     font-family: "ys";
 }

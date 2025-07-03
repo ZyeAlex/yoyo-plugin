@@ -25,6 +25,14 @@ export class Role extends plugin {
                     reg: `^${setting.rulePrefix}?.{1,10}删除(别名|昵称|称号|外号).{1,10}$`,
                     fnc: 'delNickname'
                 },
+                {
+                    reg: `^${setting.rulePrefix}?设置老婆.{1,10}$`,
+                    fnc: 'setWife'
+                },
+                {
+                    reg: `^${setting.rulePrefix}?删除老婆.{1,10}$`,
+                    fnc: 'delWife'
+                },
             ]
         })
     }
@@ -78,5 +86,13 @@ export class Role extends plugin {
         }
         const res = setting.delRoleNickname(roleName, nickname)
         return e.reply(res ? '别名删除成功' : '别名删除失败')
+    }
+    // 设置老婆
+    setWife(e) {
+
+    }
+    // 删除老婆
+    delWife(e) {
+
     }
 }

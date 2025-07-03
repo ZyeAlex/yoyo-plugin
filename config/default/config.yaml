@@ -17,6 +17,10 @@ PVList:
 - BV1Jr421n7n4
 - BV1KUopYZEs5
 
+# 签到群聊
+signInclude: []
+signExclude: []
+
 # 指令前缀 若和别的游戏冲突，更换其他前缀即可
 rulePrefix:
 - "~"

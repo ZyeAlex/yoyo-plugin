@@ -9,13 +9,20 @@
     <div class="role-img">
         <div class="role-img-img" style="background-image: url('{{pluResPath}}{{roleImg}}');"></div>
     </div>
-    <div class="role-box-1">
+    <div class="role-box">
         <div class="role-basic-message">
             <div class="role-name">{{roleName}}</div>
             <div class="role-race">{{race}}</div>
-            <div class="introduce-row">
-              <div class="role-introduce">&nbsp;&nbsp;&nbsp;&nbsp;{{introduce}}</div>
+            {{if nickname?.length}}
+            <div class="role-nickname">
+                <div>别名：</div>
+                <div>
+                    {{nickname.join('、')}}
+                </div>
             </div>
+            {{/if}}
+            <div class="role-introduce">&nbsp;&nbsp;&nbsp;&nbsp;{{introduce}}</div>
+
         </div>
         <div class="other"></div>
         <div class="other"></div>

@@ -24,8 +24,7 @@ export class Help extends plugin {
         title: setting.config.title,
         subTitle: setting.config.subTitle
       },
-      helpGroup,
-      rulePrefix: setting.config.rulePrefix[0] || '$'
+      helpGroup
     })
   }
 }

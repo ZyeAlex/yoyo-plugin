@@ -84,9 +84,11 @@ export class Img extends plugin {
             e.reply(`什么都没查到呢~\n请「>上传${roleName}图片」`)
             return
         }
+        let roleImgs = getRoleImgList[roleName].map(roleImg => roleImg.split('/resources')[1])
         return await render(e, 'role/imgs', {
             roleName,
-            roleImgs: getRoleImgList[roleName].map(roleImg => roleImg.split('/resources')[1]),
+            roleImgs,
+            roleImg:lodash.sample(roleImgs)
         })
     }
     // 随机角色图片
