@@ -208,11 +208,11 @@ class Setting {
   }
 
   // 获取用户签到数据列表
-  getUserSignList(group_id, user_id) {
+  getUserSignInfo(group_id, user_id) {
     if (!this.userSignData[group_id]) {
       this.userSignData[group_id] = this.getData(group_id, '/sign') || {}
     }
-    return this.userSignData[group_id][user_id] || []
+    return this.userSignData[group_id][user_id] || { history: {} }
   }
   // 保存用户签到数据
   saveUserSignData(group_id, user_id, userSignList) {

@@ -29,103 +29,65 @@ export class Help extends plugin {
             return true
         }
         // 用户签到数据
-        let userSignList = setting.getUserSignList(e.group_id, e.user_id)
-        // 当前时间
-        let time = new Date().getTime()
-        // 角色名 , 图片 , 中断
-        let roleName, roleImg
+        let userSignInfo = setting.getUserSignInfo(e.group_id, e.user_id)
         // 今日是否签到
         let hasSign = false
 
+        // userSignInfo = {
+        //     date:'2022-01-01',
+        //     roleName: '星临者',
+        //     roleImg: '/img/role/星临者/b41aff87ba2e2ea1692d5a0f5933d6b9.jpg',
+        //     history:{
 
-        if (userSignList?.length) {
-            // 已签到
-            let diff = utils.getDateDiffDays(userSignList[0].time, time)
-            if (diff == 0) {
-                roleName = userSignList[0].roleName
-                roleImg = userSignList[0].roleImg
-                hasSign = true
-                userSignList.shift()
+        //     }
+        // }
+
+        // 兼容老项目的userSignList
+        if (Array.isArray(userSignInfo)) {
+            userSignInfo = {
+                date: utils.formatDate(userSignInfo[0]?.time, 'YYYY-MM-DD'),
+                roleName: userSignInfo[0]?.roleName,
+                roleImg: userSignInfo[0]?.roleImg,
+                history: userSignInfo.reduce((acc, { roleName }) => {
+                    acc[roleName] = (acc[roleName] || 0) + 1;
+                    return acc;
+                }, {})
             }
         }
 
-        if (!roleName) {
-            roleName = lodash.sample(Object.keys(setting.roles))
-        }
 
-        if (!roleImg) {
-            roleImg = lodash.sample(setting.getRoleImgs(roleName))
-            if (roleImg) {
-                roleImg = roleImg.split('/resources')[1]
+
+        if (userSignInfo.date == utils.formatDate(new Date(), 'YYYY-MM-DD')) {
+            hasSign = true
+        } else {
+            userSignInfo.date = utils.formatDate(new Date(), 'YYYY-MM-DD')
+            userSignInfo.roleName = lodash.sample(Object.keys(setting.roles))
+            userSignInfo.roleImg = lodash.sample(setting.getRoleImgs(userSignInfo.roleName))
+            if (userSignInfo.roleImg) {
+                userSignInfo.roleImg = userSignInfo.roleImg.split('/resources')[1]
             } else {
-                roleImg = ''
+                userSignInfo.roleImg = ''
             }
+            userSignInfo.history[userSignInfo.roleName] = (userSignInfo.history[userSignInfo.roleName] || 0) + 1
         }
-
-
-
         // 保存签到数据
-        if (userSignList[0]) {
-            delete userSignList[0].roleImg
-            delete userSignList[0].time
-        }
-        userSignList.unshift({ time, roleName, roleImg })
-
-        setting.saveUserSignData(e.group_id, e.user_id, userSignList)
-
+        setting.saveUserSignData(e.group_id, e.user_id, userSignInfo)
         // 每日一言
         let daily
         try {
             daily = await hitokoto()
         } catch (error) {
         }
-        logger.info(daily)
         // 发送签到数据
         return await render(e, 'sign/index', {
-            hasSign, roleName, roleImg, daily,
-            hisRoles: userSignList.length > 1 ? this._countAndSortRoles(userSignList) : [],
+            hasSign, daily,
+            roleName: userSignInfo.roleName,
+            roleImg: userSignInfo.roleImg,
             username: e.sender.nickname || e.sender.card || '你',
             userIcon: `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`,
-            day: userSignList.length
+            hisRoles: Object.entries(userSignInfo.history).sort((a, b) => b[1] - a[1]),
+            day: Object.values(userSignInfo.history).reduce((a, b) => a + b)
         })
-    }
 
-    // 获取roleName次数
-    _countAndSortRoles(list) {
-        // 存储统计结果和首次出现索引
-        const countMap = new Map();
-        const firstOccurrence = new Map();
-
-        // 遍历列表进行统计
-        list.forEach((item, index) => {
-            const roleName = item.roleName;
-
-            // 更新计数
-            if (countMap.has(roleName)) {
-                countMap.set(roleName, countMap.get(roleName) + 1);
-            } else {
-                countMap.set(roleName, 1);
-                // 记录首次出现位置
-                firstOccurrence.set(roleName, index);
-            }
-        });
-
-        // 转换为数组格式
-        const resultArray = Array.from(countMap, ([roleName, count]) => ({
-            roleName,
-            count,
-            firstIndex: firstOccurrence.get(roleName)
-        }));
-
-        // 排序：先按次数降序，次数相同按首次出现顺序
-        resultArray.sort((a, b) => {
-            if (b.count !== a.count) {
-                return b.count - a.count; // 次数降序
-            }
-            return a.firstIndex - b.firstIndex; // 相同次数按首次出现顺序
-        });
-
-        // 转换为最终输出格式
-        return resultArray.map(item => [item.roleName, item.count]);
     }
 }

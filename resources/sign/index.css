@@ -4,6 +4,28 @@
     justify-content: center;
 }
 
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-size: cover;
+    /* 或 'contain'，根据你的需求调整 */
+    background-repeat: no-repeat;
+    filter: blur(10px);
+    /* 调整模糊程度 */
+    opacity: 0.3;
+    /* 调整半透明程度 */
+    z-index: -1;
+    /* 确保伪元素位于内容之下 */
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.6) 85%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.6) 85%, transparent 100%);
+}
+
 .sign-img {
     width: 830px;
     /* 从上向下透明渐变 */
@@ -17,6 +39,8 @@
     font-size: 36px;
     font-family: "ys";
     color: rgba(0, 0, 0, 0.9);
+    /* 白色描边 */
+    text-shadow: 0 0 1px #fff, 1px 1px 3px rgba(255, 255, 255, 0.9);
 }
 
 .sign-user-img {
@@ -81,7 +105,7 @@
     box-shadow:
         10px 10px 20px rgba(0, 0, 0, 0.1),
         /* 深色阴影 */
-        -10px -10px 20px rgba(255, 255, 255, 0.7);
+        -10px -10px 20px rgba(255, 255, 255, 0.5);
     /* 白色高光 */
     color: rgb(0, 0, 0, 0.9);
     /* 可选：添加边框圆角 */

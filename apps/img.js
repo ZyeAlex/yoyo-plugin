@@ -30,7 +30,7 @@ export class Img extends plugin {
                     fnc: 'getRandomRoleImg'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?(?!上传|添加|随机(角色)?).{0,10}${imgReg}$`,
+                    reg: `^${setting.rulePrefix}?(?!上传|添加|随机(角色)?).{0,10}${imgReg}[0-9]*$`,
                     fnc: 'getRoleImg'
                 },
                 {
@@ -42,10 +42,11 @@ export class Img extends plugin {
     }
 
     // 角色图片
-    async getRoleImg(e, roleName) {
+    async getRoleImg(e, roleName, roleIndex) {
         // 从e.msg字符串里面匹配(\w)
         if (!roleName) {
-            roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}$`))[1]
+            let _
+            [_, roleName, roleIndex] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}([1-9]*)$`))
             // 查询是否有此角色
             roleName = setting.getRoleName(roleName)
         }
@@ -66,9 +67,14 @@ export class Img extends plugin {
             e.reply(`什么都没查到呢~\n请「>上传${roleName}图片」`)
             return
         }
-        let index = Math.floor(Math.random() * roleImg.length)
-        let img_url = roleImg[index]
-        roleImg.splice(index, 1)
+        let img_url
+        if( roleIndex > 0 && getRoleImgList[roleName]?.length && getRoleImgList[roleName][roleIndex-1]){
+            img_url =  getRoleImgList[roleName][roleIndex-1]
+        }else {
+            roleIndex = lodash.random(0, roleImg.length - 1)
+            img_url = roleImg[index]
+            roleImg.splice(index, 1)
+        }
         e.reply(segment.image(img_url))
     }
     // 角色图片列表
@@ -88,7 +94,7 @@ export class Img extends plugin {
         return await render(e, 'role/imgs', {
             roleName,
             roleImgs,
-            roleImg:lodash.sample(roleImgs)
+            roleImg: lodash.sample(roleImgs)
         })
     }
     // 随机角色图片
@@ -171,12 +177,12 @@ export class Img extends plugin {
         if (!roleName) {
             return e.reply('未找到此角色', true)
         }
-        if (!rolesImgs[roleName]?.length) {
+        if (!getRoleImgList[roleName]?.length) {
             e.reply(`未获取到角色图片列表，请先「>${roleName}图片列表」`)
         }
         if (!select) return
         select = select.trim().split(/[,， ]/).sort((a, b) => b - a)
-        let imgFiles = select.map(index => rolesImgs[roleName][index - 1])
+        let imgFiles = select.map(index => getRoleImgList[roleName][index - 1])
         const res = setting.delRoleImg(roleName, imgFiles)
         if (res) {
             e.reply(`${roleName}图片${select.toString()}已删除`)

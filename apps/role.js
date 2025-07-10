@@ -37,8 +37,26 @@ export class Role extends plugin {
         })
     }
     // 角色列表
-    roleList(e) {
-        return e.reply(Object.keys(setting.roles).map((role, index) => ` ${index + 1}. ${role}`).join('\n'))
+    async roleList(e) {
+        return await render(e, 'role/list', {
+            roleImg: lodash.sample(setting.getRoleImgs(lodash.sample(Object.keys(setting.roles))))?.split('/resources')[1],
+            roles: Object.entries(setting.roles).map(([roleName, roleMsg]) => {
+                let obj = {
+                    roleName,
+                    ...roleMsg
+                }
+                if (roleMsg.icon) {
+                    try {
+                        obj.icon = roleMsg.icon.map(item => item - 1)
+                    } catch (error) {
+                        obj.icon = roleMsg.icon.split(',').map(item => item - 1)
+                    }
+                } else {
+                    obj.roleImg = lodash.sample(setting.getRoleImgs(roleName))?.split('/resources')[1]
+                }
+                return obj
+            })
+        })
     }
     // 角色卡片
     async roleCard(e) {
