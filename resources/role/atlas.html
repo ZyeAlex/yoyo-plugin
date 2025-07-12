@@ -1,18 +1,23 @@
 {{extend defaultLayout}}
 
 {{block 'css'}}
-<link rel="stylesheet" type="text/css" href="{{pluResPath}}/role/card.css" />
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/role/atlas.css" />
 {{/block}}
 
 {{block 'main'}}
-<div class="role-card">
+<div class="role-atlas">
     <div class="role-img">
         <div class="role-img-img" style="background-image: url('{{pluResPath}}{{roleImg}}');"></div>
     </div>
     <div class="role-box">
         <div class="role-basic-message">
             <div class="role-name">{{roleName}}</div>
-            <div class="role-race">{{race}}</div>
+            <div class="role-race">
+                <span>{{race}}</span>
+                {{if home}}
+                <span> {{home}}</span>
+                {{/if}}
+            </div>
             {{if nickname?.length}}
             <div class="role-nickname">
                 <div>别名：</div>
@@ -22,10 +27,15 @@
             </div>
             {{/if}}
             <div class="role-introduce">&nbsp;&nbsp;&nbsp;&nbsp;{{introduce}}</div>
-
+            <div class="role-words">
+                台词：
+                {{each words word}}
+                <div class="role-word">{{word}}</div>
+                {{/each}}
+            </div>
         </div>
-        <div class="other"></div>
-        <div class="other"></div>
+        <!-- <div class="other"></div>
+        <div class="other"></div> -->
     </div>
 </div>
 {{/block}}

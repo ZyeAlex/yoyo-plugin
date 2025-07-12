@@ -13,6 +13,12 @@ helpGroup:
   - "icon": 3
     "title": "$角色列表"
     "desc": "查询所有角色列表"
+  - "icon": 3
+    "title": "$奇波列表"
+    "desc": "查询所有奇波列表"
+  - "icon": 3
+    "title": "$寒悠悠图鉴 $菜鸡图鉴"
+    "desc": "查询角色/奇波图鉴"
 - "group": "角色"
   "list":
   - "icon": 3
@@ -36,6 +42,7 @@ helpGroup:
   - "icon": 3
     "title": "$删除寒悠悠图片 2 18"
     "desc": "从角色图片列表删除对应图片"
+
 - "group": "日常"
   "list":
   - "icon": 3

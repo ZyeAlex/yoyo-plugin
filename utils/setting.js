@@ -10,6 +10,7 @@ import MD5 from 'md5'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
 import lodash from 'lodash'
+import getQibos from '../api/getQibos.js'
 class Setting {
   constructor() {
     // 云崽地址
@@ -30,6 +31,7 @@ class Setting {
 
     // 初始化
     this.initCfg()
+    this.initReq()
     // 初始化config
     this.config = this.getConfig('config')
     // 匹配前缀
@@ -44,6 +46,8 @@ class Setting {
     if (!_list) {
       this.setData('list', this.roles, 'role')
     }
+    // 奇波
+    this.qibos = this.getData('qibo', this.qibos)
     // 签到缓存
     this.userSignData = {}
 
@@ -58,6 +62,12 @@ class Setting {
       }
       this.watch(`${this.configPath}${file}`, file.replace('.yaml', ''), 'config')
     }
+  }
+  // 初始化请求
+  async initReq() {
+    // 获取奇波
+    this.qibos = await getQibos()
+    this.setData('qibo', this.qibos)
   }
   // 监听配置文件
   watch(file, app, type = 'defSet') {

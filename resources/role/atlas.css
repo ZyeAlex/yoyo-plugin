@@ -32,7 +32,7 @@
 .role-basic-message {
     align-self: flex-end;
     margin: 10px 15px;
-    min-height: 400px;
+    min-height: 600px;
     border-radius: 10px;
     background-image: url(https://plat-cdn.manjuu.com/platform/P3OfficialWebsite/prod/_next/static/media/background_detail.209134db.png);
     background-repeat: no-repeat;
@@ -71,6 +71,7 @@
     padding-right: 20px;
     display: flex;
 }
+
 .role-basic-message .role-nickname :last-child {
     white-space: normal;
     word-wrap: break-word;
@@ -81,10 +82,14 @@
     padding: 10px 10px 20px 20px;
     /* 文本换行 */
     width: 395px;
-    min-height: 400px;
     font-size: 24px;
     text-align: justify;
     font-family: "ys";
+}
+
+.role-basic-message .role-words {
+    padding: 10px 10px 20px 20px;
+    width: 395px;
 }
 
 

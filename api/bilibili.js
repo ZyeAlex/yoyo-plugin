@@ -1,6 +1,4 @@
 import { http } from '../utils/http.js'
-import setting from '#setting'
-
 
 // 获取用户信息
 export const getUserInfo = (uid) =>  http.get(`https://hibi.Yunzai-Bot.com/api/bilibili/v3/user_info`, { uid })

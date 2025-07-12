@@ -1,0 +1,33 @@
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/common.css" />
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/qibo/list.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="container" id="container">
+    <div class="background" style="background-image: url({{pluResPath}}{{roleImg}})"></div>
+    <div class="head-box">
+        <div class="title">奇波列表 <span class="label">共{{qibos.length}}个</span> </div>
+        <div class="head-label">
+            <div class="label item">发送 <mark>{{rulePrefix}}菜鸡图鉴</mark> 查看奇波图鉴 </div>
+        </div>
+    </div>
+    <div class="content-box">
+        {{each qibos items}}
+        <div class="item-title">{{items[0]}}</div>
+        <div class="qibo-list">
+            {{each items[1] qibo}}
+            <div class="qibo-item">
+                <img height="116" width="116" src="{{qibo.img}}" alt="图片加载失败" />
+                <div class="qibo-text">
+                    <div class="qibo-name">{{qibo.name}}</div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/each}}
+    </div>
+    <div class="copyright">{{@sys.copyright}}</div>
+</div>
+
+{{/block}}
