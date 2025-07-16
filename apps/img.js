@@ -72,8 +72,8 @@ export class Img extends plugin {
             img_url =  getRoleImgList[roleName][roleIndex-1]
         }else {
             roleIndex = lodash.random(0, roleImg.length - 1)
-            img_url = roleImg[index]
-            roleImg.splice(index, 1)
+            img_url = roleImg[roleIndex]
+            roleImg.splice(roleIndex, 1)
         }
         e.reply(segment.image(img_url))
     }

@@ -38,7 +38,7 @@ export default async () => {
             item1: row[2].split('-')[0].replace('N/A', ''),
             item2: row[2].split('-')?.[1],
             grow: row[3].replace(/[^0-9]/g, ''),
-            attr: row[4].split('<br>')[0].trim().replace(/？/g, ''),
+            attr: row[4].split('<br>')[0].trim().replace(/？/g, '').replace('N/A', ''),
         }
     }).filter(({ name }) => name).reduce((acc, cur) => {
         acc[cur.name] = cur

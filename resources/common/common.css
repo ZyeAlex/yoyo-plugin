@@ -159,3 +159,23 @@ mark {
   padding: 2px 4px;
   /* 可选：增加内边距使文本不贴边 */
 }
+
+/* 背景样式 */
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  /* 或 'contain'，根据你的需求调整 */
+  background-repeat: no-repeat;
+  filter: blur(10px);
+  /* 调整模糊程度 */
+  opacity: 0.6;
+  /* 调整半透明程度 */
+  z-index: -1;
+}

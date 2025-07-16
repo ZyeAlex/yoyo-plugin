@@ -37,7 +37,9 @@ export class Qibo extends plugin {
                 cur['未知'] = unkown
 
                 return acc
-            }, {}))
+            }, {})),
+            length: Object.values(setting.qibos).length,
+            img:lodash.sample(Object.values(setting.qibos)).img
         })
     }
     // 奇波卡片

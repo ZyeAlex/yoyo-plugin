@@ -1,61 +1,8 @@
-.background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    background-position: center;
-    background-size: cover;
-    /* 或 'contain'，根据你的需求调整 */
-    background-repeat: no-repeat;
-    filter: blur(10px);
-    /* 调整模糊程度 */
-    opacity: 0.6;
-    /* 调整半透明程度 */
-    z-index: -1;
-    /* 确保伪元素位于内容之下 */
-}
-
-
-.head-box {
-    padding-top: 50px;
-}
-
-.head-label {
-    margin-top: 10px;
-    padding: 12px;
-    border-radius: 10px;
-    -webkit-backdrop-filter: blur(.05rem);
-    backdrop-filter: blur(0.05rem);
-    background-color: rgba(0, 0, 0, 0.15);
-    box-shadow:
-        10px 10px 20px rgba(0, 0, 0, 0.1),
-        /* 深色阴影 */
-        -10px -10px 20px rgba(255, 255, 255, 0.5);
-    /* 白色高光 */
-}
-
-.content-box {
-    margin: 10px 20px;
-    padding: 12px;
-    padding-right: 5px;
-    border-radius: 10px;
-    -webkit-backdrop-filter: blur(.05rem);
-    backdrop-filter: blur(0.05rem);
-    background-color: rgba(0, 0, 0, 0.15);
-    box-shadow:
-        10px 10px 20px rgba(0, 0, 0, 0.1),
-        /* 深色阴影 */
-        -10px -10px 20px rgba(255, 255, 255, 0.5);
-    /* 白色高光 */
-}
 
 
 .item-title {
     padding: 10px 20px;
-    background-color: #f0f8ff;
+    background-color: hwb(208 94% 0% / 0.75);
     /* 背景色 */
     border-radius: 8px;
     /* 圆角 */
@@ -63,7 +10,10 @@
     font-weight: bold;
     color: #333;
     position: relative;
-    margin: 12px 18px 0 10px;
+    margin: 12px 10px 0 10px;
+}
+.item-title span{
+    font-size: 14px;
 }
 
 .item-title::before {
@@ -103,5 +53,8 @@
 .qibo-text {
     width: 100%;
     text-align: center;
-    background-color: #fff;
+    background-color: hsla(0, 0%, 100%, 0.75);
+    color:black;
+    font-family: ys;
+    padding: 1px 0;
 }

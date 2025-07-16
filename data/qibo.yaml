@@ -5,6 +5,19 @@
   item2: 兽形族
   grow: ""
   attr: 木
+蓬尾狐:
+  img: https://patchwiki.biligame.com/images/ap/thumb/d/df/sd8u7ym7knpp6wt3eff1zqasvavmq8f.png/80px-%E5%8D%AB%E6%98%9F-%E5%B0%8F%E8%8A%BD%E7%8B%90%E6%88%90%E9%95%BF%E6%9C%9F.png
+  name: 蓬尾狐
+  item1: 异生类
+  item2: 兽形族
+  grow: ""
+  attr: 木
+萝冠灵狐:
+  name: 萝冠灵狐
+  item1: 异生类
+  item2: 兽形族
+  grow: ""
+  attr: 木
 河狸仔:
   img: https://patchwiki.biligame.com/images/ap/thumb/3/3c/hk6klkih4371kczgiqd126mvfxsx03n.png/80px-%E5%8D%AB%E6%98%9F-%E6%B2%B3%E7%8B%B8%E4%BB%94.png
   name: 河狸仔
@@ -45,10 +58,16 @@
   name: 迅狼
   item1: ""
   grow: ""
-  attr: N/A
+  attr: ""
 丸水灵:
   img: https://patchwiki.biligame.com/images/ap/thumb/1/14/0e68pmy0nxpqs8jvm8z6ysm1pfqp0rn.png/80px-%E5%8D%AB%E6%98%9F-%E4%B8%B8%E6%B0%B4%E7%81%B5.png
   name: 丸水灵
+  item1: ""
+  grow: ""
+  attr: 水
+水灵偶:
+  img: https://patchwiki.biligame.com/images/ap/thumb/3/30/43jr76hnj36ryr87sss07pwu6bao5d6.png/80px-%E5%8D%AB%E6%98%9F-%E6%B0%B4%E7%81%B5%E5%81%B6.png
+  name: 水灵偶
   item1: ""
   grow: ""
   attr: 水
@@ -58,12 +77,27 @@
   item1: ""
   grow: ""
   attr: 水
+火灵仔:
+  name: 火灵仔
+  item1: ""
+  grow: ""
+  attr: 火
+火灵偶:
+  name: 火灵偶
+  item1: ""
+  grow: ""
+  attr: 火
 赤焰灵偶:
   img: https://patchwiki.biligame.com/images/ap/thumb/7/7b/on73qoh3axobbnfj8qojt85jtu0ajah.png/80px-%E5%8D%AB%E6%98%9F-%E8%B5%A4%E7%84%B0%E7%81%B5%E5%81%B6.png
   name: 赤焰灵偶
   item1: ""
   grow: ""
   attr: 火
+雷灵偶:
+  name: 雷灵偶
+  item1: ""
+  grow: ""
+  attr: 雷
 紫电灵偶:
   img: https://patchwiki.biligame.com/images/ap/thumb/1/12/bbg3ls3fa6mofds8qp6zd7j4ocvoj31.png/80px-%E5%8D%AB%E6%98%9F-%E7%B4%AB%E7%94%B5%E7%81%B5%E5%81%B6.png
   name: 紫电灵偶
@@ -93,7 +127,7 @@
   name: 魄角熊
   item1: ""
   grow: ""
-  attr: N/A
+  attr: ""
 小雪狼:
   img: https://patchwiki.biligame.com/images/ap/thumb/5/54/mff6u8u3l1mxyn9as1agmmjh8dvyhk5.png/80px-%E5%8D%AB%E6%98%9F-%E5%B0%8F%E9%9B%AA%E7%8B%BC.png
   name: 小雪狼
@@ -112,6 +146,12 @@
   item1: ""
   grow: ""
   attr: 冰
+???:
+  name: ???
+  item1: 异生类
+  item2: 兽形族
+  grow: ""
+  attr: 地
 拉加野猪:
   img: https://patchwiki.biligame.com/images/ap/thumb/8/83/c0jgnvuhw2e10mopoh3a4lkdin064je.png/80px-%E5%8D%AB%E6%98%9F-%E6%8B%89%E5%8A%A0%E9%87%8E%E7%8C%AA.png
   name: 拉加野猪
@@ -140,27 +180,63 @@
   item2: 羽形族
   grow: ""
   attr: 木
-蔓灵花:
+蔓灵花（木灵苞）:
   img: https://patchwiki.biligame.com/images/ap/thumb/b/b5/ixosrixqranpfhpa6b95mth90g9ocf1.png/80px-%E5%8D%AB%E6%98%9F-%E8%94%93%E7%81%B5%E8%8A%B1.png
-  name: 蔓灵花
+  name: 蔓灵花（木灵苞）
   item1: 幻生类
   item2: 精怪族
   grow: ""
   attr: 木
-青音花:
+青音花（木灵朵）:
   img: https://patchwiki.biligame.com/images/ap/thumb/5/5b/dz9p0s81ef9pqz5p9jmz6c9n9emx1zw.png/80px-%E5%8D%AB%E6%98%9F-%E9%9D%92%E9%9F%B3%E8%8A%B1.png
-  name: 青音花
+  name: 青音花（木灵朵）
   item1: 幻生类
   item2: 精怪族
   grow: ""
   attr: 木
-棉绮花灵:
+棉绮花灵（蔓音花）:
   img: https://patchwiki.biligame.com/images/ap/thumb/b/ba/0ontskra89layo2dmk3hrk9hygar7t6.png/80px-%E5%8D%AB%E6%98%9F-%E6%A3%89%E7%BB%AE%E8%8A%B1%E7%81%B5.png
-  name: 棉绮花灵
+  name: 棉绮花灵（蔓音花）
   item1: 幻生类
   item2: 精怪族
   grow: ""
   attr: 木
+风灵苞:
+  name: 风灵苞
+  item1: 幻生类
+  item2: 精怪族
+  grow: ""
+  attr: 风
+风灵朵:
+  name: 风灵朵
+  item1: 幻生类
+  item2: 精怪族
+  grow: ""
+  attr: 风
+岚音花:
+  name: 岚音花
+  item1: 幻生类
+  item2: 精怪族
+  grow: ""
+  attr: 风
+雷灵苞:
+  name: 雷灵苞
+  item1: 幻生类
+  item2: 精怪族
+  grow: ""
+  attr: 雷
+雷灵朵:
+  name: 雷灵朵
+  item1: 幻生类
+  item2: 精怪族
+  grow: ""
+  attr: 雷
+雷音花:
+  name: 雷音花
+  item1: 幻生类
+  item2: 精怪族
+  grow: ""
+  attr: 雷
 鹰嘴兽:
   img: https://patchwiki.biligame.com/images/ap/thumb/d/d3/i52jnt1fnzlqxayv7q7q9jizc54hc1x.png/80px-%E5%8D%AB%E6%98%9F-%E9%B9%B0%E5%98%B4%E5%85%BD.png
   name: 鹰嘴兽
@@ -173,13 +249,13 @@
   name: 红宝虫
   item1: ""
   grow: ""
-  attr: N/A
-炎晶蛮:
+  attr: ""
+炎晶蛮（炎晶甲）:
   img: https://patchwiki.biligame.com/images/ap/thumb/5/59/9lnlp5vu13kf6ccpa6im085lc3cf7jg.png/80px-%E5%8D%AB%E6%98%9F-%E7%82%8E%E6%99%B6%E8%9B%AE.png
-  name: 炎晶蛮
+  name: 炎晶蛮（炎晶甲）
   item1: ""
   grow: ""
-  attr: N/A
+  attr: ""
 火花雀:
   img: https://patchwiki.biligame.com/images/ap/thumb/4/46/fh8ja0qe89o8lavjjacz4sxm8ns2mjg.png/80px-%E5%8D%AB%E6%98%9F-%E7%81%AB%E7%83%88%E9%B9%B0%E5%AE%9D%E5%AE%9D.png
   name: 火花雀
@@ -203,7 +279,17 @@
   name: 菇噜噜
   item1: ""
   grow: ""
-  attr: N/A
+  attr: ""
+焰羊羊:
+  name: 焰羊羊
+  item1: ""
+  grow: ""
+  attr: 火
+尾火羊:
+  name: 尾火羊
+  item1: ""
+  grow: ""
+  attr: 火
 炎灼角羊:
   img: https://patchwiki.biligame.com/images/ap/thumb/0/0e/err7bs9inz0lcccq9es9siqhjuspg7u.png/80px-%E5%8D%AB%E6%98%9F-%E7%82%8E%E7%81%BC%E8%A7%92%E7%BE%8A.png
   name: 炎灼角羊
@@ -228,6 +314,18 @@
   item1: ""
   grow: ""
   attr: 地
+岩甲蜥:
+  name: 岩甲蜥
+  item1: 异生类
+  item2: 鳞形族
+  grow: ""
+  attr: 地
+穿甲蜥:
+  name: 穿甲蜥
+  item1: 异生类
+  item2: 鳞形族
+  grow: ""
+  attr: 地
 钻山蜥:
   img: https://patchwiki.biligame.com/images/ap/thumb/0/0d/o9u4tzg1409gpokqsd3vb1m7olha3to.png/80px-%E5%8D%AB%E6%98%9F-%E9%92%BB%E5%B1%B1%E8%9C%A5.png
   name: 钻山蜥
@@ -235,9 +333,9 @@
   item2: 鳞形族
   grow: ""
   attr: 地
-幼蝶:
+小浮蝶:
   img: https://patchwiki.biligame.com/images/ap/thumb/f/fa/fbvy32etc6zx9rem8r6sku4e34f970g.png/80px-%E5%8D%AB%E6%98%9F-%E5%B9%BB%E8%9D%B6%E5%B9%BC%E5%B9%B4%E6%9C%9F.png
-  name: 幼蝶
+  name: 小浮蝶
   item1: 幻生类
   item2: 精怪族
   grow: ""
@@ -274,43 +372,43 @@
   name: 森境鹿
   item1: ""
   grow: ""
-  attr: N/A
+  attr: ""
 积怨卷:
   img: https://patchwiki.biligame.com/images/ap/thumb/a/a4/npmevmvfydx2nilpivfnz208rohk5gx.png/80px-%E5%8D%AB%E6%98%9F-%E7%A7%AF%E6%80%A8%E5%8D%B7.png
   name: 积怨卷
   item1: ""
   grow: ""
-  attr: N/A
+  attr: ""
 叶冠驼:
   img: https://patchwiki.biligame.com/images/ap/thumb/2/2e/54pqxdjjbogc6swonpf3dv4r4p57vg8.png/80px-%E5%8D%AB%E6%98%9F-%E5%8F%B6%E5%86%A0%E9%BE%99.png
   name: 叶冠驼
   item1: ""
   grow: ""
-  attr: N/A
+  attr: ""
 哈加:
   img: https://patchwiki.biligame.com/images/ap/thumb/1/1b/gr1hbpjm4cp4mefgh34va2ywqi3a6fu.png/80px-%E5%8D%AB%E6%98%9F-%E5%93%88%E5%8A%A0.png
   name: 哈加
   item1: ""
   grow: ""
-  attr: N/A
+  attr: ""
 加杜:
   img: https://patchwiki.biligame.com/images/ap/thumb/c/cb/amzh2odhx2jd36z1od7fcyi8r8wcvrb.png/80px-%E5%8D%AB%E6%98%9F-%E5%8A%A0%E6%9D%9C.png
   name: 加杜
   item1: ""
   grow: ""
-  attr: N/A
+  attr: ""
 厄卒:
   img: https://patchwiki.biligame.com/images/ap/thumb/a/aa/716j2e12yn45i0h79qmmggr85fqe8hh.png/80px-%E5%8D%AB%E6%98%9F-%E5%8E%84%E5%8D%92.png
   name: 厄卒
   item1: ""
   grow: ""
-  attr: N/A
+  attr: ""
 嘟噜:
   img: https://patchwiki.biligame.com/images/ap/thumb/3/30/ic8x4ojutru3cw9h3v7c5g26w20tvsh.png/80px-%E5%8D%AB%E6%98%9F-%E5%98%9F%E5%99%9C.png
   name: 嘟噜
   item1: ""
   grow: ""
-  attr: N/A
+  attr: ""
 目绒兔:
   img: https://patchwiki.biligame.com/images/ap/thumb/a/a1/poai2klt9cadpnx5huqdtq1wmhlnpr0.png/80px-%E5%8D%AB%E6%98%9F-%E7%9B%AE%E7%BB%92%E5%85%94.png
   name: 目绒兔
@@ -322,7 +420,7 @@
   name: 乌咪
   item1: ""
   grow: ""
-  attr: N/A
+  attr: ""
 驮驮龙:
   img: https://patchwiki.biligame.com/images/ap/thumb/4/40/ar33igvirqj4vmmht21p1tbajht8294.png/80px-%E5%8D%AB%E6%98%9F-%E9%A9%AE%E9%A9%AE%E9%BE%99.png
   name: 驮驮龙
@@ -365,15 +463,41 @@
   item2: 兽形族
   grow: ""
   attr: 暗
-茸球蝌蚪:
+雾粘蛙:
   img: https://patchwiki.biligame.com/images/ap/thumb/8/8f/ma3oygyh61l8brt63vmmsvrbpdgbhds.png/80px-%E5%8D%AB%E6%98%9F-%E5%A8%83%E5%A8%83%E9%B1%BC.png
-  name: 茸球蝌蚪
+  name: 雾粘蛙
   item1: ""
   grow: ""
   attr: 雷
-茸球蛙:
+雾球蛙:
   img: https://patchwiki.biligame.com/images/ap/thumb/7/70/mpsil2o886kdedtrbbf405ptlzm8o4o.png/80px-%E5%8D%AB%E6%98%9F-%E8%8C%B8%E7%90%83%E8%9B%99.png
-  name: 茸球蛙
+  name: 雾球蛙
   item1: ""
   grow: ""
   attr: 雷
+柔风鹰:
+  img: https://patchwiki.biligame.com/images/ap/thumb/4/48/41y6a986oop1ys33g118w92ckxek3q4.png/80px-%E5%8D%AB%E6%98%9F-%E9%B8%9F%E5%BD%A2%E5%A5%87%E6%B3%A2%E5%B9%BC%E5%B9%B4%E6%9C%9F.png
+  name: 柔风鹰
+  item1: ""
+  grow: ""
+  attr: 风
+风剪鹰:
+  name: 风剪鹰
+  item1: ""
+  grow: ""
+  attr: 风
+雷冠牦:
+  name: 雷冠牦
+  item1: ""
+  grow: ""
+  attr: 雷
+水岩卫:
+  name: 水岩卫
+  item1: ""
+  grow: ""
+  attr: 水
+焰翎龙:
+  name: 焰翎龙
+  item1: ""
+  grow: ""
+  attr: 火

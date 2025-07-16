@@ -5,16 +5,16 @@
 
 {{block 'main'}}
 <div class="container" id="container">
-    <div class="background" style="background-image: url({{pluResPath}}{{roleImg}})"></div>
+    <div class="background" style="background-image: url({{img}})"></div>
     <div class="head-box">
-        <div class="title">奇波列表 <span class="label">共{{qibos.length}}个</span> </div>
+        <div class="title">奇波列表 <span class="label">共{{length}}个</span> </div>
         <div class="head-label">
             <div class="label item">发送 <mark>{{rulePrefix}}菜鸡图鉴</mark> 查看奇波图鉴 </div>
         </div>
     </div>
-    <div class="content-box">
+    <div class="main-box">
         {{each qibos items}}
-        <div class="item-title">{{items[0]}}</div>
+        <div class="item-title">{{items[0]}} <span>共{{items[1].length}}个</span> </div>
         <div class="qibo-list">
             {{each items[1] qibo}}
             <div class="qibo-item">

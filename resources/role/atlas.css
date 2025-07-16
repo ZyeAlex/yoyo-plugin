@@ -34,10 +34,6 @@
     margin: 10px 15px;
     min-height: 600px;
     border-radius: 10px;
-    background-image: url(https://plat-cdn.manjuu.com/platform/P3OfficialWebsite/prod/_next/static/media/background_detail.209134db.png);
-    background-repeat: no-repeat;
-    background-position: 0 100%;
-    background-size: cover;
     -webkit-backdrop-filter: blur(.05rem);
     backdrop-filter: blur(0.05rem);
     background-color: rgba(0, 0, 0, 0.15);
