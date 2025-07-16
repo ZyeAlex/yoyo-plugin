@@ -20,6 +20,7 @@ export class Qibo extends plugin {
     atlas(e) {
         // 名称
         let name = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})(角色|奇波)?(图鉴|卡片|card|Card)$`))[1]
+        logger.info(name, setting.getRoleName(name))
         // 角色
         if (setting.getRoleName(name)) {
             return this.roleAtlas(e, setting.getRoleName(name))

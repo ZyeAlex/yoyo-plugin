@@ -19,42 +19,12 @@
 }
 
 
-.head-box {
-    padding-top: 50px;
-}
-
-.head-label {
-    margin-top: 10px;
-    padding:12px;
-    border-radius: 10px;
-    -webkit-backdrop-filter: blur(.05rem);
-    backdrop-filter: blur(0.05rem);
-    background-color: rgba(0, 0, 0, 0.15);
-    box-shadow:
-        10px 10px 20px rgba(0, 0, 0, 0.1),
-        /* 深色阴影 */
-        -10px -10px 20px rgba(255, 255, 255, 0.5);
-    /* 白色高光 */
-}
-
 
 
 .role-imgs {
     display: flex;
     flex-wrap: wrap;
-    padding: 12px;
-    padding-right: 5px;
-    margin:10px 20px;
-    border-radius: 10px;
-    -webkit-backdrop-filter: blur(.05rem);
-    backdrop-filter: blur(0.05rem);
-    background-color: rgba(0, 0, 0, 0.15);
-    box-shadow:
-        10px 10px 20px rgba(0, 0, 0, 0.1),
-        /* 深色阴影 */
-        -10px -10px 20px rgba(255, 255, 255, 0.5);
-    /* 白色高光 */
-
+    padding-bottom: 24px;
 }
 
 .role-img {
@@ -66,4 +36,7 @@
     width: 100%;
     text-align: center;
     background-color: #fff;
+    color: black;
+    font-family: ys;
+    padding: 3px 0;
 }

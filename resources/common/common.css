@@ -44,10 +44,9 @@ body {
 /* 标题 */
 .head-box {
   border-radius: 15px;
-  padding: 10px 20px;
+  padding: 30px 20px 10px;
   position: relative;
   color: #fff;
-  margin-top: 30px;
 }
 
 .head-box .title {
@@ -94,6 +93,39 @@ body {
   transform: translateY(-50%);
   font-size: 1.2em;
   margin-right: 0.5em;
+}
+
+.head-label {
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  -webkit-backdrop-filter: blur(.05rem);
+  backdrop-filter: blur(0.05rem);
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow:
+    10px 10px 20px rgba(0, 0, 0, 0.15),
+    /* 深色阴影 */
+    -10px -10px 20px rgba(255, 255, 255, 0.5);
+  /* 白色高光 */
+}
+
+/* 主體 */
+.main-box {
+  padding: 12px;
+  margin: 5px 20px 10px;
+  border-radius: 10px;
+  -webkit-backdrop-filter: blur(.05rem);
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.1) 75%,
+      rgba(0, 0, 0, 0.3) 100%);
+  backdrop-filter: blur(0.05rem);
+  box-shadow:
+    10px 10px 20px rgba(0, 0, 0, 0.15),
+    /* 深色阴影 */
+    -10px -10px 20px rgba(255, 255, 255, 0.5);
+  /* 白色高光 */
+  color: white
 }
 
 

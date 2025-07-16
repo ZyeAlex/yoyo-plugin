@@ -26,6 +26,13 @@
   item2: 兽形族
   grow: ""
   attr: 火
+焰牛牛:
+  img: https://patchwiki.biligame.com/images/ap/thumb/5/5b/8n5sny3cijr8djkubxb846vtwd9ucxk.png/80px-%E5%8D%AB%E6%98%9F-%E7%84%B0%E5%93%9E%E5%93%9E%E6%88%90%E9%95%BF%E6%9C%9F.png
+  name: 焰牛牛
+  item1: 异生类
+  item2: 兽形族
+  grow: ""
+  attr: 火
 烈焰角牛:
   img: https://patchwiki.biligame.com/images/ap/thumb/9/98/nb9riwase9gy91qax5456lgp1ezejfo.png/80px-%E5%8D%AB%E6%98%9F-%E7%83%88%E7%84%B0%E8%A7%92%E7%89%9B.png
   name: 烈焰角牛
@@ -173,15 +180,15 @@
   item1: ""
   grow: ""
   attr: N/A
-火烈鹰宝宝:
+火花雀:
   img: https://patchwiki.biligame.com/images/ap/thumb/4/46/fh8ja0qe89o8lavjjacz4sxm8ns2mjg.png/80px-%E5%8D%AB%E6%98%9F-%E7%81%AB%E7%83%88%E9%B9%B0%E5%AE%9D%E5%AE%9D.png
-  name: 火烈鹰宝宝
+  name: 火花雀
   item1: ""
   grow: ""
   attr: 火
-火烈鹰前一阶段:
+焰火雀:
   img: https://patchwiki.biligame.com/images/ap/thumb/d/d2/f1ay08h4l1be9n69h6zy5g3udiqlj4w.png/80px-%E5%8D%AB%E6%98%9F-%E5%B0%8F%E7%81%AB%E7%83%88%E9%B9%B0.png
-  name: 火烈鹰前一阶段
+  name: 焰火雀
   item1: ""
   grow: ""
   attr: 火
@@ -358,6 +365,12 @@
   item2: 兽形族
   grow: ""
   attr: 暗
+茸球蝌蚪:
+  img: https://patchwiki.biligame.com/images/ap/thumb/8/8f/ma3oygyh61l8brt63vmmsvrbpdgbhds.png/80px-%E5%8D%AB%E6%98%9F-%E5%A8%83%E5%A8%83%E9%B1%BC.png
+  name: 茸球蝌蚪
+  item1: ""
+  grow: ""
+  attr: 雷
 茸球蛙:
   img: https://patchwiki.biligame.com/images/ap/thumb/7/70/mpsil2o886kdedtrbbf405ptlzm8o4o.png/80px-%E5%8D%AB%E6%98%9F-%E8%8C%B8%E7%90%83%E8%9B%99.png
   name: 茸球蛙
