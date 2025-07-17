@@ -1,16 +1,25 @@
 @charset "UTF-8";
+
 @font-face {
-  font-family: "SR";
-  src: url("./font/SR.ttf") format("truetype");
+  font-family: "sr";
+  src: url("./font/sr.ttf") format("truetype");
 }
+
 @font-face {
   font-family: "tttgbnumber";
   src: url("./font/tttgbnumber.ttf") format("truetype");
 }
+
 @font-face {
-  font-family: "YS";
-  src: url("./font/YS.ttf") format("truetype");
+  font-family: "ys";
+  src: url("./font/ys.ttf") format("truetype");
 }
+
+@font-face {
+  font-family: "nzbz";
+  src: url("./font/nzbz.ttf") format("truetype");
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -18,30 +27,31 @@
 }
 
 body {
-  font-family: "SR", sans-serif;
-  transform: scale(1.4);
+  font-family: "sr", sans-serif;
   transform-origin: 0 0;
   font-size: 18px;
-  width: 600px;
+  width: 830px;
 }
 
 .container {
-  width: 600px;
-  padding: 20px 15px 10px 15px;
+  width: 830px;
   background-size: contain;
+  padding-bottom: 10px;
+  position: relative;
 }
 
+
+/* 标题 */
 .head-box {
   border-radius: 15px;
-  padding: 10px 20px;
+  padding: 30px 20px 10px;
   position: relative;
   color: #fff;
-  margin-top: 30px;
 }
 
 .head-box .title {
-  font-family: "tttgbnumber", "印品南征北战NZBZ体", NZBZ, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif;
-  font-size: 36px;
+  font-family: "tttgbnumber", nzbz, ys, PingFangSC-Medium, "PingFang SC", sans-serif;
+  font-size: 48px;
   text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
 }
 
@@ -58,14 +68,67 @@ body {
 }
 
 .head-box .label {
-  font-size: 16px;
+  font-size: 20px;
   text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+  padding: 5px 0;
 }
 
 .head-box .label span {
   color: #d3bc8e;
   padding: 0 2px;
 }
+
+/* 列表样式 */
+.head-box .item {
+  position: relative;
+  padding-left: 1.5em;
+  /* 为伪元素预留空间 */
+}
+
+.head-box .item::before {
+  content: "🍀 ";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2em;
+  margin-right: 0.5em;
+}
+
+.head-label {
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  -webkit-backdrop-filter: blur(.05rem);
+  backdrop-filter: blur(0.05rem);
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow:
+    10px 10px 20px rgba(0, 0, 0, 0.15),
+    /* 深色阴影 */
+    -10px -10px 20px rgba(255, 255, 255, 0.5);
+  /* 白色高光 */
+}
+
+/* 主體 */
+.main-box {
+  padding: 12px;
+  margin: 5px 20px 10px;
+  border-radius: 10px;
+  -webkit-backdrop-filter: blur(.05rem);
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.4) 0%,
+      rgba(0, 0, 0, 0.1) 75%,
+      rgba(0, 0, 0, 0.3) 100%);
+  backdrop-filter: blur(0.05rem);
+  box-shadow:
+    10px 10px 20px rgba(0, 0, 0, 0.15),
+    /* 深色阴影 */
+    -10px -10px 20px rgba(255, 255, 255, 0.5);
+  /* 白色高光 */
+  color: white
+}
+
+
 
 .copyright {
   font-size: 14px;
@@ -83,30 +146,36 @@ body {
   padding: 0 3px;
 }
 
-.const-rank-0 {
-  background: #606060;
+
+
+/* mark样式 */
+mark {
+  background-color: #2F2F2F;
+  /* 灰黑色背景 */
+  color: #D4AF37;
+  /* 烫金色文本（接近金色） */
+  border-radius: 8px;
+  /* 圆角 */
+  padding: 2px 4px;
+  /* 可选：增加内边距使文本不贴边 */
 }
 
-.const-rank-1 {
-  background: #89cb26;
+/* 背景样式 */
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  /* 或 'contain'，根据你的需求调整 */
+  background-repeat: no-repeat;
+  filter: blur(10px);
+  /* 调整模糊程度 */
+  opacity: 0.6;
+  /* 调整半透明程度 */
+  z-index: -1;
 }
-
-.const-rank-2 {
-  background: #d1949e;
-}
-
-.const-rank-3 {
-  background: #1aa1d7;
-}
-
-.const-rank-4 {
-  background: #F08080;
-}
-
-.const-rank-5 {
-  background: #7B68EE;
-}
-
-.const-rank-6 {
-  background: #ff5222;
-}/*# sourceMappingURL=common.css.map */

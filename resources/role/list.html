@@ -1,0 +1,34 @@
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/common.css" />
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/role/list.css" />
+{{/block}}
+
+
+{{block 'main'}}
+<div class="container" id="container">
+    <div class="background" style="background-image: url({{pluResPath}}{{roleImg}})"></div>
+    <div class="head-box">
+        <div class="title">角色列表 <span class="label">共{{roles.length}}个角色</span> </div>
+        <div class="head-label">
+            <div class="label item">发送 <mark>{{rulePrefix}}寒悠悠图鉴</mark> 查看角色图鉴 </div>
+            <div class="label item">发送 <mark>{{rulePrefix}}寒悠悠图片列表</mark> 查看角色图片 </div>
+        </div>
+    </div>
+    <div class="main-box role-list">
+        {{each roles role idx}}
+        <div class="role-item">
+            {{if role.icon}}
+            <div class="role-img" style="background-position:calc(0% - {{104*role.icon[0]}}px) calc(100% +  {{104*role.icon[1]}}px)"></div>
+            {{/if}}
+            {{if !role.icon}}
+                <img class="role-img" src="{{pluResPath}}{{role.roleImg}}" alt="暂无图片" />
+            {{/if}}
+
+            <div class="role-text">{{role.roleName}}</div>
+        </div>
+        {{/each}}
+    </div>
+    <div class="copyright">{{@sys.copyright}}</div>
+</div>
+
+{{/block}}

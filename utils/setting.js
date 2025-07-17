@@ -9,7 +9,8 @@ import fs from 'node:fs'
 import MD5 from 'md5'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
-
+import lodash from 'lodash'
+import getQibos from '../api/getQibos.js'
 class Setting {
   constructor() {
     // 云崽地址
@@ -30,10 +31,26 @@ class Setting {
 
     // 初始化
     this.initCfg()
+    this.initReq()
     // 初始化config
     this.config = this.getConfig('config')
     // 匹配前缀
-    this.rulePrefix = '(?:' + this.config.rulePrefix.join('|') + ')'
+    this.rulePrefix = '(?:(?:' + this.config.rulePrefix.join('|') + ') *)'
+
+
+
+    // 角色缓存
+    let _default = this.getData('default', 'role')
+    let _list = this.getData('list', 'role')
+    this.roles = lodash.cloneDeep(_default, _list || {})
+    if (!_list) {
+      this.setData('list', this.roles, 'role')
+    }
+    // 奇波
+    this.qibos = this.getData('qibo', this.qibos)
+    // 签到缓存
+    this.userSignData = {}
+
   }
 
   /** 初始化配置 */
@@ -45,6 +62,12 @@ class Setting {
       }
       this.watch(`${this.configPath}${file}`, file.replace('.yaml', ''), 'config')
     }
+  }
+  // 初始化请求
+  async initReq() {
+    // 获取奇波
+    this.qibos = await getQibos()
+    this.setData('qibo', this.qibos)
   }
   // 监听配置文件
   watch(file, app, type = 'defSet') {
@@ -146,7 +169,7 @@ class Setting {
       return YAML.parse(fs.readFileSync(`${path}${filename}.yaml`, 'utf8'))
     } catch (error) {
       logger.error(`[${filename}] 读取失败 ${error}`)
-      return {}
+      return false
     }
   }
   // 写入对应模块数据文件
@@ -164,40 +187,47 @@ class Setting {
     }
     return true
   }
-  // 获取所有角色
-  getAllRole() {
-    const role = this.getData('role')
-    return Object.keys(role)
-  }
+
+
   // 查询是否有此角色，有则返回角色原本名称
   getRoleName(name) {
-    const roleObj = this.getData('role')
     // 直接返回角色名
-    if (name in roleObj) {
+    if (name in this.roles) {
       return name
     }
     // 遍历
-    for (let roleName in roleObj) {
-      if (roleObj[roleName]?.includes?.(name)) {
+    for (let roleName in this.roles) {
+      if (this.roles[roleName]?.nickname.includes?.(name)) {
         return roleName
       }
     }
   }
   // 设置昵称
   setRoleNickname(name, nickname) {
-    const role = this.getData('role')
-    if (!role[name].includes(nickname)) {
-      role[name].push(nickname)
+    if (!this.roles[name].nickname.includes(nickname)) {
+      this.roles[name].nickname.push(nickname)
     }
-    return this.setData('role', role)
+    return this.setData('list', this.roles, 'role')
   }
   // 删除昵称
   delRoleNickname(name, nickname) {
-    const role = this.getData('role')
-    if (role[name].includes(nickname)) {
-      role[name].splice(role[name].indexOf(nickname), 1)
+    if (this.roles[name].nickname.includes(nickname)) {
+      this.roles[name].nickname.splice(this.roles[name].nickname.indexOf(nickname), 1)
     }
-    return this.setData('role', role)
+    return this.setData('list', this.roles, 'role')
+  }
+
+  // 获取用户签到数据列表
+  getUserSignInfo(group_id, user_id) {
+    if (!this.userSignData[group_id]) {
+      this.userSignData[group_id] = this.getData(group_id, '/sign') || {}
+    }
+    return this.userSignData[group_id][user_id] || { history: {} }
+  }
+  // 保存用户签到数据
+  saveUserSignData(group_id, user_id, userSignList) {
+    this.userSignData[group_id][user_id] = userSignList
+    this.setData(group_id, this.userSignData[group_id], '/sign')
   }
 
 
@@ -212,11 +242,11 @@ class Setting {
       fs.mkdirSync(roleImgPath, { recursive: true })
     }
     // 查询文件夹下的所有图片列表
-    const imgList = fs.readdirSync(roleImgPath).map(fileName => `file://${this.path}/resources/img/role/${roleName}/${fileName}`)
-    return imgList
+    const roleImgs = fs.readdirSync(roleImgPath).map(fileName => `${this.path}/resources/img/role/${roleName}/${fileName}`)
+    return roleImgs
   }
   // 保存角色图片
-  async setRoleImgs(roleName, imageMessages) { 
+  async setRoleImgs(roleName, imageMessages) {
     let str = ''
     let imgCount = 0
     for (let val of imageMessages) {
@@ -269,18 +299,17 @@ class Setting {
     return str
   }
   // 删除图片
-  delRoleImg(roleName, imgFile) {
+  delRoleImg(roleName, imgFiles) {
     let roleImgPath = `${this.path}/resources/img/role/${roleName}`
     if (!fs.existsSync(roleImgPath)) {
       return
     }
-    if (imgFile.startsWith('file://')) {
-      imgFile = imgFile.replace('file://', '')
-    }
-    if (fs.existsSync(imgFile)) {
-      fs.unlinkSync(imgFile)
-      return true
-    }
+    imgFiles.forEach(imgFile => {
+      if (fs.existsSync(imgFile)) {
+        fs.unlinkSync(imgFile)
+      }
+    })
+    return true
   }
 }
 

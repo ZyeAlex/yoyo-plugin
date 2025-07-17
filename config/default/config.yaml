@@ -9,18 +9,21 @@ version: "1.0.0"
 imgMaxSize: 5 #上传图片大小限制 MB
 
 # pixiv
+pixiv: false # 角色图片是否从pixiv获取  (质量不稳定)
 excludeAI: true # 包含AI图片
 
+# 监测PV播放量
+PVList:
+- BV1Jr421n7n4
+- BV1KUopYZEs5
 
-# 指令前缀
+# 签到群聊
+signInclude: []
+signExclude: []
+
+# 指令前缀 若和别的游戏冲突，更换其他前缀即可
 rulePrefix:
-- ">"
-- "›"
-- "＞"
-- "yy"
-- "yoyo"
-- "悠悠"
-- "寒悠悠"
+- "~"
+- "～"
 - "#?蓝原"
-- "#?旅谣"
 - "#?蓝色星原"

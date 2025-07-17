@@ -1,2 +1,4 @@
 /node_modules/
-resources/img/role/*
+data/sign/
+data/role/list.yaml
+config/config.yaml

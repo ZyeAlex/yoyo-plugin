@@ -1,14 +1,12 @@
 body {
-  transform: scale(1);
-  width: 830px;
   background: url("../common/theme/bg.jpg");
   font-family: "tttgbnumber", "YS";
 }
 
 .container {
-  background: url("../common/theme/main.jpg") top left no-repeat;
+  background: url("../common/theme/main.png") top left no-repeat;
   background-size: 100% auto;
-  width: 830px;
+  padding: 20px;
 }
 
 .head-box {
@@ -17,22 +15,22 @@ body {
 }
 
 .head-box .title {
-  font-size: 65px;
+  font-size: 50px;
 }
 
-/* 乳白色半透明背景 */
+/* 半透明背景 */
 .cont-box {
   border-radius: 15px;
   margin-top: 20px;
   margin-bottom: 20px;
   overflow: hidden;
-  background: rgba(34, 41, 51, 0.5);
+  background: rgba(34, 41, 51, 0.65);
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.15);
   position: relative;
 }
 
 .help-group {
-  font-size: 30px;
+  font-size: 20px;
   font-weight: bold;
   padding: 15px 15px 10px 20px;
   color: #fff;
@@ -59,7 +57,7 @@ body {
   font-size: 14px;
   box-shadow: 0 0 1px 0 #888 inset;
   padding: 12px 0 12px 70px;
-  line-height: 24px;
+  line-height: 20px;
   position: relative;
   text-align: left;
 }
@@ -88,8 +86,8 @@ body {
 .help-title {
   display: block;
   color: #d3bc8e;
-  font-size: 24px;
-  line-height: 30px;
+  font-size: 16px;
+  line-height: 24px;
 }
 
 .help-desc {

@@ -13,7 +13,7 @@
 
 插件开发中...招募美工、招募美工、招募美工...
 
-Gitee可能更新不及时，请至[GitHub](https://github.com/ZyeAlex/yoyo-plugin)查看最新代码
+[Gitee](https://gitee.com/ZyeAlex/yoyo-plugin)可能更新不及时，请至[GitHub](https://github.com/ZyeAlex/yoyo-plugin)查看最新代码
 
 提交代码：请在[GitHub](https://github.com/ZyeAlex/yoyo-plugin) fork 本仓库，修改并测试完成后提交PR
 

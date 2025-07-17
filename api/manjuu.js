@@ -11,19 +11,15 @@ const http = createHttp({ response })
  * 订阅人数
  * @returns 
  */
-export const bookingnum = () => {
-    return http.get('https://api-grp.manjuu.com/passportv2/web/booking/bookingnum', {}, {
-        headers: { Sign: '590fff07503c6862fd88da860dc1ef96', Timestamp: 1749993608796 },
-    })
-}
+export const bookingnum = () => http.get('https://api-grp.manjuu.com/passportv2/web/booking/bookingnum', {}, {
+    headers: { Sign: '590fff07503c6862fd88da860dc1ef96', Timestamp: 1749993608796 },
+})
 /**
  * 官方动态
  * @param {*} type latest | news | notice | activity
  * @returns 
  */
-export const announce = (type) => {
-    return http.get('https://api-grp.manjuu.com/announce/client/announce/pagelist', { type, pageSize: 5, page: 1 })
-}
+export const announce = (type) => http.get('https://api-grp.manjuu.com/announce/client/announce/pagelist', { type, pageSize: 5, page: 1 })
 
 
 
