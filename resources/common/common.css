@@ -111,10 +111,7 @@ body {
     -10px -10px 20px rgba(255, 255, 255, 0.5);
   /* 白色高光 */
 }
-.head-box .suffix {
-  width: 100%;
-  text-align: right;
-}
+
 
 /* 主體 */
 .main-box {
@@ -185,4 +182,9 @@ mark {
   opacity: 0.6;
   /* 调整半透明程度 */
   z-index: -1;
+}
+/* 额外的内容 */
+.suffix {
+  width: 100%;
+  text-align: right;
 }

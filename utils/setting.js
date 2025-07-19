@@ -11,6 +11,7 @@ import { promisify } from 'util'
 import { pipeline } from 'stream'
 import lodash from 'lodash'
 import getQibos from '../api/getQibos.js'
+import getRoles from '../api/getRoles.js'
 class Setting {
   constructor() {
     // 云崽地址
@@ -38,16 +39,6 @@ class Setting {
     this.rulePrefix = '(?:(?:' + this.config.rulePrefix.join('|') + ') *)'
 
 
-
-    // 角色缓存
-    let _default = this.getData('default', 'role')
-    let _list = this.getData('list', 'role')
-    this.roles = lodash.cloneDeep(_default, _list || {})
-    if (!_list) {
-      this.setData('list', this.roles, 'role')
-    }
-    // 奇波
-    this.qibos = this.getData('qibo', this.qibos)
     // 签到缓存
     this.userSignData = {}
 
@@ -65,7 +56,17 @@ class Setting {
   }
   // 初始化请求
   async initReq() {
+    // 获取角色
+    let _default = this.getData('default', 'role')
+    let _list = this.getData('list', 'role')
+    this.roles = lodash.merge(_default, _list || {})
+
+    const roleSkill = await getRoles()
+    this.roles = lodash.merge(this.roles, roleSkill || {})
+
+    this.setData('list', this.roles, 'role')
     // 获取奇波
+    // this.qibos = this.getData('qibo', this.qibos)
     this.qibos = await getQibos()
     this.setData('qibo', this.qibos)
   }

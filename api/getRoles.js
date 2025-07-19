@@ -31,21 +31,18 @@ export default async () => {
         });
     });
 
-    const qibos = tables[7].slice(1).map(row => {
-        return {
-            img: row[0].match(/src="(.+?)"/)?.[1],
-            name: row[1].split('<br>')[0].trim().replace(/？/g, ''),
-            item1: row[2].split('-')[0].replace('N/A', ''),
-            item2: row[2].split('-')?.[1],
-            grow: row[3].replace(/[^0-9]/g, ''),
-            attr: row[4].split('<br>')[0].trim().replace(/？/g, '').replace('N/A', ''),
+    const roleSkills = tables[5].slice(1).reduce((acc, [name, skill, describe]) => {
+        acc[name.replace('\n', '')] = {
+            skill: {
+                name: skill,
+                describe
+            }
         }
-    }).filter(({ name }) => name).reduce((acc, cur) => {
-        acc[cur.name] = cur
         return acc
     }, {})
 
+    logger.info('roleSkills', roleSkills)
     // 关闭浏览器
     await browser.close();
-    return qibos
+    return roleSkills
 }

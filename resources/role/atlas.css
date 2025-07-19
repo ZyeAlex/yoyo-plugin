@@ -88,9 +88,16 @@
     width: 395px;
 }
 
+.skill .skill-name{
+    font-size: 30px;
+    padding:12px;
+}
+
 
 
 .other {
+    font-size: 24px;
+    position: relative;
     min-height: 200px;
     margin: 10px 15px;
     border-radius: 10px;
@@ -106,4 +113,5 @@
         /* 深色阴影 */
         -10px -10px 20px rgba(255, 255, 255, 0.5);
     /* 白色高光 */
+    padding:10px;
 }

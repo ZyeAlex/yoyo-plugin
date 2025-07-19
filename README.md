@@ -11,7 +11,8 @@
 
 ### 开发说明
 
-插件开发中...招募美工、招募美工、招募美工...
+插件开发中... <span style="font-size:24px;
+background: linear-gradient(135deg,#ff0000, #ff3300, #ff6600, #ff9900);-webkit-background-clip: text;background-clip: text;color: transparent;text-shadow: 0 0 10px #ff3300, 0 0 20px #ff6600, 0 0 30px rgba(255,153,0,0.5);">招募美工</span> 、招募美工、招募美工...
 
 [Gitee](https://gitee.com/ZyeAlex/yoyo-plugin)可能更新不及时，请至[GitHub](https://github.com/ZyeAlex/yoyo-plugin)查看最新代码
 

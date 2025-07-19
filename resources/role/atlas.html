@@ -27,15 +27,23 @@
             </div>
             {{/if}}
             <div class="role-introduce">&nbsp;&nbsp;&nbsp;&nbsp;{{introduce}}</div>
+            {{if words?.length}}
             <div class="role-words">
                 台词：
                 {{each words word}}
                 <div class="role-word">{{word}}</div>
                 {{/each}}
             </div>
+            {{/if}}
         </div>
-        <!-- <div class="other"></div>
-        <div class="other"></div> -->
+        {{if skill}}
+        <div class="skill other">
+            <div class="skill-name">{{@skill.name}}</div>
+            <div class="slill-describe">{{@skill.describe}}</div>
+            <div class="suffix">数据来源：BWiki</div>
+        </div>
+        {{/if}}
+        <!-- <div class="other"></div> -->
     </div>
 </div>
 {{/block}}
