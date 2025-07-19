@@ -46,7 +46,7 @@ export class Img extends plugin {
         // 从e.msg字符串里面匹配(\w)
         if (!roleName) {
             let _
-            [_, roleName, roleIndex] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}([1-9]*)$`))
+            [_, roleName, roleIndex] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}([0-9]*)$`))
             // 查询是否有此角色
             roleName = setting.getRoleName(roleName)
         }

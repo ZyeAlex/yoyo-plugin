@@ -12,7 +12,7 @@
                 src="{{userIcon}}" /><span class="sign-name">{{username}}</span> 的今日老婆是</div>
         <div style="font-size:60px">「<span class="sign-role">{{roleName}}</span>」</div>
         <div> 你已在本群签到{{day}}天！</div>
-        {{if hisRoles?.length}}
+        {{if day>1}}
         <div class="sign-history">
             <div>签到历史：</div>
             <div class="sign-history-roles">

@@ -47,5 +47,6 @@ export default async () => {
 
     // 关闭浏览器
     await browser.close();
+    logger.info(qibos)
     return qibos
 }
