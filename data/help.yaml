@@ -63,6 +63,9 @@ helpGroup:
     "title": "$活动"
     "desc": "查看蓝色星原近期活动"
 
-# - "group": "管理功能"
-#   "auth": "master"
-#   "list":
+- "group": "管理功能"
+  "auth": "master"
+  "list":
+  - "icon": 5
+    "title": "$清除无效数据"
+    "desc": "清除退群成员数据、错误的签到数据等"

@@ -2,7 +2,6 @@ import render from '../utils/render.js'
 import utils from '#utils'
 import setting from '#setting'
 import lodash from 'lodash'
-import { hitokoto } from '../api/other.js'
 export class Help extends plugin {
     constructor() {
         super({
@@ -14,6 +13,10 @@ export class Help extends plugin {
                 {
                     reg: `^${setting.rulePrefix}?(签到|打卡)$`,
                     fnc: 'sign'
+                },
+                {
+                    reg: `^${setting.rulePrefix}?清除错误签到数据$`,
+                    fnc: ''
                 },
             ]
         })
@@ -34,19 +37,26 @@ export class Help extends plugin {
         let hasSign = false
         // 今日日期
         let today = utils.formatDate(new Date(), 'YYYY-MM-DD')
+
+
+        const setUserSignInfo = () => {
+            // 用户信息
+            userSignInfo.roleName = lodash.sample(Object.keys(setting.roles))
+            userSignInfo.roleImg = lodash.sample(setting.getRoleImgs(userSignInfo.roleName))
+            if (userSignInfo.roleImg) {
+                userSignInfo.roleImg = userSignInfo.roleImg.split('/resources')[1]
+            } else {
+                userSignInfo.roleImg = ''
+            }
+            userSignInfo.history[userSignInfo.roleName] = (userSignInfo.history[userSignInfo.roleName] || 0) + 1
+        }
+
         if (userSignInfo.date == today) {
             // 过滤脏数据
             if (!Object.keys(setting.roles).includes(userSignInfo.roleName)) {
                 delete userSignInfo.history[userSignInfo.roleName]
                 // 用户信息
-                userSignInfo.roleName = lodash.sample(Object.keys(setting.roles))
-                userSignInfo.roleImg = lodash.sample(setting.getRoleImgs(userSignInfo.roleName))
-                if (userSignInfo.roleImg) {
-                    userSignInfo.roleImg = userSignInfo.roleImg.split('/resources')[1]
-                } else {
-                    userSignInfo.roleImg = ''
-                }
-                userSignInfo.history[userSignInfo.roleName] = (userSignInfo.history[userSignInfo.roleName] || 0) + 1
+                setUserSignInfo()
             }
             hasSign = true
         } else {
@@ -60,26 +70,13 @@ export class Help extends plugin {
             // 签到日期
             userSignInfo.date = today
             // 用户信息
-            userSignInfo.roleName = lodash.sample(Object.keys(setting.roles))
-            userSignInfo.roleImg = lodash.sample(setting.getRoleImgs(userSignInfo.roleName))
-            if (userSignInfo.roleImg) {
-                userSignInfo.roleImg = userSignInfo.roleImg.split('/resources')[1]
-            } else {
-                userSignInfo.roleImg = ''
-            }
-            userSignInfo.history[userSignInfo.roleName] = (userSignInfo.history[userSignInfo.roleName] || 0) + 1
+            setUserSignInfo()
         }
         // 保存签到数据
         setting.saveUserSignData(e.group_id, e.user_id, userSignInfo)
-        // 每日一言
-        let daily
-        try {
-            daily = await hitokoto()
-        } catch (error) {
-        }
         // 发送签到数据
         return await render(e, 'sign/index', {
-            hasSign, daily,
+            hasSign,
             roleName: userSignInfo.roleName,
             roleImg: userSignInfo.roleImg,
             username: e.sender.nickname || e.sender.card || '你',

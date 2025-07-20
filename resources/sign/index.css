@@ -32,6 +32,26 @@
     -webkit-mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.9) 85%, transparent 100%);
     mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.9) 85%, transparent 100%);
     margin-bottom: -5%;
+    z-index: 0;
+    position: relative;
+}
+
+.sign-rank {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    font-size: 36px;
+    font-family: "ys";
+    color: #7aa6d9;
+    opacity: 1;
+}
+
+.sign-rank-1 {
+    color: #3a6ea589;
+}
+
+.sign-rank-2 {
+    color: #5a8ec8;
 }
 
 .sign-text {
@@ -51,6 +71,7 @@
 }
 
 .sign-name {
+    opacity: 1;
     font-family: 黑体;
     font-weight: bold;
     font-size: 38px;
@@ -59,34 +80,18 @@
 }
 
 .sign-role {
+    opacity: 1;
     font-size: 65px;
     font-family: "nzbz";
     color: rgba(0, 0, 0);
 }
 
+
+
+
+
 .has-sign {
-    color: #ff3300;
-}
-
-
-.sign-rank {
-    text-align: center;
-    font-size: 36px;
-    font-family: "ys";
-    color: #7aa6d9;
-    background-color: rgba(245, 249, 253, 0.6);
-    padding:15px 0 10px 0;
-    margin-bottom: 10px;
-}
-
-.sign-rank-1 {
-    color: #3a6ea589;
-    background-color: rgba(230, 240, 250, 0.6);
-}
-
-.sign-rank-2 {
-    color: #5a8ec8;
-    background-color: rgba(238, 245, 252, 0.6);
+    color: #ff3300!important;
 }
 
 .sign-history-title {
@@ -110,14 +115,6 @@
     margin-top: 10px;
 }
 
-.sign-daily {
-    font-size: 24px;
-}
-
-.sign-daily-from {
-    text-align: right;
-    font-size: 20px;
-}
 
 .border {
     /* 浅灰偏白 */

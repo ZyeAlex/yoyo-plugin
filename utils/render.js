@@ -1,14 +1,15 @@
 import setting from './setting.js'
 import Version from './version.js'
+import fs from 'fs'
+// 读取package
 
 export default function render(e, path, renderData = {}, cfg = {}) {
   if (!e.runtime) {
     console.log('未找到e.runtime，请升级至最新版Yunzai')
   }
-  const layoutPath =
-    process.cwd() + '/plugins/yoyo-plugin/resources/common/'
-  const name = setting.config.name || 'yoyo-plugin'
-  const version = setting.config.version || Version.version
+  let packageJson = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'));
+  const name = packageJson.name || 'yoyo-plugin'
+  const version = packageJson.version || Version.version
   return e.runtime.render('yoyo-plugin', path, renderData, {
     ...cfg,
     beforeRender({ data }) {
@@ -16,8 +17,8 @@ export default function render(e, path, renderData = {}, cfg = {}) {
       return {
         ...data,
         resPath,
-        layoutPath,
-        defaultLayout: layoutPath + 'layout.html',
+        layoutPath: setting.path + '/resources/common/',
+        defaultLayout: setting.path + '/resources/common/layout.html',
         rulePrefix: setting.config.rulePrefix[0] || '$',
         sys: {
           copyright: `Created By ${Version.name} & ${name}<span class="version">${version}</span>`,

@@ -19,7 +19,11 @@ export class Update extends plugin {
         {
           reg: `${setting.rulePrefix}更新日志$`,
           fnc: 'update_log'
-        }
+        },
+        {
+          reg: `${setting.rulePrefix}?清除无效数据$`,
+          fnc: 'clearErrorData'
+        },
       ]
     })
   }
@@ -50,6 +54,38 @@ export class Update extends plugin {
       this.e.reply(await Update_Plugin.getLog(setting.config.name))
     }
     return true
+  }
+
+  async clearErrorData(e) {
+
+    // 清除错误签到数据
+    let userSignInfos = setting.getData(e.group_id, '/sign')
+    if (userSignInfos) {
+      let str = ''
+      const userIds = Object.keys(userSignInfos)
+      //todo 清除无效userId
+      await userIds.map(async userId => {
+        let userInfo = userSignInfos[userId]
+        if (userInfo.roleName && !(userInfo.roleName in setting.roles)) {
+          delete userInfo.roleName
+          delete userInfo.date
+          delete userInfo.roleImg
+        }
+        if (userInfo.history) {
+          await Object.keys(userInfo.history).map(roleName => {
+            if (!(roleName in setting.roles)) {
+              str += `已清除${userId}:${roleName}的签到数据\n`
+              delete userInfo.history[roleName]
+            }
+          })
+        }
+      })
+      await setting.setData(e.group_id, userSignInfos, '/sign')
+      e.reply(str + '\n无效签到数据已清除')
+    }
+
+
+    e.reply('本群无效数据清除完成!')
   }
 
 }

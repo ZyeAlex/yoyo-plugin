@@ -7,18 +7,17 @@
 <div class="container" id="container">
     <div class="background" style="background-image: url({{pluResPath}}{{roleImg}})"></div>
     <img class="sign-img" src="{{pluResPath}}{{roleImg}}" alt="">
+    {{if rank}}
+    <div class="sign-rank sign-rank-{{rank}} {{hasSign&&'has-sign'}}"> {{hasSign?'你已签到！':'签到成功！'}}今日在本群第{{rank}}个签到！</div>
+    {{/if}}
     <div class="sign-text">
         <div>
-            <span class="{{hasSign&&'has-sign'}}">{{hasSign?'今日已签到！':'签到成功！'}}</span>
             <img class="sign-user-img" src="{{userIcon}}" />
             <span class="sign-name">{{username}}</span>
             的今日老婆是
         </div>
         <div style="font-size:60px">「<span class="sign-role">{{roleName}}</span>」</div>
     </div>
-    {{if rank}}
-    <div class="sign-rank sign-rank-{{rank}}"> 今日在本群第{{rank}}个签到！</div>
-    {{/if}}
     {{if day>1}}
     <div class="border">
         <div class="sign-history-title">
@@ -29,12 +28,6 @@
                 <span>&nbsp;{{hisRoles[i][0]}}×{{hisRoles[i][1]}}&nbsp;</span>
                 <% } %>
         </div>
-    </div>
-    {{/if}}
-    {{if daily}}
-    <div class="sign-daily border">
-        <div>{{daily.hitokoto}}</div>
-        <div class="sign-daily-from"> —— {{daily.from}} {{if daily.from_who}} ({{daily.from_who}}){{/if}} </div>
     </div>
     {{/if}}
     <div class="copyright">{{@sys.copyright}}</div>
