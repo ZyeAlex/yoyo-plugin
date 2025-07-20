@@ -32,7 +32,7 @@ export class Help extends plugin {
             return true
         }
         // 用户签到数据
-        let userSignInfo = setting.getUserSignInfo(e.group_id, e.user_id)
+        let userSignInfo = setting.getUserData(e.group_id, e.user_id)
         // 今日是否签到
         let hasSign = false
         // 今日日期
@@ -67,16 +67,22 @@ export class Help extends plugin {
             signRank = signRank[0] == today ? signRank : [today, 0]
             userSignInfo.rank = ++signRank[1]
             redis.set('yoyo:sign:rank', JSON.stringify(signRanks))
+            // 签到领星虹
+            userSignInfo.xinghong_sign = userSignInfo.rank <= 3 ? (4 - userSignInfo.rank) * 160 + 160 : 160
+            if (!userSignInfo.xinghong) userSignInfo.xinghong = 0
+            userSignInfo.xinghong += userSignInfo.xinghong_sign
             // 签到日期
             userSignInfo.date = today
             // 用户信息
             setUserSignInfo()
         }
         // 保存签到数据
-        setting.saveUserSignData(e.group_id, e.user_id, userSignInfo)
+        setting.saveUserData(e.group_id, e.user_id, userSignInfo)
         // 发送签到数据
         return await render(e, 'sign/index', {
             hasSign,
+            xinghong: userSignInfo.xinghong,
+            xinghong_sign: userSignInfo.xinghong_sign,
             roleName: userSignInfo.roleName,
             roleImg: userSignInfo.roleImg,
             username: e.sender.nickname || e.sender.card || '你',

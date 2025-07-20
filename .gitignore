@@ -1,6 +1,6 @@
 /node_modules/
 # 数据
-data/sign/
+data/user/
 data/role/list.yaml
 # 用户配置
 config/config.yaml

@@ -40,7 +40,7 @@ class Setting {
 
 
     // 签到缓存
-    this.userSignData = {}
+    this.userData = {}
 
   }
 
@@ -219,21 +219,21 @@ class Setting {
   }
 
   // 获取用户签到数据列表
-  getUserSignInfo(group_id, user_id) {
-    if (!this.userSignData[group_id]) {
-      this.userSignData[group_id] = this.getData(group_id, '/sign') || {}
+  getUserData(group_id, user_id) {
+    if (!this.userData[group_id]) {
+      this.userData[group_id] = this.getData(group_id, '/user') || {}
     }
-    let userSignInfo = this.userSignData[group_id][user_id] || { history: {} }
+    let userData = this.userData[group_id][user_id] || { history: {} }
     // 防止错误数据
-    if (!userSignInfo.history) {
-      userSignInfo.history = {}
+    if (!userData.history) {
+      userData.history = {}
     }
-    return userSignInfo
+    return userData
   }
-  // 保存用户签到数据
-  saveUserSignData(group_id, user_id, userSignList) {
-    this.userSignData[group_id][user_id] = userSignList
-    this.setData(group_id, this.userSignData[group_id], '/sign')
+  // 保存用户数据
+  saveUserData(group_id, user_id, userSignList) {
+    this.userData[group_id][user_id] = userSignList
+    this.setData(group_id, this.userData[group_id], '/user')
   }
 
 

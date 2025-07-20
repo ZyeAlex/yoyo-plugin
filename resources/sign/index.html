@@ -8,7 +8,13 @@
     <div class="background" style="background-image: url({{pluResPath}}{{roleImg}})"></div>
     <img class="sign-img" src="{{pluResPath}}{{roleImg}}" alt="">
     {{if rank}}
-    <div class="sign-rank sign-rank-{{rank}} {{hasSign&&'has-sign'}}"> {{hasSign?'你已签到！':'签到成功！'}}今日在本群第{{rank}}个签到！</div>
+    <div class="sign-rank sign-rank-{{rank}} {{hasSign&&'has-sign'}}">
+        <div>{{hasSign?'你已签到！':'签到成功！'}}今日在本群第{{rank}}个签到！</div>
+        <div class="sign-xinghong">
+            <span>签到星虹+{{xinghong_sign}}</span><br />
+            <span>总星虹数量：{{xinghong}}</span>
+        </div>
+    </div>
     {{/if}}
     <div class="sign-text">
         <div>

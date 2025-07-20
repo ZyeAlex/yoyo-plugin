@@ -59,7 +59,7 @@ export class Update extends plugin {
   async clearErrorData(e) {
 
     // 清除错误签到数据
-    let userSignInfos = setting.getData(e.group_id, '/sign')
+    let userSignInfos = setting.getData(e.group_id, '/user')
     if (userSignInfos) {
       let str = ''
       const userIds = Object.keys(userSignInfos)
@@ -80,7 +80,7 @@ export class Update extends plugin {
           })
         }
       })
-      await setting.setData(e.group_id, userSignInfos, '/sign')
+      await setting.setData(e.group_id, userSignInfos, '/user')
       e.reply(str + '\n无效签到数据已清除')
     }
 
