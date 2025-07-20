@@ -21,7 +21,7 @@ export class Update extends plugin {
           fnc: 'update_log'
         },
         {
-          reg: `${setting.rulePrefix}?清除无效数据$`,
+          reg: `${setting.rulePrefix}?(删除|清除|清空|重置)(无效|脏)数据$`,
           fnc: 'clearErrorData'
         },
       ]
