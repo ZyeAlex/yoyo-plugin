@@ -58,7 +58,9 @@ class Setting {
     // 获取角色
     let _default = this.getData('default', 'role')
     let _list = this.getData('list', 'role')
-    this.roles = lodash.merge(_default, _list || {})
+    // todo 修复错误数据
+    // this.roles = lodash.merge(_default, _list || {})
+    this.roles = _default
     this.setData('list', this.roles, 'role')
     // 获取奇波
     // this.qibos = this.getData('qibo', this.qibos)
