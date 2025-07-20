@@ -20,6 +20,10 @@ export default async () => {
 
     // 提取所有class为"wikitable"的表格内容
     const tables = await page.evaluate(() => {
+        const title = document.querySelector('.panel-title');
+        if (title && title.classList.contains('collapsed')) {
+            title.click();
+        }
         const tables = Array.from(document.querySelectorAll('table.wikitable'));
         return tables.map(table => {
             const rows = Array.from(table.rows);
@@ -42,5 +46,6 @@ export default async () => {
     }, {})
     // 关闭浏览器
     await browser.close();
+    logger.info('roleSkills', roleSkills)
     return roleSkills
 }

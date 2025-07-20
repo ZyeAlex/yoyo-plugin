@@ -46,6 +46,8 @@
     margin-top: 14px;
     display: flex;
     justify-content: center;
+    /* 白色描边 */
+    text-shadow: 0 0 1px #fff, 1px 1px 3px rgba(255, 255, 255, 0.9);
 }
 
 .sign-xinghong {
