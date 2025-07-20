@@ -1,12 +1,13 @@
 
 import fs from 'fs'
 import sharp from 'sharp'
+import common from '../../../lib/common/common.js'
 
 
 /**
  * 杂项
  */
-class Ohter {
+class Other {
   // 两段时间的差值
   formatTimeDiff(timestampDiff) {
     // 确保差值为正数
@@ -158,4 +159,4 @@ class Ohter {
   }
 }
 
-export default new Ohter()
+export default Object.assign(new Other(), common)

@@ -2,7 +2,7 @@ import { execSync } from 'child_process'
 import plugin from '../../../lib/plugins/plugin.js'
 import { update } from '../../other/update.js'
 import setting from '#setting'
-
+import utils from '#utils'
 export class Update extends plugin {
   constructor() {
     super({
@@ -64,7 +64,7 @@ export class Update extends plugin {
       let str = ''
       const userIds = Object.keys(userSignInfos)
       //todo 清除无效userId
-      await userIds.map(async userId => {
+      userIds.forEach(userId => {
         let userInfo = userSignInfos[userId]
         if (userInfo.roleName && !(userInfo.roleName in setting.roles)) {
           delete userInfo.roleName
@@ -72,7 +72,7 @@ export class Update extends plugin {
           delete userInfo.roleImg
         }
         if (userInfo.history) {
-          await Object.keys(userInfo.history).map(roleName => {
+          Object.keys(userInfo.history).forEach(roleName => {
             if (!(roleName in setting.roles)) {
               str += `已清除${userId}:${roleName}的签到数据\n`
               delete userInfo.history[roleName]
@@ -80,10 +80,18 @@ export class Update extends plugin {
           })
         }
       })
-      await setting.setData(e.group_id, userSignInfos, '/user')
-      e.reply(str + '\n无效签到数据已清除')
+      setting.setData(e.group_id, userSignInfos, '/user')
+      if (str) {
+        if (str.length > 500) {
+          // 取500，后面加省略号
+          str = str.substring(0, 500) + '...'
+        }
+        e.reply(str + '\n无效签到数据已清除')
+      }
     }
 
+    // 等0.5秒
+    await utils.sleep(500)
 
     e.reply('本群无效数据清除完成!')
   }

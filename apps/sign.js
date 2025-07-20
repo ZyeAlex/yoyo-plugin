@@ -39,25 +39,21 @@ export class Help extends plugin {
         let today = utils.formatDate(new Date(), 'YYYY-MM-DD')
 
 
-        const setUserSignInfo = () => {
-            // 用户信息
-            userSignInfo.roleName = lodash.sample(Object.keys(setting.roles))
-            userSignInfo.roleImg = lodash.sample(setting.getRoleImgs(userSignInfo.roleName))
-            if (userSignInfo.roleImg) {
-                userSignInfo.roleImg = userSignInfo.roleImg.split('/resources')[1]
-            } else {
-                userSignInfo.roleImg = ''
+
+        // 兼容老项目的userSignList
+        if (Array.isArray(userSignInfo)) {
+            userSignInfo = {
+                date: utils.formatDate(userSignInfo[0]?.time, 'YYYY-MM-DD'),
+                roleName: userSignInfo[0]?.roleName,
+                roleImg: userSignInfo[0]?.roleImg,
+                history: userSignInfo.reduce((acc, { roleName }) => {
+                    acc[roleName] = (acc[roleName] || 0) + 1;
+                    return acc;
+                }, {})
             }
-            userSignInfo.history[userSignInfo.roleName] = (userSignInfo.history[userSignInfo.roleName] || 0) + 1
         }
 
         if (userSignInfo.date == today) {
-            // 过滤脏数据
-            if (!Object.keys(setting.roles).includes(userSignInfo.roleName)) {
-                delete userSignInfo.history[userSignInfo.roleName]
-                // 用户信息
-                setUserSignInfo()
-            }
             hasSign = true
         } else {
             // 签到排名
@@ -74,7 +70,14 @@ export class Help extends plugin {
             // 签到日期
             userSignInfo.date = today
             // 用户信息
-            setUserSignInfo()
+            userSignInfo.roleName = lodash.sample(Object.keys(setting.roles))
+            userSignInfo.roleImg = lodash.sample(setting.getRoleImgs(userSignInfo.roleName))
+            if (userSignInfo.roleImg) {
+                userSignInfo.roleImg = userSignInfo.roleImg.split('/resources')[1]
+            } else {
+                userSignInfo.roleImg = ''
+            }
+            userSignInfo.history[userSignInfo.roleName] = (userSignInfo.history[userSignInfo.roleName] || 0) + 1
         }
         // 保存签到数据
         setting.saveUserData(e.group_id, e.user_id, userSignInfo)
