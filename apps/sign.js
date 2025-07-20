@@ -59,12 +59,13 @@ export class Help extends plugin {
             // 签到排名
             let signRanks = await redis.get('yoyo:sign:rank')
             signRanks = signRanks ? JSON.parse(signRanks) : {}
-            let signRank = signRanks[e.group_id] = signRanks[e.group_id] || [today, 0]
-            signRank = signRank[0] == today ? signRank : [today, 0]
-            userSignInfo.rank = ++signRank[1]
+            signRanks[e.group_id] = signRanks[e.group_id] || [today, 0]
+            signRanks[e.group_id] = signRanks[e.group_id][0] == today ? signRanks[e.group_id] : [today, 0]
+            signRanks[e.group_id][1]++
+            userSignInfo.rank = signRanks[e.group_id][1]
             redis.set('yoyo:sign:rank', JSON.stringify(signRanks))
             // 签到领星虹
-            userSignInfo.xinghong_sign = userSignInfo.rank <= 3 ? (4 - userSignInfo.rank) * 160 + 160 : 160
+            userSignInfo.xinghong_sign = userSignInfo.rank <= 3 ? ((4 - userSignInfo.rank) * 160 + 160) : 160
             if (!userSignInfo.xinghong) userSignInfo.xinghong = 0
             userSignInfo.xinghong += userSignInfo.xinghong_sign
             // 签到日期
