@@ -11,7 +11,6 @@ import { promisify } from 'util'
 import { pipeline } from 'stream'
 import lodash from 'lodash'
 import getQibos from '../api/getQibos.js'
-import getRoles from '../api/getRoles.js'
 class Setting {
   constructor() {
     // 云崽地址
@@ -60,10 +59,6 @@ class Setting {
     let _default = this.getData('default', 'role')
     let _list = this.getData('list', 'role')
     this.roles = lodash.merge(_default, _list || {})
-
-    const roleSkill = await getRoles()
-    this.roles = lodash.merge(this.roles, roleSkill || {})
-
     this.setData('list', this.roles, 'role')
     // 获取奇波
     // this.qibos = this.getData('qibo', this.qibos)
