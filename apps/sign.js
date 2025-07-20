@@ -35,6 +35,19 @@ export class Help extends plugin {
         // 今日日期
         let today = utils.formatDate(new Date(), 'YYYY-MM-DD')
         if (userSignInfo.date == today) {
+            // 过滤脏数据
+            if (!Object.keys(setting.roles).includes(userSignInfo.roleName)) {
+                delete userSignInfo.history[userSignInfo.roleName]
+                // 用户信息
+                userSignInfo.roleName = lodash.sample(Object.keys(setting.roles))
+                userSignInfo.roleImg = lodash.sample(setting.getRoleImgs(userSignInfo.roleName))
+                if (userSignInfo.roleImg) {
+                    userSignInfo.roleImg = userSignInfo.roleImg.split('/resources')[1]
+                } else {
+                    userSignInfo.roleImg = ''
+                }
+                userSignInfo.history[userSignInfo.roleName] = (userSignInfo.history[userSignInfo.roleName] || 0) + 1
+            }
             hasSign = true
         } else {
             // 签到排名
