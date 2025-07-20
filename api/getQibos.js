@@ -44,7 +44,6 @@ export default async () => {
         acc[cur.name] = cur
         return acc
     }, {})
-
     // 关闭浏览器
     await browser.close();
     return qibos

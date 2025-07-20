@@ -68,6 +68,32 @@
     color: #ff3300;
 }
 
+
+.sign-rank {
+    text-align: center;
+    font-size: 36px;
+    font-family: "ys";
+    color: #7aa6d9;
+    background-color: #f5f9fd;
+    padding:15px 0 10px 0;
+    margin-bottom: 10px;
+}
+
+.sign-rank-1 {
+    color: #3a6ea5;
+    background-color: #e6f0fa;
+}
+
+.sign-rank-2 {
+    color: #5a8ec8;
+    background-color: #eef5fc;
+}
+
+.sign-history-title {
+    font-size: 24px;
+    /* text-align: center; */
+}
+
 .sign-history {
     margin: 10px 10px 10px 30px;
     color: grey;
@@ -75,16 +101,8 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    flex-wrap: wrap;
     /* 文本不换行 */
-    white-space: nowrap;
-}
-
-.sign-history-roles {
-    /* 文本换行 */
-    white-space: normal;
-}
-
-.sign-history-roles span {
     white-space: nowrap;
 }
 
@@ -93,12 +111,16 @@
 }
 
 .sign-daily {
+    font-size: 24px;
+}
+
+.sign-daily-from {
+    text-align: right;
+    font-size: 20px;
+}
+
+.border {
     /* 浅灰偏白 */
-    border-radius: 30px;
-    background-image: url(https://plat-cdn.manjuu.com/platform/P3OfficialWebsite/prod/_next/static/media/background_detail.209134db.png);
-    background-repeat: no-repeat;
-    background-position: 0 100%;
-    background-size: cover;
     -webkit-backdrop-filter: blur(.05rem);
     backdrop-filter: blur(0.05rem);
     background-color: rgba(0, 0, 0, 0.05);
@@ -110,12 +132,6 @@
     color: rgb(0, 0, 0, 0.9);
     /* 可选：添加边框圆角 */
     border-radius: 10px;
-    margin: 20px 30px;
+    margin: 10px 30px;
     padding: 20px;
-    font-size: 24px;
-}
-
-.sign-daily-from {
-    text-align: right;
-    font-size: 20px;
 }

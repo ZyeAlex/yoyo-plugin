@@ -8,27 +8,35 @@
     <div class="background" style="background-image: url({{pluResPath}}{{roleImg}})"></div>
     <img class="sign-img" src="{{pluResPath}}{{roleImg}}" alt="">
     <div class="sign-text">
-        <div><span class="{{hasSign&&'has-sign'}}">{{hasSign?'今日已签到！':'签到成功！'}}</span><img class="sign-user-img"
-                src="{{userIcon}}" /><span class="sign-name">{{username}}</span> 的今日老婆是</div>
+        <div>
+            <span class="{{hasSign&&'has-sign'}}">{{hasSign?'今日已签到！':'签到成功！'}}</span>
+            <img class="sign-user-img" src="{{userIcon}}" />
+            <span class="sign-name">{{username}}</span>
+            的今日老婆是
+        </div>
         <div style="font-size:60px">「<span class="sign-role">{{roleName}}</span>」</div>
-        <div> 你已在本群签到{{day}}天！</div>
-        {{if day>1}}
-        <div class="sign-history">
-            <div>签到历史：</div>
-            <div class="sign-history-roles">
-                <% for(var i=0; i < hisRoles.length; i++){ %>
-                    <span>&nbsp;{{hisRoles[i][0]}}×{{hisRoles[i][1]}}&nbsp;</span>
-                    <% } %>
-            </div>
-        </div>
-        {{/if}}
-        {{if daily}}
-        <div class="sign-daily">
-            <div>{{daily.hitokoto}}</div>
-            <div class="sign-daily-from"> —— {{daily.from}} {{if daily.from_who}} ({{daily.from_who}}){{/if}} </div>
-        </div>
-        {{/if}}
     </div>
+    {{if rank}}
+    <div class="sign-rank sign-rank-{{rank}}"> 今日在本群第{{rank}}个签到！</div>
+    {{/if}}
+    {{if day>1}}
+    <div class="border">
+        <div class="sign-history-title">
+            累积签到{{day}}天，共获得{{roleNums}}个老婆：
+        </div>
+        <div class="sign-history">
+            <% for(var i=0; i < hisRoles.length; i++){ %>
+                <span>&nbsp;{{hisRoles[i][0]}}×{{hisRoles[i][1]}}&nbsp;</span>
+                <% } %>
+        </div>
+    </div>
+    {{/if}}
+    {{if daily}}
+    <div class="sign-daily border">
+        <div>{{daily.hitokoto}}</div>
+        <div class="sign-daily-from"> —— {{daily.from}} {{if daily.from_who}} ({{daily.from_who}}){{/if}} </div>
+    </div>
+    {{/if}}
     <div class="copyright">{{@sys.copyright}}</div>
 </div>
 {{/block}}

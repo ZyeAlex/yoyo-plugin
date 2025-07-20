@@ -40,8 +40,6 @@ export default async () => {
         }
         return acc
     }, {})
-
-    logger.info('roleSkills', roleSkills)
     // 关闭浏览器
     await browser.close();
     return roleSkills

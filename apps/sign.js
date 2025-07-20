@@ -32,35 +32,21 @@ export class Help extends plugin {
         let userSignInfo = setting.getUserSignInfo(e.group_id, e.user_id)
         // 今日是否签到
         let hasSign = false
-
-        // userSignInfo = {
-        //     date:'2022-01-01',
-        //     roleName: '星临者',
-        //     roleImg: '/img/role/星临者/b41aff87ba2e2ea1692d5a0f5933d6b9.jpg',
-        //     history:{
-
-        //     }
-        // }
-
-        // 兼容老项目的userSignList
-        if (Array.isArray(userSignInfo)) {
-            userSignInfo = {
-                date: utils.formatDate(userSignInfo[0]?.time, 'YYYY-MM-DD'),
-                roleName: userSignInfo[0]?.roleName,
-                roleImg: userSignInfo[0]?.roleImg,
-                history: userSignInfo.reduce((acc, { roleName }) => {
-                    acc[roleName] = (acc[roleName] || 0) + 1;
-                    return acc;
-                }, {})
-            }
-        }
-
-
-
-        if (userSignInfo.date == utils.formatDate(new Date(), 'YYYY-MM-DD')) {
+        // 今日日期
+        let today = utils.formatDate(new Date(), 'YYYY-MM-DD')
+        if (userSignInfo.date == today) {
             hasSign = true
         } else {
-            userSignInfo.date = utils.formatDate(new Date(), 'YYYY-MM-DD')
+            // 签到排名
+            let signRanks = await redis.get('yoyo:sign:rank')
+            signRanks = signRanks ? JSON.parse(signRanks) : {}
+            let signRank = signRanks[e.group_id] = signRanks[e.group_id] || [today, 0]
+            signRank = signRank[0] == today ? signRank : [today, 0]
+            userSignInfo.rank = ++signRank[1]
+            redis.set('yoyo:sign:rank', JSON.stringify(signRanks))
+            // 签到日期
+            userSignInfo.date = today
+            // 用户信息
             userSignInfo.roleName = lodash.sample(Object.keys(setting.roles))
             userSignInfo.roleImg = lodash.sample(setting.getRoleImgs(userSignInfo.roleName))
             if (userSignInfo.roleImg) {
@@ -86,6 +72,8 @@ export class Help extends plugin {
             username: e.sender.nickname || e.sender.card || '你',
             userIcon: `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`,
             hisRoles: Object.entries(userSignInfo.history).sort((a, b) => b[1] - a[1]),
+            roleNums: Object.keys(userSignInfo.history).length,
+            rank: userSignInfo.rank,
             day: Object.values(userSignInfo.history).reduce((a, b) => a + b)
         })
 

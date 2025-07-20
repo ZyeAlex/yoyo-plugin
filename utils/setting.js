@@ -243,7 +243,7 @@ class Setting {
       fs.mkdirSync(roleImgPath, { recursive: true })
     }
     // 查询文件夹下的所有图片列表
-    const roleImgs = fs.readdirSync(roleImgPath).map(fileName => `${this.path}/resources/img/role/${roleName}/${fileName}`)
+    let roleImgs = fs.readdirSync(roleImgPath).map(fileName => `${this.path}/resources/img/role/${roleName}/${fileName}`)
     return roleImgs
   }
   // 保存角色图片
