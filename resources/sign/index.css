@@ -74,19 +74,19 @@
     font-size: 36px;
     font-family: "ys";
     color: #7aa6d9;
-    background-color: #f5f9fd;
+    background-color: rgba(245, 249, 253, 0.6);
     padding:15px 0 10px 0;
     margin-bottom: 10px;
 }
 
 .sign-rank-1 {
-    color: #3a6ea5;
-    background-color: #e6f0fa;
+    color: #3a6ea589;
+    background-color: rgba(230, 240, 250, 0.6);
 }
 
 .sign-rank-2 {
     color: #5a8ec8;
-    background-color: #eef5fc;
+    background-color: rgba(238, 245, 252, 0.6);
 }
 
 .sign-history-title {

@@ -223,7 +223,12 @@ class Setting {
     if (!this.userSignData[group_id]) {
       this.userSignData[group_id] = this.getData(group_id, '/sign') || {}
     }
-    return this.userSignData[group_id][user_id] || { history: {} }
+    let userSignInfo = this.userSignData[group_id][user_id] || { history: {} }
+    // 防止错误数据
+    if (!userSignInfo.history) {
+      userSignInfo.history = {}
+    }
+    return userSignInfo
   }
   // 保存用户签到数据
   saveUserSignData(group_id, user_id, userSignList) {
