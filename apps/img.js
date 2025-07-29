@@ -118,6 +118,7 @@ export class Img extends plugin {
         }
         let imgs = []
         for (let val of e.message) {
+            logger.info(val)
             if (val.type === 'image') {
                 imgs.push(val)
             }

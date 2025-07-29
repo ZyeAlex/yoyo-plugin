@@ -30,15 +30,15 @@ export default async () => {
             });
         });
     });
-
+    logger.info( tables[7].slice(1))
     const qibos = tables[7].slice(1).map(row => {
         return {
-            img: row[0].match(/src="(.+?)"/)?.[1],
-            name: row[1].split('<br>')[0].trim().replace(/？/g, ''),
-            item1: row[2].split('-')[0].replace('N/A', ''),
-            item2: row[2].split('-')?.[1],
-            grow: row[3].replace(/[^0-9]/g, ''),
-            attr: row[4].split('<br>')[0].trim().replace(/？/g, '').replace('N/A', ''),
+            img: row[1].match(/src="(.+?)"/)?.[1],
+            name: row[2].split('<br>')[0].trim().replace(/？/g, ''),
+            item1: row[3].split('-')[0].replace('N/A', ''),
+            item2: row[3].split('-')?.[1],
+            grow: row[4].replace(/[^0-9]/g, ''),
+            attr: row[5].split('<br>')[0].trim().replace(/？/g, '').replace('N/A', ''),
         }
     }).filter(({ name }) => name).reduce((acc, cur) => {
         acc[cur.name] = cur
