@@ -1,6 +1,6 @@
 {
   "name": "yoyo-plugin",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "author": "子叶",
   "description": "云崽QQ机器人的《蓝色星原：旅谣》插件",
   "main": "main.js",
