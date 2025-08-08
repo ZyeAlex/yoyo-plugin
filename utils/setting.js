@@ -9,8 +9,7 @@ import fs from 'node:fs'
 import MD5 from 'md5'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
-import lodash from 'lodash'
-import getQibos from '../api/getQibos.js'
+import { getNotice, getQibos } from '../api/wiki.js'
 class Setting {
   constructor() {
     // 云崽地址
@@ -41,6 +40,9 @@ class Setting {
     // 签到缓存
     this.userData = {}
 
+
+    this.notices = []
+
   }
 
   /** 初始化配置 */
@@ -63,9 +65,11 @@ class Setting {
     this.roles = _default
     this.setData('list', this.roles, 'role')
     // 获取奇波
-    // this.qibos = this.getData('qibo', this.qibos)
-    this.qibos = await getQibos()
-    this.setData('qibo', this.qibos)
+    this.qibos = this.getData('qibo', this.qibos)
+    // this.qibos = await getQibos()
+    // this.setData('qibo', this.qibos)
+    // todo  获取公告  测试
+    this.notices = await getNotice()
   }
   // 监听配置文件
   watch(file, app, type = 'defSet') {

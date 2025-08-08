@@ -47,18 +47,9 @@ helpGroup:
     "desc": "每日签到并领取老婆"
 - "group": "动态"
   "list":
-  - "icon": 7
-    "title": "$数据"
-    "desc": "查看蓝色星原预约人数、粉丝量、PV播放量"
-  - "icon": 5
-    "title": "$新闻"
-    "desc": "查看蓝色星原近期活动"
   - "icon": 5
     "title": "$公告"
-    "desc": "查看蓝色星原近期新闻"
-  - "icon": 5
-    "title": "$活动"
-    "desc": "查看蓝色星原近期活动"
+    "desc": "查看Wiki最新公告"
 
 - "group": "管理功能"
   "auth": "master"

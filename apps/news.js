@@ -1,10 +1,7 @@
 import setting from '#setting'
 import utils from '#utils'
-import axios from 'axios'
-import puppeteer from 'puppeteer'
-import { bookingnum, announce, announcePage } from '../api/manjuu.js'
-import { getUserInfo, getVideoInfo, getVideoOnline } from '../api/bilibili.js'
-import common from '../../../lib/common/common.js'
+import { bookingnum } from '../api/manjuu.js'
+import { getUserInfo, getVideoInfo, getVideoOnline, shortUrl } from '../api/bilibili.js'
 /**
  * 新闻
  */
@@ -21,8 +18,8 @@ export class News extends plugin {
                     fnc: 'data'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?(最新|最近|近期)?(新闻|公告|活动)$`,
-                    fnc: 'announce'
+                    reg: `^${setting.rulePrefix}?公告$`,
+                    fnc: 'notices'
                 }
             ]
         })
@@ -71,41 +68,13 @@ export class News extends plugin {
 
 
     // 
-    async announce(e) {
-        const match = e.msg.match(new RegExp(`^${setting.rulePrefix}?(?:最新|最近|近期)?(.{2})$`))
-        logger.info(`^${setting.rulePrefix}(?:最新|最近|近期)?(.{2})$`)
-        const { total, list } = await announce({ 动态: 'latest', 新闻: 'news', 公告: 'announce', 活动: 'activity' }[match[1]])
-        if (!total) {
-            e.reply(`蓝原近期没有${match[1]}哦~`)
-            return
-        }
-        // e.reply(`蓝原近期有${total}条${match[1]}哦~\n\n${list.map((v, i) => `${i + 1}.${utils.formatDate(new Date(v.show_time), 'YYYY-M-D')} ${v.title}\n${announcePage(v.id)}`).join('\n')}`)
-        const browser = await puppeteer.launch({
-            headless: 'new', // 使用新的 Headless 模式
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
-        });
-        e.reply('正在获取近期' + match[1] + ',请稍后~', true)
-        let strList = [`蓝原近期有${total}条${match[1]}哦~`]
-        await Promise.all(list.map(async ({ show_time, id, title }, i) => {
-
-            const res = await axios.get(announcePage(id))
-            let html = res.data
-            const page = await browser.newPage();
-            try {
-                // 设置HTML内容
-                await page.setContent(html);
-                // 截取完整页面
-                const image = Buffer.from(await page.screenshot({ fullPage: true }))
-                logger.info(image)
-                strList = strList.concat(`\n\n${i + 1}.${utils.formatDate(new Date(show_time), 'YYYY-M-D')} ${title}\n`, segment.image(image), '详情请见>>> ' + announcePage(id) + '\n')
-            } catch (error) {
-                logger.error(`[截图] 错误详情: ${error.stack || error}`);
-            }
-        }))
-        logger.info(strList)
-        await this.e.reply(strList)
-        await common.sleep(5000)
-        browser.close()
+    async notices(e) {
+        let strs = 'BWiki近期公告\n——————————\n' + (await Promise.all(
+            setting.notices.map(async ({ url, title }, index) => {
+                return `${index + 1}.${title}: \n${(await shortUrl(url)).replace('https://', '')}`
+            })
+        )).join('\n')
+        e.reply(strs)
     }
 
 
