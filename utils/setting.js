@@ -9,7 +9,8 @@ import fs from 'node:fs'
 import MD5 from 'md5'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
-import { getNotice, getQibos } from '../api/wiki.js'
+import { getNotice } from '../api/wiki.js'
+import lodash from 'lodash'
 class Setting {
   constructor() {
     // 云崽地址
@@ -36,13 +37,6 @@ class Setting {
     // 匹配前缀
     this.rulePrefix = '(?:(?:' + this.config.rulePrefix.join('|') + ') *)'
 
-
-    // 签到缓存
-    this.userData = {}
-
-
-    this.notices = []
-
   }
 
   /** 初始化配置 */
@@ -58,12 +52,8 @@ class Setting {
   // 初始化请求
   async initReq() {
     // 获取角色
-    let _default = this.getData('default', 'role')
-    let _list = this.getData('list', 'role')
-    // todo 修复错误数据
-    // this.roles = lodash.merge(_default, _list || {})
-    this.roles = _default
-    this.setData('list', this.roles, 'role')
+    this.roles = this.getData('list', 'role')
+    this.nicknames = this.getData('nickname', 'role') || {}
     // 获取奇波
     this.qibos = this.getData('qibo', this.qibos)
     // this.qibos = await getQibos()
@@ -198,29 +188,39 @@ class Setting {
       return name
     }
     // 遍历
-    for (let roleName in this.roles) {
-      if (this.roles[roleName]?.nickname.includes?.(name)) {
+    for (let roleName in this.nicknames) {
+      if (this.nicknames[roleName]?.includes?.(name)) {
         return roleName
       }
     }
   }
   // 设置昵称
   setRoleNickname(name, nickname) {
-    if (!this.roles[name].nickname.includes(nickname)) {
-      this.roles[name].nickname.push(nickname)
+    if (!this.nicknames[name]) {
+      this.nicknames[name] = []
     }
-    return this.setData('list', this.roles, 'role')
+    if (!this.nicknames[name].includes(nickname)) {
+      this.nicknames[name].push(nickname)
+    }
+    return this.setData('nickname', this.nicknames, 'role')
   }
   // 删除昵称
   delRoleNickname(name, nickname) {
-    if (this.roles[name].nickname.includes(nickname)) {
-      this.roles[name].nickname.splice(this.roles[name].nickname.indexOf(nickname), 1)
+    if (!this.nicknames[name]) {
+      return '该角色没有此别名'
     }
-    return this.setData('list', this.roles, 'role')
+    if (this.nicknames[name].includes(nickname)) {
+      this.nicknames[name].splice(this.nicknames[name].indexOf(nickname), 1)
+    }
+    const res = this.setData('nickname', this.nicknames, 'role')
+    return res ? '删除别名成功' : '删除别名失败'
   }
 
   // 获取用户签到数据列表
   getUserData(group_id, user_id) {
+    if (!this.userData) {
+      this.userData = {}
+    }
     if (!this.userData[group_id]) {
       this.userData[group_id] = this.getData(group_id, '/user') || {}
     }

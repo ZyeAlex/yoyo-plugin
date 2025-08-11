@@ -1,7 +1,7 @@
 /node_modules/
 # 数据
 data/user/
-data/role/list.yaml
+data/role/nickname.yaml
 # 用户配置
 config/config.yaml
 # 用户上传资源

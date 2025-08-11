@@ -16,14 +16,20 @@
     </div>
     <div class="main-box role-list">
         {{each roles role idx}}
-        <div class="role-item">
-            {{if role.icon}}
-            <div class="role-img" style="background-position:calc(0% - {{104*role.icon[0]}}px) calc(100% +  {{104*role.icon[1]}}px)"></div>
-            {{/if}}
-            {{if !role.icon}}
-                <img class="role-img" src="{{pluResPath}}{{role.roleImg}}" alt="暂无图片" />
-            {{/if}}
-
+        <div class="role-item role-{{role.rarity}}">
+            <img class="role-img" src="{{pluResPath}}{{role.roleImg}}" alt="暂无图片" />
+            <div class="suffix">
+                {{if role.career}}
+                <img src="{{pluResPath}}/icon/职业/{{role.career}}.png" alt="">
+                <br>
+                {{/if}}
+                {{if role.attr}}
+                <img src="{{pluResPath}}/icon/属性/{{role.attr}}.png" alt="">
+                {{/if}}
+            </div>
+            <div class="role-rarity">
+                <img src="{{pluResPath}}/icon/avatar-frame/稀有度-{{role.rarity}}.png" alt="">
+            </div>
             <div class="role-text">{{role.roleName}}</div>
         </div>
         {{/each}}

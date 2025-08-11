@@ -21,7 +21,8 @@ export default function render(e, path, renderData = {}, cfg = {}) {
         defaultLayout: setting.path + '/resources/common/layout.html',
         rulePrefix: setting.config.rulePrefix[0] || '$',
         sys: {
-          copyright: `Created By ${Version.name} & ${name}<span class="version">${version}</span>`,
+          // copyright: `Created By ${Version.name} & ${name}<span class="version">${version}</span>`,
+          copyright: `<span class="version" style="font-size:24px">蓝色星原插件招美工共同开发，有意者进群联系：882552331</span>`,
           createdby: `Created By ${Version.name} & ${name}`
         },
         Math,

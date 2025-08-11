@@ -34,21 +34,17 @@ export class Role extends plugin {
     }
     // 角色列表
     async roleList(e) {
+
+        let roleList = Object.entries(setting.roles)
+
+        roleList.sort(([_, { rarity = 0 }], [__, { rarity: rarity2 = 0 }]) => rarity2 - rarity)
         return await render(e, 'role/list', {
-            roleImg: lodash.sample(setting.getRoleImgs(lodash.sample(Object.keys(setting.roles))))?.split('/resources')[1],
-            roles: Object.entries(setting.roles).map(([roleName, roleMsg]) => {
+            roleImg: lodash.sample(setting.getRoleImgs(lodash.sample(roleList[0])))?.split('/resources')[1],
+            roles: roleList.map(([roleName, roleMsg]) => {
                 let obj = {
                     roleName,
+                    roleImg: lodash.sample(setting.getRoleImgs(roleName))?.split('/resources')[1],
                     ...roleMsg
-                }
-                if (roleMsg.icon) {
-                    try {
-                        obj.icon = roleMsg.icon.map(item => item - 1)
-                    } catch (error) {
-                        obj.icon = roleMsg.icon.split(',').map(item => item - 1)
-                    }
-                } else {
-                    obj.roleImg = lodash.sample(setting.getRoleImgs(roleName))?.split('/resources')[1]
                 }
                 return obj
             })
@@ -74,8 +70,7 @@ export class Role extends plugin {
         if (!roleName) {
             return e.reply('未找到此角色')
         }
-        const res = setting.delRoleNickname(roleName, nickname)
-        return e.reply(res ? '别名删除成功' : '别名删除失败')
+        return e.reply(setting.delRoleNickname(roleName, nickname))
     }
     // 设置老婆
     setWife(e) {
