@@ -1,0 +1,49 @@
+.background {
+    filter: blur(30px);
+    /* 调整模糊程度 */
+}
+
+.pet-atlas {
+    display: flex;
+}
+
+.pet-box {
+    flex: 1;
+}
+
+.pet-info {
+    margin: 12px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.15);
+    box-shadow:
+        10px 10px 20px rgba(0, 0, 0, 0.1),
+        /* 深色阴影 */
+        -10px -10px 20px rgba(255, 255, 255, 0.5);
+    /* 白色高光 */
+    overflow: hidden;
+    font-size: 28px;
+}
+
+.pet-info div {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 10px;
+}
+
+.pet-info div:nth-child(even) {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.pet-info div span:first-child {
+    font-family: ys;
+    /* 烫金色 */
+    color: #81650b;
+}
+
+
+.pet-name {
+    font-size: 65px;
+    font-family: "nzbz";
+    text-align: right;
+    padding: 10px 20px 0 20px;
+}

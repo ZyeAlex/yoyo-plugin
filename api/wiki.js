@@ -44,7 +44,7 @@ export const getNotice = async () => {
 }
 
 
-export const getQibos = async () => {
+export const getPets = async () => {
 
     // puppeteer‌获取网页 https://wiki.biligame.com/ap/%E6%B8%B8%E6%88%8F%E4%BF%A1%E6%81%AF%E6%95%B4%E7%90%86%E5%90%88%E9%9B%86
 
@@ -76,7 +76,7 @@ export const getQibos = async () => {
         });
     });
     // logger.info( tables[7].slice(1))
-    const qibos = tables[7].slice(1).map(row => {
+    const pets = tables[7].slice(1).map(row => {
         return {
             img: row[1].match(/src="(.+?)"/)?.[1],
             name: row[2].split('<br>')[0].trim().replace(/？/g, ''),
@@ -91,5 +91,5 @@ export const getQibos = async () => {
     }, {})
     // 关闭浏览器
     await browser.close();
-    return qibos
+    return pets
 }

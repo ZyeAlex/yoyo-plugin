@@ -1,7 +1,7 @@
 import setting from '#setting'
 import render from '#render'
 import lodash from 'lodash'
-export class Qibo extends plugin {
+export class Pet extends plugin {
     constructor() {
         super({
             name: '[悠悠小助手]图鉴',
@@ -26,8 +26,8 @@ export class Qibo extends plugin {
             return this.roleAtlas(e, setting.getRoleName(name))
         }
         // 奇波
-        if (setting.qibos[name]) {
-            return this.qiboAtlas(e, name)
+        if (setting.pets[name]) {
+            return this.petAtlas(e, name)
         }
         return true
     }
@@ -50,9 +50,9 @@ export class Qibo extends plugin {
     }
 
     // 奇波卡片
-    async qiboAtlas(e, qiboName) {
-        return await render(e, 'qibo/atlas', {
-            ...setting.qibos[qiboName]
+    async petAtlas(e, petName) {
+        return await render(e, 'pet/atlas', {
+            ...setting.pets[petName]
         })
     }
 }

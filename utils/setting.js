@@ -55,9 +55,9 @@ class Setting {
     this.roles = this.getData('list', 'role')
     this.nicknames = this.getData('nickname', 'role') || {}
     // 获取奇波
-    this.qibos = this.getData('qibo', this.qibos)
-    // this.qibos = await getQibos()
-    // this.setData('qibo', this.qibos)
+    this.pets = this.getData('pet', this.pets)
+    // this.pets = await getPets()
+    // this.setData('pet', this.pets)
     // todo  获取公告  测试
     this.notices = await getNotice()
   }

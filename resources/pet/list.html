@@ -1,0 +1,34 @@
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/common.css" />
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/pet/list.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="container" id="container">
+    <div class="background" style="background-image: url({{img}})"></div>
+    <div class="head-box">
+        <div class="title">奇波列表 <span class="label">共{{length}}个</span> </div>
+        <div class="head-label">
+            <div class="label item">发送 <mark>{{rulePrefix}}菜鸡图鉴</mark> 查看奇波图鉴 </div>
+            <div class="suffix">数据来源：BWiki</div>
+        </div>
+    </div>
+    <div class="main-box">
+        {{each pets items}}
+        <div class="item-title">{{items[0]}} <span>共{{items[1].length}}个</span> </div>
+        <div class="pet-list">
+            {{each items[1] pet}}
+            <div class="pet-item">
+                <img height="116" width="116" src="{{pet.img}}" alt="图片加载失败" />
+                <div class="pet-text">
+                    <div class="pet-name">{{pet.name}}</div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+        {{/each}}
+    </div>
+    <div class="copyright">{{@sys.copyright}}</div>
+</div>
+
+{{/block}}

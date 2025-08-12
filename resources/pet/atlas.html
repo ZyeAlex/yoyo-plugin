@@ -1,0 +1,30 @@
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/common.css" />
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/pet/atlas.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="container" id="container">
+    <div class="background" style="background-image: url({{img}})"></div>
+    <div class="pet-atlas">
+        <img width="500" class="pet-img" src="{{img}}" alt="图片加载失败">
+        <div class="pet-box">
+            <div class="pet-name"> {{name}} </div>
+            <div class="pet-info">
+                <div> <span></span> <span> {{item1}}</span> </div>
+                {{if item2}}
+                <div> <span></span> <span>{{item2}}</span> </div>
+                {{/if}}
+                {{if grow}}
+                <div> <span>种族</span> <span>{{grow}}</span> </div>
+                {{/if}}
+                {{if attr}}
+                <div> <span>属性</span> <span>{{attr}}</span> </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    <div class="copyright">{{@sys.copyright}}</div>
+</div>
+{{/block}}
