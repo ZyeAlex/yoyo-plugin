@@ -5,8 +5,8 @@
 
 {{block 'main'}}
 <div class="container" id="container">
-    <div class="background" style="background-image: url({{pluResPath}}{{roleImg}})"></div>
-    <img class="sign-img" src="{{pluResPath}}{{roleImg}}" alt="">
+    <div class="background" style="background-image: url({{pluResPath}}{{heroImg}})"></div>
+    <img class="sign-img" src="{{pluResPath}}{{heroImg}}" alt="">
     {{if rank}}
     <div class="sign-rank sign-rank-{{rank}} {{hasSign&&'has-sign'}}">
         <div>{{hasSign?'你已签到！':'签到成功！'}}今日在本群第{{rank}}个签到！</div>
@@ -22,16 +22,16 @@
             <span class="sign-name">{{username}}</span>
             的今日老婆是
         </div>
-        <div style="font-size:60px">「<span class="sign-role">{{roleName}}</span>」</div>
+        <div style="font-size:60px">「<span class="sign-hero">{{heroName}}</span>」</div>
     </div>
     {{if day>1}}
     <div class="border">
         <div class="sign-history-title">
-            累积签到{{day}}天，共获得{{roleNums}}个老婆：
+            累积签到{{day}}天，共获得{{heroNums}}个老婆：
         </div>
         <div class="sign-history">
-            <% for(var i=0; i < hisRoles.length; i++){ %>
-                <span>&nbsp;{{hisRoles[i][0]}}×{{hisRoles[i][1]}}&nbsp;</span>
+            <% for(var i=0; i < hisHeros.length; i++){ %>
+                <span>&nbsp;{{hisHeros[i][0]}}×{{hisHeros[i][1]}}&nbsp;</span>
                 <% } %>
         </div>
     </div>

@@ -1,37 +1,37 @@
 {{extend defaultLayout}}
 
 {{block 'css'}}
-<link rel="stylesheet" type="text/css" href="{{pluResPath}}/role/atlas.css" />
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/hero/atlas.css" />
 {{/block}}
 
 {{block 'main'}}
-<div class="role-atlas">
-    <div class="role-img">
-        <div class="role-img-img" style="background-image: url('{{pluResPath}}{{roleImg}}');"></div>
+<div class="hero-atlas">
+    <div class="hero-img">
+        <div class="hero-img-img" style="background-image: url('{{pluResPath}}{{heroImg}}');"></div>
     </div>
-    <div class="role-box">
-        <div class="role-basic-message">
-            <div class="role-name">{{roleName}}</div>
-            <div class="role-race">
+    <div class="hero-box">
+        <div class="hero-basic-message">
+            <div class="hero-name">{{heroName}}</div>
+            <div class="hero-race">
                 <span>{{race}}</span>
                 {{if home}}
                 <span> {{home}}</span>
                 {{/if}}
             </div>
             {{if nickname?.length}}
-            <div class="role-nickname">
+            <div class="hero-nickname">
                 <div>别名：</div>
                 <div>
                     {{nickname.join('、')}}
                 </div>
             </div>
             {{/if}}
-            <div class="role-introduce">&nbsp;&nbsp;&nbsp;&nbsp;{{introduce}}</div>
+            <div class="hero-introduce">&nbsp;&nbsp;&nbsp;&nbsp;{{introduce}}</div>
             {{if words?.length}}
-            <div class="role-words">
+            <div class="hero-words">
                 台词：
                 {{each words word}}
-                <div class="role-word">{{word}}</div>
+                <div class="hero-word">{{word}}</div>
                 {{/each}}
             </div>
             {{/if}}

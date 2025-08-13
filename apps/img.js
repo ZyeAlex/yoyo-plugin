@@ -4,10 +4,10 @@ import lodash from 'lodash'
 import img from '../components/img.js'
 import common from '../../../lib/common/common.js'
 const imgReg = '(?:图片|照片|美图|美照)'
-// 缓存角色面板图片列表,给delRoleImg用，防止出现删除过程中索引变动问题
-const getRoleImgList = {}
-// 缓存角色面板图片列表,给getRoleImg用，遍历展示所有图片
-const getRoleImg = {}
+// 缓存角色面板图片列表,给delHeroImg用，防止出现删除过程中索引变动问题
+const getHeroImgList = {}
+// 缓存角色面板图片列表,给getHeroImg用，遍历展示所有图片
+const getHeroImg = {}
 
 export class Img extends plugin {
     constructor() {
@@ -19,101 +19,101 @@ export class Img extends plugin {
             rule: [
                 {
                     reg: `^${setting.rulePrefix}?(上传|添加).{0,10}${imgReg}$`,
-                    fnc: 'uploadRoleImg'
+                    fnc: 'uploadHeroImg'
                 },
                 {
                     reg: `^${setting.rulePrefix}?删除.{1,10}${imgReg}[0-9,， ]+$`,
-                    fnc: 'delRoleImg'
+                    fnc: 'delHeroImg'
                 },
                 {
                     reg: `^${setting.rulePrefix}?随机(角色)?${imgReg}$`,
-                    fnc: 'getRandomRoleImg'
+                    fnc: 'getRandomHeroImg'
                 },
                 {
                     reg: `^${setting.rulePrefix}?(?!上传|添加|随机(角色)?).{0,10}${imgReg}[0-9]*$`,
-                    fnc: 'getRoleImg'
+                    fnc: 'getHeroImg'
                 },
                 {
                     reg: `^${setting.rulePrefix}?.{1,10}${imgReg}(列表|表列|合集|集合)$`,
-                    fnc: 'getRoleImgList'
+                    fnc: 'getHeroImgList'
                 }
             ]
         })
     }
 
     // 角色图片
-    async getRoleImg(e, roleName, roleIndex) {
+    async getHeroImg(e, heroName, heroIndex) {
         // 从e.msg字符串里面匹配(\w)
-        if (!roleName) {
+        if (!heroName) {
             let _
-            [_, roleName, roleIndex] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}([0-9]*)$`))
+            [_, heroName, heroIndex] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}([0-9]*)$`))
             // 查询是否有此角色
-            roleName = setting.getRoleName(roleName)
+            heroName = setting.getHeroName(heroName)
         }
-        if (!roleName) return true
+        if (!heroName) return true
         // 当前角色图片
-        let roleImg = getRoleImg[roleName]
-        if (!roleImg?.length) {
-            roleImg = setting.getRoleImgs(roleName)
+        let heroImg = getHeroImg[heroName]
+        if (!heroImg?.length) {
+            heroImg = setting.getHeroImgs(heroName)
             // 从pixiv获取图片
             if (setting.config.pixiv) {
-                const msg = await e.reply(`正在从网络获取${roleName}图片~`, true)
-                roleImg = roleImg.concat(await img.lolicon(roleName))
+                const msg = await e.reply(`正在从网络获取${heroName}图片~`, true)
+                heroImg = heroImg.concat(await img.lolicon(heroName))
                 e?.group?.recallMsg(msg?.data?.message_id)
             }
         }
-        if (roleImg.length == 0) {
+        if (heroImg.length == 0) {
             await common.sleep(500)
-            e.reply(`什么都没查到呢~\n请「>上传${roleName}图片」`)
+            e.reply(`什么都没查到呢~\n请「>上传${heroName}图片」`)
             return
         }
         let img_url
-        if( roleIndex > 0 && getRoleImgList[roleName]?.length && getRoleImgList[roleName][roleIndex-1]){
-            img_url =  getRoleImgList[roleName][roleIndex-1]
+        if( heroIndex > 0 && getHeroImgList[heroName]?.length && getHeroImgList[heroName][heroIndex-1]){
+            img_url =  getHeroImgList[heroName][heroIndex-1]
         }else {
-            roleIndex = lodash.random(0, roleImg.length - 1)
-            img_url = roleImg[roleIndex]
-            roleImg.splice(roleIndex, 1)
+            heroIndex = lodash.random(0, heroImg.length - 1)
+            img_url = heroImg[heroIndex]
+            heroImg.splice(heroIndex, 1)
         }
         e.reply(segment.image(img_url))
     }
     // 角色图片列表
-    async getRoleImgList(e) {
+    async getHeroImgList(e) {
         // 从e.msg字符串里面匹配(\w)
-        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}列表$`))[1]
+        let heroName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}列表$`))[1]
         // 查询是否有此角色
-        roleName = setting.getRoleName(roleName)
-        if (!roleName) return true
-        getRoleImgList[roleName] = setting.getRoleImgs(roleName)
-        e.reply('正在查询角色' + roleName + '图片列表，请稍后...', true)
-        if (!getRoleImgList[roleName]?.length) {
-            e.reply(`什么都没查到呢~\n请「>上传${roleName}图片」`)
+        heroName = setting.getHeroName(heroName)
+        if (!heroName) return true
+        getHeroImgList[heroName] = setting.getHeroImgs(heroName)
+        e.reply('正在查询角色' + heroName + '图片列表，请稍后...', true)
+        if (!getHeroImgList[heroName]?.length) {
+            e.reply(`什么都没查到呢~\n请「>上传${heroName}图片」`)
             return
         }
-        let roleImgs = getRoleImgList[roleName].map(roleImg => roleImg.split('/resources')[1])
-        return await render(e, 'role/imgs', {
-            roleName,
-            roleImgs,
-            roleImg: lodash.sample(roleImgs)
+        let heroImgs = getHeroImgList[heroName].map(heroImg => heroImg.split('/resources')[1])
+        return await render(e, 'hero/imgs', {
+            heroName,
+            heroImgs,
+            heroImg: lodash.sample(heroImgs)
         })
     }
     // 随机角色图片
-    async getRandomRoleImg(e) {
-        const roles = Object.keys(setting.roles)
-        if (roles.length == 0) {
+    async getRandomHeroImg(e) {
+        const heros = Object.keys(setting.heros)
+        if (heros.length == 0) {
             e.reply('没有角色呢~')
             return false
         }
         // lodash 随机选一个
-        this.getRoleImg(e, lodash.sample(roles))
+        this.getHeroImg(e, lodash.sample(heros))
     }
     // 上传角色图片
-    async uploadRoleImg(e) {
+    async uploadHeroImg(e) {
         // 从e.msg字符串里面匹配(\w)
-        let roleName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(?:上传|添加)(.{0,10})${imgReg}$`))[1]
+        let heroName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(?:上传|添加)(.{0,10})${imgReg}$`))[1]
         // 查询是否有此角色
-        roleName = setting.getRoleName(roleName)
-        if (!roleName) {
+        heroName = setting.getHeroName(heroName)
+        if (!heroName) {
             return e.reply('未找到此角色')
         }
         let imgs = []
@@ -166,27 +166,27 @@ export class Img extends plugin {
         }
         // 保存图片
         const msg = e.reply([segment.at(e.user_id, lodash.truncate(e.sender.card, { length: 8 })), '\n正在上传图片，请稍候...'])
-        e.reply(await setting.setRoleImgs(roleName, imgs))
+        e.reply(await setting.setHeroImgs(heroName, imgs))
         e?.group?.recallMsg(msg?.data?.message_id)
     }
     // 删除角色图片
-    async delRoleImg(e) {
+    async delHeroImg(e) {
         // 从e.msg字符串里面匹配(\w)
-        let [_, roleName, select] = e.msg.match(new RegExp(`^${setting.rulePrefix}?删除(.{1,10})${imgReg}([0-9,， ]+)$`))
+        let [_, heroName, select] = e.msg.match(new RegExp(`^${setting.rulePrefix}?删除(.{1,10})${imgReg}([0-9,， ]+)$`))
         // 查询是否有此角色
-        roleName = setting.getRoleName(roleName)
-        if (!roleName) {
+        heroName = setting.getHeroName(heroName)
+        if (!heroName) {
             return e.reply('未找到此角色', true)
         }
-        if (!getRoleImgList[roleName]?.length) {
-            e.reply(`未获取到角色图片列表，请先「>${roleName}图片列表」`)
+        if (!getHeroImgList[heroName]?.length) {
+            e.reply(`未获取到角色图片列表，请先「>${heroName}图片列表」`)
         }
         if (!select) return
         select = select.trim().split(/[,， ]/).sort((a, b) => b - a)
-        let imgFiles = select.map(index => getRoleImgList[roleName][index - 1])
-        const res = setting.delRoleImg(roleName, imgFiles)
+        let imgFiles = select.map(index => getHeroImgList[heroName][index - 1])
+        const res = setting.delHeroImg(heroName, imgFiles)
         if (res) {
-            e.reply(`${roleName}图片${select.toString()}已删除`)
+            e.reply(`${heroName}图片${select.toString()}已删除`)
         }
     }
 }

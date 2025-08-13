@@ -1,36 +1,36 @@
 {{block 'css'}}
 <link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/common.css" />
-<link rel="stylesheet" type="text/css" href="{{pluResPath}}/role/list.css" />
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/hero/list.css" />
 {{/block}}
 
 
 {{block 'main'}}
 <div class="container" id="container">
-    <div class="background" style="background-image: url({{pluResPath}}{{roleImg}})"></div>
+    <div class="background" style="background-image: url({{pluResPath}}{{heroImg}})"></div>
     <div class="head-box">
-        <div class="title">角色列表 <span class="label">共{{roles.length}}个角色</span> </div>
+        <div class="title">角色列表 <span class="label">共{{heros.length}}个角色</span> </div>
         <div class="head-label">
             <div class="label item">发送 <mark>{{rulePrefix}}寒悠悠图鉴</mark> 查看角色图鉴 </div>
             <div class="label item">发送 <mark>{{rulePrefix}}寒悠悠图片列表</mark> 查看角色图片 </div>
         </div>
     </div>
-    <div class="main-box role-list">
-        {{each roles role idx}}
-        <div class="role-item role-{{role.rarity}}">
-            <img class="role-img" src="{{pluResPath}}{{role.roleImg}}" alt="暂无图片" />
+    <div class="main-box hero-list">
+        {{each heros hero idx}}
+        <div class="hero-item hero-{{hero.rarity}}">
+            <img class="hero-img" src="{{pluResPath}}{{hero.heroImg}}" alt="暂无图片" />
             <div class="suffix">
-                {{if role.career}}
-                <img src="{{pluResPath}}/icon/职业/{{role.career}}.png" alt="">
+                {{if hero.career}}
+                <img src="{{pluResPath}}/icon/职业/{{hero.career}}.png" alt="">
                 <br>
                 {{/if}}
-                {{if role.attr}}
-                <img src="{{pluResPath}}/icon/属性/{{role.attr}}.png" alt="">
+                {{if hero.attr}}
+                <img src="{{pluResPath}}/icon/属性/{{hero.attr}}.png" alt="">
                 {{/if}}
             </div>
-            <div class="role-rarity">
-                <img src="{{pluResPath}}/icon/avatar-frame/稀有度-{{role.rarity}}.png" alt="">
+            <div class="hero-rarity">
+                <img src="{{pluResPath}}/icon/avatar-frame/稀有度-{{hero.rarity}}.png" alt="">
             </div>
-            <div class="role-text">{{role.roleName}}</div>
+            <div class="hero-text">{{hero.heroName}}</div>
         </div>
         {{/each}}
     </div>

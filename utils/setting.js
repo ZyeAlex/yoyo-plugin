@@ -52,8 +52,8 @@ class Setting {
   // 初始化请求
   async initReq() {
     // 获取角色
-    this.roles = this.getData('list', 'role')
-    this.nicknames = this.getData('nickname', 'role') || {}
+    this.heros = this.getData('list', 'hero')
+    this.nicknames = this.getData('nickname', 'hero') || {}
     // 获取奇波
     this.pets = this.getData('pet', this.pets)
     // this.pets = await getPets()
@@ -182,37 +182,37 @@ class Setting {
 
 
   // 查询是否有此角色，有则返回角色原本名称
-  getRoleName(name) {
+  getHeroName(name) {
     // 直接返回角色名
-    if (name in this.roles) {
+    if (name in this.heros) {
       return name
     }
     // 遍历
-    for (let roleName in this.nicknames) {
-      if (this.nicknames[roleName]?.includes?.(name)) {
-        return roleName
+    for (let heroName in this.nicknames) {
+      if (this.nicknames[heroName]?.includes?.(name)) {
+        return heroName
       }
     }
   }
   // 设置昵称
-  setRoleNickname(name, nickname) {
+  setHeroNickname(name, nickname) {
     if (!this.nicknames[name]) {
       this.nicknames[name] = []
     }
     if (!this.nicknames[name].includes(nickname)) {
       this.nicknames[name].push(nickname)
     }
-    return this.setData('nickname', this.nicknames, 'role')
+    return this.setData('nickname', this.nicknames, 'hero')
   }
   // 删除昵称
-  delRoleNickname(name, nickname) {
+  delHeroNickname(name, nickname) {
     if (!this.nicknames[name]) {
       return '该角色没有此别名'
     }
     if (this.nicknames[name].includes(nickname)) {
       this.nicknames[name].splice(this.nicknames[name].indexOf(nickname), 1)
     }
-    const res = this.setData('nickname', this.nicknames, 'role')
+    const res = this.setData('nickname', this.nicknames, 'hero')
     return res ? '删除别名成功' : '删除别名失败'
   }
 
@@ -243,17 +243,17 @@ class Setting {
    */
 
   // 获取角色图片列表
-  getRoleImgs(roleName) {
-    let roleImgPath = `${this.path}/resources/img/role/${roleName}`
-    if (!fs.existsSync(roleImgPath)) {
-      fs.mkdirSync(roleImgPath, { recursive: true })
+  getHeroImgs(heroName) {
+    let heroImgPath = `${this.path}/resources/img/hero/${heroName}`
+    if (!fs.existsSync(heroImgPath)) {
+      fs.mkdirSync(heroImgPath, { recursive: true })
     }
     // 查询文件夹下的所有图片列表
-    let roleImgs = fs.readdirSync(roleImgPath).map(fileName => `${this.path}/resources/img/role/${roleName}/${fileName}`)
-    return roleImgs
+    let heroImgs = fs.readdirSync(heroImgPath).map(fileName => `${this.path}/resources/img/hero/${heroName}/${fileName}`)
+    return heroImgs
   }
   // 保存角色图片
-  async setRoleImgs(roleName, imageMessages) {
+  async setHeroImgs(heroName, imageMessages) {
     let str = ''
     let imgCount = 0
     for (let val of imageMessages) {
@@ -282,19 +282,19 @@ class Setting {
       }
 
       // 角色图片文件夹地址
-      let roleImgPath = `${this.path}/resources/img/role/${roleName}`
-      if (!fs.existsSync(roleImgPath)) {
-        fs.mkdirSync(roleImgPath, { recursive: true })
+      let heroImgPath = `${this.path}/resources/img/hero/${heroName}`
+      if (!fs.existsSync(heroImgPath)) {
+        fs.mkdirSync(heroImgPath, { recursive: true })
       }
 
-      let imgPath = `${roleImgPath}/${fileName}.${fileType}`
+      let imgPath = `${heroImgPath}/${fileName}.${fileType}`
       const streamPipeline = promisify(pipeline)
       await streamPipeline(response.body, fs.createWriteStream(imgPath))
       // 使用md5作为文件名
       let buffers = fs.readFileSync(imgPath)
       let base64 = Buffer.from(buffers, 'base64').toString()
       let md5 = MD5(base64)
-      let newImgPath = `${roleImgPath}/${md5}.${fileType}`
+      let newImgPath = `${heroImgPath}/${md5}.${fileType}`
       if (fs.existsSync(newImgPath)) {
         fs.unlink(newImgPath, (err) => { console.log('unlink', err) })
       }
@@ -302,13 +302,13 @@ class Setting {
       str += `✅图片上传成功\n`
       imgCount++
     }
-    str += `成功上传${imgCount}张${roleName}图片`
+    str += `成功上传${imgCount}张${heroName}图片`
     return str
   }
   // 删除图片
-  delRoleImg(roleName, imgFiles) {
-    let roleImgPath = `${this.path}/resources/img/role/${roleName}`
-    if (!fs.existsSync(roleImgPath)) {
+  delHeroImg(heroName, imgFiles) {
+    let heroImgPath = `${this.path}/resources/img/hero/${heroName}`
+    if (!fs.existsSync(heroImgPath)) {
       return
     }
     imgFiles.forEach(imgFile => {

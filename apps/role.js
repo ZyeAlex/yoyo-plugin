@@ -1,7 +1,7 @@
 import setting from '#setting'
 import render from '#render'
 import lodash from 'lodash'
-export class Role extends plugin {
+export class Hero extends plugin {
     constructor() {
         super({
             name: '[悠悠小助手]角色',
@@ -11,7 +11,7 @@ export class Role extends plugin {
             rule: [
                 {
                     reg: `^${setting.rulePrefix}?(角色列表|全部角色|所有角色)$`,
-                    fnc: 'roleList'
+                    fnc: 'heroList'
                 },
                 {
                     reg: `^${setting.rulePrefix}?.{1,10}设置(别名|昵称|称号|外号).{1,10}$`,
@@ -33,18 +33,18 @@ export class Role extends plugin {
         })
     }
     // 角色列表
-    async roleList(e) {
+    async heroList(e) {
 
-        let roleList = Object.entries(setting.roles)
+        let heroList = Object.entries(setting.heros)
 
-        roleList.sort(([_, { rarity = 0 }], [__, { rarity: rarity2 = 0 }]) => rarity2 - rarity)
-        return await render(e, 'role/list', {
-            roleImg: lodash.sample(setting.getRoleImgs(lodash.sample(roleList[0])))?.split('/resources')[1],
-            roles: roleList.map(([roleName, roleMsg]) => {
+        heroList.sort(([_, { rarity = 0 }], [__, { rarity: rarity2 = 0 }]) => rarity2 - rarity)
+        return await render(e, 'hero/list', {
+            heroImg: lodash.sample(setting.getHeroImgs(lodash.sample(heroList[0])))?.split('/resources')[1],
+            heros: heroList.map(([heroName, heroMsg]) => {
                 let obj = {
-                    roleName,
-                    roleImg: lodash.sample(setting.getRoleImgs(roleName))?.split('/resources')[1],
-                    ...roleMsg
+                    heroName,
+                    heroImg: lodash.sample(setting.getHeroImgs(heroName))?.split('/resources')[1],
+                    ...heroMsg
                 }
                 return obj
             })
@@ -52,25 +52,25 @@ export class Role extends plugin {
     }
     // 设置角色别名
     setNickname(e) {
-        let [_, roleName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})设置(?:别名|昵称|称号|外号)(.{1,10})$`))
-        roleName = setting.getRoleName(roleName)
-        if (!roleName) {
+        let [_, heroName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})设置(?:别名|昵称|称号|外号)(.{1,10})$`))
+        heroName = setting.getHeroName(heroName)
+        if (!heroName) {
             return e.reply('未找到此角色')
         }
         if (nickname.length > 10) {
             return e.reply('昵称长度不能超过10位！')
         }
-        const res = setting.setRoleNickname(roleName, nickname)
+        const res = setting.setHeroNickname(heroName, nickname)
         return e.reply(res ? '别名设置成功' : '别名设置失败')
     }
     // 删除角色别名
     delNickname(e) {
-        let [_, roleName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})删除(?:别名|昵称|称号|外号)(.{1,10})$`))
-        roleName = setting.getRoleName(roleName)
-        if (!roleName) {
+        let [_, heroName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})删除(?:别名|昵称|称号|外号)(.{1,10})$`))
+        heroName = setting.getHeroName(heroName)
+        if (!heroName) {
             return e.reply('未找到此角色')
         }
-        return e.reply(setting.delRoleNickname(roleName, nickname))
+        return e.reply(setting.delHeroNickname(heroName, nickname))
     }
     // 设置老婆
     setWife(e) {

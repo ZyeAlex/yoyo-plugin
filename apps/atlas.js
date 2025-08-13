@@ -20,10 +20,10 @@ export class Pet extends plugin {
     atlas(e) {
         // 名称
         let name = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})(角色|奇波)?(图鉴|卡片|card|Card)$`))[1]
-        logger.info(name, setting.getRoleName(name))
+        logger.info(name, setting.getHeroName(name))
         // 角色
-        if (setting.getRoleName(name)) {
-            return this.roleAtlas(e, setting.getRoleName(name))
+        if (setting.getHeroName(name)) {
+            return this.heroAtlas(e, setting.getHeroName(name))
         }
         // 奇波
         if (setting.pets[name]) {
@@ -32,20 +32,20 @@ export class Pet extends plugin {
         return true
     }
     // 角色图鉴
-    async roleAtlas(e, roleName) {
+    async heroAtlas(e, heroName) {
         // 角色图片
-        let roleImg = lodash.sample(setting.getRoleImgs(roleName))
-        if (roleImg) {
-            roleImg = roleImg.split('/resources')[1]
+        let heroImg = lodash.sample(setting.getHeroImgs(heroName))
+        if (heroImg) {
+            heroImg = heroImg.split('/resources')[1]
         } else {
-            roleImg = ''
+            heroImg = ''
         }
         // 角色信息
-        let roleMsg = setting.roles[roleName] || {}
-        return await render(e, 'role/atlas', {
-            roleName,
-            roleImg,
-            ...roleMsg
+        let heroMsg = setting.heros[heroName] || {}
+        return await render(e, 'hero/atlas', {
+            heroName,
+            heroImg,
+            ...heroMsg
         })
     }
 

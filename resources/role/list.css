@@ -1,24 +1,24 @@
-.role-list {
+.hero-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
 }
 
-.role-list::after {
+.hero-list::after {
     content: "";
     flex: auto;
     min-width: 100px;
     /* 或指定宽度，如 width: 30% */
 }
 
-.role-item {
+.hero-item {
     margin: 5px 6px;
     border-radius: 10px;
     overflow: hidden;
     position: relative;
 }
 
-.role-img {
+.hero-img {
     object-fit: cover;
     object-position: 50% 20%;
     width: 115px;
@@ -27,46 +27,46 @@
     display: inline-block;
 }
 
-.role-rarity {
+.hero-rarity {
     height: 0;
     overflow: visible;
 }
 
-.role-rarity img {
+.hero-rarity img {
     height: 20px;
     margin-left: 50%;
     transform: translate(-50%, -12px);
 }
 
-.role-text {
+.hero-text {
     width: 100%;
     text-align: center;
 }
 
-.role-4 .role-text {
+.hero-4 .hero-text {
     padding: 5px 0 3px 0;
     border-top: 3px solid #945aff;
     background-image: linear-gradient(to bottom, #2d1b4d, #2d1b4d, #190f2b, #050309);
 }
 
-.role-5 .role-text {
+.hero-5 .hero-text {
     padding: 5px 0 3px 0;
     border-top: 3px solid #ecc566;
     background-image: linear-gradient(to bottom, #473b1f, #473b1f, #2b2413, #080704);
 }
 
-.role-item .suffix {
+.hero-item .suffix {
     position: absolute;
     top: 3px;
     right: 3px;
 }
 
-.role-item .suffix img {
+.hero-item .suffix img {
     width: 25px;
     background-color: #a69fff;
     border-radius: 50%;
 }
 
-.role-item .suffix br + img {
+.hero-item .suffix br + img {
     margin-top: 3px;
 }

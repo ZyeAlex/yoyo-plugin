@@ -2,18 +2,18 @@
 
 
 
-.role-imgs {
+.hero-imgs {
     display: flex;
     flex-wrap: wrap;
     padding-bottom: 24px;
 }
 
-.role-img {
+.hero-img {
     margin: 10px 0 0 10px;
 }
 
 
-.role-text {
+.hero-text {
     width: 100%;
     text-align: center;
     background-color: hsla(0, 0%, 100%, 0.75);
