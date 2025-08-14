@@ -5,11 +5,14 @@
 
 import YAML from 'yaml'
 import chokidar from 'chokidar'
+import lodash from 'lodash'
 import fs from 'node:fs'
 import MD5 from 'md5'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
 import { getNotice } from '../api/wiki.js'
+import excel from './excel.js'
+import csv from './csv.js'
 class Setting {
   constructor() {
     // 云崽地址
@@ -80,7 +83,22 @@ class Setting {
 
 
 
-
+    // excel(this.path + '/utils/角色.xlsx').then(data => {
+    //   Object.values(this.heros).forEach(hero=>{
+    //     this.heros[hero.id]['技能'] = data[hero.id]?.['技能']
+    //     this.heros[hero.id]['台词'] = data[hero.id]?.['台词']
+    //   })
+    //   logger.info(this.heros['101003'])
+    //   this.setData('list', this.heros, 'hero')
+    // })
+    // csv(this.path + '/utils/牵绊.csv').then(data => {
+    //   logger.info(data)
+    //   Object.values(this.heros).forEach(hero => {
+    //     this.heros[hero.id]['牵绊'] = data[hero.id] || []
+    //   })
+    //   logger.info(this.heros['101003'])
+    //   this.setData('list', this.heros, 'hero')
+    // })
 
 
   }

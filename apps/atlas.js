@@ -2,7 +2,7 @@ import setting from '#setting'
 import render from '#render'
 import lodash from 'lodash'
 import avatar from '../resources/img/hero/HeroHalfs.js'
-
+import style from '../data/style.js'
 export class Pet extends plugin {
     constructor() {
         super({
@@ -37,9 +37,17 @@ export class Pet extends plugin {
     async heroAtlas(e, heroId) {
         // 角色信息
         let heroMsg = setting.heros[heroId] || {}
+        heroMsg['技能'] = Object.entries(heroMsg['技能']).reduce((s, [name, discibe]) => {
+            s[name] = discibe
+            .replace(/\n/g, "<br/>")
+            .replace(/(.)属性(物理|魔法)?伤害/, (_, a, b) => {
+                return `<span style="color:${style[a]}">${a}属性${b}伤害</span>`
+            })
+            return s
+        }, {})
         return await render(e, 'hero/atlas', {
             avatar: avatar[setting.heros[heroId]['名称']] || avatar['未知'],
-            ...heroMsg
+            ...heroMsg,
         })
     }
 

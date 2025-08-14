@@ -4,7 +4,7 @@
     flex-direction: column;
     position: relative;
     overflow: hidden;
-    font-size: 24px;
+    font-size: 32px;
 }
 
 .hero-img {
@@ -40,14 +40,16 @@
 }
 
 
-.hero-word {
+.hero-word,.hero-skill,.hero-ties {
 }
 
-.hero-word :first-child {
+.hero-word>:first-child,.hero-skill>:first-child,.hero-ties>.hero-tie>:first-child {
     position: relative;
+    font-size: 34px;
+    font-weight: bold;
 }
 
-.hero-word :first-child::before {
+.hero-word>:first-child::before,.hero-skill>:first-child::before,.hero-ties>.hero-tie>:first-child::before {
     content: "";
     position: absolute;
     left: 0;
@@ -63,35 +65,16 @@
     /* 竖线圆角 */
 }
 
-.hero-word :last-child {
+.hero-word>:last-child,.hero-skill>:last-child,.hero-ties>.hero-tie>:last-child {
     padding-left: 12px;
 }
 
-.hero-skill {}
 
-.hero-skill :first-child {
-    position: relative;
-}
 
-.hero-skill :first-child::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    /* 垂直居中 */
-    height: 80%;
-    /* 竖线高度，相对于背景色块 */
-    width: 4px;
-    background-color: #1890ff;
-    /* 竖线颜色 */
-    border-radius: 2px;
-    /* 竖线圆角 */
-}
 
-.hero-skill :last-child {
-    padding-left: 12px;
-}
+
+
+
 
 
 .border {
