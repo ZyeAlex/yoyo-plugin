@@ -28,50 +28,50 @@
     <div class="hero-words border">
         <div class="hero-word">
             <div>【台词】</div>
-            <div>{{台词.台词}}</div>
+            <div>{{@台词.台词}}</div>
         </div>
         <div class="hero-word">
             <div>【自我介绍】</div>
-            <div>{{台词.自我介绍}}</div>
+            <div>{{@台词.自我介绍}}</div>
         </div>
         <div class="hero-word">
             <div>【详情1】</div>
-            <div>{{台词.详情1}}</div>
+            <div>{{@台词.详情1}}</div>
         </div>
         <div class="hero-word">
             <div>【详情2】</div>
-            <div>{{台词.详情2}}</div>
+            <div>{{@台词.详情2}}</div>
         </div>
         <div class="hero-word">
             <div>【详情3】</div>
-            <div>{{台词.详情3}}</div>
+            <div>{{@台词.详情3}}</div>
         </div>
         <div class="hero-word">
             <div>【关于自己1】</div>
-            <div>{{台词.关于自己1}}</div>
+            <div>{{@台词.关于自己1}}</div>
         </div>
         <div class="hero-word">
             <div>【关于自己2】</div>
-            <div>{{台词.关于自己2}}</div>
+            <div>{{@台词.关于自己2}}</div>
         </div>
         <div class="hero-word">
             <div>【关于星临者】</div>
-            <div>{{台词.关于星临者}}</div>
+            <div>{{@台词.关于星临者}}</div>
         </div>
         <div class="hero-word">
             <div>【世界见闻1】</div>
-            <div>{{台词.世界见闻1}}</div>
+            <div>{{@台词.世界见闻1}}</div>
         </div>
         <div class="hero-word">
             <div>【世界见闻2】</div>
-            <div>{{台词.世界见闻2}}</div>
+            <div>{{@台词.世界见闻2}}</div>
         </div>
     </div>
     <div class="hero-ties border">
         {{each 牵绊 tie idx}}
         <div class="hero-tie">
             <div>【牵绊{{tie.好感等级}}级 {{tie.剧情名称}}】</div>
-            <div>{{tie.台词内容}}</div>
+            <div>{{@tie.台词内容}}</div>
         </div>
         {{/each}}
     </div>

@@ -2,7 +2,7 @@
 <div align=center> <i>云崽QQ机器人的「蓝色星原：旅谣」插件</i> </div>
 <br/>
 <div align=center>
-<img src="https://img.shields.io/badge/QQ群-882552331-blue"  />
+<img src="https://img.shields.io/badge/QQ群-991709221-blue"  />
 </div>
 <br/>
 <div align=center>
@@ -20,7 +20,7 @@ background: linear-gradient(135deg,#ff0000, #ff3300, #ff6600, #ff9900);-webkit-b
 
 ### 交流群
 
-> 插件交流群(QQ): [882552331](https://qm.qq.com/q/h970mqW2KA)
+> 插件交流群(QQ): [991709221](https://qm.qq.com/q/h970mqW2KA)
 
 ### 使用说明
 
