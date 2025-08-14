@@ -38,6 +38,10 @@ export class Help extends plugin {
         // 今日日期
         let today = utils.formatDate(new Date(), 'YYYY-MM-DD')
 
+        // 兼容历史数据
+        userSignInfo.heroName = userSignInfo.heroName || userSignInfo.roleName
+        delete userSignInfo.roleName
+
         if (userSignInfo.date == today) {
             hasSign = true
         } else {

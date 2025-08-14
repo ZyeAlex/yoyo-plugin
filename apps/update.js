@@ -21,7 +21,7 @@ export class Update extends plugin {
           fnc: 'update_log'
         },
         {
-          reg: `${setting.rulePrefix}?(删除|清除|清空|重置)(无效|脏)数据$`,
+          reg: `${setting.rulePrefix}?(删除|清除|清空|重置)(错误|无效|脏)数据$`,
           fnc: 'clearErrorData'
         },
       ]
@@ -56,24 +56,29 @@ export class Update extends plugin {
     return true
   }
 
+  // 清除错误签到数据
   async clearErrorData(e) {
-
-    // 清除错误签到数据
     let userSignInfos = setting.getData(e.group_id, '/user')
+    // 备份
+    setting.setData(e.group_id + '-backup', userSignInfos, '/user')
     if (userSignInfos) {
       let str = ''
       const userIds = Object.keys(userSignInfos)
       //todo 清除无效userId
       userIds.forEach(userId => {
         let userInfo = userSignInfos[userId]
-        if (userInfo.heroName && !(userInfo.heroName in setting.heros)) {
+        // 兼容
+        userInfo.heroName = userInfo.heroName || userInfo.roleName
+        delete userInfo.roleName
+
+        if (userInfo.heroName && !(userInfo.heroName in setting.heroIds)) {
           delete userInfo.heroName
           delete userInfo.date
           delete userInfo.heroImg
         }
         if (userInfo.history) {
           Object.keys(userInfo.history).forEach(heroName => {
-            if (!(heroName in setting.heros)) {
+            if (!(heroName in setting.heroIds)) {
               str += `已清除${userId}:${heroName}的签到数据\n`
               delete userInfo.history[heroName]
             }

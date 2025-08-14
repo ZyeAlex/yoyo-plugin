@@ -21,7 +21,7 @@ export class Pet extends plugin {
 
     atlas(e) {
         // 名称
-        let name = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})(角色|奇波)?(图鉴|卡片|card|Card)$`))[1]
+        let name = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})(角色|奇波)?(图鉴|卡片|card|Card)(列表)?$`))[1]
         let heroId = setting.getHeroId(name)
         // 角色
         if (heroId) {
