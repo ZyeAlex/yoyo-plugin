@@ -1,6 +1,8 @@
 import setting from '#setting'
 import render from '#render'
 import lodash from 'lodash'
+import avatar from '../resources/img/hero/HeroHalfs.js'
+
 export class Pet extends plugin {
     constructor() {
         super({
@@ -20,10 +22,10 @@ export class Pet extends plugin {
     atlas(e) {
         // 名称
         let name = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})(角色|奇波)?(图鉴|卡片|card|Card)$`))[1]
-        logger.info(name, setting.getHeroName(name))
+        let heroId = setting.getHeroId(name)
         // 角色
-        if (setting.getHeroName(name)) {
-            return this.heroAtlas(e, setting.getHeroName(name))
+        if (heroId) {
+            return this.heroAtlas(e, heroId)
         }
         // 奇波
         if (setting.pets[name]) {
@@ -32,19 +34,11 @@ export class Pet extends plugin {
         return true
     }
     // 角色图鉴
-    async heroAtlas(e, heroName) {
-        // 角色图片
-        let heroImg = lodash.sample(setting.getHeroImgs(heroName))
-        if (heroImg) {
-            heroImg = heroImg.split('/resources')[1]
-        } else {
-            heroImg = ''
-        }
+    async heroAtlas(e, heroId) {
         // 角色信息
-        let heroMsg = setting.heros[heroName] || {}
+        let heroMsg = setting.heros[heroId] || {}
         return await render(e, 'hero/atlas', {
-            heroName,
-            heroImg,
+            avatar: avatar[setting.heros[heroId]['名称']] || avatar['未知'],
             ...heroMsg
         })
     }

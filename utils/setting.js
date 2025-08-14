@@ -10,7 +10,6 @@ import MD5 from 'md5'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
 import { getNotice } from '../api/wiki.js'
-import lodash from 'lodash'
 class Setting {
   constructor() {
     // 云崽地址
@@ -29,6 +28,17 @@ class Setting {
     /** 监听文件 */
     this.watcher = { config: {}, defSet: {} }
 
+
+
+    /**
+     * 角色数据
+     */
+    this.heroIds = {} // 角色名对应角色ID  { 寒悠悠: 101003 }
+    this.nicknames = {} // 角色昵称  {101003:['唐悠悠']}
+    this.heros = {} // 角色数据 { 101003:{ /* 角色数据 */ } }
+
+
+
     // 初始化
     this.initCfg()
     this.initReq()
@@ -36,7 +46,6 @@ class Setting {
     this.config = this.getConfig('config')
     // 匹配前缀
     this.rulePrefix = '(?:(?:' + this.config.rulePrefix.join('|') + ') *)'
-
   }
 
   /** 初始化配置 */
@@ -51,15 +60,29 @@ class Setting {
   }
   // 初始化请求
   async initReq() {
+
+
     // 获取角色
     this.heros = this.getData('list', 'hero')
     this.nicknames = this.getData('nickname', 'hero') || {}
+    // 根据this.heros 内的 { id:{name} }   得到 { name:id }
+    this.heroIds = Object.values(this.heros).reduce((acc, cur) => {
+      acc[cur['名称']] = cur.id
+      return acc
+    }, {})
+    this.setData('id', this.heroIds, 'hero')
     // 获取奇波
     this.pets = this.getData('pet', this.pets)
     // this.pets = await getPets()
     // this.setData('pet', this.pets)
     // todo  获取公告  测试
     this.notices = await getNotice()
+
+
+
+
+
+
   }
   // 监听配置文件
   watch(file, app, type = 'defSet') {
@@ -181,19 +204,26 @@ class Setting {
   }
 
 
-  // 查询是否有此角色，有则返回角色原本名称
-  getHeroName(name) {
-    // 直接返回角色名
+  // 查询是否有此角色，有则返回角色ID
+  getHeroId(name) {
+    // name为 heroId
     if (name in this.heros) {
       return name
     }
-    // 遍历
-    for (let heroName in this.nicknames) {
-      if (this.nicknames[heroName]?.includes?.(name)) {
-        return heroName
+    // name 为角色名
+    if (this.heroIds[name]) {
+      return this.heroIds[name]
+    }
+    if (!(name in this.heroIds)) {
+      // 遍历
+      for (let heroId in this.nicknames) {
+        if (this.nicknames[heroId]?.includes?.(name)) {
+          return heroId
+        }
       }
     }
   }
+
   // 设置昵称
   setHeroNickname(name, nickname) {
     if (!this.nicknames[name]) {
@@ -243,17 +273,17 @@ class Setting {
    */
 
   // 获取角色图片列表
-  getHeroImgs(heroName) {
-    let heroImgPath = `${this.path}/resources/img/hero/${heroName}`
+  getHeroImgs(heroId) {
+    let heroImgPath = `${this.path}/resources/img/hero/img/${this.heros[heroId]['名称']}`
     if (!fs.existsSync(heroImgPath)) {
       fs.mkdirSync(heroImgPath, { recursive: true })
     }
     // 查询文件夹下的所有图片列表
-    let heroImgs = fs.readdirSync(heroImgPath).map(fileName => `${this.path}/resources/img/hero/${heroName}/${fileName}`)
+    let heroImgs = fs.readdirSync(heroImgPath).map(fileName => `${this.path}/resources/img/hero/img/${this.heros[heroId]['名称']}/${fileName}`)
     return heroImgs
   }
   // 保存角色图片
-  async setHeroImgs(heroName, imageMessages) {
+  async setHeroImgs(heroId, imageMessages) {
     let str = ''
     let imgCount = 0
     for (let val of imageMessages) {
@@ -282,7 +312,7 @@ class Setting {
       }
 
       // 角色图片文件夹地址
-      let heroImgPath = `${this.path}/resources/img/hero/${heroName}`
+      let heroImgPath = `${this.path}/resources/img/hero/img/${this.heros[heroId]['名称']}`
       if (!fs.existsSync(heroImgPath)) {
         fs.mkdirSync(heroImgPath, { recursive: true })
       }
@@ -302,12 +332,12 @@ class Setting {
       str += `✅图片上传成功\n`
       imgCount++
     }
-    str += `成功上传${imgCount}张${heroName}图片`
+    str += `成功上传${imgCount}张${this.heros[heroId]['名称']}图片`
     return str
   }
   // 删除图片
-  delHeroImg(heroName, imgFiles) {
-    let heroImgPath = `${this.path}/resources/img/hero/${heroName}`
+  delHeroImg(heroId, imgFiles) {
+    let heroImgPath = `${this.path}/resources/img/hero/img/${this.heros[heroId]['名称']}`
     if (!fs.existsSync(heroImgPath)) {
       return
     }

@@ -1,7 +1,6 @@
 import setting from '#setting'
 import render from '#render'
 import lodash from 'lodash'
-import img from '../components/img.js'
 import common from '../../../lib/common/common.js'
 const imgReg = '(?:图片|照片|美图|美照)'
 // 缓存角色面板图片列表,给delHeroImg用，防止出现删除过程中索引变动问题
@@ -42,25 +41,19 @@ export class Img extends plugin {
     }
 
     // 角色图片
-    async getHeroImg(e, heroName, heroIndex) {
+    async getHeroImg(e, heroId, heroIndex) {
         // 从e.msg字符串里面匹配(\w)
-        if (!heroName) {
-            let _
+        if (!heroId) {
+            let _, heroName
             [_, heroName, heroIndex] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}([0-9]*)$`))
             // 查询是否有此角色
-            heroName = setting.getHeroName(heroName)
+            heroId = setting.getHeroId(heroName)
         }
-        if (!heroName) return true
+        if (!heroId) return true
         // 当前角色图片
-        let heroImg = getHeroImg[heroName]
+        let heroImg = getHeroImg[heroId]
         if (!heroImg?.length) {
-            heroImg = setting.getHeroImgs(heroName)
-            // 从pixiv获取图片
-            if (setting.config.pixiv) {
-                const msg = await e.reply(`正在从网络获取${heroName}图片~`, true)
-                heroImg = heroImg.concat(await img.lolicon(heroName))
-                e?.group?.recallMsg(msg?.data?.message_id)
-            }
+            heroImg = setting.getHeroImgs(heroId)
         }
         if (heroImg.length == 0) {
             await common.sleep(500)
@@ -68,9 +61,9 @@ export class Img extends plugin {
             return
         }
         let img_url
-        if( heroIndex > 0 && getHeroImgList[heroName]?.length && getHeroImgList[heroName][heroIndex-1]){
-            img_url =  getHeroImgList[heroName][heroIndex-1]
-        }else {
+        if (heroIndex > 0 && getHeroImgList[heroId]?.length && getHeroImgList[heroId][heroIndex - 1]) {
+            img_url = getHeroImgList[heroId][heroIndex - 1]
+        } else {
             heroIndex = lodash.random(0, heroImg.length - 1)
             img_url = heroImg[heroIndex]
             heroImg.splice(heroIndex, 1)
@@ -82,15 +75,15 @@ export class Img extends plugin {
         // 从e.msg字符串里面匹配(\w)
         let heroName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10})${imgReg}列表$`))[1]
         // 查询是否有此角色
-        heroName = setting.getHeroName(heroName)
-        if (!heroName) return true
-        getHeroImgList[heroName] = setting.getHeroImgs(heroName)
+        let heroId = setting.getHeroId(heroName)
+        if (!heroId) return true
+        getHeroImgList[heroId] = setting.getHeroImgs(heroId)
         e.reply('正在查询角色' + heroName + '图片列表，请稍后...', true)
-        if (!getHeroImgList[heroName]?.length) {
+        if (!getHeroImgList[heroId]?.length) {
             e.reply(`什么都没查到呢~\n请「>上传${heroName}图片」`)
             return
         }
-        let heroImgs = getHeroImgList[heroName].map(heroImg => heroImg.split('/resources')[1])
+        let heroImgs = getHeroImgList[heroId].map(heroImg => heroImg.split('/resources')[1])
         return await render(e, 'hero/imgs', {
             heroName,
             heroImgs,
@@ -99,21 +92,21 @@ export class Img extends plugin {
     }
     // 随机角色图片
     async getRandomHeroImg(e) {
-        const heros = Object.keys(setting.heros)
-        if (heros.length == 0) {
+        const heroIds = Object.keys(setting.heros)
+        if (heroIds.length == 0) {
             e.reply('没有角色呢~')
             return false
         }
         // lodash 随机选一个
-        this.getHeroImg(e, lodash.sample(heros))
+        this.getHeroImg(e, lodash.sample(heroIds))
     }
     // 上传角色图片
     async uploadHeroImg(e) {
         // 从e.msg字符串里面匹配(\w)
         let heroName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(?:上传|添加)(.{0,10})${imgReg}$`))[1]
         // 查询是否有此角色
-        heroName = setting.getHeroName(heroName)
-        if (!heroName) {
+        let heroId = setting.getHeroId(heroName)
+        if (!heroId) {
             return e.reply('未找到此角色')
         }
         let imgs = []
@@ -166,7 +159,7 @@ export class Img extends plugin {
         }
         // 保存图片
         const msg = e.reply([segment.at(e.user_id, lodash.truncate(e.sender.card, { length: 8 })), '\n正在上传图片，请稍候...'])
-        e.reply(await setting.setHeroImgs(heroName, imgs))
+        e.reply(await setting.setHeroImgs(heroId, imgs))
         e?.group?.recallMsg(msg?.data?.message_id)
     }
     // 删除角色图片
@@ -174,17 +167,17 @@ export class Img extends plugin {
         // 从e.msg字符串里面匹配(\w)
         let [_, heroName, select] = e.msg.match(new RegExp(`^${setting.rulePrefix}?删除(.{1,10})${imgReg}([0-9,， ]+)$`))
         // 查询是否有此角色
-        heroName = setting.getHeroName(heroName)
-        if (!heroName) {
+        let heroId = setting.getHeroId(heroName)
+        if (!heroId) {
             return e.reply('未找到此角色', true)
         }
-        if (!getHeroImgList[heroName]?.length) {
+        if (!getHeroImgList[heroId]?.length) {
             e.reply(`未获取到角色图片列表，请先「>${heroName}图片列表」`)
         }
         if (!select) return
         select = select.trim().split(/[,， ]/).sort((a, b) => b - a)
-        let imgFiles = select.map(index => getHeroImgList[heroName][index - 1])
-        const res = setting.delHeroImg(heroName, imgFiles)
+        let imgFiles = select.map(index => getHeroImgList[heroId][index - 1])
+        const res = setting.delHeroImg(heroId, imgFiles)
         if (res) {
             e.reply(`${heroName}图片${select.toString()}已删除`)
         }

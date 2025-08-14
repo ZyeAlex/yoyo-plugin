@@ -5,10 +5,6 @@ subTitle: "yoyo-plugin (群:882552331)"
 # 图片
 imgMaxSize: 5 #上传图片大小限制 MB
 
-# pixiv
-pixiv: false # 角色图片是否从pixiv获取  (质量不稳定)
-excludeAI: true # 包含AI图片
-
 # 监测PV播放量
 PVList:
 - BV1Jr421n7n4

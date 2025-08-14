@@ -38,21 +38,6 @@ export class Help extends plugin {
         // 今日日期
         let today = utils.formatDate(new Date(), 'YYYY-MM-DD')
 
-
-
-        // 兼容老项目的userSignList
-        if (Array.isArray(userSignInfo)) {
-            userSignInfo = {
-                date: utils.formatDate(userSignInfo[0]?.time, 'YYYY-MM-DD'),
-                heroName: userSignInfo[0]?.heroName,
-                heroImg: userSignInfo[0]?.heroImg,
-                history: userSignInfo.reduce((acc, { heroName }) => {
-                    acc[heroName] = (acc[heroName] || 0) + 1;
-                    return acc;
-                }, {})
-            }
-        }
-
         if (userSignInfo.date == today) {
             hasSign = true
         } else {
@@ -71,8 +56,9 @@ export class Help extends plugin {
             // 签到日期
             userSignInfo.date = today
             // 用户信息
-            userSignInfo.heroName = lodash.sample(Object.keys(setting.heros))
-            userSignInfo.heroImg = lodash.sample(setting.getHeroImgs(userSignInfo.heroName))
+            const heroId = lodash.sample(Object.keys(setting.heros))
+            userSignInfo.heroName = setting.heros[heroId]['名称']
+            userSignInfo.heroImg = lodash.sample(setting.getHeroImgs(heroId))
             if (userSignInfo.heroImg) {
                 userSignInfo.heroImg = userSignInfo.heroImg.split('/resources')[1]
             } else {
