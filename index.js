@@ -21,7 +21,7 @@ ret = await Promise.allSettled(ret)
 
 logger.info('仓库地址 https://github.com/ZyeAlex/yoyo-plugin')
 logger.info('Created By 叶子🍃')
-logger.info('插件群号: 882552331')
+logger.info('插件群号: 991709221')
 logger.info('—————————yoyo-plugin载入成功!———————————')
 
 let apps = {}

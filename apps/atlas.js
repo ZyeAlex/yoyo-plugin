@@ -37,9 +37,15 @@ export class Pet extends plugin {
     async heroAtlas(e, heroId) {
         // 角色信息
         let heroMsg = setting.heros[heroId] || {}
+        heroMsg['牵绊']?.forEach((item)=>{
+            item['台词内容'] = item['台词内容']?.replace(/\n/g, "<br/>&ensp;&ensp;")
+        })
+        heroMsg['台词'] = Object.entries(heroMsg['台词']).reduce((s, [name, discibe]) => {
+            s[name] = discibe?.replace(/\n/g, "<br/>&ensp;&ensp;")
+            return s
+        }, {})
         heroMsg['技能'] = Object.entries(heroMsg['技能']).reduce((s, [name, discibe]) => {
-            s[name] = discibe
-            .replace(/\n/g, "<br/>")
+            s[name] = discibe?.replace(/\n/g, "<br/>&ensp;&ensp;")
             .replace(/(.)属性(物理|魔法)?伤害/, (_, a, b) => {
                 return `<span style="color:${style[a]}">${a}属性${b}伤害</span>`
             })

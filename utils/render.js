@@ -21,7 +21,7 @@ export default function render(e, path, renderData = {}, cfg = {}) {
         defaultLayout: setting.path + '/resources/common/layout.html',
         rulePrefix: setting.config.rulePrefix[0] || '$',
         sys: {
-          copyright: `Created By ${Version.name} & ${name}<span class="version">${version}</span>`,
+          copyright: `Created By ${Version.name} & ${name}<span class="version">${version}</span> (插件群 991709221)`,
           createdby: `Created By ${Version.name} & ${name}`
         },
         Math,
