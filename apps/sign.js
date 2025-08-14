@@ -38,21 +38,6 @@ export class Help extends plugin {
         // 今日日期
         let today = utils.formatDate(new Date(), 'YYYY-MM-DD')
 
-
-
-        // 兼容老项目的userSignList
-        if (Array.isArray(userSignInfo)) {
-            userSignInfo = {
-                date: utils.formatDate(userSignInfo[0]?.time, 'YYYY-MM-DD'),
-                roleName: userSignInfo[0]?.roleName,
-                roleImg: userSignInfo[0]?.roleImg,
-                history: userSignInfo.reduce((acc, { roleName }) => {
-                    acc[roleName] = (acc[roleName] || 0) + 1;
-                    return acc;
-                }, {})
-            }
-        }
-
         if (userSignInfo.date == today) {
             hasSign = true
         } else {
@@ -71,14 +56,15 @@ export class Help extends plugin {
             // 签到日期
             userSignInfo.date = today
             // 用户信息
-            userSignInfo.roleName = lodash.sample(Object.keys(setting.roles))
-            userSignInfo.roleImg = lodash.sample(setting.getRoleImgs(userSignInfo.roleName))
-            if (userSignInfo.roleImg) {
-                userSignInfo.roleImg = userSignInfo.roleImg.split('/resources')[1]
+            const heroId = lodash.sample(Object.keys(setting.heros))
+            userSignInfo.heroName = setting.heros[heroId]['名称']
+            userSignInfo.heroImg = lodash.sample(setting.getHeroImgs(heroId))
+            if (userSignInfo.heroImg) {
+                userSignInfo.heroImg = userSignInfo.heroImg.split('/resources')[1]
             } else {
-                userSignInfo.roleImg = ''
+                userSignInfo.heroImg = ''
             }
-            userSignInfo.history[userSignInfo.roleName] = (userSignInfo.history[userSignInfo.roleName] || 0) + 1
+            userSignInfo.history[userSignInfo.heroName] = (userSignInfo.history[userSignInfo.heroName] || 0) + 1
         }
         // 保存签到数据
         setting.saveUserData(e.group_id, e.user_id, userSignInfo)
@@ -87,12 +73,12 @@ export class Help extends plugin {
             hasSign,
             xinghong: userSignInfo.xinghong,
             xinghong_sign: userSignInfo.xinghong_sign,
-            roleName: userSignInfo.roleName,
-            roleImg: userSignInfo.roleImg,
+            heroName: userSignInfo.heroName,
+            heroImg: userSignInfo.heroImg,
             username: e.sender.nickname || e.sender.card || '你',
             userIcon: `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`,
-            hisRoles: Object.entries(userSignInfo.history).sort((a, b) => b[1] - a[1]),
-            roleNums: Object.keys(userSignInfo.history).length,
+            hisHeros: Object.entries(userSignInfo.history).sort((a, b) => b[1] - a[1]),
+            heroNums: Object.keys(userSignInfo.history).length,
             rank: userSignInfo.rank,
             day: Object.values(userSignInfo.history).reduce((a, b) => a + b)
         })

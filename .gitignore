@@ -1,8 +1,9 @@
 /node_modules/
 # 数据
 data/user/
-data/role/nickname.yaml
+data/hero/nickname.yaml
+data/hero/id.yaml
 # 用户配置
 config/config.yaml
 # 用户上传资源
-resources/img/role/
+# resources/img/hero/

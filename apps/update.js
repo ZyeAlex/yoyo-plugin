@@ -66,16 +66,16 @@ export class Update extends plugin {
       //todo 清除无效userId
       userIds.forEach(userId => {
         let userInfo = userSignInfos[userId]
-        if (userInfo.roleName && !(userInfo.roleName in setting.roles)) {
-          delete userInfo.roleName
+        if (userInfo.heroName && !(userInfo.heroName in setting.heros)) {
+          delete userInfo.heroName
           delete userInfo.date
-          delete userInfo.roleImg
+          delete userInfo.heroImg
         }
         if (userInfo.history) {
-          Object.keys(userInfo.history).forEach(roleName => {
-            if (!(roleName in setting.roles)) {
-              str += `已清除${userId}:${roleName}的签到数据\n`
-              delete userInfo.history[roleName]
+          Object.keys(userInfo.history).forEach(heroName => {
+            if (!(heroName in setting.heros)) {
+              str += `已清除${userId}:${heroName}的签到数据\n`
+              delete userInfo.history[heroName]
             }
           })
         }

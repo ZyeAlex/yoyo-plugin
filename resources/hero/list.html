@@ -1,0 +1,42 @@
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/common.css" />
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/hero/list.css" />
+{{/block}}
+
+
+{{block 'main'}}
+<div class="container" id="container">
+    <div class="background" style="background-image: url({{pluResPath}}{{heroImg}})"></div>
+    <div class="head-box">
+        <div class="title">角色列表 <span class="label">共{{heros.length}}个角色</span> </div>
+        <div class="head-label">
+            <div class="label item">发送 <mark>{{rulePrefix}}寒悠悠图鉴</mark> 查看角色图鉴 </div>
+            <div class="label item">发送 <mark>{{rulePrefix}}寒悠悠图片列表</mark> 查看角色图片 </div>
+        </div>
+    </div>
+    <div class="main-box hero-list">
+        {{each heros hero idx}}
+        <div class="hero-item hero-{{hero['稀有度']}}">
+            <div class="hero-img"
+                style="background-position:-{{hero.avatar[0]*120}}px calc( 100% + 10px + {{hero.avatar[1]*147}}px );background-image:url({{pluResPath}}/img/hero/HeroHalfs.png);background-size:700px auto">
+                </div>
+            <div class="suffix">
+                {{if hero['职业']}}
+                <img src="{{pluResPath}}/icon/职业/{{hero['职业']}}.png" alt="">
+                <br>
+                {{/if}}
+                {{if hero['元素']}}
+                <img src="{{pluResPath}}/icon/属性/{{hero['元素']}}.png" alt="">
+                {{/if}}
+            </div>
+            <div class="hero-rarity">
+                <img src="{{pluResPath}}/icon/avatar-frame/稀有度-{{hero['稀有度']}}.png" alt="">
+            </div>
+            <div class="hero-text ">{{hero['名称']}}</div>
+        </div>
+        {{/each}}
+    </div>
+    <div class="copyright">{{@sys.copyright}}</div>
+</div>
+
+{{/block}}

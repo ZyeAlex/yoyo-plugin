@@ -1,0 +1,117 @@
+{{extend defaultLayout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/hero/atlas.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="hero-atlas">
+    <div style="display:flex">
+        <div class="hero-img">
+            <div class="hero-img-img"
+                style="background-position:-{{avatar[0]*514}}px calc( 100% + {{avatar[1]*625}}px );background-image:url({{pluResPath}}/img/hero/HeroHalfs.png);background-size:3000px auto">
+            </div>
+        </div>
+        <div class="hero-base">
+            <div>
+            <div class="hero-name">
+                {{名称}}
+            </div>
+            </div>
+            <div>{{种族}}</div>
+            <div>{{势力}}</div>
+            <div>{{稀有度}}</div>
+            <div>{{元素}}</div>
+            <div>{{武器类型}}</div>
+        </div>
+    </div>
+    <div class="hero-words border">
+        <div class="hero-word">
+            <div>【台词】</div>
+            <div>{{台词.台词}}</div>
+        </div>
+        <div class="hero-word">
+            <div>【自我介绍】</div>
+            <div>{{台词.自我介绍}}</div>
+        </div>
+        <div class="hero-word">
+            <div>【详情1】</div>
+            <div>{{台词.详情1}}</div>
+        </div>
+        <div class="hero-word">
+            <div>【详情2】</div>
+            <div>{{台词.详情2}}</div>
+        </div>
+        <div class="hero-word">
+            <div>【详情3】</div>
+            <div>{{台词.详情3}}</div>
+        </div>
+        <div class="hero-word">
+            <div>【关于自己1】</div>
+            <div>{{台词.关于自己1}}</div>
+        </div>
+        <div class="hero-word">
+            <div>【关于自己2】</div>
+            <div>{{台词.关于自己2}}</div>
+        </div>
+        <div class="hero-word">
+            <div>【关于星临者】</div>
+            <div>{{台词.关于星临者}}</div>
+        </div>
+        <div class="hero-word">
+            <div>【世界见闻1】</div>
+            <div>{{台词.世界见闻1}}</div>
+        </div>
+        <div class="hero-word">
+            <div>【世界见闻2】</div>
+            <div>{{台词.世界见闻2}}</div>
+        </div>
+    </div>
+    <div class="hero-skills border">
+        <div class="hero-skill">
+            <div>【普攻】</div>
+            <div>{{技能.普攻}} </div>
+        </div>
+        <div class="hero-skill">
+            <div>【重击】</div>
+            <div>{{技能.重击}} </div>
+        </div>
+        <div class="hero-skill">
+            <div>【闪击】</div>
+            <div>{{技能.闪击}} </div>
+        </div>
+        <div class="hero-skill">
+            <div>【跃击】</div>
+            <div>{{技能.跃击}} </div>
+        </div>
+        <div class="hero-skill">
+            <div>【星携技】</div>
+            <div>{{技能.星携技}} </div>
+        </div>
+        <div class="hero-skill">
+            <div>【极限反击】</div>
+            <div>{{技能.极限反击}} </div>
+        </div>
+        <div class="hero-skill">
+            <div>【精准防御】</div>
+            <div>{{技能.精准防御}} </div>
+        </div>
+        <div class="hero-skill">
+            <div>【完美招架】</div>
+            <div>{{技能.完美招架}} </div>
+        </div>
+        <div class="hero-skill">
+            <div>【集中闪避】</div>
+            <div>{{技能.集中闪避}} </div>
+        </div>
+        <div class="hero-skill">
+            <div>【星鸣技】</div>
+            <div>{{技能.星鸣技}} </div>
+        </div>
+        <div class="hero-skill">
+            <div>【星结合击】</div>
+            <div>{{技能.星结合击}} </div>
+        </div>
+    </div>
+</div>
+{{/block}}
