@@ -20,7 +20,7 @@ background: linear-gradient(135deg,#ff0000, #ff3300, #ff6600, #ff9900);-webkit-b
 
 ### 交流群
 
-> 插件交流群(QQ): [991709221](https://qm.qq.com/q/h970mqW2KA)
+> 插件交流群(QQ): [991709221](https://qm.qq.com/q/y37cqiS4Ks)
 
 ### 使用说明
 
