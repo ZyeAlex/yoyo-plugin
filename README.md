@@ -32,7 +32,7 @@ background: linear-gradient(135deg,#ff0000, #ff3300, #ff6600, #ff9900);-webkit-b
  
 ### 安装方法 
 
-1. 确保已部署 Yunzai Bot，如果未安装，推荐使用 NapCatQQ + TRSS-Yunzai 的机器人部署方案
+1. 确保已部署 Yunzai Bot，如果未安装，推荐使用 [Lagrange](https://lgr.928100.xyz/docs/Win.html) + [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai) 的机器人部署方案
 
 2. 推荐使用git进行安装，方便后续升级，在Yunzai根目录内打开终端执行以下命令
   - gitee

@@ -10,15 +10,21 @@ export default function render(e, path, renderData = {}, cfg = {}) {
   let packageJson = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'));
   const name = packageJson.name || 'yoyo-plugin'
   const version = packageJson.version || Version.version
+
+  // 遍历 setting.path + '/resources/common' 下的html, 保存为 { name:'path/name.html' }
+  let commonHtml = {}
+  fs.readdirSync(setting.path + '/resources/common').forEach(file => {
+    if (file.endsWith('.html')) {
+      commonHtml[file.replace('.html', '')] = setting.path + '/resources/common/' + file
+    }
+  })
+
   return e.runtime.render('yoyo-plugin', path, renderData, {
     ...cfg,
     beforeRender({ data }) {
-      let resPath = data.pluResPath
       return {
         ...data,
-        resPath,
-        layoutPath: setting.path + '/resources/common/',
-        defaultLayout: setting.path + '/resources/common/layout.html',
+        ...commonHtml,
         rulePrefix: setting.config.rulePrefix[0] || '$',
         sys: {
           copyright: `Created By ${Version.name} & ${name}<span class="version">${version}</span> (插件群 991709221)`,

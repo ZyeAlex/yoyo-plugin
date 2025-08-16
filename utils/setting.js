@@ -5,14 +5,11 @@
 
 import YAML from 'yaml'
 import chokidar from 'chokidar'
-import lodash from 'lodash'
 import fs from 'node:fs'
 import MD5 from 'md5'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
 import { getNotice } from '../api/wiki.js'
-import excel from './excel.js'
-import csv from './csv.js'
 class Setting {
   constructor() {
     // 云崽地址

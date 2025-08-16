@@ -13,6 +13,10 @@ export class Help extends plugin {
           reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)?(帮助|help|小?助手)$`,
           fnc: 'help'
         },
+        {
+          reg: `^${setting.rulePrefix}test$`,
+          fnc: 'test'
+        },
       ]
     })
   }
@@ -26,5 +30,8 @@ export class Help extends plugin {
       },
       helpGroup
     })
+  }
+  async test(e) {
+    return await render(e, 'help/test', { })
   }
 }
