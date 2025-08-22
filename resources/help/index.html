@@ -1,0 +1,35 @@
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/common.css" />
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/help/index.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="container" id="container">
+  <div class="info-box">
+    <div class="head-box">
+      <div class="title">{{helpCfg.title||"悠悠小助手"}}</div>
+      <div class="label">{{helpCfg.subTitle || "yoyo-plugin (插件群:991709221)"}}</div>
+    </div>
+  </div>
+  {{each helpGroup group}}
+  {{set len = group?.list?.length || 0 }}
+  <div class="cont-box">
+    <div class="help-group">{{group.group}}</div>
+    {{if len > 0}}
+    <div class="help-table">
+      <div class="tr">
+        {{each group.list help idx}}
+        <div class="td">
+          <span class="help-icon" style="{{help.css}}"></span>
+          <strong class="help-title">{{help.title.replace(/\$/g, rulePrefix)}}</strong>
+          <span class="help-desc">{{help.desc}}</span>
+        </div>
+        {{/each}}
+      </div>
+    </div>
+    {{/if}}
+  </div>
+  {{/each}}
+  <div class="copyright">{{@sys.copyright}}</div>
+</div>
+{{/block}}

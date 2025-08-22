@@ -1,0 +1,10 @@
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/common.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="container" id="container">
+    <%include(sprite, {})%>
+    <div class="copyright">{{@sys.copyright}}</div>
+</div>
+{{/block}}

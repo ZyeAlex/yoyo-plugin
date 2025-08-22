@@ -1,0 +1,70 @@
+# 通过setting.getData('help')获取本配置 前缀使用 $ 符号
+
+helpGroup:
+
+- "group": "基础"
+  "list":
+  - "icon": 3
+    "title": "$角色列表"
+    "desc": "查询所有角色列表"
+  - "icon": 1
+    "title": "$寒悠悠图鉴"
+    "desc": "查看角色图鉴"
+  - "icon": 1
+    "title": "$寒悠悠技能"
+    "desc": "查看角色技能"
+  - "icon": 1
+    "title": "$寒悠悠星赐"
+    "desc": "查看角色星赐"
+  - "icon": 1
+    "title": "$寒悠悠定弦"
+    "desc": "查看角色定弦(未开发)"
+  - "icon": 1
+    "title": "$寒悠悠语音"
+    "desc": "查看角色语音"
+  - "icon": 1
+    "title": "$寒悠悠攻略"
+    "desc": "查看角色攻略(未开发)"
+  - "icon": 3
+    "title": "$奇波列表"
+    "desc": "查询所有奇波列表"
+  - "icon": 3
+    "title": "$菜鸡图鉴"
+    "desc": "查询奇波图鉴"
+
+- "group": "角色"
+  "list":
+  - "icon": 3
+    "title": "$寒悠悠图片"
+    "desc": "随机获取一张角色图片"
+  - "icon": 3
+    "title": "$随机图片"
+    "desc": "随机获取一张角色的图片"
+  - "icon": 3
+    "title": "$上传寒悠悠图片"
+    "desc": "上传角色图片(引用上传)"
+  - "icon": 3
+    "title": "$寒悠悠图片列表"
+    "desc": "查询角色的所有图片"
+  - "icon": 3
+    "title": "$删除寒悠悠图片 2 18"
+    "desc": "从角色图片列表删除对应图片"
+
+- "group": "日常"
+  "list":
+  - "icon": 3
+    "title": "$签到"
+    "desc": "每日签到并领取老婆"
+
+- "group": "动态"
+  "list":
+  - "icon": 5
+    "title": "$公告"
+    "desc": "查看Wiki最新公告"
+
+- "group": "管理功能"
+  "auth": "master"
+  "list":
+  - "icon": 5
+    "title": "$清除无效数据"
+    "desc": "清除退群成员数据、错误的签到数据等"

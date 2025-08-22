@@ -1,0 +1,95 @@
+import puppeteer from 'puppeteer'
+export const getNotice = async () => {
+    // 启动无头浏览器
+    const browser = await puppeteer.launch({
+        headless: true, // 是否启用无头模式
+        args: ['--no-sandbox', '--disable-setuid-sandbox'] // 额外参数，用于提高某些环境下的兼容性
+    });
+
+    // 创建新页面
+    const page = await browser.newPage();
+
+    // 导航到目标网页
+    await page.goto('https://wiki.biligame.com/ap');
+
+    // 等待页面加载完成（可选，根据页面加载情况调整）
+    await page.waitForSelector('.BOX-title-1');
+
+
+    // 提取class为 BOX-title-1且text内容包含“公告”的节点的下一个节点
+    const notice = await page.evaluate(() => {
+        const noticeNodes = document.querySelectorAll('.BOX-title-1');
+        const noticeNode = Object.values(noticeNodes).find(node => node.textContent.includes('公告'));
+        if (noticeNode) {
+            const nextNode = noticeNode.nextElementSibling;
+            if (nextNode && noticeNode.textContent.includes('公告')) {
+                // nextNode 下面的 div  下面的第二个 span
+                const spans = nextNode.querySelectorAll('div > span:nth-child(2)');
+                return Object.values(spans).map(span => {
+                    // span下面a标签的herf和a标签的内容
+                    const a = span.querySelector('a');
+                    return {
+                        url: a.href,
+                        title: a.textContent,
+                    };
+                })
+            }
+        }
+        return null;
+    });
+
+    // 关闭浏览器
+    await browser.close();
+    return notice
+}
+
+
+export const getPets = async () => {
+
+    // puppeteer‌获取网页 https://wiki.biligame.com/ap/%E6%B8%B8%E6%88%8F%E4%BF%A1%E6%81%AF%E6%95%B4%E7%90%86%E5%90%88%E9%9B%86
+
+    // 启动无头浏览器
+    const browser = await puppeteer.launch({
+        headless: true, // 是否启用无头模式
+        args: ['--no-sandbox', '--disable-setuid-sandbox'] // 额外参数，用于提高某些环境下的兼容性
+    });
+
+    // 创建新页面
+    const page = await browser.newPage();
+
+    // 导航到目标网页
+    await page.goto('https://wiki.biligame.com/ap/%E6%B8%B8%E6%88%8F%E4%BF%A1%E6%81%AF%E6%95%B4%E7%90%86%E5%90%88%E9%9B%86');
+
+    // 等待页面加载完成（可选，根据页面加载情况调整）
+    await page.waitForSelector('.wikitable');
+
+    // 提取所有class为"wikitable"的表格内容
+    const tables = await page.evaluate(() => {
+        const tables = Array.from(document.querySelectorAll('table.wikitable'));
+        return tables.map(table => {
+            const rows = Array.from(table.rows);
+            return rows.map(row => {
+                const cells = Array.from(row.cells);
+                console.log('cells', cells);
+                return cells.map(cell => cell.innerHTML);
+            });
+        });
+    });
+    // logger.info( tables[7].slice(1))
+    const pets = tables[7].slice(1).map(row => {
+        return {
+            img: row[1].match(/src="(.+?)"/)?.[1],
+            name: row[2].split('<br>')[0].trim().replace(/？/g, ''),
+            item1: row[3].split('-')[0].replace('N/A', ''),
+            item2: row[3].split('-')?.[1],
+            grow: row[4].replace(/[^0-9]/g, ''),
+            attr: row[5].split('<br>')[0].trim().replace(/？/g, '').replace('N/A', ''),
+        }
+    }).filter(({ name }) => name).reduce((acc, cur) => {
+        acc[cur.name] = cur
+        return acc
+    }, {})
+    // 关闭浏览器
+    await browser.close();
+    return pets
+}

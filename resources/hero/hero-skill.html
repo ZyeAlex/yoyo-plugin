@@ -1,0 +1,32 @@
+<style>
+    .hero-skill {
+        margin-bottom: 24px;
+    }
+
+    .hero-skill-title {
+        display: flex;
+        align-items: center
+    }
+
+    .hero-skill-name {
+        font-size: 46px;
+        padding: 0 12px 0 12px;
+    }
+
+    .hero-skill>:first-child {
+        position: relative;
+        font-size: 34px;
+        font-weight: bold;
+    }
+</style>
+
+<div class="hero-skill">
+    <div class="hero-skill-title">
+        <img class="hero-skill-img" src="{{pluResPath}}/{{skill.icon}}">
+        <div class="hero-skill-name" style="color:{{elemColor}}">
+            {{skill.name}}
+        </div>
+        <div>lv.10</div>
+    </div>
+    <div>{{@skill.skillDescribe}} </div>
+</div>

@@ -1,0 +1,95 @@
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/common.css" />
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/hero/atlas.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="container" id="container">
+    <div class="background" style="background-image: url({{pluResPath}}{{img}})"></div>
+    <div class="hero-atlas">
+        <div style="display:flex;align-items:center;">
+            <img class="hero-img" src="{{pluResPath}}/{{avatarTexture?.[1]}}" onerror="this.onerror=null; this.src='{{pluResPath}}/UI/Atlas/HeroM/tex_icon_hero_m_default.png'">
+            <div class="hero-base">
+                {{if groups}}
+                <img class="hero-group-img" src="{{pluResPath}}/{{groups?.icon[2]}}" alt="">
+                {{/if}}
+                <div class="hero-name">
+                    {{if position}}
+                    <img class="hero-career" src="{{pluResPath}}/{{position?.icon[0]}}"
+                        style="background-color:{{element?.elementColor}};">
+                    {{/if}}
+                    {{name}}
+                    <img class="hero-rarity-img" src="{{pluResPath}}/icon/rarity/rarity-{{rarity?.id||3}}.png">
+                </div>
+                <div class="hero-tags">
+                    {{if battleTag}}
+                    {{each battleTag item index}}
+                    <div class="hero-tag" style="background-color:{{item.color}}">{{item.title}}</div>
+                    {{/each}}
+                    {{/if}}
+                </div>
+                <!-- <div class="hero-info">
+                    <div class="hero-weapon"> <span>武器类型</span> <span>{{weaponType?.typeName}}</span> </div>
+                </div> -->
+            </div>
+        </div>
+        {{ if type?.includes('voice') && voice }}
+        <div class="hero-words  main-box">
+            {{each voice item index}}
+            <div class="hero-word">
+                <div>【{{item.title}}】</div>
+                <div>{{item.text}}</div>
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+        {{ if type?.includes('skill') && skillSystem }}
+        <div class="hero-skills main-box">
+            {{each skillSystem.slice(0,1) skill}}
+            <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:element.elementColor})
+                %>
+            {{/each}}
+        </div>
+        <div class="hero-skills main-box">
+            {{each skillSystem.slice(1,2) skill}}
+            <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:element.elementColor})
+                %>
+                {{/each}}
+        </div>
+        <div class="hero-skills main-box">
+            {{each skillSystem.slice(2,3) skill}}
+            <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:element.elementColor})
+                %>
+                {{/each}}
+        </div>
+        <div class="hero-skills main-box">
+            {{each skillSystem.slice(3,4) skill}}
+            <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:element.elementColor})
+                %>
+                {{/each}}
+        </div>
+        <div class="hero-skills  main-box">
+            {{each skillSystem.slice(4) skill}}
+            <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:element.elementColor})
+                %>
+                {{/each}}
+        </div>
+        {{/if}}
+        {{ if type?.includes('talent') && talent }}
+        <div class="hero-talents main-box">
+            {{each talent talentLevel level}}
+            <div class="hero-talent-level">{{ (n=>{let
+                r='',m=[["M",1e3],["CM",900],["D",500],["CD",400],["C",100],["XC",90],["L",50],["XL",40],["X",10],["IX",9],["V",5],["IV",4],["I",1]];for(let[c,v]of
+                m)while(n>=v)r+=c,n-=v;return r})(level+1) }}</div>
+            <div class="hero-talent-item">
+                {{each talentLevel talentItem}}
+                <% include(pluginPath+'/resources/hero/hero-talent.html',{pluResPath,...talentItem}) %>
+                    {{/each}}
+            </div>
+            {{/each}}
+        </div>
+        {{/if}}
+    </div>
+    <div class="copyright">{{@sys.copyright}}</div>
+</div>
+{{/block}}

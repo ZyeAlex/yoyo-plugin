@@ -1,0 +1,22 @@
+# 通过setting.config获取本配置
+title: "悠悠小助手"
+subTitle: "yoyo-plugin (插件群:991709221)"
+
+# 图片
+imgMaxSize: 5 #上传图片大小限制 MB
+
+# 监测PV播放量
+PVList:
+- BV1Jr421n7n4
+- BV1KUopYZEs5
+
+# 签到群聊
+signInclude: []
+signExclude: []
+
+# 指令前缀 若和别的游戏冲突，更换其他前缀即可
+rulePrefix:
+- "~"
+- "～"
+- "#?蓝原"
+- "#?蓝色星原"

@@ -1,0 +1,177 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "sr";
+  src: url("./font/sr.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "tttgbnumber";
+  src: url("./font/tttgbnumber.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "ys";
+  src: url("./font/ys.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "nzbz";
+  src: url("./font/nzbz.ttf") format("truetype");
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  font-family: "sr", sans-serif;
+  transform-origin: 0 0;
+  font-size: 18px;
+  width: 830px;
+  box-shadow: none !important;
+}
+
+.container {
+  width: 830px;
+  background-size: contain;
+  padding-bottom: 10px;
+  position: relative;
+  box-shadow: none !important;
+}
+
+
+/* 标题 */
+.head-box {
+  border-radius: 15px;
+  padding: 30px 20px 10px;
+  position: relative;
+  color: #fff;
+}
+
+.head-box .title {
+  font-family: "tttgbnumber", nzbz, ys, PingFangSC-Medium, "PingFang SC", sans-serif;
+  font-size: 48px;
+  text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+
+
+.head-box .title .label {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.head-box .genshin_logo {
+  position: absolute;
+  top: 1px;
+  right: 15px;
+  width: 97px;
+}
+
+.head-box .label {
+  font-size: 20px;
+  padding: 5px 0;
+}
+
+.head-box .label span {
+  color: #d3bc8e;
+  padding: 0 2px;
+}
+
+/* 列表样式 */
+.head-box .item {
+  position: relative;
+  padding-left: 1.5em;
+  /* 为伪元素预留空间 */
+}
+
+.head-box .item::before {
+  content: "🍀 ";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2em;
+  margin-right: 0.5em;
+}
+
+.head-label {
+  position: relative;
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 24px;
+  background-image: linear-gradient(to bottom, #dedede 0%, #dedede 50%, rgba(222, 222, 222, 0.8) 100%);
+  color: #525252;
+}
+
+
+/* 主體 */  
+.main-box {
+  padding: 12px;
+  margin: 5px 20px 10px;
+  border-radius: 24px;
+  background-image: linear-gradient(to bottom, #dededecc 0%, rgba(222, 222, 222, 0.8) 100%);
+  color: #525252;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.2) inset, -3px -3px 5px rgba(255, 255, 255, 0.5) inset;
+}
+
+
+
+
+.copyright {
+  font-size: 14px;
+  text-align: center;
+  color: #fff;
+  position: relative;
+  padding-left: 10px;
+  text-shadow: 1px 1px 1px #000;
+  margin: 10px 0;
+}
+
+.copyright .version {
+  color: #d3bc8e;
+  display: inline-block;
+  padding: 0 3px;
+}
+
+
+
+/* mark样式 */
+mark {
+  background-color: #2F2F2F;
+  /* 灰黑色背景 */
+  color: #D4AF37;
+  /* 烫金色文本（接近金色） */
+  border-radius: 8px;
+  /* 圆角 */
+  padding: 2px 4px;
+  /* 可选：增加内边距使文本不贴边 */
+}
+
+/* 背景样式 */
+.background {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  /* background-position: center; */
+  background-size: 100% auto;
+  /* 或 'contain'，根据你的需求调整 */
+  background-repeat: repeat;
+  filter: blur(5px);
+  /* 调整模糊程度 */
+  opacity: 0.8;
+  /* 调整半透明程度 */
+  z-index: -1;
+}
+
+/* 额外的内容 */
+.suffix {
+  width: 100%;
+  text-align: right;
+}
