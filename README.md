@@ -1,15 +1,15 @@
-# <center>悠悠小助手 （ yoyo-plugin ）</center>
+# <div align="center">悠悠小助手 （ yoyo-plugin ）</div>
 
-<center> <i>云崽QQ机器人的「蓝色星原：旅谣」插件</i> </center>
+<div align="center"> <i>云崽QQ机器人的「蓝色星原：旅谣」插件</i> </div>
 <br/>
-<center>
+<div align="center">
 
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FZyeAlex%2Fyoyo-plugin%2Frefs%2Fheads%2Fmaster%2Fpackage.json&query=%24.version&label=最新版本)
 [<img src="https://img.shields.io/badge/插件交流群-991709221-blue" />](https://qm.qq.com/q/y37cqiS4Ks)
 <img src="https://img.shields.io/github/stars/ZyeAlex/yoyo-plugin?style=social" />
 
-</center>
-<center><img src="https://api.moedog.org/count/@ZyeAlex.readme"  /></center>
+</div>
+<div align="center"><img src="https://api.moedog.org/count/@ZyeAlex.readme"  /></div>
 
 ## 开发说明
 
