@@ -13,8 +13,9 @@
 
 ## 开发说明
 
-- 插件开发中... <span style="font-size:24px;color:red;">招募美工</span> 、招募美工、招募美工...
+- 插件开发中... 招募美工、招募美工、招募美工...
 
+- 插件交流群：[👉🏻加群讨论](https://qm.qq.com/q/Mk3jyhIqSm)
 
 - 提交代码：
 
