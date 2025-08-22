@@ -6,3 +6,5 @@ data/hero/id.yaml
 config/config.yaml
 # 用户上传资源
 resources/img/hero/
+
+.bat

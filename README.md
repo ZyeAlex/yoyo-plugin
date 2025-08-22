@@ -1,36 +1,60 @@
-<div align=center> <h1>悠悠小助手 （ yoyo-plugin ）</h1> </div>
-<div align=center> <i>云崽QQ机器人的「蓝色星原：旅谣」插件</i> </div>
+# <center>悠悠小助手 （ yoyo-plugin ）</center>
+
+<center> <i>云崽QQ机器人的「蓝色星原：旅谣」插件</i> </center>
 <br/>
-<div align=center>
-<img src="https://img.shields.io/badge/QQ群-991709221-blue"  />
-</div>
-<br/>
-<div align=center>
- <img src="https://api.moedog.org/count/@ZyeAlex.readme"  />
-</div>
+<center>
 
-### 开发说明
+![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FZyeAlex%2Fyoyo-plugin%2Frefs%2Fheads%2Fmaster%2Fpackage.json&query=%24.version&label=最新版本)
+[<img src="https://img.shields.io/badge/插件交流群-991709221-blue" />](https://qm.qq.com/q/y37cqiS4Ks)
+<img src="https://img.shields.io/github/stars/ZyeAlex/yoyo-plugin?style=social" />
 
-插件开发中... <span style="font-size:24px;
-background: linear-gradient(135deg,#ff0000, #ff3300, #ff6600, #ff9900);-webkit-background-clip: text;background-clip: text;color: transparent;text-shadow: 0 0 10px #ff3300, 0 0 20px #ff6600, 0 0 30px rgba(255,153,0,0.5);">招募美工</span> 、招募美工、招募美工...
+</center>
+<center><img src="https://api.moedog.org/count/@ZyeAlex.readme"  /></center>
 
-[Gitee](https://gitee.com/ZyeAlex/yoyo-plugin)可能更新不及时，请至[GitHub](https://github.com/ZyeAlex/yoyo-plugin)查看最新代码
+## 开发说明
 
-提交代码：请在[GitHub](https://github.com/ZyeAlex/yoyo-plugin) fork 本仓库，修改并测试完成后提交PR
+- 插件开发中... <span style="font-size:24px;color:red;">招募美工</span> 、招募美工、招募美工...
 
-### 交流群
 
-> 插件交流群(QQ): [991709221](https://qm.qq.com/q/y37cqiS4Ks)
+- 提交代码：
 
-### 使用说明
+  > 请在 [GitHub dev分支](https://github.com/ZyeAlex/yoyo-plugin/tree/dev)  fork 本仓库，修改并测试完成后提交PR
+
+
+
+## 插件功能
 
 `yoyo-plugin`为查询「蓝色星原：旅谣」信息的插件，包括角色面板、角色图鉴、角色图片等一系列功能
+<!-- ✅⬜️ -->
+大致包含有：
+- Wiki相关
+  - ✅ `角色列表` 
+  - ✅ `{角色}图鉴`  
+  - ⬜️ `{角色}攻略`
+  - ✅ `{角色}技能`
+  - ✅ `{角色}星赐`
+  - ⬜️ `{角色}定弦`
+  - ✅ `{角色}台词`
+  - ✅ `{角色}图片列表`
+  - ✅ `{角色}图片[编号]`
+  - ✅ `上传{角色}图片(图片)`
+  - ✅ `删除{角色}图片{编号}`
+- 账号相关（需要等游戏上线）
+  - ⬜️ `绑定UID`
+  - ⬜️ `扫码登陆`
+  - ⬜️ `更新面板`
+  - ⬜️ `{角色}面板`
+- 娱乐相关
+  - ✅ `签到`
+- 插件设置
+  - ✅ `清除无效数据`
+  - ✅ `悠悠更新`
 
-具体功能可在安装插件后 通过 `悠悠帮助` 查看详细指令
+> 具体功能可在安装插件后 通过 `悠悠帮助` 查看详细指令
 
 ---
  
-### 安装方法 
+## 安装方法 
 
 1. 确保已部署 Yunzai Bot，如果未安装，推荐使用 [Lagrange](https://lgr.928100.xyz/docs/Win.html) + [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai) 的机器人部署方案
 
@@ -40,7 +64,7 @@ background: linear-gradient(135deg,#ff0000, #ff3300, #ff6600, #ff9900);-webkit-b
     ```shell
     git clone --depth=1 https://gitee.com/ZyeAlex/yoyo-plugin.git ./plugins/yoyo-plugin
     ```
-  - github
+  - github （ ↑ 与gitee 二选一即可 ）
     ```shell
     git clone --depth=1 https://github.com/ZyeAlex/yoyo-plugin.git ./plugins/yoyo-plugin
     ```
@@ -49,12 +73,8 @@ background: linear-gradient(135deg,#ff0000, #ff3300, #ff6600, #ff9900);-webkit-b
     ```shell
     pnpm install
     ```
-
-安装完成后，发送 `悠悠更新` 即可更新 yoyo-plugin
-
 ---
 
-<div>   
 
 <a href="https://github.com/ZyeAlex/yoyo-plugin/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=ZyeAlex/yoyo-plugin" />
@@ -64,7 +84,6 @@ background: linear-gradient(135deg,#ff0000, #ff3300, #ff6600, #ff9900);-webkit-b
 ![Alt](https://repobeats.axiom.co/api/embed/2ea99ed765b7cbc37c5375c5644fe816096f3966.svg "Repobeats analytics image")
 
 
-</div>
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -74,3 +93,8 @@ background: linear-gradient(135deg,#ff0000, #ff3300, #ff6600, #ff9900);-webkit-b
 <!-- prettier-ignore-end -->
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+
+
+
+
