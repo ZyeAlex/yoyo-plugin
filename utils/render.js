@@ -1,6 +1,7 @@
 import setting from './setting.js'
 import Version from './version.js'
 import fs from 'fs'
+import lodash from 'lodash'
 // 读取package
 
 export default function render(e, path, renderData = {}, cfg = {}) {
@@ -18,7 +19,6 @@ export default function render(e, path, renderData = {}, cfg = {}) {
       commonHtml[file.replace('.html', '')] = setting.path + '/resources/common/' + file
     }
   })
-
   return e.runtime.render('yoyo-plugin', path, renderData, {
     ...cfg,
     beforeRender({ data }) {
@@ -26,6 +26,8 @@ export default function render(e, path, renderData = {}, cfg = {}) {
         ...data,
         ...commonHtml,
         pluginPath: setting.path,
+        layout: setting.path + '/resources/common/layout.html',
+        bgImg: setting.path + '/resources/' + lodash.sample(Object.values(setting.pets)).kiboBoxCardIcon[2],
         rulePrefix: setting.config.rulePrefix[0] || '$',
         sys: {
           copyright: `Created By ${Version.name} & ${name}<span class="version">${version}</span> (插件群 991709221)`,

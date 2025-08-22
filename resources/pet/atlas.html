@@ -1,49 +1,46 @@
+{{extend layout}}
+
 {{block 'css'}}
-<link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/index.css" />
 <link rel="stylesheet" type="text/css" href="{{pluResPath}}/pet/atlas.css" />
 {{/block}}
 
 {{block 'main'}}
-<div class="container" id="container">
-    <div class="background" style="background-image: url({{pluResPath}}{{kiboBoxCardIcon[2]}})"></div>
-    <div class="pet-atlas">
-        <div class="pet-img">
-            <% include(pluginPath+'/resources/pet/pet-illustration.html',{size,pluginPath,pluResPath,element,kiboBoxCardIcon})
-                %>
-        </div>
-        <div class="pet-info">
-            <div class="pet-name"><span>NO.{{iconographyNum}}</span> <span>{{name}}</span> </div>
-            <div class="pet-base">
-                {{each element item}}
-                <img height="46" src="{{pluResPath}}/{{item.petElem}}">
-                {{/each}}
-                <div class="pet-battle-tag"> <img height="28" src="{{pluResPath}}/{{battleTag.battle}}"
-                        alt="">{{battleTag.title}}</div>
-            </div>
-            <div class="pet-tab">
-                <div> {{ race.map(({raceType})=>raceType).join('·') }} </div>
-                <div class="line"></div>
-                <div>{{ ['幼年期','成长期','成熟期','超限体'][petStage-1]}}</div>
-                <div class="line"></div>
-                <div>{{size/10000}}cm</div>
-            </div>
-            <div class="pet-desc">{{desc}}</div>
-        </div>
+
+<div class="pet-atlas">
+    <div class="pet-img">
+        <% include(pluginPath+'/resources/pet/pet-illustration.html',{size,pluginPath,pluResPath,element,kiboBoxCardIcon})
+            %>
     </div>
-    <!-- Q技能 -->
-    {{each signatureSkillList skill}}
-    <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+    <div class="pet-info">
+        <div class="pet-name"><span>NO.{{iconographyNum}}</span> <span>{{name}}</span> </div>
+        <div class="pet-base">
+            {{each element item}}
+            <img height="46" src="{{pluResPath}}/{{item.petElem}}">
+            {{/each}}
+            <div class="pet-battle-tag"> <img height="28" src="{{pluResPath}}/{{battleTag.battle}}"
+                    alt="">{{battleTag.title}}</div>
+        </div>
+        <div class="pet-tab">
+            <div> {{ race.map(({raceType})=>raceType).join('·') }} </div>
+            <div class="line"></div>
+            <div>{{ ['幼年期','成长期','成熟期','超限体'][petStage-1]}}</div>
+            <div class="line"></div>
+            <div>{{size/10000}}cm</div>
+        </div>
+        <div class="pet-desc">{{desc}}</div>
+    </div>
+</div>
+<!-- Q技能 -->
+{{each signatureSkillList skill}}
+<% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
     {{/each}}
-        <!-- 普攻 -->
+    <!-- 普攻 -->
     {{each skillList skill}}
     <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
-    {{/each}}
-            <!-- 合击技能 -->
-    {{each breakSkillList skill}}
-    <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
-    {{/each}}
+        {{/each}}
+        <!-- 合击技能 -->
+        {{each breakSkillList skill}}
+        <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+            {{/each}}
 
-
-                <div class="copyright">{{@sys.copyright}}</div>
-</div>
-{{/block}}
+            {{/block}}

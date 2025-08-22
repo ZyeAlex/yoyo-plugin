@@ -17,11 +17,11 @@ export class Img extends plugin {
             priority: 100,
             rule: [
                 {
-                    reg: `^${setting.rulePrefix}?(上传|添加).{0,10}${imgReg}$`,
+                    reg: `^${setting.rulePrefix}?(?:上传|添加)(.{0,10})${imgReg}$`,
                     fnc: 'uploadHeroImg'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?删除.{1,10}${imgReg}[0-9,， ]+$`,
+                    reg: `^${setting.rulePrefix}?删除(.{1,10}?)${imgReg}([0-9,， ]+)$`,
                     fnc: 'delHeroImg'
                 },
                 {
@@ -87,7 +87,7 @@ export class Img extends plugin {
         return await render(e, 'hero/imgs', {
             heroName,
             heroImgs,
-            img: lodash.sample(Object.values(setting.pets)).kiboBoxCardIcon[2],
+            color: setting.heros[heroId]?.element?.elementColor || '#000000',
         })
     }
     // 随机角色图片

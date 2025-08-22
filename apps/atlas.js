@@ -44,27 +44,27 @@ export class Pet extends plugin {
         let name = e.msg.match(reg)[1]
         let heroId = setting.getHeroId(name)
         if (!heroId) return true
-        let config = ''
+        let config = []
 
         // 如果reg包含 技能
         // 如果reg 包含技能文本
 
         if (e.msg.includes('技能')) {
-            config += 'skill'
+            config.push('skill')
         }
         if (e.msg.includes('星赐')) {
-            config += 'talent'
+            config.push('talent')
         }
         // 台词|语音|文本
         if (e.msg.includes('语音') || e.msg.includes('台词') || e.msg.includes('文本')) {
-            config += 'voice'
+            config.push('voice')
         }
 
         return this.heroAtlas(e, heroId, config)
     }
 
     // 角色图鉴
-    async heroAtlas(e, heroId, type = 'skill') {
+    async heroAtlas(e, heroId, type = ['skill', 'talent']) {
         // 角色信息
         let heroMsg = setting.heros[heroId] || {}
         heroMsg.skillSystem?.forEach(skill => {
@@ -72,7 +72,6 @@ export class Pet extends plugin {
             // skill.skillLevel[9].value.forEach
         })
         return await render(e, 'hero/atlas', {
-            img: lodash.sample(Object.values(setting.pets)).kiboBoxCardIcon[2],
             ...heroMsg,
             type
         })
@@ -81,7 +80,6 @@ export class Pet extends plugin {
 
     // 奇波图鉴
     async petAtlas(e, petId) {
-        let petMsg = setting.pets[petId] || {}
         return await render(e, 'pet/atlas', setting.pets[petId])
     }
 

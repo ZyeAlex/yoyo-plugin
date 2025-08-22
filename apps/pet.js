@@ -22,8 +22,7 @@ export class Pet extends plugin {
         pets = pets.filter(({ petIcon }) => petIcon)
         return await render(e, 'pet/list', {
             pets,
-            length: pets.length,
-            petImg: lodash.sample(pets).kiboBoxCardIcon[2]
+            length: pets.length
         })
     }
 }

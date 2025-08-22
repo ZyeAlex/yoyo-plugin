@@ -41,7 +41,6 @@ export class Hero extends plugin {
             return 0
         })
         return await render(e, 'hero/list', {
-            img: lodash.sample(Object.values(setting.pets)).kiboBoxCardIcon[2],
             heros: heroList
         })
     }
