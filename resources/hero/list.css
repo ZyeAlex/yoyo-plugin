@@ -1,3 +1,5 @@
+
+
 .hero-list {
     display: flex;
     flex-wrap: wrap;
@@ -61,6 +63,7 @@
     width: 100%;
     text-align: center;
     color: #dadada;
+    font-size: 22px;
 }
 
 

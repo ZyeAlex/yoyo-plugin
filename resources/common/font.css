@@ -1,0 +1,21 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "sr";
+  src: url("./font/sr.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "tttgbnumber";
+  src: url("./font/tttgbnumber.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "ys";
+  src: url("./font/ys.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "nzbz";
+  src: url("./font/nzbz.ttf") format("truetype");
+}

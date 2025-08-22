@@ -1,19 +1,17 @@
 {{block 'css'}}
-<link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/common.css" />
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/index.css" />
 <link rel="stylesheet" type="text/css" href="{{pluResPath}}/help/index.css" />
 {{/block}}
 
 {{block 'main'}}
-<div class="container" id="container">
-  <div class="info-box">
-    <div class="head-box">
-      <div class="title">{{helpCfg.title||"悠悠小助手"}}</div>
-      <div class="label">{{helpCfg.subTitle || "yoyo-plugin (插件群:991709221)"}}</div>
-    </div>
+<div class="container">
+  <div class="head-box">
+    <div class="title">{{helpCfg.title||"悠悠小助手"}}</div>
+    <div class="label">{{helpCfg.subTitle || "yoyo-plugin (插件群:991709221)"}}</div>
   </div>
   {{each helpGroup group}}
   {{set len = group?.list?.length || 0 }}
-  <div class="cont-box">
+  <div class="main-box">
     <div class="help-group">{{group.group}}</div>
     {{if len > 0}}
     <div class="help-table">

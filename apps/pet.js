@@ -10,7 +10,7 @@ export class Pet extends plugin {
             priority: 102,
             rule: [
                 {
-                    reg: `^${setting.rulePrefix}?(奇波列表|全部奇波|所有奇波)$`,
+                    reg: `^${setting.rulePrefix}?(奇波列表|全部奇波|所有奇波|奇波图鉴)$`,
                     fnc: 'petList'
                 },
             ]

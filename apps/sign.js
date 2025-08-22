@@ -60,8 +60,8 @@ export class Help extends plugin {
             // 签到日期
             userSignInfo.date = today
             // 用户信息 排除男主角 排除没有图像的角色
-            let heros = Object.keys(setting.heros).filter(id => id != '199002' && setting.heroImgs[setting.heros[id].name].length)
-            if (!heros.length) {
+            let heros = Object.keys(setting.heros).filter(id => id != '199002' && setting.heroImgs[setting.heros[id].name]?.length)
+            if (!heros?.length) {
                 return e.reply('没有可签到的角色图片，请先上传角色图片！')
             }
             const heroId = lodash.sample(heros)
