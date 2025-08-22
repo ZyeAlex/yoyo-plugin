@@ -3,6 +3,10 @@ import plugin from '../../../lib/plugins/plugin.js'
 import { update } from '../../other/update.js'
 import setting from '#setting'
 import utils from '#utils'
+import fs from 'fs'
+let packageJson = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'));
+const name = packageJson.name || 'yoyo-plugin'
+const version = packageJson.version || Version.version
 export class Update extends plugin {
   constructor() {
     super({
@@ -12,17 +16,19 @@ export class Update extends plugin {
       priority: 2000,
       rule: [
         {
-          reg: `^${setting.rulePrefix}(强制)?更新$`,
+          reg: `^(${setting.rulePrefix}|悠悠|yoyo)(强制)?更新$`,
           fnc: 'update_plugin',
           permission: 'master'
         },
         {
           reg: `${setting.rulePrefix}更新日志$`,
-          fnc: 'update_log'
+          fnc: 'update_log',
+          permission: 'master'
         },
         {
           reg: `${setting.rulePrefix}?(删除|清除|清空|重置)(错误|无效|脏)数据$`,
-          fnc: 'clearErrorData'
+          fnc: 'clearErrorData',
+          permission: 'master'
         },
       ]
     })
@@ -33,11 +39,11 @@ export class Update extends plugin {
     Update_Plugin.e = this.e
     Update_Plugin.reply = this.reply
 
-    if (Update_Plugin.getPlugin(setting.config.name)) {
+    if (Update_Plugin.getPlugin(name)) {
       if (this.e.msg.includes('强制')) {
-        await execSync('git reset --hard', { cwd: `${process.cwd()}/plugins/${setting.config.name}/` })
+        await execSync('git reset --hard', { cwd: `${process.cwd()}/plugins/${name}/` })
       }
-      await Update_Plugin.runUpdate(setting.config.name)
+      await Update_Plugin.runUpdate(name)
       if (Update_Plugin.isUp) {
         setTimeout(() => Update_Plugin.restart(), 2000)
       }
@@ -50,8 +56,8 @@ export class Update extends plugin {
     Update_Plugin.e = this.e
     Update_Plugin.reply = this.reply
 
-    if (Update_Plugin.getPlugin(setting.config.name)) {
-      this.e.reply(await Update_Plugin.getLog(setting.config.name))
+    if (Update_Plugin.getPlugin(name)) {
+      this.e.reply(await Update_Plugin.getLog(name))
     }
     return true
   }
