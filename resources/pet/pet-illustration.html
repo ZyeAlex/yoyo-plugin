@@ -46,10 +46,10 @@
 </style>
 
 <div class="pet-illustration">
-    <div class="pet-illustration-background" style="background-image: url({{pluResPath}}{{kiboBoxCardIcon[2]}})">
-        <img src="{{pluginPath}}/resources/img/pet/card/tex_pet_card_element_{{element[0].id}}.png">
+    <div class="pet-illustration-background" style="background-image: url({{pluResPath}}{{kiboBoxCardIcon?.[2]}})">
+        <img src="{{pluginPath}}/resources/img/pet/card/tex_pet_card_element_{{element?.[0]?.id}}.png">
     </div>
-    <img class="pet-illustration-foreground" src="{{pluResPath}}{{kiboBoxCardIcon[3]}}">
-    <img class="pet-illustration-illustration" src="{{pluResPath}}{{kiboBoxCardIcon[4]}}"
+    <img class="pet-illustration-foreground" src="{{pluResPath}}{{kiboBoxCardIcon?.[3]}}">
+    <img class="pet-illustration-illustration" src="{{pluResPath}}{{kiboBoxCardIcon?.[4]}}"
         style="height:{{size/10000+200}}px;">
 </div>

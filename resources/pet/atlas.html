@@ -32,15 +32,20 @@
 </div>
 <!-- Q技能 -->
 {{each signatureSkillList skill}}
+{{if skill.level?.lenth}}
 <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
-    {{/each}}
-    <!-- 普攻 -->
-    {{each skillList skill}}
-    <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
-        {{/each}}
-        <!-- 合击技能 -->
-        {{each breakSkillList skill}}
-        <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
-            {{/each}}
-
-            {{/block}}
+{{/if}}
+{{/each}}
+<!-- 普攻 -->
+{{each skillList skill}}
+{{if skill.level?.lenth}}
+<% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+{{/if}}
+{{/each}}
+<!-- 合击技能 -->
+{{each breakSkillList skill}}
+{{if skill.level?.lenth}}
+<% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+{{/if}}
+{{/each}}
+{{/block}}
