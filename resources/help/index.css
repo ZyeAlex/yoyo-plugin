@@ -8,7 +8,7 @@
 }
 
 .help-group {
-  background-color: #303133;
+  background-color: #333;
   color: #ebebeb;
   text-align: center;
   padding: 6px;
@@ -54,10 +54,12 @@
 
 .help-title {
   display: block;
-  color: #3c3c3c;
+  color: #333;
+  text-shadow: 0 0 1px #000;
   font-size: 22px;
   margin-left: 60px;
   padding: 6px;
+  font-family: sr;
 }
 
 .help-desc {
@@ -66,4 +68,5 @@
   font-size: 14px;
   margin-left: 60px;
   padding: 0 0 12px 6px;
+  font-family: tttgbnumber;
 }
