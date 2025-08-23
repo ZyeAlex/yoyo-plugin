@@ -10,7 +10,7 @@ export class Hero extends plugin {
             priority: 101,
             rule: [
                 {
-                    reg: `^${setting.rulePrefix}?(角色列表|全部角色|所有角色)$`,
+                    reg: `^${setting.rulePrefix}?(角色列表|全部角色|所有角色|角色图鉴)$`,
                     fnc: 'heroList'
                 },
                 {

@@ -1,6 +1,6 @@
 # 通过setting.config获取本配置
 title: "悠悠小助手"
-subTitle: "yoyo-plugin (插件群:991709221)"
+subTitle: "yoyo-plugin"
 
 # 图片
 imgMaxSize: 5 #上传图片大小限制 MB
