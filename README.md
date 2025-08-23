@@ -85,7 +85,7 @@
 
   - 拷贝图片 
     > 将图片拷贝至 `yoyo-plugin/resources/img/hero/` 下 , 文件夹以角色名命名
-    1. 我提供的图片库： [yoyo-image](https://gitee.com/ZyeAlex/yoyo-image) 
+    1. 我提供的图片库： [yoyo-image](https://gitee.com/yoyo-plugin/yoyo-image) 
   - 上传图片
     - 插件提供 【 上传XX图片 】 指令，在群内上传图片即可
 
