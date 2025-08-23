@@ -21,29 +21,23 @@
     .pet-info {
         flex: 1;
         align-items: center;
-        padding: 12px 24px 0 12px;
+        padding: 24px 24px 0 12px;
         display: flex;
         height: 100%;
+        min-height: 400px;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: space-around;
     }
 
     .pet-name {
         text-align: center;
         position: relative;
-
-    }
-
-    .pet-name :first-child {
-        position: absolute;
-        bottom: 10px;
-        transform: translateX(calc(-100% - 10px));
-    }
-
-    .pet-name :last-child {
         font-size: 72px;
         font-family: "nzbz";
     }
+
+
+
 
     .pet-base {
         display: flex;

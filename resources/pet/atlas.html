@@ -12,8 +12,9 @@
             %>
     </div>
     <div class="pet-info">
-        <div class="pet-name"><span>NO.{{iconographyNum}}</span> <span>{{name}}</span> </div>
+        <div class="pet-name"> {{name}} </div>
         <div class="pet-base">
+            <span style="padding-right:12px;color:#555;font-family:tttgbnumber"><i>No.{{iconographyNum}}</i></span>
             {{each element item}}
             <img height="46" src="{{pluResPath}}/{{item.petElem}}">
             {{/each}}
@@ -23,7 +24,7 @@
         <div class="pet-tab">
             <div> {{ race.map(({raceType})=>raceType).join('·') }} </div>
             <div class="line"></div>
-            <div>{{ ['幼年期','成长期','成熟期','超限体'][petStage-1]}}</div>
+            <div>{{ ['幼年期','成长期','成熟期','超限体'][petStage-1]}}</div >
             <div class="line"></div>
             <div>{{size/10000}}cm</div>
         </div>
@@ -33,13 +34,13 @@
 <!-- Q技能 -->
 {{each signatureSkillList skill}}
 <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
-{{/each}}
-<!-- 普攻 -->
-{{each skillList skill}}
-<% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
-{{/each}}
-<!-- 合击技能 -->
-{{each breakSkillList skill}}
-<% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
-{{/each}}
-{{/block}}
+    {{/each}}
+    <!-- 普攻 -->
+    {{each skillList skill}}
+    <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+        {{/each}}
+        <!-- 合击技能 -->
+        {{each breakSkillList skill}}
+        <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+            {{/each}}
+            {{/block}}
