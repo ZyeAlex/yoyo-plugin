@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # <div align="center">悠悠助手 （ yoyo-plugin ）</div>
 
 <div align="center"> <i>云崽QQ机器人的「蓝色星原：旅谣」插件</i> </div>
@@ -113,5 +114,10 @@
 
 
 
+=======
+# 本仓库已迁移
+>>>>>>> dev
 
+# 请移步至 [蓝色星原旅谣-悠悠助手（yoyo-plugin）](https://gitee.com/yoyo-plugin/yoyo-plugin)
 
+# 已经安装了旧版插件的用户请发送【悠悠迁移仓库】切换至新仓库
