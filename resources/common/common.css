@@ -58,6 +58,7 @@
   background-image: linear-gradient(to bottom, #dededecc 0%, rgba(222, 222, 222, 0.8) 100%);
   color: #525252;
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1) inset, -3px -3px 5px rgba(255, 255, 255, 0.3) inset;
+  overflow: hidden;
 }
 
 

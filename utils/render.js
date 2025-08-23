@@ -30,7 +30,7 @@ export default function render(e, path, renderData = {}, cfg = {}) {
         bgImg: setting.path + '/resources/' + lodash.sample(Object.values(setting.pets)).kiboBoxCardIcon[2],
         rulePrefix: setting.config.rulePrefix[0] || '$',
         sys: {
-          copyright: `Created By ${Version.name} & ${name}<span class="version">${version}</span> (插件群 991709221)`,
+          copyright: `Created By ${Version.name} & ${name}<span class="version">${version}</span>`,
           createdby: `Created By ${Version.name} & ${name}`
         },
         Math,

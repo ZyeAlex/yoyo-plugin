@@ -26,7 +26,10 @@ export class Help extends plugin {
   }
 
   async help(e) {
-    const { helpGroup } = setting.getData('help')
+    let { helpGroup } = setting.getData('help')
+    helpGroup = helpGroup.filter(({ auth }) => {
+      return auth ? e.isMaster : true
+    })
     return await render(e, 'help/index', {
       helpCfg: {
         title: setting.config.title,
@@ -46,6 +49,6 @@ export class Help extends plugin {
     })
   }
   async test(e) {
-    return await render(e, 'help/test', { })
+    return await render(e, 'help/test', {})
   }
 }
