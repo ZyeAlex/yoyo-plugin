@@ -5,8 +5,9 @@
 
 import YAML from 'yaml'
 import chokidar from 'chokidar'
-import fs from 'node:fs'
+import fs from 'fs'
 import MD5 from 'md5'
+import path from 'path'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
 import { getNotice } from '../api/wiki.js'
@@ -72,13 +73,27 @@ class Setting {
       return acc
     }, {})
     this.setData('id', this.heroIds, 'hero')
-    let heroImgPath = `${this.path}/resources/img/hero/`
-    // 查找文件夹的子文件夹
-    let heroImgDirs = fs.readdirSync(heroImgPath)
-    heroImgDirs.forEach(dir => {
-      // dir下面的文件列表
-      this.heroImgs[dir] = fs.readdirSync(heroImgPath + dir).map(fileName => heroImgPath + '/' + dir + '/' + fileName)
+
+    let heroImgPaths = [
+      path.join(this.path, '/resources/img/hero/'),
+      ...(this.config.imgPath || []).map(path => path.join(this.path, path))
+    ]
+
+    // 遍历所有图片库路径
+    heroImgPaths.forEach(heroImgPath => {
+      // 查找角色图片
+      let heroImgDirs = fs.readdirSync(heroImgPath)
+      heroImgDirs.forEach(dir => {
+        // 如果dir是目录
+        if (fs.statSync(path.join(heroImgPath, dir)).isDirectory()) {
+          if (!this.heroImgs[dir]) {
+            this.heroImgs[dir] = []
+          }
+          this.heroImgs[dir] = [...new Set([...fs.readdirSync(heroImgPath + dir).map(fileName => heroImgPath + '/' + dir + '/' + fileName), ...this.heroImgs[dir]])]
+        }
+      })
     })
+
     // 获取奇波
     this.pets = this.getData('pet', 'pet') || {}
     this.petIds = Object.values(this.pets).reduce((acc, cur) => {
@@ -338,10 +353,6 @@ class Setting {
   }
   // 删除图片
   delHeroImg(heroId, imgFiles) {
-    let heroImgPath = `${this.path}/resources/img/hero/${this.heros[heroId].name}`
-    if (!fs.existsSync(heroImgPath)) {
-      return
-    }
     imgFiles.forEach(imgFile => {
       if (fs.existsSync(imgFile)) {
         fs.unlinkSync(imgFile)
