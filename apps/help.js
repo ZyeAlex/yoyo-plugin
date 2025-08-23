@@ -30,6 +30,7 @@ export class Help extends plugin {
     helpGroup = helpGroup.filter(({ auth }) => {
       return auth ? e.isMaster : true
     })
+
     return await render(e, 'help/index', {
       helpCfg: {
         title: setting.config.title,

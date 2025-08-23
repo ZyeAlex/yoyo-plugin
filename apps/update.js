@@ -21,6 +21,11 @@ export class Update extends plugin {
           permission: 'master'
         },
         {
+          reg: `^(${setting.rulePrefix}|悠悠|yoyo)迁移仓库$`,
+          fnc: 'migrate',
+          permission: 'master'
+        },
+        {
           reg: `${setting.rulePrefix}更新日志$`,
           fnc: 'update_log',
           permission: 'master'
@@ -49,6 +54,10 @@ export class Update extends plugin {
       }
     }
     return true
+  }
+  async migrate() {
+    await execSync('git remote set-url origin https://gitee.com/yoyo-plugin/yoyo-plugin', { cwd: `${process.cwd()}/plugins/${name}/` })
+    this.reply('仓库地址已迁移')
   }
 
   async update_log() {
