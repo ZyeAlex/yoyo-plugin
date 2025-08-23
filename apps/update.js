@@ -56,6 +56,10 @@ export class Update extends plugin {
     }
     return true
   }
+  async migrate() {
+    await execSync('git remote set-url origin https://gitee.com/yoyo-plugin/yoyo-plugin', { cwd: `${process.cwd()}/plugins/${name}/` })
+    this.reply('仓库地址已迁移')
+  }
 
   async update_log() {
     let Update_Plugin = new update()
