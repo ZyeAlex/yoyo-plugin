@@ -21,7 +21,8 @@ export class Update extends plugin {
           permission: 'master'
         },
         {
-          reg: `${setting.rulePrefix}更新日志$`,
+          reg: `${setting.rulePrefix}更新日志$`, 
+          
           fnc: 'update_log',
           permission: 'master'
         },

@@ -1,4 +1,4 @@
-# <div align="center">悠悠小助手 （ yoyo-plugin ）</div>
+# <div align="center">悠悠助手 （ yoyo-plugin ）</div>
 
 <div align="center"> <i>云崽QQ机器人的「蓝色星原：旅谣」插件</i> </div>
 <br/>
