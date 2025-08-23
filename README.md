@@ -54,7 +54,7 @@
 > 具体功能可在安装插件后 通过 `悠悠帮助` 查看详细指令
 
 ---
- 
+
 ## 安装方法 
 
 1. 确保已部署 Yunzai Bot，如果未安装，推荐使用 [Lagrange](https://lgr.928100.xyz/docs/Win.html) + [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai) 的机器人部署方案
@@ -74,6 +74,22 @@
     ```shell
     pnpm install
     ```
+
+4. 安装图片库
+
+    > 详情请看注意事项
+
+## 注意事项
+
+- 本插件暂时不附带角色图片，要使用角色图片相关功能请自行添加图库
+
+  - 拷贝图片 
+    > 将图片拷贝至 `yoyo-plugin/resources/img/hero/` 下 , 文件夹以角色名命名
+    1. 我提供的图片库： [yoyo-image](https://gitee.com/ZyeAlex/yoyo-image) 
+  - 上传图片
+    - 插件提供 【 上传XX图片 】 指令，在群内上传图片即可
+
+
 ---
 
 
