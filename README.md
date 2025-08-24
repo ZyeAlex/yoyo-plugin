@@ -9,7 +9,7 @@
 
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FZyeAlex%2Fyoyo-plugin%2Frefs%2Fheads%2Fmaster%2Fpackage.json&query=%24.version&label=最新版本)
 [<img src="https://img.shields.io/badge/插件交流群-991709221-blue" />](https://qm.qq.com/q/y37cqiS4Ks)
-<img src="https://img.shields.io/github/stars/ZyeAlex/yoyo-plugin?style=social" />
+<img src="https://gitee.com/yoyo-plugin/yoyo-plugin/badge/star.svg"/>
 
 </div>
 <div align="center"><img src="https://api.moedog.org/count/@ZyeAlex.readme"  /></div>
