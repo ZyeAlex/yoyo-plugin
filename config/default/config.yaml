@@ -1,9 +1,10 @@
 # 通过setting.config获取本配置
-title: "悠悠小助手"
+title: "悠悠助手"
 subTitle: "yoyo-plugin"
 
-# 图片
-imgMaxSize: 5 #上传图片大小限制 MB
+# 角色图片
+imgMaxSize: 10 #上传图片大小限制 MB
+imgPath: [] #角色图片库的路径 从Bot根目录开始，如 '/plugins/yoyo-image/' ，路径下须是以角色命名的文件夹
 
 # 监测PV播放量
 PVList:

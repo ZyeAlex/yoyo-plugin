@@ -38,10 +38,6 @@ export class Help extends plugin {
         // 今日日期
         let today = utils.formatDate(new Date(), 'YYYY-MM-DD')
 
-        // 兼容历史数据
-        userSignInfo.heroName = userSignInfo.heroName || userSignInfo.roleName
-        delete userSignInfo.roleName
-
         if (userSignInfo.date == today) {
             hasSign = true
         } else {
@@ -62,16 +58,10 @@ export class Help extends plugin {
             // 用户信息 排除男主角 排除没有图像的角色
             let heros = Object.keys(setting.heros).filter(id => id != '199002' && setting.heroImgs[setting.heros[id].name]?.length)
             if (!heros?.length) {
-                return e.reply('没有可签到的角色图片，请先上传角色图片！')
+                return e.reply('没有可签到的角色图片，请先上传角色图片！\n或参考readme安装图库')
             }
             const heroId = lodash.sample(heros)
             userSignInfo.heroName = setting.heros[heroId].name
-            userSignInfo.heroImg = lodash.sample(setting.heroImgs[setting.heros[heroId].name])
-            if (userSignInfo.heroImg) {
-                userSignInfo.heroImg = userSignInfo.heroImg
-            } else {
-                userSignInfo.heroImg = ''
-            }
             userSignInfo.history[userSignInfo.heroName] = (userSignInfo.history[userSignInfo.heroName] || 0) + 1
         }
         // 保存签到数据
@@ -82,7 +72,7 @@ export class Help extends plugin {
             xinghong: userSignInfo.xinghong,
             xinghong_sign: userSignInfo.xinghong_sign,
             heroName: userSignInfo.heroName,
-            heroImg: userSignInfo.heroImg,
+            heroImg: lodash.sample(setting.heroImgs[userSignInfo.heroName]),
             username: e.sender.nickname || e.sender.card || '你',
             userIcon: `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`,
             hisHeros: Object.entries(userSignInfo.history).sort((a, b) => b[1] - a[1]),
