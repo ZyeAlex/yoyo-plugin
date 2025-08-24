@@ -27,8 +27,8 @@
     object-position: center;
     /* 裁切时保持居中 */
     /* 从上到下逐渐透明 */
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.6) 85%, transparent 100%);
-    mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.6) 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
 }
 
 .hero-text {
