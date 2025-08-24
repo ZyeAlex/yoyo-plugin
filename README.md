@@ -1,3 +1,5 @@
+
+
 # <div align="center">悠悠助手 （ yoyo-plugin ）</div>
 
 <div align="center"> <i>云崽QQ机器人的「蓝色星原：旅谣」插件</i> </div>
@@ -10,6 +12,10 @@
 
 </div>
 <div align="center"><img src="https://api.moedog.org/count/@ZyeAlex.readme"  /></div>
+
+
+<img width="300" style="position:absolute;right:40px;top:0" src="./resources/UI/Atlas/HeroL/tex_icon_hero_l_101003.png" />
+
 
 ## 开发说明
 
