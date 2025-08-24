@@ -1,4 +1,4 @@
-<img decoding="async" align=right src="./resources/UI/Atlas/HeroL/tex_icon_hero_l_101003.png" width="25%">
+<img decoding="async" align=right src="./resources/UI/Atlas/HeroL/tex_icon_hero_l_101003.png" width="30%">
 
 
 # <div align="center">悠悠助手 （ yoyo-plugin ）</div>
