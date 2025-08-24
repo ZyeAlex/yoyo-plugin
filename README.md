@@ -1,3 +1,4 @@
+<img decoding="async" align=right src="./resources/UI/Atlas/HeroL/tex_icon_hero_l_101003.png" width="25%">
 
 
 # <div align="center">悠悠助手 （ yoyo-plugin ）</div>
@@ -13,8 +14,6 @@
 </div>
 <div align="center"><img src="https://api.moedog.org/count/@ZyeAlex.readme"  /></div>
 
-
-<img width="300" style="position:absolute;right:40px;top:0" src="./resources/UI/Atlas/HeroL/tex_icon_hero_l_101003.png" />
 
 
 ## 开发说明
