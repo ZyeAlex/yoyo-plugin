@@ -1,0 +1,55 @@
+<style>
+    .pet-illustration {
+        position: relative;
+        transform-style: preserve-3d;
+        perspective: 1000px;
+        width: 700px;
+        height: 700px;
+    }
+
+    .pet-illustration-background {
+        width: 300px;
+        height: 500px;
+        background-size: 100% 100%;
+        position: absolute;
+        right: 50px;
+        top: 50px;
+        transform: rotateY(-25deg) rotateZ(5deg);
+        /* 3D旋转 */
+        z-index: 0;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .pet-illustration-background img {
+        width: 320px;
+        height: 520px;
+        margin-top: -10px;
+        margin-left: -10px;
+    }
+
+    .pet-illustration-foreground {
+        position: absolute;
+        transform: translateZ(100px);
+        width: 750px;
+        bottom: 70px;
+        right: 35px;
+        opacity: 0.8;
+    }
+
+    .pet-illustration-illustration {
+        position: absolute;
+        transform: translateX(-60%) translateZ(300px);
+        left: 400px;
+        bottom: 150px;
+    }
+</style>
+
+<div class="pet-illustration">
+    <div class="pet-illustration-background" style="background-image: url({{pluResPath}}/UI/{{kiboBoxCardIcon?.[2]}})">
+        <img src="{{pluginPath}}/resources/img/pet/card/tex_pet_card_element_{{element?.[0]?.id}}.png">
+    </div>
+    <img class="pet-illustration-foreground" src="{{pluResPath}}/UI/{{kiboBoxCardIcon?.[3]}}">
+    <img class="pet-illustration-illustration" src="{{pluResPath}}/UI/{{kiboBoxCardIcon?.[4]}}"
+        style="height:{{size/10000+200}}px;">
+</div>
