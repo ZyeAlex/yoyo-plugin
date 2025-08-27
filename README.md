@@ -1,4 +1,4 @@
-<img decoding="async" align=right src="./resources/tex_icon_hero_l_101003.png" width="30%">
+<img decoding="async" align=right src="https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/tex_icon_hero_l_101003.png" width="30%">
 
 
 # <div align="center">悠悠助手 （ yoyo-plugin ）</div>
