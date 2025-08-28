@@ -2,12 +2,13 @@
  * 配置文件 ———— 用于所有的配置和文件读写
  * 
  */
-
+import utils from '#utils'
+import path from 'path'
+import https from 'https'
+import fs from 'fs'
 import YAML from 'yaml'
 import chokidar from 'chokidar'
-import fs from 'fs'
 import MD5 from 'md5'
-import path from 'path'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
 import { getHeroData } from '../api/wiki/data.js'
@@ -81,6 +82,8 @@ class Setting {
 
     // 获取奇波
     this.pets = this.getData('pet', 'pet') || {}
+    this.getImg(this.pets, 'pets')
+
     this.petIds = Object.values(this.pets).reduce((acc, cur) => {
       acc[cur['name']] = cur.id
       return acc
@@ -89,12 +92,16 @@ class Setting {
     // todo  获取公告  测试
     this.notices = await getNotice()
 
+    // 获取help图片
+    let { helpGroup } = this.getData('help')
+    this.getImg(helpGroup, 'help')
   }
   /**
    * 从Wiki获取配置数据
    */
   async getHeroData() {
     const heros = await getHeroData()
+    this.getImg(heros, 'hero')
     this.setData('hero', heros, 'hero')
     Object.entries(heros).forEach(([heroId, heroData]) => {
       if (heroData) {
@@ -384,6 +391,110 @@ class Setting {
     })
     return true
   }
+
+  /**
+   * 下载UI图标
+   */
+  getImg = (function () {
+    let queue = [];
+    let isExecuting = false;
+    // 递归处理对象
+    const traverse = async (current) => {
+      if (typeof current === 'object' && current !== null) {
+        for (const key in current) {
+          if (current.hasOwnProperty(key)) {
+            if (typeof current[key] === 'string' && pattern.test(current[key])) {
+              // 下载图片
+              if (!(setting.UI.includes(current[key]))) {
+                try {
+                  await preDownImg(current[key], await getImgUrl(current[key]))
+                  await utils.sleep(500)
+                } catch (error) {
+                }
+              }
+            } else if (typeof current[key] === 'object') {
+              await traverse(current[key]);
+            }
+          }
+        }
+      } else if (Array.isArray(current)) {
+        for (let i = 0; i < current.length; i++) {
+          if (typeof current[i] === 'string' && pattern.test(current[i])) {
+            if (!(setting.UI.includes(current[i]))) {
+              try {
+                await preDownImg(current[i], await getImgUrl(current[i]))
+                await utils.sleep(500)
+              } catch (error) {
+
+              }
+            }
+          } else if (typeof current[i] === 'object') {
+            await traverse(current[i]);
+          }
+        }
+      }
+    }
+    // 获取图片地址
+    const getImgUrl = (imgName) => {
+      switch (this.config.iconSource) {
+        case 'wiki':
+          return new Promise((res, rej) => {
+            client.getImageInfo('文件:' + imgName, (err, info) => {
+              if (err || !info?.url) logger.error(`[yoyo-plugin][wiki] ❌️ 未从Wiki查询到图片：${imgName}`)
+              return res(info?.url)
+            });
+          })
+        default:
+          return 'https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/' + imgName  // 从 Gitee访问资源
+      }
+    }
+    // 下载图片
+    const preDownImg = (imgName, imgUrl) => {
+      if (!imgUrl) return
+      return new Promise((resolve, reject) => {
+        const file = fs.createWriteStream(path.join(this.path, 'resources/UI', imgName));
+        https.get(imgUrl, (response) => {
+          if (response.statusCode != 200) return reject()
+          response.pipe(file);
+          file.on('finish', () => {
+            file.close();
+            logger.info(`[yoyo-plugin] [${this.config.iconSource}] ✅ 图片下载成功：${imgName}`)
+            this.UI.push(imgName)
+            resolve();
+          });
+        }).on('error', (err) => {
+          fs.unlink(path.join(this.path, 'resources/UI', imgName), () => { });
+          reject(err);
+        });
+      });
+    }
+    return function (obj, type) {
+      // 时间差
+      let time = await redis.get('yoyo:wiki:' + type)
+      if (!time || utils.getDateDiffHours(time, new Date()) >= 1) {
+        // 定义匹配模式的正则表达式
+        const pattern = /^tex_([a-z\d]+_?)*\.(png|jpg|jpeg|gif)$/gi;
+        queue.push([obj, type])
+        if (!isExecuting) {
+          isExecuting = true;
+          while (queue.length > 0) {
+            const [obj, type] = queue.shift();
+            try {
+              await traverse(obj);
+              // 将时间存储到redis
+              logger.info(`[yoyo-plugin]🍀🍀🍀🍀🍀 Wiki-${type}图标更新完毕🍀🍀🍀🍀🍀`)
+              redis.set(`yoyo:wiki:${type}Img`, new Date().toJSON())
+            } catch (error) {
+              logger.info('[yoyo-plugin]图片下载出错:', error);
+            }
+          }
+          isExecuting = false;
+        }
+      } else {
+        logger.info(`[yoyo-plugin]🍀🍀🍀🍀🍀 Wiki-${type}图标已于一小时内更新，不再重复更新 🍀🍀🍀🍀🍀`)
+      }
+    }
+  })()
 }
 
 export default new Setting()

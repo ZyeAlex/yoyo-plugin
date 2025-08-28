@@ -1,10 +1,6 @@
 import bot from 'nodemw'
-import setting from '#setting'
-import utils from '#utils'
-import path from 'path'
 import luaparse from 'luaparse'
-import https from 'https'
-import fs from 'fs'
+
 // wiki 链接
 const client = new bot({
     protocol: "https",
@@ -58,18 +54,6 @@ const getHeroData = async () => {
             }
         }
     }
-
-
-    // 时间差
-    let time = await redis.get('yoyo:wiki:heroImg')
-    if (!time || utils.getDateDiffHours(time, new Date()) >= 1) {
-        preGetImg(heros, 'hero')
-        let { helpGroup } = setting.getData('help')
-        preGetImg(helpGroup, 'help')
-    } else {
-        logger.info(`[yoyo-plugin]🍀🍀🍀🍀🍀 Wiki-hero图标已于一小时内更新，不再重复更新 🍀🍀🍀🍀🍀`)
-    }
-
     return heros
 }
 
@@ -153,88 +137,6 @@ async function parseLua(lua, key) {
 
 }
 
-// 预请求图片
-async function preGetImg(obj, type = '') {
-    // 定义匹配模式的正则表达式
-    const pattern = /^tex_([a-z\d]+_?)*\.(png|jpg|jpeg|gif)$/gi;
-    // 递归处理对象
-    async function traverse(current) {
-        if (typeof current === 'object' && current !== null) {
-            for (const key in current) {
-                if (current.hasOwnProperty(key)) {
-                    if (typeof current[key] === 'string' && pattern.test(current[key])) {
-                        // 下载图片
-                        if (!(setting.UI.includes(current[key]))) {
-                            try {
-                                await preDownImg(current[key], await getImgUrl(current[key]))
-                                await utils.sleep(500)
-                            } catch (error) {
-                            }
-                        }
-                    } else if (typeof current[key] === 'object') {
-                        await traverse(current[key]);
-                    }
-                }
-            }
-        } else if (Array.isArray(current)) {
-            for (let i = 0; i < current.length; i++) {
-                if (typeof current[i] === 'string' && pattern.test(current[i])) {
-                    if (!(setting.UI.includes(current[i]))) {
-                        try {
-                            await preDownImg(current[i], await getImgUrl(current[i]))
-                            await utils.sleep(500)
-                        } catch (error) {
-
-                        }
-                    }
-                } else if (typeof current[i] === 'object') {
-                    await traverse(current[i]);
-                }
-            }
-        }
-    }
-    await traverse(obj);
-
-    // 将时间存储到redis
-    logger.info(`[yoyo-plugin]🍀🍀🍀🍀🍀 Wiki-${type}图标更新完毕，一小时内将不再重复更新🍀🍀🍀🍀🍀`)
-    redis.set(`yoyo:wiki:${type}Img`, new Date().toJSON())
-}
-
-// 获取图片地址
-const getImgUrl = (imgName) => {
-    switch (setting.config.iconSource) {
-        case 'wiki':
-            return new Promise((res, rej) => {
-                client.getImageInfo('文件:' + imgName, (err, info) => {
-                    if (err || !info?.url) logger.error(`[yoyo-plugin][wiki] ❌️ 未从Wiki查询到图片：${imgName}`)
-                    return res(info?.url)
-                });
-            })
-        default:
-            return 'https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/' + imgName  // 从 Gitee访问资源
-    }
-}
-
-// 下载图片
-async function preDownImg(imgName, imgUrl) {
-    if (!imgUrl) return
-    return new Promise((resolve, reject) => {
-        const file = fs.createWriteStream(path.join(setting.path, 'resources/UI', imgName));
-        https.get(imgUrl, (response) => {
-            if (response.statusCode != 200) return reject()
-            response.pipe(file);
-            file.on('finish', () => {
-                file.close();
-                logger.info(`[yoyo-plugin] [${setting.config.iconSource}] ✅ 图片下载成功：${imgName}`)
-                setting.UI.push(imgName)
-                resolve();
-            });
-        }).on('error', (err) => {
-            fs.unlink(path.join(setting.path, 'resources/UI', imgName), () => { });
-            reject(err);
-        });
-    });
-}
 
 
 
