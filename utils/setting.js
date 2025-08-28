@@ -102,6 +102,10 @@ class Setting {
         this.heroIds[heroData.name] = heroId
       }
     })
+    // 初始化hero path
+    if (!fs.existsSync(path.join(this.path, '/resources/img/hero'))) {
+      fs.mkdirSync(path.join(this.path, '/resources/img/hero'), { recursive: true })
+    }
     let heroImgPaths = [
       path.join(this.path, '/resources/img/hero/'),
       ...(this.config.imgPath || []).map(path => path.join(this.path, path))
