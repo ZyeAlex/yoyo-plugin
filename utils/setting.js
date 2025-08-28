@@ -103,12 +103,12 @@ class Setting {
       }
     })
     // 初始化hero path
-    if (!fs.existsSync(path.join(this.path, '/resources/img/hero'))) {
-      fs.mkdirSync(path.join(this.path, '/resources/img/hero'), { recursive: true })
+    if (!fs.existsSync(path.join(this.yunzaiPath, '/resources/img/hero'))) {
+      fs.mkdirSync(path.join(this.yunzaiPath, '/resources/img/hero'), { recursive: true })
     }
     let heroImgPaths = [
       path.join(this.path, '/resources/img/hero/'),
-      ...(this.config.imgPath || []).map(imgPath => path.join(this.path, imgPath))
+      ...(this.config.imgPath || []).map(imgPath => path.join(this.yunzaiPath, imgPath))
     ]
 
     // 遍历所有图片库路径
