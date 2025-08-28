@@ -64,9 +64,12 @@ const getHeroData = async () => {
     let time = await redis.get('yoyo:wiki:heroImg')
     if (!time || utils.getDateDiffHours(time, new Date()) >= 1) {
         preGetImg(heros, 'hero')
+        let { helpGroup } = setting.getData('help')
+        preGetImg(helpGroup, 'help')
     } else {
         logger.info(`[yoyo-plugin]🍀🍀🍀🍀🍀 Wiki-hero图标已于一小时内更新，不再重复更新 🍀🍀🍀🍀🍀`)
     }
+
     return heros
 }
 
@@ -218,6 +221,7 @@ async function preDownImg(imgName, imgUrl) {
     return new Promise((resolve, reject) => {
         const file = fs.createWriteStream(path.join(setting.path, 'resources/UI', imgName));
         https.get(imgUrl, (response) => {
+            if (response.statusCode != 200) return reject()
             response.pipe(file);
             file.on('finish', () => {
                 file.close();
