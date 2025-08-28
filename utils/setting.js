@@ -128,7 +128,7 @@ class Setting {
         heroImgDirs.forEach(dir => {
           // 如果dir是目录
           if (!dir.startsWith('.') && fs.statSync(path.join(heroImgPath, dir)).isDirectory()) {
-            this.heroImgs[dir] = [...new Set([...(this.heroImgs[dir] || []), ...fs.readdirSync(heroImgPath + dir).map(fileName => heroImgPath + '/' + dir + '/' + fileName)])]
+            this.heroImgs[dir] = [...new Set([...(this.heroImgs[dir] || []), ...fs.readdirSync(path.join(heroImgPath, dir)).map(fileName => path.join(heroImgPath, dir, fileName))])]
           }
         })
       } catch (error) {
