@@ -1,9 +1,10 @@
 # 资源配置  
-iconSource: wiki # 图标载入地址，  git 从 https://gitee.com/yoyo-plugin/yoyo-icon 载入   wiki  从bwiki载入
+iconSource: git # 图标载入地址，  git 从 https://gitee.com/yoyo-plugin/yoyo-icon 载入   wiki  从bwiki载入
 
 # 角色图片
 imgMaxSize: 10 #上传图片大小限制 MB
-imgPath: [] #角色图片库的路径 从Bot根目录开始，如 '/plugins/yoyo-image/' ，路径下须是以角色命名的文件夹
+imgPath: [] #角色图片库的路径 从Bot根目录开始，如 'plugins/yoyo-image/' ，路径下须是以角色命名的文件夹
+
 imgUpAuth: 0 # 图片上传权限 0 所有人 1 管理员 2 主人
 imgDelAuth: 0 # 图片删除权限 0 所有人 1 管理员 2 主人
 
