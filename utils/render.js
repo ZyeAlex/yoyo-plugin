@@ -30,7 +30,7 @@ export default async function render(e, path, renderData = {}, cfg = {}) {
         pluginPath: setting.path,
         layout: setting.path + '/resources/common/layout.html',
         from: setting.path + '/resources/common/from.html',
-        bgImg: lodash.sample(Object.values(setting.pets)).kiboBoxCardIcon[2],
+        bgImg: lodash.sample(Object.values(setting.pets))?.kiboBoxCardIcon?.[2],
         rulePrefix: setting.config.rulePrefix[0] || '$',
         sys: {
           name, nameCH,

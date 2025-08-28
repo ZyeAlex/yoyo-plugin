@@ -81,10 +81,9 @@ class Setting {
     // 获取角色
     await this.getHeroData()
 
-
     // 获取奇波
     this.pets = this.getData('pet', 'pet') || {}
-    this.getImg(this.pets, 'pets')
+
 
     this.petIds = Object.values(this.pets).reduce((acc, cur) => {
       acc[cur['name']] = cur.id
@@ -94,36 +93,40 @@ class Setting {
     // todo  获取公告  测试
     this.notices = await getNotice()
 
+
     // 获取help图片
     let { helpGroup } = this.getData('help')
+
+    this.getImg(this.heros, 'hero')
+    this.getImg(this.pets, 'pets')
     this.getImg(helpGroup, 'help')
   }
   /**
    * 从Wiki获取配置数据
    */
   async getHeroData() {
-    const heros = await getHeroData()
-    this.getImg(heros, 'hero')
-    this.setData('hero', heros, 'hero')
-    Object.entries(heros).forEach(([heroId, heroData]) => {
-      if (heroData) {
-        this.heros[heroId] = heroData
-        this.heroIds[heroData.name] = heroId
+    try {
+      const heros = await getHeroData()
+      this.setData('hero', heros, 'hero')
+      Object.entries(heros).forEach(([heroId, heroData]) => {
+        if (heroData) {
+          this.heros[heroId] = heroData
+          this.heroIds[heroData.name] = heroId
+        }
+      })
+      // 初始化hero path
+      if (!fs.existsSync(path.join(this.path, '/resources/img/hero'))) {
+        fs.mkdirSync(path.join(this.path, '/resources/img/hero'), { recursive: true })
       }
-    })
-    // 初始化hero path
-    if (!fs.existsSync(path.join(this.path, '/resources/img/hero'))) {
-      fs.mkdirSync(path.join(this.path, '/resources/img/hero'), { recursive: true })
-    }
-    let heroImgPaths = [
-      path.join(this.path, '/resources/img/hero/'),
-      ...(this.config.imgPath || []).map(imgPath => path.join(this.yunzaiPath, imgPath))
-    ]
+      let heroImgPaths = [
+        path.join(this.path, '/resources/img/hero/'),
+        ...(this.config.imgPath || []).map(imgPath => path.join(this.yunzaiPath, imgPath))
+      ]
 
-    // 遍历所有图片库路径
-    heroImgPaths.forEach(heroImgPath => {
-      // 查找角色图片
-      try {
+      // 遍历所有图片库路径
+      heroImgPaths.forEach(heroImgPath => {
+        // 查找角色图片
+
         let heroImgDirs = fs.readdirSync(heroImgPath)
         heroImgDirs.forEach(dir => {
           // 如果dir是目录
@@ -131,12 +134,11 @@ class Setting {
             this.heroImgs[dir] = [...new Set([...(this.heroImgs[dir] || []), ...fs.readdirSync(path.join(heroImgPath, dir)).map(fileName => path.join(heroImgPath, dir, fileName))])]
           }
         })
-      } catch (error) {
-        logger.info(`[yoyo-plugin]${error}`)
-      }
-    })
 
-
+      })
+    } catch (error) {
+      logger.info(`[yoyo-plugin]${error}`)
+    }
   }
   // 监听配置文件
   watch(file, app, type = 'defSet') {
@@ -411,20 +413,12 @@ class Setting {
     const traverse = async (current) => {
       if (typeof current === 'object' && current !== null) {
         for (const key in current) {
-          if (key == 'petIcon') {
-            logger.info('🎈🎈🎈🎈🎈🎈')
-            logger.info(current[key], pattern, pattern.test(current[key]))
-          }
           if (current.hasOwnProperty(key)) {
-            if (typeof current[key] === 'string' && pattern.test(current[key])) {
-              // 下载图片
-              if (!(setting.UI.includes(current[key]))) {
-                try {
-                  await preDownImg(current[key], await getImgUrl(current[key]))
-                  await utils.sleep(500)
-                } catch (error) {
-                  logger.info(error)
-                }
+            if (typeof current[key] === 'string' && pattern.test(current[key]) && !(setting.UI.includes(current[key]))) {
+              try {
+                await preDownImg(current[key], await getImgUrl(current[key]))
+              } catch (error) {
+                logger.info(error)
               }
             } else if (typeof current[key] === 'object') {
               await traverse(current[key]);
@@ -437,9 +431,8 @@ class Setting {
             if (!(setting.UI.includes(current[i]))) {
               try {
                 await preDownImg(current[i], await getImgUrl(current[i]))
-                await utils.sleep(500)
               } catch (error) {
-                logger.info('2', error)
+                logger.info(error)
               }
             }
           } else if (typeof current[i] === 'object') {
@@ -467,7 +460,8 @@ class Setting {
     // 下载图片
     const preDownImg = (imgName, imgUrl) => {
       if (!imgUrl) return
-      return new Promise((resolve, reject) => {
+      return new Promise(async (resolve, reject) => {
+        await utils.sleep(500)
         const file = fs.createWriteStream(path.join(setting.path, 'resources/UI', imgName));
         https.get(imgUrl, (response) => {
           if (response.statusCode != 200) {
@@ -492,19 +486,18 @@ class Setting {
       let time = await redis.get('yoyo:wiki:' + type)
       if (!time || utils.getDateDiffHours(time, new Date()) >= 1) {
         queue.push([obj, type])
-        if (!isExecuting) {
+        while (queue.length > 0 && !isExecuting) {
           isExecuting = true;
-          while (queue.length > 0) {
-            const [obj, type] = queue.shift();
-            try {
-              await traverse(obj);
-              // 将时间存储到redis
-              logger.info(`[yoyo-plugin]🍀🍀🍀🍀🍀 Wiki-${type}图标更新完毕🍀🍀🍀🍀🍀`)
-              redis.set(`yoyo:wiki:${type}Img`, new Date().toJSON())
-            } catch (error) {
-              logger.info('[yoyo-plugin]图片下载出错:', error);
-            }
+          const [obj, type] = queue.shift();
+          try {
+            await traverse(obj);
+            // 将时间存储到redis
+            logger.info(`[yoyo-plugin]🍀🍀🍀🍀🍀 Wiki-${type}图标更新完毕🍀🍀🍀🍀🍀`)
+            redis.set(`yoyo:wiki:${type}Img`, new Date().toJSON())
+          } catch (error) {
+            logger.info('[yoyo-plugin]图片下载出错:', error);
           }
+
           isExecuting = false;
         }
       } else {
