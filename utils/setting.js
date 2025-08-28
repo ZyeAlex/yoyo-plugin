@@ -401,7 +401,7 @@ class Setting {
     let queue = [];
     let isExecuting = false;
     // 定义匹配模式的正则表达式
-    const pattern = /^tex_([a-z\d]+_?)*\.(png|jpg|jpeg|gif)$/gi;
+    const pattern = /^tex_[a-zA-Z0-9_]+\.(png|jpg|jpeg|gif)$/;
     // wiki 链接
     const client = new bot({
       protocol: "https",
@@ -414,6 +414,10 @@ class Setting {
     const traverse = async (current) => {
       if (typeof current === 'object' && current !== null) {
         for (const key in current) {
+          if (key == 'petIcon') {
+            logger.info('🎈🎈🎈🎈🎈🎈')
+            logger.info(current[key],pattern,pattern.test(current[key]))
+          }
           if (current.hasOwnProperty(key)) {
             if (typeof current[key] === 'string' && pattern.test(current[key])) {
               // 下载图片
@@ -422,7 +426,7 @@ class Setting {
                   await preDownImg(current[key], await getImgUrl(current[key]))
                   await utils.sleep(500)
                 } catch (error) {
-                  logger.info('1', error)
+                  logger.info(error)
                 }
               }
             } else if (typeof current[key] === 'object') {
@@ -489,8 +493,7 @@ class Setting {
     return async function (obj, type) {
       // 时间差
       let time = await redis.get('yoyo:wiki:' + type)
-      // todo !time
-      if (time || utils.getDateDiffHours(time, new Date()) >= 1) {
+      if (!time || utils.getDateDiffHours(time, new Date()) >= 1) {
         queue.push([obj, type])
         if (!isExecuting) {
           isExecuting = true;
