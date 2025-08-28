@@ -422,7 +422,7 @@ class Setting {
                   await preDownImg(current[key], await getImgUrl(current[key]))
                   await utils.sleep(500)
                 } catch (error) {
-                  logger.info(error)
+                  logger.info('1', error)
                 }
               }
             } else if (typeof current[key] === 'object') {
@@ -438,7 +438,7 @@ class Setting {
                 await preDownImg(current[i], await getImgUrl(current[i]))
                 await utils.sleep(500)
               } catch (error) {
-                logger.info(error)
+                logger.info('2', error)
               }
             }
           } else if (typeof current[i] === 'object') {
@@ -469,7 +469,10 @@ class Setting {
       return new Promise((resolve, reject) => {
         const file = fs.createWriteStream(path.join(setting.path, 'resources/UI', imgName));
         https.get(imgUrl, (response) => {
-          if (response.statusCode != 200) return reject()
+          if (response.statusCode != 200) {
+            fs.unlink(path.join(setting.path, 'resources/UI', imgName), () => { });
+            return reject(`[yoyo-plugin][${response.statusCode}] ❌️ ${imgName}下载失败`)
+          }
           response.pipe(file);
           file.on('finish', () => {
             file.close();
@@ -479,7 +482,7 @@ class Setting {
           });
         }).on('error', (err) => {
           fs.unlink(path.join(setting.path, 'resources/UI', imgName), () => { });
-          reject(err);
+          reject(`[yoyo-plugin] ❌️ ${err}`);
         });
       });
     }
