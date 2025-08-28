@@ -114,16 +114,20 @@ class Setting {
     // 遍历所有图片库路径
     heroImgPaths.forEach(heroImgPath => {
       // 查找角色图片
-      let heroImgDirs = fs.readdirSync(heroImgPath)
-      heroImgDirs.forEach(dir => {
-        // 如果dir是目录
-        if (fs.statSync(path.join(heroImgPath, dir)).isDirectory()) {
-          if (!this.heroImgs[dir]) {
-            this.heroImgs[dir] = []
+      try {
+        let heroImgDirs = fs.readdirSync(heroImgPath)
+        heroImgDirs.forEach(dir => {
+          // 如果dir是目录
+          if (fs.statSync(path.join(heroImgPath, dir)).isDirectory()) {
+            if (!this.heroImgs[dir]) {
+              this.heroImgs[dir] = []
+            }
+            this.heroImgs[dir] = [...new Set([...fs.readdirSync(heroImgPath + dir).map(fileName => heroImgPath + '/' + dir + '/' + fileName), ...this.heroImgs[dir]])]
           }
-          this.heroImgs[dir] = [...new Set([...fs.readdirSync(heroImgPath + dir).map(fileName => heroImgPath + '/' + dir + '/' + fileName), ...this.heroImgs[dir]])]
-        }
-      })
+        })
+      } catch (error) {
+
+      }
     })
 
 
