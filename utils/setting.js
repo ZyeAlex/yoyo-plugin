@@ -13,6 +13,7 @@ import { promisify } from 'util'
 import { pipeline } from 'stream'
 import { getHeroData } from '../api/wiki/data.js'
 import { getNotice } from '../api/wiki/page.js'
+import bot from 'nodemw'
 class Setting {
   constructor() {
     // 云崽地址
@@ -76,6 +77,7 @@ class Setting {
       fs.mkdirSync(path.join(this.path, '/resources/UI'), { recursive: true })
     }
     this.UI = fs.readdirSync(path.join(this.path, '/resources/UI'))
+
     // 获取角色
     this.getHeroData()
 
@@ -398,6 +400,16 @@ class Setting {
   getImg = (function () {
     let queue = [];
     let isExecuting = false;
+    // 定义匹配模式的正则表达式
+    const pattern = /^tex_([a-z\d]+_?)*\.(png|jpg|jpeg|gif)$/gi;
+    // wiki 链接
+    const client = new bot({
+      protocol: "https",
+      server: "wiki.biligame.com",
+      path: "/ap",
+      debug: false,
+    });
+
     // 递归处理对象
     const traverse = async (current) => {
       if (typeof current === 'object' && current !== null) {
@@ -410,6 +422,7 @@ class Setting {
                   await preDownImg(current[key], await getImgUrl(current[key]))
                   await utils.sleep(500)
                 } catch (error) {
+                  logger.info(error)
                 }
               }
             } else if (typeof current[key] === 'object') {
@@ -425,7 +438,7 @@ class Setting {
                 await preDownImg(current[i], await getImgUrl(current[i]))
                 await utils.sleep(500)
               } catch (error) {
-
+                logger.info(error)
               }
             }
           } else if (typeof current[i] === 'object') {
@@ -436,11 +449,13 @@ class Setting {
     }
     // 获取图片地址
     const getImgUrl = (imgName) => {
-      switch (this.config.iconSource) {
+      switch (setting.config.iconSource) {
         case 'wiki':
           return new Promise((res, rej) => {
             client.getImageInfo('文件:' + imgName, (err, info) => {
-              if (err || !info?.url) logger.error(`[yoyo-plugin][wiki] ❌️ 未从Wiki查询到图片：${imgName}`)
+              if (err || !info?.url) {
+                return rej(`[yoyo-plugin][wiki] ❌️ 未从Wiki查询到图片：${imgName}`)
+              }
               return res(info?.url)
             });
           })
@@ -452,28 +467,27 @@ class Setting {
     const preDownImg = (imgName, imgUrl) => {
       if (!imgUrl) return
       return new Promise((resolve, reject) => {
-        const file = fs.createWriteStream(path.join(this.path, 'resources/UI', imgName));
+        const file = fs.createWriteStream(path.join(setting.path, 'resources/UI', imgName));
         https.get(imgUrl, (response) => {
           if (response.statusCode != 200) return reject()
           response.pipe(file);
           file.on('finish', () => {
             file.close();
-            logger.info(`[yoyo-plugin] [${this.config.iconSource}] ✅ 图片下载成功：${imgName}`)
-            this.UI.push(imgName)
+            logger.info(`[yoyo-plugin][${setting.config.iconSource}] ✅ 图片下载成功：${imgName}`)
+            setting.UI.push(imgName)
             resolve();
           });
         }).on('error', (err) => {
-          fs.unlink(path.join(this.path, 'resources/UI', imgName), () => { });
+          fs.unlink(path.join(setting.path, 'resources/UI', imgName), () => { });
           reject(err);
         });
       });
     }
-    return function (obj, type) {
+    return async function (obj, type) {
       // 时间差
       let time = await redis.get('yoyo:wiki:' + type)
-      if (!time || utils.getDateDiffHours(time, new Date()) >= 1) {
-        // 定义匹配模式的正则表达式
-        const pattern = /^tex_([a-z\d]+_?)*\.(png|jpg|jpeg|gif)$/gi;
+      // todo !time
+      if (time || utils.getDateDiffHours(time, new Date()) >= 1) {
         queue.push([obj, type])
         if (!isExecuting) {
           isExecuting = true;
@@ -497,4 +511,6 @@ class Setting {
   })()
 }
 
-export default new Setting()
+const setting = new Setting()
+
+export default setting
