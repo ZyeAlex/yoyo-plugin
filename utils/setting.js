@@ -79,7 +79,7 @@ class Setting {
     this.UI = fs.readdirSync(path.join(this.path, '/resources/UI'))
 
     // 获取角色
-    this.getHeroData()
+    await this.getHeroData()
 
 
     // 获取奇波
@@ -112,8 +112,8 @@ class Setting {
       }
     })
     // 初始化hero path
-    if (!fs.existsSync(path.join(this.yunzaiPath, '/resources/img/hero'))) {
-      fs.mkdirSync(path.join(this.yunzaiPath, '/resources/img/hero'), { recursive: true })
+    if (!fs.existsSync(path.join(this.path, '/resources/img/hero'))) {
+      fs.mkdirSync(path.join(this.path, '/resources/img/hero'), { recursive: true })
     }
     let heroImgPaths = [
       path.join(this.path, '/resources/img/hero/'),
@@ -127,15 +127,12 @@ class Setting {
         let heroImgDirs = fs.readdirSync(heroImgPath)
         heroImgDirs.forEach(dir => {
           // 如果dir是目录
-          if (fs.statSync(path.join(heroImgPath, dir)).isDirectory()) {
-            if (!this.heroImgs[dir]) {
-              this.heroImgs[dir] = []
-            }
-            this.heroImgs[dir] = [...new Set([...fs.readdirSync(heroImgPath + dir).map(fileName => heroImgPath + '/' + dir + '/' + fileName), ...this.heroImgs[dir]])]
+          if (!dir.startsWith('.') && fs.statSync(path.join(heroImgPath, dir)).isDirectory()) {
+            this.heroImgs[dir] = [...new Set([...(this.heroImgs[dir] || []), ...fs.readdirSync(heroImgPath + dir).map(fileName => heroImgPath + '/' + dir + '/' + fileName)])]
           }
         })
       } catch (error) {
-
+        logger.info(`[yoyo-plugin]${error}`)
       }
     })
 
@@ -416,7 +413,7 @@ class Setting {
         for (const key in current) {
           if (key == 'petIcon') {
             logger.info('🎈🎈🎈🎈🎈🎈')
-            logger.info(current[key],pattern,pattern.test(current[key]))
+            logger.info(current[key], pattern, pattern.test(current[key]))
           }
           if (current.hasOwnProperty(key)) {
             if (typeof current[key] === 'string' && pattern.test(current[key])) {

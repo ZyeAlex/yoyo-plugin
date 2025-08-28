@@ -4,9 +4,7 @@ import lodash from 'lodash'
 import common from '../../../lib/common/common.js'
 const imgReg = '(?:图片|照片|美图|美照)'
 // 缓存角色面板图片列表,给delHeroImg用，防止出现删除过程中索引变动问题
-const getHeroImgList = {}
-// 缓存角色面板图片列表,给getHeroImg用，遍历展示所有图片
-const getHeroImg = {}
+const cacheHeroImgs = {}
 
 export class Img extends plugin {
     constructor() {
@@ -51,7 +49,7 @@ export class Img extends plugin {
         }
         if (!heroId) return true
         // 当前角色图片
-        let heroImg = getHeroImg[heroId]
+        let heroImg = setting.heroImgs[heroId]
         if (!heroImg?.length) {
             heroImg = setting.heroImgs[setting.heros[heroId].name]
         }
@@ -61,8 +59,8 @@ export class Img extends plugin {
             return
         }
         let img_url
-        if (heroIndex > 0 && getHeroImgList[heroId]?.length && getHeroImgList[heroId][heroIndex - 1]) {
-            img_url = getHeroImgList[heroId][heroIndex - 1]
+        if (heroIndex > 0 && cacheHeroImgs[heroId]?.length && cacheHeroImgs[heroId][heroIndex - 1]) {
+            img_url = cacheHeroImgs[heroId][heroIndex - 1]
         } else {
             heroIndex = lodash.random(0, heroImg.length - 1)
             img_url = heroImg[heroIndex]
@@ -77,13 +75,13 @@ export class Img extends plugin {
         // 查询是否有此角色
         let heroId = setting.getHeroId(heroName)
         if (!heroId) return true
-        getHeroImgList[heroId] = setting.heroImgs[setting.heros[heroId].name]
+        cacheHeroImgs[heroId] = [...(setting.heroImgs[setting.heros[heroId].name]||[])]
         e.reply('正在查询角色' + heroName + '图片列表，请稍后...', true)
-        if (!getHeroImgList[heroId]?.length) {
+        if (!cacheHeroImgs[heroId]?.length) {
             e.reply(`什么都没查到呢~\n请「>上传${heroName}图片」`)
             return
         }
-        let heroImgs = getHeroImgList[heroId]
+        let heroImgs = cacheHeroImgs[heroId]
         return await render(e, 'hero/imgs', {
             heroName,
             heroImgs,
@@ -171,12 +169,12 @@ export class Img extends plugin {
         if (!heroId) {
             return e.reply('未找到此角色', true)
         }
-        if (!getHeroImgList[heroId]?.length) {
+        if (!cacheHeroImgs[heroId]?.length) {
             e.reply(`未获取到角色图片列表，请先「>${heroName}图片列表」`)
         }
         if (!select) return
         select = select.trim().split(/[,， ]/).sort((a, b) => b - a)
-        let imgFiles = select.map(index => getHeroImgList[heroId][index - 1])
+        let imgFiles = select.map(index => cacheHeroImgs[heroId][index - 1])
         const res = setting.delHeroImg(heroId, imgFiles)
         if (res) {
             e.reply(`${heroName}图片${select.toString()}已删除`)
