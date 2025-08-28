@@ -108,7 +108,7 @@ class Setting {
     }
     let heroImgPaths = [
       path.join(this.path, '/resources/img/hero/'),
-      ...(this.config.imgPath || []).map(path => path.join(this.path, path))
+      ...(this.config.imgPath || []).map(imgPath => path.join(this.path, imgPath))
     ]
 
     // 遍历所有图片库路径
