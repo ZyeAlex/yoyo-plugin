@@ -371,7 +371,7 @@ class Setting {
       let md5 = MD5(base64)
       let newImgPath = `${heroImgPath}/${md5}.${fileType}`
       if (fs.existsSync(newImgPath)) {
-        fs.unlink(newImgPath, (err) => { console.log('unlink', err) })
+        fs.unlink(newImgPath, (err) => { })
       }
       fs.rename(imgPath, newImgPath, () => { })
       if (!this.heroImgs[this.heros[heroId].name]) this.heroImgs[this.heros[heroId].name] = []
@@ -397,10 +397,14 @@ class Setting {
    * 下载UI图标
    */
   getImg = (function () {
-    let queue = [];
-    let isExecuting = false;
+    // 要下载的图片列表
+    let imgs = []
+    // 是否正在下载图片
+    let loading = false
     // 定义匹配模式的正则表达式
     const pattern = /^tex_[a-zA-Z0-9_]+\.(png|jpg|jpeg|gif)$/;
+    // 日志
+    let logs = {}
     // wiki 链接
     const client = new bot({
       protocol: "https",
@@ -409,99 +413,118 @@ class Setting {
       debug: false,
     });
 
+
+    // await preDownImg(current[key], await getImgUrl(current[key]))
+
     // 递归处理对象
-    const traverse = async (current) => {
+    const traverse = (current) => {
       if (typeof current === 'object' && current !== null) {
         for (const key in current) {
           if (current.hasOwnProperty(key)) {
-            if (typeof current[key] === 'string' && pattern.test(current[key]) && !(setting.UI.includes(current[key]))) {
-              try {
-                await preDownImg(current[key], await getImgUrl(current[key]))
-              } catch (error) {
-                logger.info(error)
-              }
+            if (typeof current[key] === 'string' && pattern.test(current[key])) {
+              imgs.push(current[key]) // 保存图片地址
             } else if (typeof current[key] === 'object') {
-              await traverse(current[key]);
+              traverse(current[key]);
             }
           }
         }
       } else if (Array.isArray(current)) {
         for (let i = 0; i < current.length; i++) {
           if (typeof current[i] === 'string' && pattern.test(current[i])) {
-            if (!(setting.UI.includes(current[i]))) {
-              try {
-                await preDownImg(current[i], await getImgUrl(current[i]))
-              } catch (error) {
-                logger.info(error)
-              }
-            }
+            imgs.push(current[i]) // 保存图片地址
           } else if (typeof current[i] === 'object') {
-            await traverse(current[i]);
+            traverse(current[i]);
           }
         }
       }
     }
     // 获取图片地址
-    const getImgUrl = (imgName) => {
-      switch (setting.config.iconSource) {
+    const getImgUrl = (imgName, source) => {
+      switch (source) {
         case 'wiki':
           return new Promise((res, rej) => {
             client.getImageInfo('文件:' + imgName, (err, info) => {
               if (err || !info?.url) {
-                return rej(`[yoyo-plugin][wiki] ❌️ 未从Wiki查询到图片：${imgName}`)
+                return rej(`[wiki] ❌️ 未从Wiki查询到图片：${imgName}`)
               }
               return res(info?.url)
             });
           })
         default:
-          return 'https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/' + imgName  // 从 Gitee访问资源
+          return source + imgName
       }
     }
     // 下载图片
-    const preDownImg = (imgName, imgUrl) => {
-      if (!imgUrl) return
+    const preDownImg = (imgName, imgUrl, source) => {
       return new Promise(async (resolve, reject) => {
-        await utils.sleep(500)
         const file = fs.createWriteStream(path.join(setting.path, 'resources/UI', imgName));
         https.get(imgUrl, (response) => {
           if (response.statusCode != 200) {
             fs.unlink(path.join(setting.path, 'resources/UI', imgName), () => { });
-            return reject(`[yoyo-plugin][${response.statusCode}] ❌️ ${imgName}下载失败`)
+            return reject(`[${response.statusCode}] ❌️ ${imgName}下载失败`)
           }
           response.pipe(file);
           file.on('finish', () => {
             file.close();
-            logger.info(`[yoyo-plugin][${setting.config.iconSource}] ✅ 图片下载成功：${imgName}`)
-            setting.UI.push(imgName)
-            resolve();
+            resolve(`[${new URL('https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/').hostname.replace(/^www\./, '').split('.')[0]}] ✅ 图片下载成功：${imgName}`);
           });
         }).on('error', (err) => {
           fs.unlink(path.join(setting.path, 'resources/UI', imgName), () => { });
-          reject(`[yoyo-plugin] ❌️ ${err}`);
+          reject(` ❌️ ${err}`);
         });
       });
     }
-    return async function (obj, type) {
-      // 时间差
-      let time = await redis.get('yoyo:wiki:' + type)
-      if (!time || utils.getDateDiffHours(time, new Date()) >= 1) {
-        queue.push([obj, type])
-        while (queue.length > 0 && !isExecuting) {
-          isExecuting = true;
-          const [obj, type] = queue.shift();
-          try {
-            await traverse(obj);
-            // 将时间存储到redis
-            logger.info(`[yoyo-plugin]🍀🍀🍀🍀🍀 Wiki-${type}图标更新完毕🍀🍀🍀🍀🍀`)
-            redis.set(`yoyo:wiki:${type}Img`, new Date().toJSON())
-          } catch (error) {
-            logger.info('[yoyo-plugin]图片下载出错:', error);
-          }
 
-          isExecuting = false;
+
+
+    // 流程函数
+    return async function (obj) {
+      // 时间差
+      // 一个小时内不重复更新图标
+      let time = await redis.get('yoyo:ui')
+      if (time && utils.getDateDiffHours(time, new Date()) < 0.1) {
+        return logger.info(`[yoyo-plugin] 🎈 上次下载图库于一小时内，不再重复下载`)
+      }
+
+
+
+      // 搜集图标
+      traverse(obj)
+      let sourceIndex = 0 // 图片源
+
+      // queue内有未处理完任务，且pool内无运行中任务
+      while (imgs.length && !loading) {
+        let imgName = imgs.shift()// 从queue中取出一张图片
+        if (setting.UI.includes(imgName)) continue //过滤
+        loading = true
+        try {
+          const imgUrl = await getImgUrl(imgName, setting.config.iconSource[sourceIndex])
+          const success = await preDownImg(imgName, imgUrl, setting.config.iconSource[sourceIndex])
+          sourceIndex = 0
+          logger.info('[yoyo-plugin]' + success);
+          logs[imgName] = [...(logs[imgName] || []), success]
+          setting.UI.push(imgName)
+        } catch (error) {
+          logger.error('[yoyo-plugin]' + error);
+          logs[imgName] = [...(logs[imgName] || []), error]
+          // 更换图片源
+          if (sourceIndex < setting.config.iconSource.length - 1) {
+            imgs.unshift(imgName)
+            sourceIndex++
+          } else {
+            setting.UI.push(imgName) // 不再重复下载该图片
+          }
         }
-      } else {
-        logger.info(`[yoyo-plugin]🍀🍀🍀🍀🍀 Wiki-${type}图标已于一小时内更新，不再重复更新 🍀🍀🍀🍀🍀`)
+
+        await utils.sleep(500)
+        loading = false
+      }
+
+      if (!imgs.length) {
+        // 保存日志
+        setting.setData('logs', logs)
+        redis.set('yoyo:ui', new Date().toJSON())
+
       }
     }
   })()
