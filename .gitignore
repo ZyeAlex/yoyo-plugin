@@ -10,5 +10,6 @@ config/config.yaml
 resources/img/hero/
 # 下载图标
 resources/UI/
-
+# 日志
+logs.yaml
 .bat

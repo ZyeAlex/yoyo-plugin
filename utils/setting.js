@@ -72,6 +72,13 @@ class Setting {
       this.watch(`${this.configPath}${file}`, file.replace('.yaml', ''), 'config')
     }
 
+    // todo  覆盖一下config
+    this.setConfig('config', { ...this.config, iconSource: this.getdefSet('config').iconSource })
+
+    // 初始化logs
+    if (!fs.existsSync(path.join(this.path, '/data/logs'))) {
+      fs.mkdirSync(path.join(this.path, '/data/logs'), { recursive: true })
+    }
     // 初始化UI icon
     if (!fs.existsSync(path.join(this.path, '/resources/UI'))) {
       fs.mkdirSync(path.join(this.path, '/resources/UI'), { recursive: true })
@@ -522,7 +529,7 @@ class Setting {
 
       if (!imgs.length) {
         // 保存日志
-        setting.setData('logs', logs)
+        setting.setData('uilogs', logs, 'logs')
         redis.set('yoyo:ui', new Date().toJSON())
 
       }
