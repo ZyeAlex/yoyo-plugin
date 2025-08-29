@@ -14,6 +14,8 @@ import { pipeline } from 'stream'
 import { getHeroData } from '../api/wiki/data.js'
 import { getNotice } from '../api/wiki/page.js'
 import bot from 'nodemw'
+
+let setting
 class Setting {
   constructor() {
     // 云崽地址
@@ -126,7 +128,7 @@ class Setting {
         fs.mkdirSync(path.join(this.path, '/resources/img/hero'), { recursive: true })
       }
       let heroImgPaths = [
-        path.join(this.path, '/resources/img/hero/'),
+        path.join(this.path, '/resources/img/hero'),
         ...(this.config.imgPath || []).map(imgPath => path.join(this.yunzaiPath, imgPath))
       ]
 
@@ -138,9 +140,13 @@ class Setting {
         heroImgDirs.forEach(dir => {
           // 如果dir是目录
           if (!dir.startsWith('.') && fs.statSync(path.join(heroImgPath, dir)).isDirectory()) {
+
             this.heroImgs[dir] = [...new Set([...(this.heroImgs[dir] || []), ...fs.readdirSync(path.join(heroImgPath, dir)).map(fileName => path.join(heroImgPath, dir, fileName))])]
+            
+            logger.info( this.heroImgs[dir] );
           }
         })
+
 
       })
     } catch (error) {
@@ -537,6 +543,6 @@ class Setting {
   })()
 }
 
-const setting = new Setting()
+setting = new Setting()
 
 export default setting
