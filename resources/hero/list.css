@@ -1,5 +1,3 @@
-
-
 .hero-list {
     display: flex;
     flex-wrap: wrap;
@@ -24,7 +22,6 @@
 .hero-item .hero-img {
     width: 115px;
     height: 125px;
-    display: inline-block;
     position: relative;
 }
 
