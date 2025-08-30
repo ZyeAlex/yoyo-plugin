@@ -74,5 +74,7 @@ includeIcon:
 
 excludeIconReg:
 - tex_icon_hero_full
+- tex_icon_hero_get
 - tex_pet_kibo_card_foreeffect
 - tex_pet_kibo_card_backeffect
+- tex_icon_item_gift

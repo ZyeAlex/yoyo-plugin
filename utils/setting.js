@@ -104,7 +104,6 @@ class Setting {
     this.initImg()
     this.getImg(this.heros, 'hero')
     this.getImg(this.pets, 'pets')
-    this.getImg(helpGroup, 'help')
   }
   /**
    * 从Wiki获取配置数据
@@ -136,10 +135,7 @@ class Setting {
         heroImgDirs.forEach(dir => {
           // 如果dir是目录
           if (!dir.startsWith('.') && fs.statSync(path.join(heroImgPath, dir)).isDirectory()) {
-
             this.heroImgs[dir] = [...new Set([...(this.heroImgs[dir] || []), ...fs.readdirSync(path.join(heroImgPath, dir)).map(fileName => path.join(heroImgPath, dir, fileName))])]
-
-            logger.info(this.heroImgs[dir]);
           }
         })
 
