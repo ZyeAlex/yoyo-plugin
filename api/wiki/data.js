@@ -15,7 +15,7 @@ const client = new bot({
 const getHeroData = async () => {
 
     const heroIds = await new Promise(res => {
-        client.getArticle("模块:Hero", async function (err, data) {
+        client.getArticle("模块:Hero/id", async function (err, data) {
             // error handling
             if (err) {
                 logger.info(err);
@@ -23,7 +23,7 @@ const getHeroData = async () => {
             }
             try {
                 try {
-                    res(await parseLua(data, 'hero_id'))
+                    res(await parseLua(data, 'data'))
                 } catch (err) {
                     console.error('解析错误:', err);
                 }
