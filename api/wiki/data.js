@@ -32,6 +32,7 @@ const getHeroData = async () => {
             }
         });
     })
+    logger.info(heroIds)
     let heros = {}
     for (let heroId in heroIds) {
         const data = await new Promise((res, rej) => {

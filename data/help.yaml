@@ -68,3 +68,11 @@ helpGroup:
   - "icon": "tex_icon_item_skillup02.png"
     "title": "$清除无效数据"
     "desc": "清除退群成员数据、错误的签到数据等"
+
+includeIcon:
+- tex_icon_hero_m_default.png
+
+excludeIconReg:
+- tex_icon_hero_full
+- tex_pet_kibo_card_foreeffect
+- tex_pet_kibo_card_backeffect
