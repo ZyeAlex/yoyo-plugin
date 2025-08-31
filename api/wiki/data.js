@@ -18,21 +18,22 @@ const getHeroData = async () => {
         client.getArticle("模块:Hero/id", async function (err, data) {
             // error handling
             if (err) {
-                logger.error('[yoyo-plugin]', err);
+                logger.error('[yoyo-plugin][getHeroData] ', err);
                 return;
             }
             try {
                 try {
                     res(await parseLua(data, 'data'))
                 } catch (err) {
-                    logger.error('[yoyo-plugin]', err);
+                    logger.error('[yoyo-plugin][getHeroData] ', err);
                 }
             } catch (error) {
-                logger.error('[yoyo-plugin]', error)
+                logger.error('[yoyo-plugin][getHeroData] ', error)
             }
         });
     })
-
+    logger.info('[yoyo-plugin]', '角色已下载')
+    logger.info('[yoyo-plugin]', heroIds)
     let heros = {}
     for (let heroId in heroIds) {
         const data = await new Promise((res, rej) => {
@@ -42,10 +43,10 @@ const getHeroData = async () => {
                 try {
                     res(await parseLua(data, 'data'))
                 } catch (error) {
-                    rej()
+                    rej(`未查询到角色【${heroIds[heroId]}】[${heroId}] 的数据`)
                 }
             });
-        }).catch((err) => logger.error('[yoyo-plugin]', err))
+        }).catch((err) => logger.error('[yoyo-plugin][getHeroData]', err))
         if (data) {
             heros[heroId] = data
         } else {
@@ -55,8 +56,7 @@ const getHeroData = async () => {
             }
         }
     }
-    logger.info('[yoyo-plugin]', '角色已下载')
-    logger.info('[yoyo-plugin]', heroIds)
+    logger.info('[yoyo-plugin][getHeroData] ', '角色数据下载完成')
     return heros
 }
 

@@ -130,7 +130,7 @@ class Setting {
       // 遍历所有图片库路径
       heroImgPaths.forEach(heroImgPath => {
         // 查找角色图片
-
+        if (!fs.existsSync(heroImgPath)) return
         let heroImgDirs = fs.readdirSync(heroImgPath)
         heroImgDirs.forEach(dir => {
           // 如果dir是目录
