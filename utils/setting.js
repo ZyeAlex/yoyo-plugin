@@ -146,9 +146,6 @@ class Setting {
     } catch (error) {
       logger.error(`[yoyo-plugin][getPetData]${error}`)
     }
-
-    this.pets = this.getData('pet', 'pet') || {}
-
   }
   // 监听配置文件
   watch(file, app, type = 'defSet') {

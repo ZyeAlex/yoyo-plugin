@@ -70,7 +70,8 @@ helpGroup:
     "desc": "清除退群成员数据、错误的签到数据等"
 
 includeIcon:
-- tex_icon_hero_m_default.png
+- tex_icon_hero_m_default.png # 默认头像
+- tex_pet_kibo_card_background_500001.png # 默认背景
 
 excludeIconReg:
 - tex_icon_hero_full

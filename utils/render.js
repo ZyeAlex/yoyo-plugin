@@ -21,6 +21,8 @@ export default async function render(e, path, renderData = {}, cfg = {}) {
     }
   })
 
+  let bgImg = lodash.sample(Object.values(setting.pets))?.kiboBoxCardIcon?.[2] || 'tex_pet_kibo_card_background_500001.png'
+
   return e.runtime.render('yoyo-plugin', path, renderData, {
     ...cfg,
     beforeRender({ data }) {
@@ -30,7 +32,7 @@ export default async function render(e, path, renderData = {}, cfg = {}) {
         pluginPath: setting.path,
         layout: setting.path + '/resources/common/layout.html',
         from: setting.path + '/resources/common/from.html',
-        bgImg: lodash.sample(Object.values(setting.pets))?.kiboBoxCardIcon?.[2],
+        bgImg,
         rulePrefix: setting.config.rulePrefix[0] || '$',
         sys: {
           name, nameCH,
