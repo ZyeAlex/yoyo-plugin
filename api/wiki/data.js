@@ -73,11 +73,11 @@ const getPetData = async () => {
     for (let petId in petIds) {
         const data = await new Promise((res, rej) => {
             client.getArticle("模块:Kibo/" + petId, async function (err, data) {
-                if (err) return rej()
                 try {
+                    if (err) return rej()
                     res(await parseLua(data, 'data'))
                 } catch (error) {
-                    rej(`未查询到奇波【${petIds[petId]}】[${petId}] 的数据`)
+                    rej(error)
                 }
             });
         }).catch((err) => logger.error('[yoyo-plugin][getPetData]', err))
@@ -116,7 +116,7 @@ async function parseLua(lua, key) {
     // 将Table转换为Object
     function convertTableToJS(tableExpr) {
         // 处理数组
-        if (tableExpr.fields[0].type === 'TableValue') {
+        if (tableExpr.fields[0]?.type === 'TableValue') {
             let arr = []
             tableExpr.fields.forEach(field => {
                 const value = convertExpressionToJS(field.value);
@@ -141,9 +141,9 @@ async function parseLua(lua, key) {
                 throw new Error(`Unsupported field type: ${field.type}`);
             }
         });
-
         return obj;
     }
+
     return new Promise((res, rej) => {
         // 解析配置选项
         const options = {
