@@ -72,7 +72,7 @@ const getPetData = async () => {
     let pets = {}
     for (let petId in petIds) {
         const data = await new Promise((res, rej) => {
-            client.getArticle("模块:Hero/" + petId, async function (err, data) {
+            client.getArticle("模块:Kibo/" + petId, async function (err, data) {
                 if (err) return rej()
                 try {
                     res(await parseLua(data, 'data'))
