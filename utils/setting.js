@@ -11,7 +11,7 @@ import chokidar from 'chokidar'
 import MD5 from 'md5'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
-import { getHeroData } from '../api/wiki/data.js'
+import { getHeroData, getPetData } from '../api/wiki/data.js'
 import { getNotice } from '../api/wiki/page.js'
 import bot from 'nodemw'
 
@@ -41,14 +41,14 @@ class Setting {
      */
     this.heroIds = {} // 角色名对应角色ID  { 寒悠悠: 101003 }
     this.nicknames = {} // 角色昵称  {101003:['唐悠悠']}
-    this.heros = {} // 角色数据 { 101003:{ /* 角色数据 */ } }
+    this.heros = this.getData('default', 'hero') || {} // 角色数据 { 101003:{ /* 角色数据 */ } }
     this.heroImgs = {} //角色图片
 
     /**
      * 奇波数据
      */
     this.petIds = {}
-    this.pets = {}
+    this.pets = this.getData('default', 'pet') || {}
 
     /**
  * UI 图片
@@ -73,9 +73,6 @@ class Setting {
       this.watch(`${this.configPath}${file}`, file.replace('.yaml', ''), 'config')
     }
 
-    // todo  覆盖一下config
-    this.setConfig('config', { ...this.config, iconSource: this.getdefSet('config').iconSource })
-
     // 初始化logs
     if (!fs.existsSync(path.join(this.path, '/data/logs'))) {
       fs.mkdirSync(path.join(this.path, '/data/logs'), { recursive: true })
@@ -85,25 +82,18 @@ class Setting {
       fs.mkdirSync(path.join(this.path, '/resources/UI'), { recursive: true })
     }
     this.UI = fs.readdirSync(path.join(this.path, '/resources/UI'))
+    this.initImg()
 
     // 获取角色
-    await this.getHeroData()
-
+    this.getHeroData().then(() => this.getImg(this.heros, 'hero'))
     // 获取奇波
-    this.pets = this.getData('pet', 'pet') || {}
+    this.getPetData().then(() => this.getImg(this.pets, 'pets'))
 
-
-    this.petIds = Object.values(this.pets).reduce((acc, cur) => {
-      acc[cur['name']] = cur.id
-      return acc
-    }, {})
-    this.setData('id', this.petIds, 'pet')
+    // 获取公告
     // todo  获取公告  测试
     this.notices = await getNotice()
 
-    this.initImg()
-    this.getImg(this.heros, 'hero')
-    this.getImg(this.pets, 'pets')
+
   }
   /**
    * 从Wiki获取配置数据
@@ -111,7 +101,6 @@ class Setting {
   async getHeroData() {
     try {
       const heros = await getHeroData()
-      this.setData('hero', heros, 'hero')
       Object.entries(heros).forEach(([heroId, heroData]) => {
         if (heroData) {
           this.heros[heroId] = heroData
@@ -142,8 +131,24 @@ class Setting {
 
       })
     } catch (error) {
-      logger.info(`[yoyo-plugin]${error}`)
+      logger.error(`[yoyo-plugin][getHeroData]${error}`)
     }
+  }
+  async getPetData() {
+    try {
+      const pets = await getPetData()
+      Object.entries(pets).forEach(([petId, petData]) => {
+        if (petData) {
+          this.pets[petId] = petData
+          this.petIds[petData.name] = petId
+        }
+      })
+    } catch (error) {
+      logger.error(`[yoyo-plugin][getPetData]${error}`)
+    }
+
+    this.pets = this.getData('pet', 'pet') || {}
+
   }
   // 监听配置文件
   watch(file, app, type = 'defSet') {

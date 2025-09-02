@@ -17,18 +17,12 @@ const getHeroData = async () => {
     const heroIds = await new Promise(res => {
         client.getArticle("模块:Hero/id", async function (err, data) {
             // error handling
-            if (err) {
-                logger.error('[yoyo-plugin][getHeroData] ', err);
-                return;
-            }
             try {
-                try {
-                    res(await parseLua(data, 'data'))
-                } catch (err) {
-                    logger.error('[yoyo-plugin][getHeroData] ', err);
-                }
+                if (err) throw new Error(err)
+                res(await parseLua(data, 'data'))
             } catch (error) {
                 logger.error('[yoyo-plugin][getHeroData] ', error)
+                return res({});
             }
         });
     })
@@ -62,6 +56,42 @@ const getHeroData = async () => {
 
 // 从 wiki拿到奇波数据
 const getPetData = async () => {
+    const petIds = await new Promise(res => {
+        client.getArticle("模块:Kibo/id", async function (err, data) {
+            try {
+                if (err) throw new Error(err)
+                return res(await parseLua(data, 'data'))
+            } catch (error) {
+                logger.error('[yoyo-plugin][getPetData] ', error)
+                return res({});
+            }
+        });
+    })
+    logger.info('[yoyo-plugin]', '奇波已下载')
+    logger.info('[yoyo-plugin]', petIds)
+    let pets = {}
+    for (let petId in petIds) {
+        const data = await new Promise((res, rej) => {
+            client.getArticle("模块:Hero/" + petId, async function (err, data) {
+                if (err) return rej()
+                try {
+                    res(await parseLua(data, 'data'))
+                } catch (error) {
+                    rej(`未查询到奇波【${petIds[petId]}】[${petId}] 的数据`)
+                }
+            });
+        }).catch((err) => logger.error('[yoyo-plugin][getPetData]', err))
+        if (data) {
+            pets[petId] = data
+        } else {
+            pets[petId] = {
+                id: petId,
+                name: petIds[petId]
+            }
+        }
+    }
+    logger.info('[yoyo-plugin][getPetData] ', '奇波数据下载完成')
+    return pets
 }
 
 // 解析Lua  key为属性
@@ -83,8 +113,7 @@ async function parseLua(lua, key) {
                 throw new Error(`Unsupported expression type: ${expr.type}`);
         }
     }
-
-    // Main function to convert TableConstructorExpression to JS object
+    // 将Table转换为Object
     function convertTableToJS(tableExpr) {
         // 处理数组
         if (tableExpr.fields[0].type === 'TableValue') {
@@ -123,10 +152,10 @@ async function parseLua(lua, key) {
             ranges: true,       // 记录字符范围
             luaVersion: '5.3'   // 指定Lua版本
         };
-        // 1. 解析为AST
+        // 解析为AST
         const ast = luaparse.parse(lua, options);
         ast.body.filter(
-            node => node.type === 'AssignmentStatement'
+            node => node.type === 'AssignmentStatement' //找出Table节点
         ).forEach(assign => {
             assign.variables.forEach((varNode, i) => {
                 if (varNode.identifier.name == key) {

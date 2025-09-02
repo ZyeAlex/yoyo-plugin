@@ -5,6 +5,7 @@ data/logs/
 data/hero/hero.yaml
 data/hero/id.yaml
 data/pet/id.yaml
+data/pet/pet.yaml
 # 用户配置
 config/config.yaml
 # 用户上传资源
