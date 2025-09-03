@@ -9,12 +9,13 @@
 
 
     .pet-img {
-        width: 450px;
-        height: 450px;
+        width: 400px;
+        height: 500px;
+        position: relative;
     }
 
     .pet-img>div {
-        transform: scale(calc(450 / 700));
+        transform: scale(calc(500 / 700)) translateX(-100px);
         transform-origin: 0% 0%;
     }
 
@@ -83,6 +84,26 @@
         font-size: 22px;
         color: #7f7f7f;
     }
+
+    .pet-base-skill {
+        display: inline-block;
+        border-radius: 20px;
+        background-color: #b6adc8;
+        color: white;
+        padding: 3px 8px;
+        margin-top: 8px;
+        font-size: 20px;
+        text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+    }
+
+    .pet-base-skill:nth-child(2n) {
+        background-color: #e2d099;
+    }
+
+    .pet-base-skill:nth-child(3n) {
+        background-color: #b7d3e5;
+    }
+
 
 
 

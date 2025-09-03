@@ -27,10 +27,12 @@
     }
 
     .pet-skill .pet-skill-name {
-        flex: 1;
-        text-align: right;
+        /* flex: 1; */
+        /* text-align: right; */
         font-size: 36px;
         font-weight: bold;
+        padding-right: 12px;
+        line-height: 36px;
     }
     .pet-skill .pet-skill-desc {
         margin-top: 12px;
@@ -47,8 +49,8 @@
     </div>
     <div>
         <div class="pet-skill-title">
-            <div>lv.5</div>
             <div class="pet-skill-name"> {{skill.name}}</div>
+            <div>lv.5</div>
         </div>
         <div class="pet-skill-desc">{{@(skill.level[5]||skill.level[0])?.skillDescribe.replace(/\n/g, '<br/>').replace(/<color=(#\w+)>([^<]+)<\/color>/g, (_, color, text) => `<font color="${color}">${text}</font>`).replace(/\{(\d+)\}/g, (_, index) => (skill.skillLevel[9] || skill.skillLevel[0])?.value[index])}}</div>
     </div>

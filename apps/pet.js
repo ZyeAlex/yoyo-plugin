@@ -20,8 +20,12 @@ export class Pet extends plugin {
     async petList(e) {
         let pets = Object.values(setting.pets)
         pets = pets.filter(({ petIcon }) => petIcon)
+        pets.sort((a, b) => a.iconographyNum - b.iconographyNum)
         return await render(e, 'pet/list', {
-            pets,
+            pets: pets.map(pet => {
+                console.log(pet.evolution);
+                return pet
+            }),
             length: pets.length
         })
     }

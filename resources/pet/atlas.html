@@ -24,9 +24,17 @@
         <div class="pet-tab">
             <div> {{ race.map(({raceType})=>raceType).join('·') }} </div>
             <div class="line"></div>
-            <div>{{ ['幼年期','成长期','成熟期','超限体'][petStage-1]}}</div >
+            <div>{{ petStage['name'] }}</div>
             <div class="line"></div>
             <div>{{size/10000}}cm</div>
+        </div>
+        <div class="pet-base-skills">
+            {{each kiboBPropertyskillList skill}}
+            <div class="pet-base-skill">{{skill.name}}</div>
+            {{/each}}
+            {{each bPropertyskillList skill}}
+            <div class="pet-base-skill">{{skill.name}}</div>
+            {{/each}}
         </div>
         <div class="pet-desc">{{desc}}</div>
     </div>
@@ -35,12 +43,14 @@
 {{each signatureSkillList skill}}
 <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
     {{/each}}
-    <!-- 普攻 -->
-    {{each skillList skill}}
-    <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
-        {{/each}}
-        <!-- 合击技能 -->
-        {{each breakSkillList skill}}
-        <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
-            {{/each}}
-            {{/block}}
+<!-- 普攻 -->
+{{each skillList skill}}
+<% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+{{/each}}
+<!-- 合击技能 -->
+{{each breakSkillList skill}}
+<% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+{{/each}}
+<!-- 进化路线 -->
+<div class="main-box"></div>
+{{/block}}

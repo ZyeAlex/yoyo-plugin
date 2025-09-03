@@ -137,10 +137,25 @@ class Setting {
   async getPetData() {
     try {
       const pets = await getPetData()
+      let rank = {}
       Object.entries(pets).forEach(([petId, petData]) => {
         if (petData) {
           this.pets[petId] = petData
           this.petIds[petData.name] = petId
+          // 记录进化路线
+          let nextPetId = petData?.rank?.evolutionAfterStart
+          let rankArr = rank[petId] || rank[nextPetId] || []
+          rank[petId] = rankArr
+
+          if (nextPetId) {
+            rank[nextPetId] = rankArr
+            
+          }
+
+
+
+
+          petData.evolution = rankArr
         }
       })
     } catch (error) {
@@ -490,9 +505,9 @@ class Setting {
       // 时间差
       // 一个小时内不重复更新图标
       let time = await redis.get('yoyo:ui')
-      if (time && utils.getDateDiffHours(time, new Date()) < 0.1) {
-        return logger.info(`[yoyo-plugin] 🎈 上次下载图库于一小时内，不再重复下载`)
-      }
+      // if (time && utils.getDateDiffHours(time, new Date()) < 1) {
+      //   return logger.info(`[yoyo-plugin] 🎈 上次下载图库于一小时内，不再重复下载`)
+      // }
       // 搜集图标
       traverse(obj)
       let sourceIndex = 0 // 图片源
