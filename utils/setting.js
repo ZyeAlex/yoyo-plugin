@@ -151,10 +151,6 @@ class Setting {
             rank[nextPetId] = rankArr
             
           }
-
-
-
-
           petData.evolution = rankArr
         }
       })

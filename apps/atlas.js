@@ -76,6 +76,7 @@ export class Pet extends plugin {
 
     // 奇波图鉴
     async petAtlas(e, petId) {
+
         return await render(e, 'pet/atlas', setting.pets[petId])
     }
 
