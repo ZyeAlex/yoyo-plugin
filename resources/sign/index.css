@@ -46,7 +46,7 @@
     position: relative;
     z-index: 1;
     font-size: 36px;
-    font-family: "ys";
+    font-family: "title02";
     color: #0b4f58;
     opacity: 1;
     margin-top: 14px;
@@ -83,7 +83,7 @@
 .sign-text {
     text-align: center;
     font-size: 36px;
-    font-family: "ys";
+    font-family: "title02";
     color: rgba(0, 0, 0, 0.9);
     /* 白色描边 */
     text-shadow: 0 0 1px #fff, 1px 1px 3px rgba(255, 255, 255, 0.9);
@@ -109,7 +109,7 @@
 .sign-hero {
     opacity: 1;
     font-size: 65px;
-    font-family: "nzbz";
+    font-family: "title01";
     color: rgba(0, 0, 0);
 }
 

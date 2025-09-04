@@ -32,13 +32,13 @@
 
 .hero-base .hero-name {
     font-size: 72px;
-    font-family: ys;
+    font-family: title02;
     margin-top: -72px;
     margin-bottom: 24px;
     display: flex;
     align-items: center;
     position: relative;
-    font-family: "nzbz";
+    font-family: "title01";
 }
 
 
