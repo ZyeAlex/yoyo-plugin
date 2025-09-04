@@ -5,12 +5,13 @@
 
     .pet-atlas {
         display: flex;
+        align-items: center;
     }
 
 
     .pet-img {
         width: 400px;
-        height: 450px;
+        height: 500px;
         position: relative;
     }
 
