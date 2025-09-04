@@ -149,7 +149,22 @@ class Setting {
 
           if (nextPetId) {
             rank[nextPetId] = rankArr
-            
+
+            // 当前节点是否存在
+            let index = rankArr.findIndex(item => item == petId)
+            let nextIndex = rankArr.findIndex(item => item == nextPetId)
+            if (index > -1 && nextIndex > -1) {
+              return
+            }
+            if (index > -1) {
+              rankArr.splice(index + 1, 0, nextPetId)
+            } else if (nextIndex > -1) {
+              rankArr.splice(nextIndex, 0, petId)
+            } else {
+              rankArr.unshift(nextPetId)
+              rankArr.unshift(petId)
+            }
+
           }
           petData.evolution = rankArr
         }
