@@ -33,8 +33,14 @@ helpGroup:
     "desc": "查询奇波图鉴"
 - "group": "Wiki"
   "list":
+  - "title": "$装备列表"
+    "desc": "查看所有装备"
+  - "title": "$建造列表"
+    "desc": "查看所有建造物"
   - "title": "$成就列表"
     "desc": "查看所有成就"
+  - "title": "$食物列表"
+    "desc": "查看所有食物"
 - "group": "角色"
   "list":
   - "icon": "tex_icon_item_souvenir07.png"
