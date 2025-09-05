@@ -102,7 +102,12 @@ class Setting {
     this.getHeroData().then(() => this.getImg(this.heros, 'hero'))
     // 获取奇波
     this.getPetData().then(() => this.getImg(this.pets, 'pets'))
-
+    // 获取成就
+    this.getImg(this.achievements, 'achievements')
+    // 获取装备
+    this.getImg(this.accessories, 'accessories')
+    // 获取食物
+    this.getImg(this.foods, 'foods')
     // 获取公告
     // todo  获取公告  测试
     this.notices = await getNotice()
