@@ -11,12 +11,32 @@ export class Pet extends plugin {
             priority: 102,
             rule: [
                 {
-                    reg: `^(?!奇波图鉴)(?!角色图鉴)${setting.rulePrefix}?(.{1,10}?)(图鉴|卡片|card|Card)$`,
+                    reg: `^${setting.rulePrefix}?(.{1,10}?)(图鉴|卡片|card|Card)$`,
                     fnc: 'atlas'
                 },
                 {
                     reg: `^${setting.rulePrefix}?(.{1,10}?)((?:技能|星赐|台词|语音|文本)[\n+,，、]?)+(图鉴)?$`,
                     fnc: 'heroInfo'
+                },
+                {
+                    reg: `^${setting.rulePrefix}?(角色图鉴|全部角色|所有角色)$`,
+                    fnc: 'heroList'
+                },
+                {
+                    reg: `^${setting.rulePrefix}?(奇波图鉴|全部奇波|所有奇波|奇波图鉴)$`,
+                    fnc: 'petList'
+                },
+                {
+                    reg: `^${setting.rulePrefix}?(装备图鉴|全部装备)$`,
+                    fnc: 'accessoryList'
+                },
+                {
+                    reg: `^${setting.rulePrefix}?(装备图鉴|全部成就)$`,
+                    fnc: 'achievementList'
+                },
+                {
+                    reg: `^${setting.rulePrefix}?(食(物|品)列表|全部食(物|品))$`,
+                    fnc: 'foodList'
                 },
             ]
         })
@@ -25,6 +45,23 @@ export class Pet extends plugin {
     atlas(e) {
         // 名称
         let name = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10}?)(图鉴|卡片|card|Card)$`))[1]
+
+        if (name == '角色') {
+            return this.heroList(e)
+        }
+        if (name == '奇波') {
+            return this.petList(e)
+        }
+        if (name == '装备') {
+            return this.accessoryList(e)
+        }
+        if (name == '成就') {
+            return this.achievementList(e)
+        }
+        if (name == '食品' || name == '食物') {
+            return this.foodList(e)
+        }
+
         let heroId = setting.getHeroId(name)
         // 角色
         if (heroId) {
@@ -36,7 +73,21 @@ export class Pet extends plugin {
         }
         return true
     }
-
+    /**
+     * 角色
+     */
+    // 角色图鉴
+    async heroList(e) {
+        let heroList = Object.values(setting.heros)
+        heroList.sort((a, b) => a.id - b.id).sort((a, b) => (b.rarity?.id || 0) - (a.rarity?.id || 0)).sort((a) => {
+            if (a.state == 1) return -1
+            if (a.state == 2 || a.state == 3) return 1
+            return 0
+        })
+        return await render(e, 'hero/list', {
+            heros: heroList
+        })
+    }
     // 角色信息
     async heroInfo(e) {
         let reg = new RegExp(`^${setting.rulePrefix}?(.{1,10}?)((?:技能|星赐|台词|语音|文本)[\n+,，、]?)+(图鉴)?$`)
@@ -71,8 +122,21 @@ export class Pet extends plugin {
             type
         })
     }
-
-
+    /**
+     * 奇波
+     */
+    // 奇波图鉴
+    async petList(e) {
+        let pets = Object.values(setting.pets)
+        pets = pets.filter(({ petIcon }) => petIcon)
+        pets.sort((a, b) => a.iconographyNum - b.iconographyNum)
+        return await render(e, 'pet/list', {
+            pets: pets.map(pet => {
+                return pet
+            }),
+            length: pets.length
+        })
+    }
     // 奇波图鉴
     async petAtlas(e, petId) {
         let pet = { ...setting.pets[petId] }
@@ -80,6 +144,34 @@ export class Pet extends plugin {
             return setting.pets[petId]
         })
         return await render(e, 'pet/atlas', pet)
+    }
+    /**
+     * 装备
+     */
+    //   装备图鉴
+    async accessoryList(e) {
+        return await render(e, 'accessory/list', {
+            accessories: setting.accessories
+        })
+    }
+    /**
+     * 成就
+     */
+    // 装备图鉴
+    async achievementList(e) {
+        return await render(e, 'achievement/list', {
+            num: setting.achievements.reduce((num, { achievement }) => num += achievement.length, 0),
+            achievements: setting.achievements
+        })
+    }
+    /**
+     * 食物
+     */
+    // 食品列表
+    async foodList(e) {
+        return await render(e, 'food/list', {
+            foods: setting.foods
+        })
     }
 
 }

@@ -9,10 +9,6 @@ export class Hero extends plugin {
             priority: 101,
             rule: [
                 {
-                    reg: `^${setting.rulePrefix}?(角色列表|全部角色|所有角色|角色图鉴)$`,
-                    fnc: 'heroList'
-                },
-                {
                     reg: `^${setting.rulePrefix}?.{1,10}设置(别名|昵称|称号|外号).{1,10}$`,
                     fnc: 'setNickname'
                 },
@@ -29,18 +25,6 @@ export class Hero extends plugin {
                     fnc: 'delWife'
                 },
             ]
-        })
-    }
-    // 角色列表
-    async heroList(e) {
-        let heroList = Object.values(setting.heros)
-        heroList.sort((a, b) => a.id - b.id).sort((a, b) => (b.rarity?.id || 0) - (a.rarity?.id || 0)).sort((a) => {
-            if (a.state == 1) return -1
-            if (a.state == 2 || a.state == 3) return 1
-            return 0
-        })
-        return await render(e, 'hero/list', {
-            heros: heroList
         })
     }
     // 设置角色别名

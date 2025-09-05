@@ -31,13 +31,12 @@ export default async function render(e, path, renderData = {}, cfg = {}) {
         ...commonHtml,
         pluginPath: setting.path,
         layout: setting.path + '/resources/common/layout.html',
-        from: setting.path + '/resources/common/from.html',
         bgImg,
         rulePrefix: setting.config.rulePrefix[0] || '$',
         sys: {
           name, nameCH,
-          copyright: `Created By ${Version.name} & ${name}<span class="version">${version}</span>`,
-          createdby: `Created By ${Version.name} & ${name}`
+          copyright: `插件: <span class="version">${nameCH} ${version}</span> 插件群: <span class="version">991709221</span>`,
+
         },
         Math,
         JSON,

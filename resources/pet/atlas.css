@@ -5,7 +5,6 @@
 
     .pet-atlas {
         display: flex;
-        align-items: center;
     }
 
 
@@ -61,12 +60,54 @@
         vertical-align: top;
     }
 
+    .pet-base-skills {
+        margin-top: 12px;
+        background-color: #eaeae8;
+        width: 100%;
+        border-radius: 20px 5px 20px 5px;
+        display: flex;
+        color: #8d8d8d;
+        align-items: center;
+        padding: 12px;
+    }
+
+    .pet-base-skills-title {
+        font-size: 20px;
+        padding-top: 4px;
+        flex: 1;
+    }
+
+    .pet-base-skill {
+        display: inline-block;
+        border-radius: 20px;
+        background-color: #b6aecb;
+        color: white;
+        padding: 3px 8px;
+        font-size: 20px;
+        text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+    }
+
+    .pet-base-skill:nth-child(2n) {
+        background-color: #e5d199;
+    }
+
+    .pet-base-skill:nth-child(3n) {
+        background-color: #b6d1e3;
+    }
+
+    .pet-box {
+        background-color: rgba(255, 255, 255, 0.3);
+        border-radius: 5px;
+        padding:12px;
+        margin-top: 12px;
+    }
+
     .pet-tab {
         display: flex;
         justify-content: space-between;
         color: #7a8290;
         border-bottom: 1px dashed #7a8290;
-        font-size: 24px;
+        font-size: 20px;
         width: 100%;
     }
 
@@ -74,6 +115,14 @@
         text-align: center;
         margin-top: 12px;
         margin-bottom: 12px;
+    }
+    .pet-tab .pet-size{
+        border-radius: 50%;
+        width: 26px;
+        height:26px;
+        display: inline-block;
+        background-color: #8797ae;
+        color:white;
     }
 
     .pet-tab>div.line {
@@ -84,26 +133,9 @@
         margin-top: 12px;
         font-size: 22px;
         color: #7f7f7f;
+        text-indent: 2em;
     }
 
-    .pet-base-skill {
-        display: inline-block;
-        border-radius: 20px;
-        background-color: #b6adc8;
-        color: white;
-        padding: 3px 8px;
-        margin-top: 8px;
-        font-size: 20px;
-        text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
-    }
-
-    .pet-base-skill:nth-child(2n) {
-        background-color: #e2d099;
-    }
-
-    .pet-base-skill:nth-child(3n) {
-        background-color: #b7d3e5;
-    }
 
 
 
@@ -120,10 +152,11 @@
     .evolution {
         display: flex;
         justify-content: space-between;
-        margin:0 24px;
+        margin: 0 24px;
         align-items: center;
     }
-    .evolution-item{
+
+    .evolution-item {
         display: flex;
         flex-direction: column;
         align-items: center;
