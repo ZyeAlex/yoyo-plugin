@@ -12,7 +12,7 @@ export class Img extends plugin {
             name: '[悠悠小助手]图片',
             dsc: '悠悠角色图片',
             event: 'message',
-            priority: 100,
+            priority: 104,
             rule: [
                 {
                     reg: `^${setting.rulePrefix}?(?:上传|添加)(.{0,10})${imgReg}$`,

@@ -8,7 +8,7 @@ export class Help extends plugin {
             name: '[悠悠小助手]签到',
             dsc: '悠悠签到',
             event: 'message',
-            priority: 100,
+            priority: 1000,
             rule: [
                 {
                     reg: `^${setting.rulePrefix}?(签到|打卡)$`,

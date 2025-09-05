@@ -51,9 +51,16 @@ class Setting {
     this.pets = this.getData('default', 'pet') || {}
 
     /**
- * UI 图片
- */
+     * UI 图片
+     */
     this.UI = []
+
+    /**
+     * 成就系统
+     */
+    this.achievements = this.getData('default', 'achievement') || []
+
+
     // 初始化
     this.initCfg()
     // 初始化config

@@ -1,0 +1,20 @@
+.achievement-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.achievement-list::after {
+    content: "";
+    flex: auto;
+    min-width: 100px;
+    /* 或指定宽度，如 width: 30% */
+}
+
+.achievement-item {
+    box-sizing: border-box;
+    margin: 5px 6px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}

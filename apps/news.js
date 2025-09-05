@@ -11,7 +11,7 @@ export class News extends plugin {
             name: '[悠悠小助手]资讯',
             dsc: '悠悠资讯',
             event: 'message',
-            priority: 100,
+            priority: 1000,
             rule: [
                 {
                     reg: `^${setting.rulePrefix}?(数据(信息)?|预约(人数)?)$`,
