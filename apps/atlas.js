@@ -31,11 +31,15 @@ export class Pet extends plugin {
                     fnc: 'accessoryList'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?(装备图鉴|全部成就)$`,
+                    reg: `^${setting.rulePrefix}?(成就图鉴|全部成就)$`,
                     fnc: 'achievementList'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?(食(物|品)列表|全部食(物|品))$`,
+                    reg: `^${setting.rulePrefix}?(建造列表|全部建造)$`,
+                    fnc: 'buildingList'
+                },
+                {
+                    reg: `^${setting.rulePrefix}?(料理|食物|食品)列表|全部(料理|食物|食品)$`,
                     fnc: 'foodList'
                 },
             ]
@@ -49,7 +53,7 @@ export class Pet extends plugin {
         if (name == '角色') {
             return this.heroList(e)
         }
-        if (name == '奇波') {
+        if (name == '奇波' || name == '宠物') {
             return this.petList(e)
         }
         if (name == '装备') {
@@ -58,7 +62,10 @@ export class Pet extends plugin {
         if (name == '成就') {
             return this.achievementList(e)
         }
-        if (name == '食品' || name == '食物') {
+        if (name == '建造') {
+            return this.buildingList(e)
+        }
+        if (name == '食品' || name == '食物' || name == '料理') {
             return this.foodList(e)
         }
 
@@ -151,7 +158,7 @@ export class Pet extends plugin {
     //   装备图鉴
     async accessoryList(e) {
         return await render(e, 'accessory/list', {
-            accessories: setting.accessories
+            accessories: setting.accessories.filter(({ name }) => name != '暂未开放')
         })
     }
     /**
@@ -171,6 +178,15 @@ export class Pet extends plugin {
     async foodList(e) {
         return await render(e, 'food/list', {
             foods: setting.foods
+        })
+    }
+    /**
+     * 建造
+     */
+    //   建造列表
+    async buildingList(e) {
+        return await render(e, 'building/list', {
+            buildings: setting.buildings
         })
     }
 
