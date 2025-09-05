@@ -1,0 +1,8 @@
+.building-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.building-item {
+    max-width: 200px;
+}

@@ -67,6 +67,10 @@ class Setting {
      * 食物系统
      */
     this.foods = this.getData('default', 'food') || []
+    /**
+     * 建造系统
+     */
+    this.buildings = this.getData('default', 'building') || []
 
     // 初始化
     this.initCfg()
