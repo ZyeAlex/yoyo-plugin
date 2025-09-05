@@ -1,7 +1,7 @@
 - id: 1001
   achiName: 星临之刻
-  achiRes: UI/Atlas/AchievementGroup/tex_achievement_icon_01.png
-  achiPage: UI/Atlas/AchievementGroup/tex_achievement_page_icon_xd2.png
+  achiRes: tex_achievement_icon_01.png
+  achiPage: tex_achievement_page_icon_xd2.png
   reward: 9#10044#1
   achievement:
     - id: 1001001
@@ -16,8 +16,8 @@
       reward: 10#1#5
 - id: 1002
   achiName: 闪耀群星
-  achiRes: UI/Atlas/AchievementGroup/tex_achievement_icon_02.png
-  achiPage: UI/Atlas/AchievementGroup/tex_achievement_page_icon_tdwx2.png
+  achiRes: tex_achievement_icon_02.png
+  achiPage: tex_achievement_page_icon_tdwx2.png
   reward: 9#10044#1
   achievement:
     - id: 1002001
@@ -192,8 +192,8 @@
       reward: 10#1#20
 - id: 1003
   achiName: 奇想逸闻
-  achiRes: UI/Atlas/AchievementGroup/tex_achievement_icon_03.png
-  achiPage: UI/Atlas/AchievementGroup/tex_achievement_page_icon_hyl2.png
+  achiRes: tex_achievement_icon_03.png
+  achiPage: tex_achievement_page_icon_hyl2.png
   reward: 9#10044#1
   achievement:
     - id: 1003001
@@ -248,8 +248,8 @@
       reward: 10#1#5
 - id: 1004
   achiName: 星结奇遇
-  achiRes: UI/Atlas/AchievementGroup/tex_achievement_icon_04.png
-  achiPage: UI/Atlas/AchievementGroup/tex_achievement_page_icon_yjwj2.png
+  achiRes: tex_achievement_icon_04.png
+  achiPage: tex_achievement_page_icon_yjwj2.png
   reward: 9#10044#1
   achievement:
     - id: 1004001
@@ -404,7 +404,7 @@
       reward: 10#1#5
 - id: 1005
   achiName: 踏破·新芽山谷
-  achiRes: UI/Atlas/AchievementGroup/tex_achievement_icon_05.png
+  achiRes: tex_achievement_icon_05.png
   achiPage: ""
   reward: 9#10044#1
   achievement:
@@ -560,7 +560,7 @@
       reward: 10#1#10
 - id: 1006
   achiName: 大地之赐
-  achiRes: UI/Atlas/AchievementGroup/tex_achievement_icon_06.png
+  achiRes: tex_achievement_icon_06.png
   achiPage: ""
   reward: 9#10044#1
   achievement:
@@ -846,7 +846,7 @@
       reward: 10#1#5
 - id: 1007
   achiName: 历战荣光
-  achiRes: UI/Atlas/AchievementGroup/tex_achievement_icon_07.png
+  achiRes: tex_achievement_icon_07.png
   achiPage: ""
   reward: 9#10044#1
   achievement:
