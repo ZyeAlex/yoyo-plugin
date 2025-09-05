@@ -112,6 +112,8 @@ class Setting {
     this.getImg(this.accessories, 'accessories')
     // 获取食物
     this.getImg(this.foods, 'foods')
+    // 获取建造
+    this.getImg(this.buildings, 'buildings')
     // 获取公告
     // todo  获取公告  测试
     this.notices = await getNotice()
