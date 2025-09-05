@@ -4,8 +4,7 @@ import lodash from 'lodash'
 export class Pet extends plugin {
     constructor() {
         super({
-            name: '[悠悠小助手]奇波',
-            dsc: '悠悠奇波',
+            name: '[悠悠助手]奇波',
             event: 'message',
             priority: 102,
             rule: [

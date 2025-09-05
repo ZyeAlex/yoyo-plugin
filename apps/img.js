@@ -9,8 +9,7 @@ const cacheHeroImgs = {}
 export class Img extends plugin {
     constructor() {
         super({
-            name: '[悠悠小助手]图片',
-            dsc: '悠悠角色图片',
+            name: '[悠悠助手]图片',
             event: 'message',
             priority: 104,
             rule: [

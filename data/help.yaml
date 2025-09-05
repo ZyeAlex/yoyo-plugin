@@ -31,7 +31,10 @@ helpGroup:
   - "icon": "tex_icon_pet_500024_1.png"
     "title": "$菜鸡图鉴"
     "desc": "查询奇波图鉴"
-
+- "group": "Wiki"
+  "list":
+  - "title": "$成就列表"
+    "desc": "查看所有成就"
 - "group": "角色"
   "list":
   - "icon": "tex_icon_item_souvenir07.png"

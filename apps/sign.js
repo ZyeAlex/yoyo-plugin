@@ -5,8 +5,7 @@ import lodash from 'lodash'
 export class Help extends plugin {
     constructor() {
         super({
-            name: '[悠悠小助手]签到',
-            dsc: '悠悠签到',
+            name: '[悠悠助手]签到',
             event: 'message',
             priority: 1000,
             rule: [

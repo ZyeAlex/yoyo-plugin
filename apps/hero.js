@@ -4,8 +4,7 @@ import lodash from 'lodash'
 export class Hero extends plugin {
     constructor() {
         super({
-            name: '[悠悠小助手]角色',
-            dsc: '悠悠角色',
+            name: '[悠悠助手]角色',
             event: 'message',
             priority: 101,
             rule: [
@@ -41,7 +40,6 @@ export class Hero extends plugin {
             return 0
         })
         return await render(e, 'hero/list', {
-            num:heroList.length,
             heros: heroList
         })
     }

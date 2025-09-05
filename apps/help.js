@@ -4,8 +4,7 @@ import setting from '#setting'
 export class Help extends plugin {
   constructor() {
     super({
-      name: '[悠悠小助手]帮助',
-      dsc: '悠悠帮助',
+      name: '[悠悠助手]帮助',
       event: 'message',
       priority: 1000,
       rule: [

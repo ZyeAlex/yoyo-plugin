@@ -1,0 +1,13 @@
+.accessory-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.accessory-item {
+    max-width: 200px;
+}
+
+.accessory-desc {
+    font-size: 14px;
+    white-space: wrap;
+}

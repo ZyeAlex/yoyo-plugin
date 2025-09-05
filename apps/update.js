@@ -10,8 +10,7 @@ const version = packageJson.version || Version.version
 export class Update extends plugin {
   constructor() {
     super({
-      name: '[悠悠小助手]更新',
-      dsc: '更新',
+      name: '[悠悠助手]更新',
       event: 'message',
       priority: 2000,
       rule: [

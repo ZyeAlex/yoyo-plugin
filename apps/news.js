@@ -8,8 +8,7 @@ import { getUserInfo, getVideoInfo, getVideoOnline, shortUrl } from '../api/bili
 export class News extends plugin {
     constructor() {
         super({
-            name: '[悠悠小助手]资讯',
-            dsc: '悠悠资讯',
+            name: '[悠悠助手]资讯',
             event: 'message',
             priority: 1000,
             rule: [

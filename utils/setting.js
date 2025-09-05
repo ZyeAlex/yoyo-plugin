@@ -59,7 +59,14 @@ class Setting {
      * 成就系统
      */
     this.achievements = this.getData('default', 'achievement') || []
-
+    /**
+     * 装备系统
+     */
+    this.accessories = this.getData('default', 'accessory') || []
+    /**
+     * 食物系统
+     */
+    this.foods = this.getData('default', 'food') || []
 
     // 初始化
     this.initCfg()

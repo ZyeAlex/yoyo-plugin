@@ -4,8 +4,7 @@ import setting from '#setting'
 export class Help extends plugin {
     constructor() {
         super({
-            name: '[悠悠小助手]抽卡',
-            dsc: '悠悠抽卡',
+            name: '[悠悠助手]抽卡',
             event: 'message',
             priority: 100,
             rule: [
