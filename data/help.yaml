@@ -36,7 +36,7 @@ helpGroup:
   - "title": "$成就图鉴"
     "desc": "查看所有成就"
     "icon": "tex_icon_item_temporary03.png"
-  - "title": "$食物图鉴"
+  - "title": "$料理图鉴"
     "desc": "查看所有食物"
     "icon": "tex_icon_item_meat04.png"
 - "group": "角色"

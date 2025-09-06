@@ -186,7 +186,7 @@ export class Pet extends plugin {
     //   建造列表
     async buildingList(e) {
         return await render(e, 'building/list', {
-            buildings: setting.buildings
+            buildings: setting.buildings.filter(building => building?.building?.[0]?.buildingPixelIcon)
         })
     }
 

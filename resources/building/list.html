@@ -8,7 +8,7 @@
 {{block 'main'}}
 
 <div class="head-box">
-    <div class="title">装备图鉴 <span class="label">共{{buildings.length}}件</span> </div>
+    <div class="title">建造图鉴 <span class="label">共{{buildings.length}}件</span> </div>
 </div>
 <!-- <div class="nav-box">
     <div class="item">发送 <mark>{{rulePrefix}}寒悠悠图鉴</mark> 查看角色图鉴 </div>
@@ -17,8 +17,8 @@
 <div class="main-box building-list">
     {{each buildings building idx}}
     <div class="building-item">
-        <img height="100" src="{{pluResPath}}/UI/{{building.buildingPixelIcon}}" alt="">
-        <div class="building-name">{{building.name}}</div>
+        <img class="building-img"   src="{{pluResPath}}/UI/{{building.building[0].buildingPixelIcon}}" alt="">
+        <div class="building-text">{{building.name}}</div>
     </div>
     {{/each}}
 </div>

@@ -8,7 +8,7 @@
 {{block 'main'}}
 
 <div class="head-box">
-    <div class="title">装备图鉴 <span class="label">共{{foods.length}}份</span> </div>
+    <div class="title">料理图鉴 <span class="label">共{{foods.length}}份</span> </div>
 </div>
 <!-- <div class="nav-box">
     <div class="item">发送 <mark>{{rulePrefix}}寒悠悠图鉴</mark> 查看角色图鉴 </div>
@@ -17,9 +17,9 @@
 <div class="main-box food-list">
     {{each foods food idx}}
     <div class="food-item">
-      <img height="100" src="{{pluResPath}}/UI/{{food.icon}}" alt="">
-      <div>{{food.foodType.name}}</div>
-      <div>{{food.name}}</div>
+      <img class="food-img" height="100" src="{{pluResPath}}/UI/{{food.icon}}" alt="">
+      <!-- <div>{{food.foodType.name}}</div> -->
+      <div class="food-text">{{food.name}}</div>
     </div>
     {{/each}}
 </div>
