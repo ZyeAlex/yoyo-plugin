@@ -70,29 +70,24 @@
     ```shell
     git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-plugin.git ./plugins/yoyo-plugin
     ```
-  - github （ ↑ 与gitee 二选一即可 ）
-    ```shell
-    git clone --depth=1 https://github.com/ZyeAlex/yoyo-plugin.git ./plugins/yoyo-plugin
-    ```
+    - github （ ↑ 与gitee 二选一即可 ）
+      ```shell
+      git clone --depth=1 https://github.com/ZyeAlex/yoyo-plugin.git ./plugins/yoyo-plugin
+      ```
 
 3. 安装环境
     ```shell
     pnpm install
     ```
 
-4. 安装图片库
+4. 安装图片库（娱乐互动功能需要）
 
-    > 详情请看注意事项
+    ```shell
+    git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-image.git ./plugins/yoyo-image
+    ```
+    > 你也可以使用三方图片库，配置 `plugins/yoyo-plugin/config/config.yaml` 下的 `imgPath`, 添加 `plugins/图片库名称` 即可
 
-## 注意事项
-
-- 本插件暂时不附带角色图片，要使用角色图片相关功能请自行添加图库
-
-  - 拷贝图片 
-    > 将图片拷贝至 `yoyo-plugin/resources/img/hero/` 下 , 文件夹以角色名命名
-    1. 我提供的图片库： [yoyo-image](https://gitee.com/yoyo-plugin/yoyo-image) 
-  - 上传图片
-    - 插件提供 【 上传XX图片 】 指令，在群内上传图片即可
+    > 如果想自己上传图片，请将图片拷贝至 `yoyo-plugin/resources/img/hero/` 下 , 文件夹以角色名命名
 
 
 ---
