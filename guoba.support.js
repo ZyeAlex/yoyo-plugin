@@ -19,8 +19,7 @@ export function supportGuoba() {
       authorLink: 'https://gitee.com/yoyo-plugin',
       link: 'https://gitee.com/yoyo-plugin/yoyo-plugin',
       isV3: true,
-      isV2: true,
-      description: '查询「蓝色星原：旅谣」信息的插件，包括角色面板、角色图鉴、角色图片等一系列功能',
+      description: '「蓝色星原：旅谣」插件，包括角色面板、角色图鉴、角色图片等一系列功能',
       // 显示图标，此为个性化配置
       // 图标可在 https://icon-sets.iconify.design 这里进行搜索
       icon: 'mdi:stove',
