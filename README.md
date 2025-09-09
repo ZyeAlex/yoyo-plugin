@@ -18,7 +18,7 @@
 
 ## 开发说明
 
-- 插件开发中... 招募美工、招募美工、招募美工...
+- 插件开发中... 招募美工、招募开发...
 
 - 插件交流群：[👉🏻加群讨论](https://qm.qq.com/q/Mk3jyhIqSm)
 
@@ -85,9 +85,11 @@
     > 如果想自己上传图片，请将图片拷贝至 `yoyo-plugin/resources/img/hero/` 下 , 文件夹以角色名命名
 
 
+## 插件配置
+
+> 推荐使用[锅巴插件](https://gitee.com/guoba-yunzai/guoba-plugin)配置本插件
+
 ---
-
-
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
