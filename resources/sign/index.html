@@ -1,0 +1,39 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/sign/index.css" />
+{{/block}}
+
+{{block 'main'}}
+
+<img class="sign-img" src="{{heroImg}}" alt="">
+{{if rank}}
+<div class="sign-rank sign-rank-{{rank}} {{hasSign&&'has-sign'}}">
+    <div>{{hasSign?'你已签到！':'签到成功！'}}今日在本群第{{rank}}个签到！</div>
+    <div class="sign-xinghong">
+        <span>签到星虹+{{xinghong_sign}}</span><br />
+        <span>总星虹数量：{{xinghong}}</span>
+    </div>
+</div>
+{{/if}}
+<div class="sign-text">
+    <div>
+        <img class="sign-user-img" src="{{userIcon}}" />
+        <span class="sign-name">{{username}}</span>
+        的今日老婆是
+    </div>
+    <div style="font-size:60px">「<span class="sign-hero">{{heroName}}</span>」</div>
+</div>
+{{if day>1}}
+<div class="section-box">
+    <div class="sign-history-title">
+        累积签到{{day}}天，共获得{{heroNums}}个老婆：
+    </div>
+    <div class="sign-history">
+        <% for(var i=0; i < hisHeros.length; i++){ %>
+            <span>&nbsp;{{hisHeros[i][0]}}×{{hisHeros[i][1]}}&nbsp;</span>
+            <% } %>
+    </div>
+</div>
+{{/if}}
+{{/block}}

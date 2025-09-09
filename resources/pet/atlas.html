@@ -1,0 +1,75 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/pet/atlas.css" />
+{{/block}}
+
+{{block 'main'}}
+
+<div class="pet-atlas">
+    <div class="pet-img">
+        <% include(pluginPath+'/resources/pet/pet-illustration.html',{size,pluginPath,pluResPath,element,kiboBoxCardIcon})
+            %>
+    </div>
+    <div class="pet-info">
+        <div class="pet-name"> {{name}} </div>
+        <div class="pet-base">
+            <span style="padding-right:12px;color:#555;font-family:number01"><i>No.{{iconographyNum}}</i></span>
+            {{each element item}}
+            <img height="46" src="{{pluResPath}}/UI/{{item.petElem}}">
+            {{/each}}
+            <div class="pet-battle-tag"> <img height="28" src="{{pluResPath}}/UI/{{battleTag.battle}}"
+                    alt="">{{battleTag.title}}</div>
+        </div>
+        <div class="pet-base-skills">
+            <div class="pet-base-skills-title">特性</div>
+            <div>
+                {{each kiboBPropertyskillList skill}}
+                <div class="pet-base-skill">{{skill.name}}</div>
+                {{/each}}
+                {{each bPropertyskillList skill}}
+                <div class="pet-base-skill">{{skill.name}}</div>
+                {{/each}}
+            </div>
+        </div>
+        <div class="pet-box">
+            <div class="pet-tab">
+                <div> {{ race.map(({raceType})=>raceType).join('·') }} </div>
+                <div class="line"></div>
+                <div>{{ petStage['name'] }}</div>
+                <div class="line"></div>
+                <div>{{size/10000}}cm <span class="pet-size">{{talent?.sizeType?.sizeName}}</span> </div>
+            </div>
+            <div class="pet-desc">{{desc}}</div>
+        </div>
+    </div>
+</div>
+<!-- Q技能 -->
+{{each signatureSkillList skill}}
+<% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+    {{/each}}
+    <!-- 普攻 -->
+    {{each skillList skill}}
+    <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+        {{/each}}
+        <!-- 合击技能 -->
+        {{each breakSkillList skill}}
+        <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+            {{/each}}
+            <!-- 进化路线 -->
+            {{if evolution?.length}}
+            <div class="main-box ">
+                <div class="evolution-title">{{rank?.evolutionName}}</div>
+                <div class="evolution">
+                    {{each evolution pet}}
+                    <div class="evolution-item">
+                        <img height="120" class="evolution-pet-img" src="{{pluResPath}}/UI/{{pet.petIcon}}" alt="">
+                        <div class="evolution-pet-stage">{{pet.petStage?.name}}</div>
+                        <div class="evolution-pet-name">{{pet.name}}</div>
+                    </div>
+                    <div>→</div>
+                    {{/each}}
+                </div>
+            </div>
+            {{/if}}
+            {{/block}}

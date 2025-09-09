@@ -1,0 +1,30 @@
+@charset "UTF-8";
+
+@font-face {
+  font-family: "text01";
+  src: url("./font/text01.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "text-pixel";
+  src: url("./font/text-pixel.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "number01";
+  src: url("./font/number01.ttf") format("truetype");
+}
+@font-face {
+  font-family: "number02";
+  src: url("./font/number02.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "title02";
+  src: url("./font/title02.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "title01";
+  src: url("./font/title01.ttf") format("truetype");
+}
