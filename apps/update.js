@@ -46,7 +46,7 @@ export class Update extends plugin {
 
     if (Update_Plugin.getPlugin(name)) {
       if (this.e.msg.includes('强制')) {
-        await execSync('git reset --hard', { cwd: `${process.cwd()}/plugins/${name}/` })
+        await execSync('git reset --hard origin/master', { cwd: `${process.cwd()}/plugins/${name}/` })
       }
       await Update_Plugin.runUpdate(name)
       if (Update_Plugin.isUp) {
