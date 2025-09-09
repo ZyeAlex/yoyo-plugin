@@ -33,6 +33,10 @@ export class Img extends plugin {
                 {
                     reg: `^${setting.rulePrefix}?.{1,10}${imgReg}(列表|表列|合集|集合)$`,
                     fnc: 'getHeroImgList'
+                },
+                {
+                    reg: `^${setting.rulePrefix}?.{1,10}(查看)?原图$`,
+                    fnc: 'getOriginalPicture'
                 }
             ]
         })
@@ -51,7 +55,6 @@ export class Img extends plugin {
         // 当前角色图片
         let heroImg = setting.heroImgs[heroId]
         if (heroImg.length == 0) {
-            await common.sleep(500)
             e.reply(`什么都没查到呢~\n请「>上传${heroName}图片」`)
             return
         }
@@ -74,7 +77,7 @@ export class Img extends plugin {
         if (!heroId) return true
         let heroImgs = [...(setting.heroImgs[heroId] || [])]
         cacheHeroImgs[heroId] = heroImgs
-        e.reply('正在查询角色' + heroName + '图片列表，请稍后...', true)
+        await e.reply('正在查询角色' + heroName + '图片列表，请稍后...', true)
         if (!heroImgs.length) {
             e.reply(`什么都没查到呢~\n请「>上传${heroName}图片」`)
             return
@@ -180,5 +183,44 @@ export class Img extends plugin {
         if (res) {
             e.reply(`${heroName}图片${select.toString()}已删除`)
         }
+    }
+    // 获取原图
+    async getOriginalPicture(e) {
+        let source
+        if (e.reply_id) {
+            source = { message_id: e.reply_id }
+        } else {
+            if (!e.hasReply && !e.source) {
+                return true
+            }
+            // 引用的消息不是自己的消息
+            if (e.source.user_id !== e.self_id) {
+                return true
+            }
+            // 获取原消息
+            if (e.group?.getChatHistory) {
+                source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
+            } else if (e.friend?.getChatHistory) {
+                source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
+            }
+            // 引用的不是纯图片
+            if (!(source?.message?.length === 1 && source?.message[0]?.type === 'image')) {
+                return true
+            }
+        }
+        if (source?.message_id) {
+            let imgPath = await redis.get(`yoyo-plugin:original-picture:${source.message_id}`)
+            if (!e.isMaster) {
+                // e.reply('已禁止获取面板原图...')
+                // return true
+            }
+            if (imgPath) {
+                e.reply(segment.image(imgPath), false, { recallMsg: 30 })
+                return false
+            }
+        }
+
+        return true
+
     }
 }

@@ -63,15 +63,18 @@ export class Help extends plugin {
             userSignInfo.heroName = setting.heros[heroId].name
             userSignInfo.history[userSignInfo.heroName] = (userSignInfo.history[userSignInfo.heroName] || 0) + 1
         }
+
+        // 角色图片
+        let heroImg = lodash.sample(setting.heroImgs[setting.getHeroId(userSignInfo.heroName)])
         // 保存签到数据
         setting.saveUserData(e.group_id, e.user_id, userSignInfo)
         // 发送签到数据
-        return await render(e, 'sign/index', {
+        let msgRes = await render(e, 'sign/index', {
             hasSign,
             xinghong: userSignInfo.xinghong,
             xinghong_sign: userSignInfo.xinghong_sign,
             heroName: userSignInfo.heroName,
-            heroImg: lodash.sample(setting.heroImgs[setting.getHeroId(userSignInfo.heroName)]),
+            heroImg,
             username: e.sender.nickname || e.sender.card || '你',
             userIcon: `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`,
             hisHeros: Object.entries(userSignInfo.history).sort((a, b) => b[1] - a[1]),
@@ -80,5 +83,20 @@ export class Help extends plugin {
             day: Object.values(userSignInfo.history).reduce((a, b) => a + b)
         })
 
+        if (msgRes) {
+            // 如果消息发送成功，就将message_id和图片路径存起来，3小时过期
+            const message_id = [e.message_id]
+            if (Array.isArray(msgRes.message_id)) {
+                message_id.push(...msgRes.message_id)
+            } else if (msgRes.message_id) {
+                message_id.push(msgRes.message_id)
+            }
+            for (const i of message_id) {
+                await redis.set(`yoyo-plugin:original-picture:${i}`, heroImg, { EX: 3600 * 3 })
+            }
+
+        }
+
+        return false
     }
 }

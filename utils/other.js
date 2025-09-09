@@ -201,8 +201,6 @@ class Other {
     }
   }
 
-
-
 }
 
 export default Object.assign(new Other(), common)

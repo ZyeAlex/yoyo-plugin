@@ -13,7 +13,6 @@ const client = new bot({
 
 // 从wiki拿到角色数据
 const getHeroData = async () => {
-
     const heroIds = await new Promise(res => {
         client.getArticle("模块:Hero/id", async function (err, data) {
             // error handling
@@ -26,8 +25,6 @@ const getHeroData = async () => {
             }
         });
     })
-    logger.info('[yoyo-plugin]', '角色已下载')
-    logger.info('[yoyo-plugin]', heroIds)
     let heros = {}
     for (let heroId in heroIds) {
         const data = await new Promise((res, rej) => {
@@ -67,8 +64,6 @@ const getPetData = async () => {
             }
         });
     })
-    logger.info('[yoyo-plugin]', '奇波已下载')
-    logger.info('[yoyo-plugin]', petIds)
     let pets = {}
     for (let petId in petIds) {
         const data = await new Promise((res, rej) => {

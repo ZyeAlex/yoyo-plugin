@@ -19,19 +19,19 @@ export class Pet extends plugin {
                     fnc: 'heroInfo'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?(角色图鉴|全部角色|所有角色)$`,
+                    reg: `^${setting.rulePrefix}?(角色列表|全部角色|所有角色)$`,
                     fnc: 'heroList'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?(奇波图鉴|全部奇波|所有奇波|奇波图鉴)$`,
+                    reg: `^${setting.rulePrefix}?(奇波列表|全部奇波|所有奇波|奇波图鉴)$`,
                     fnc: 'petList'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?(装备图鉴|全部装备)$`,
+                    reg: `^${setting.rulePrefix}?(装备列表|全部装备)$`,
                     fnc: 'accessoryList'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?(成就图鉴|全部成就)$`,
+                    reg: `^${setting.rulePrefix}?(成就列表|全部成就)$`,
                     fnc: 'achievementList'
                 },
                 {
