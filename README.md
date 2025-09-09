@@ -110,6 +110,17 @@
 
 ---
 
+## 贡献者
+
+感谢以下贡献者对本项目做出的贡献
+
+<a href="https://github.com/ZyeAlex/yoyo-plugin/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ZyeAlex/yoyo-plugin" />
+</a>
+
+![Alt](https://repobeats.axiom.co/api/embed/2ea99ed765b7cbc37c5375c5644fe816096f3966.svg "Repobeats analytics image")
+
+
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
