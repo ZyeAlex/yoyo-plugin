@@ -1,24 +1,6 @@
 # 通过setting.getData('help')获取本配置 前缀使用 $ 符号
 
 helpGroup:
-
-- "group": "基础"
-  "list":
-  - "icon": "tex_icon_skill_104001_05.png"
-    "title": "$寒悠悠技能"
-    "desc": "查看角色技能"
-  - "icon": "tex_icon_item_gift_mat_55.png"
-    "title": "$寒悠悠星赐"
-    "desc": "查看角色星赐"
-  - "icon": "tex_icon_itemtitle_default.png"
-    "title": "$寒悠悠定弦"
-    "desc": "查看角色定弦(未开发)"
-  - "icon": "tex_icon_item_temporary03.png"
-    "title": "$寒悠悠语音"
-    "desc": "查看角色语音"
-  - "icon": "tex_icon_item_textile07.png"
-    "title": "$寒悠悠攻略"
-    "desc": "查看角色攻略(未开发)"
 - "group": "图鉴"
   "list":
   - "title": "$角色图鉴"
@@ -41,6 +23,21 @@ helpGroup:
     "icon": "tex_icon_item_meat04.png"
 - "group": "角色"
   "list":
+  - "icon": "tex_icon_skill_104001_05.png"
+    "title": "$寒悠悠技能"
+    "desc": "查看角色技能"
+  - "icon": "tex_icon_item_gift_mat_55.png"
+    "title": "$寒悠悠星赐"
+    "desc": "查看角色星赐"
+  - "icon": "tex_icon_itemtitle_default.png"
+    "title": "$寒悠悠定弦"
+    "desc": "查看角色定弦(未开发)"
+  - "icon": "tex_icon_item_temporary03.png"
+    "title": "$寒悠悠语音"
+    "desc": "查看角色语音"
+  - "icon": "tex_icon_item_textile07.png"
+    "title": "$寒悠悠攻略"
+    "desc": "查看角色攻略(未开发)"
   - "icon": "tex_icon_item_souvenir07.png"
     "title": "$寒悠悠图片"
     "desc": "随机获取一张角色图片"
@@ -72,6 +69,9 @@ helpGroup:
 - "group": "管理功能"
   "auth": "master"
   "list":
+  - "icon": "tex_icon_item_skillup02.png"
+    "title": "$悠悠更新"
+    "desc": "更新悠悠助手"
   - "icon": "tex_icon_item_skillup02.png"
     "title": "$清除无效数据"
     "desc": "清除退群成员数据、错误的签到数据等"
