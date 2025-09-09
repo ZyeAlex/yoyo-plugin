@@ -37,7 +37,7 @@ class Setting {
     this.heroIds = {} // 角色名对应角色ID  { 寒悠悠: 101003 }
     this.nicknames = {} // 角色昵称  {101003:['唐悠悠']}
     this.heros = this.getData('default', 'hero') || {} // 角色数据 { 101003:{ /* 角色数据 */ } }
-    this.heroImgs = {} //角色图片
+    this.heroImgs = {} //角色图片 {101003:[]}
 
     /**
      * 奇波数据
@@ -152,7 +152,12 @@ class Setting {
         heroImgDirs.forEach(dir => {
           // 如果dir是目录
           if (!dir.startsWith('.') && fs.statSync(path.join(heroImgPath, dir)).isDirectory()) {
-            this.heroImgs[dir] = [...new Set([...(this.heroImgs[dir] || []), ...fs.readdirSync(path.join(heroImgPath, dir)).map(fileName => path.join(heroImgPath, dir, fileName))])]
+
+            let heroImgs = [...new Set([...(this.heroImgs[dir] || []), ...fs.readdirSync(path.join(heroImgPath, dir)).map(fileName => path.join(heroImgPath, dir, fileName))])]
+            let heroId = this.getHeroId(dir)
+            if (heroId) {
+              this.heroImgs[heroId] = heroImgs
+            }
           }
         })
 
@@ -422,8 +427,8 @@ class Setting {
         fs.unlink(newImgPath, (err) => { })
       }
       fs.rename(imgPath, newImgPath, () => { })
-      if (!this.heroImgs[this.heros[heroId].name]) this.heroImgs[this.heros[heroId].name] = []
-      this.heroImgs[this.heros[heroId].name].push(`${heroImgPath}/${md5}.${fileType}`)
+      if (!this.heroImgs[heroId]) this.heroImgs[heroId] = []
+      this.heroImgs[heroId].push(`${heroImgPath}/${md5}.${fileType}`)
       str += `✅图片上传成功\n`
       imgCount++
     }
@@ -435,7 +440,7 @@ class Setting {
     imgFiles.forEach(imgFile => {
       if (fs.existsSync(imgFile)) {
         fs.unlinkSync(imgFile)
-        this.imgFiles[this.heros[heroId].name] = this.imgFiles[this.heros[heroId].name].filter(file => file !== imgFile)
+        this.heroImgs[heroId] = this.heroImgs[heroId].filter(file => file !== imgFile)
       }
     })
     return true

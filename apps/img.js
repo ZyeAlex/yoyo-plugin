@@ -50,9 +50,6 @@ export class Img extends plugin {
         if (!heroId) return true
         // 当前角色图片
         let heroImg = setting.heroImgs[heroId]
-        if (!heroImg?.length) {
-            heroImg = setting.heroImgs[setting.heros[heroId].name]
-        }
         if (heroImg.length == 0) {
             await common.sleep(500)
             e.reply(`什么都没查到呢~\n请「>上传${heroName}图片」`)
@@ -75,7 +72,7 @@ export class Img extends plugin {
         // 查询是否有此角色
         let heroId = setting.getHeroId(heroName)
         if (!heroId) return true
-        let heroImgs = [...(setting.heroImgs[setting.heros[heroId].name] || [])]
+        let heroImgs = [...(setting.heroImgs[heroId] || [])]
         cacheHeroImgs[heroId] = heroImgs
         e.reply('正在查询角色' + heroName + '图片列表，请稍后...', true)
         if (!heroImgs.length) {

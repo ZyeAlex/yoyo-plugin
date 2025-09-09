@@ -26,6 +26,22 @@
 
   > 请在 [GitHub](https://github.com/ZyeAlex/yoyo-plugin)  fork 本仓库，修改并测试完成后提交PR
 
+### 插件支持说明
+<!-- 合并 -->
+<details>
+<summary>三方图片库开发支持</summary>
+
+  - 本插件默认支持三方角色图片库，发布图片库满足以下条件即可：
+    - 加载图片库
+      > 你的图片库需要主动修改 `plugins/yoyo-plugin/config/config.yaml`，<br />
+      > 并在图片库加载的时候检测并添加 `plugins/图片库名称` 至 `imgPath` 字段。<br />
+      > 如果没有配置项，请在`readme`注明让用户自己配置
+    - 图片库格式
+      > 图片以「角色名」或「角色ID」命名文件夹，命名需符合官方角色名规范，否则无法读取，推荐使用 「角色ID」来命名避免匹配错误
+    - 图片格式
+      > 图片无明确长宽要求，图片会默认居中裁切，人物位置居中即可。
+
+</details> 
 
 
 ## 插件功能
@@ -77,10 +93,11 @@
 
 4. 安装图片库（娱乐互动功能需要）
 
+  - 安装[yoyo-image](https://gitee.com/yoyo-plugin/yoyo-image)
+
     ```shell
     git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-image.git ./plugins/yoyo-image
     ```
-    > 你也可以使用三方图片库，配置 `plugins/yoyo-plugin/config/config.yaml` 下的 `imgPath`, 添加 `plugins/图片库名称` 即可
 
     > 如果想自己上传图片，请将图片拷贝至 `yoyo-plugin/resources/img/hero/` 下 , 文件夹以角色名命名
 
