@@ -24,7 +24,7 @@
 
 - 提交代码：
 
-  > 请在 [GitHub dev分支](https://github.com/ZyeAlex/yoyo-plugin/tree/dev)  fork 本仓库，修改并测试完成后提交PR
+  > 请在 [GitHub](https://github.com/ZyeAlex/yoyo-plugin)  fork 本仓库，修改并测试完成后提交PR
 
 
 
@@ -64,17 +64,12 @@
 
 1. 确保已部署 Yunzai Bot，如果未安装，推荐使用 [Lagrange](https://lgr.928100.xyz/docs/Win.html) + [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai) 的机器人部署方案
 
-2. 推荐使用git进行安装，方便后续升级，在Yunzai根目录内打开终端执行以下命令
+2. 推荐使用git进行安装，方便后续升级，在Yunzai根目录内打开终端执行以下命令（不推荐clone GitHub仓库，该仓库为开发分支）
   - gitee
 
     ```shell
     git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-plugin.git ./plugins/yoyo-plugin
     ```
-    - github （ ↑ 与gitee 二选一即可 ）
-      ```shell
-      git clone --depth=1 https://github.com/ZyeAlex/yoyo-plugin.git ./plugins/yoyo-plugin
-      ```
-
 3. 安装环境
     ```shell
     pnpm install
