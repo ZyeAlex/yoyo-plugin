@@ -20,9 +20,7 @@ export default async function render(e, path, renderData = {}, cfg = {}) {
       commonHtml[file.replace('.html', '')] = setting.path + '/resources/common/' + file
     }
   })
-
   let bgImg = lodash.sample(Object.values(setting.pets))?.kiboBoxCardIcon?.[2] || 'tex_pet_kibo_card_background_500001.png'
-
   return e.runtime.render('yoyo-plugin', path, renderData, {
     ...cfg,
     beforeRender({ data }) {

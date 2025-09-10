@@ -1,7 +1,7 @@
 import render from '#render'
 import setting from '#setting'
 
-export class Help extends plugin {
+export class Gacha extends plugin {
     constructor() {
         super({
             name: '[悠悠助手]抽卡',

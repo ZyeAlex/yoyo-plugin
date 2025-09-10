@@ -53,6 +53,9 @@ helpGroup:
   - "icon": "tex_icon_item_woodmaterial07.png"
     "title": "$删除寒悠悠图片2"
     "desc": "从角色图片列表删除对应图片"
+  - "icon": "tex_icon_item_woodmaterial07.png"
+    "title": "~原图(引用)"
+    "desc": "查看原图"
 
 - "group": "日常"
   "list":

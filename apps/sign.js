@@ -69,20 +69,21 @@ export class Help extends plugin {
         // 保存签到数据
         setting.saveUserData(e.group_id, e.user_id, userSignInfo)
         // 发送签到数据
-        let msgRes = await render(e, 'sign/index', {
-            hasSign,
-            xinghong: userSignInfo.xinghong,
-            xinghong_sign: userSignInfo.xinghong_sign,
-            heroName: userSignInfo.heroName,
-            heroImg,
-            username: e.sender.nickname || e.sender.card || '你',
-            userIcon: `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`,
-            hisHeros: Object.entries(userSignInfo.history).sort((a, b) => b[1] - a[1]),
-            heroNums: Object.keys(userSignInfo.history).length,
-            rank: userSignInfo.rank,
-            day: Object.values(userSignInfo.history).reduce((a, b) => a + b)
-        })
-
+        let msgRes = await e.reply([
+            await render(e, 'sign/index', {
+                hasSign,
+                xinghong: userSignInfo.xinghong,
+                xinghong_sign: userSignInfo.xinghong_sign,
+                heroName: userSignInfo.heroName,
+                heroImg,
+                username: e.sender.nickname || e.sender.card || '你',
+                userIcon: `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`,
+                hisHeros: Object.entries(userSignInfo.history).sort((a, b) => b[1] - a[1]),
+                heroNums: Object.keys(userSignInfo.history).length,
+                rank: userSignInfo.rank,
+                day: Object.values(userSignInfo.history).reduce((a, b) => a + b)
+            }, { e, retType: 'base64' })
+        ])
         if (msgRes) {
             // 如果消息发送成功，就将message_id和图片路径存起来，3小时过期
             const message_id = [e.message_id]

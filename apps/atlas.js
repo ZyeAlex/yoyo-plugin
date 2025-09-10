@@ -3,7 +3,7 @@ import render from '#render'
 import lodash from 'lodash'
 // type   skill voice
 
-export class Pet extends plugin {
+export class Atlas extends plugin {
     constructor() {
         super({
             name: '[悠悠助手]图鉴',
