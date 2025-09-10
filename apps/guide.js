@@ -25,36 +25,69 @@ export class Guide extends plugin {
     async sendGuideImages(e) {
         const match = e.msg.match(new RegExp(`^(${setting.rulePrefix}|悠悠|yy|yoyo)?(.{1,20})攻略$`))
         if (!match) return true
-        const guideName = (match[2] || '').trim()
+        let guideName = (match[2] || '').trim()
         if (!guideName) return true
 
-        const folder = path.join(setting.path, 'resources', 'guide', guideName)
+        let folder = path.join(setting.path, 'resources', 'guide', guideName)
         if (!fs.existsSync(folder) || !fs.statSync(folder).isDirectory()) {
-            e.reply(`未找到「${guideName}」攻略目录：resources/guide/${guideName}，可能名称不正确`)
+            // 模糊匹配：不帮用户定位目录，只返回匹配到的名字；候选为 nickname.yaml 的全部值
+            const nicknameMap = setting.nicknames || {}
+            const candidates = Object.values(nicknameMap).flat().filter(Boolean)
+            const best = this.#findBestMatch(guideName, candidates)
+            if (best?.score >= 0.5 && best.value) {
+                await e.reply(`未找到「${guideName}」攻略，或许名字应为：` + best.value)
+                return true
+            }
+            await e.reply(`未找到「${guideName}」攻略`)
             return true
         }
 
         const allFiles = fs.readdirSync(folder)
         const imageFiles = allFiles.filter(f => /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(f))
         if (imageFiles.length === 0) {
-            e.reply(`「${guideName}」暂无攻略`)
+            await e.reply(`未找到「${guideName}」攻略`)
             return true
         }
 
-        const segs = imageFiles.map(file => {
+        const fileUrls = imageFiles.map(file => {
             const full = path.join(folder, file).replace(/\\/g, '/')
-            return segment.image(`file://${full}`)
+            return `file://${full}`
         })
 
-        // QQ 消息支持一次发送多张图，过多时可分批发送
+
+
+        // 以转发消息发送
+        const nodes = fileUrls.map(url => ({
+            message: [segment.image(url)],
+            nickname: (e.bot?.nickname) || '[攻略]图片',
+            user_id: e.self_id || e.bot?.uin || 0
+        }))
+
+        try {
+            let forward
+            if (e.group?.makeForwardMsg) {
+                forward = await e.group.makeForwardMsg(nodes)
+            } else if (e.friend?.makeForwardMsg) {
+                forward = await e.friend.makeForwardMsg(nodes)
+            }
+            if (forward) {
+                await e.reply(forward)
+                return true
+            }
+        } catch (err) {
+            logger.error('[yoyo-plugin][guide-forward]', err)
+        }
+
+        // 兼容：不支持转发时按批发送
+        const segs = fileUrls.map(url => segment.image(url))
         const batchSize = 20
         for (let i = 0; i < segs.length; i += batchSize) {
             const batch = segs.slice(i, i + batchSize)
             await e.reply(batch)
         }
-
         return true
     }
+
 
     async guideHelp(e) {
         const guideRoot = path.join(setting.path, 'resources', 'guide')
@@ -76,6 +109,54 @@ export class Guide extends plugin {
 
         return await render(e, 'guide/help/index', { guides })
     }
-}
 
+
+
+
+    // 计算字符串相似度（包含关系优先 + 编辑距离）
+    #similarity(a, b) {
+        const na = this.#normalize(a)
+        const nb = this.#normalize(b)
+        if (!na || !nb) return 0
+        if (na === nb) return 1
+        if (na.includes(nb) || nb.includes(na)) {
+            const ratio = Math.min(na.length, nb.length) / Math.max(na.length, nb.length)
+            return Math.max(0.6, ratio)
+        }
+        const dist = this.#levenshtein(na, nb)
+        const maxLen = Math.max(na.length, nb.length)
+        return 1 - dist / Math.max(1, maxLen)
+    }
+
+    #normalize(s) {
+        return String(s).toLowerCase().replace(/[^\p{sc=Han}a-z0-9]/giu, '')
+    }
+
+    #levenshtein(a, b) {
+        const m = a.length, n = b.length
+        const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0))
+        for (let i = 0; i <= m; i++) dp[i][0] = i
+        for (let j = 0; j <= n; j++) dp[0][j] = j
+        for (let i = 1; i <= m; i++) {
+            for (let j = 1; j <= n; j++) {
+                const cost = a[i - 1] === b[j - 1] ? 0 : 1
+                dp[i][j] = Math.min(
+                    dp[i - 1][j] + 1,
+                    dp[i][j - 1] + 1,
+                    dp[i - 1][j - 1] + cost
+                )
+            }
+        }
+        return dp[m][n]
+    }
+
+    #findBestMatch(target, candidates) {
+        let best = { value: null, score: 0 }
+        for (const c of candidates) {
+            const s = this.#similarity(target, c)
+            if (s > best.score) best = { value: c, score: s }
+        }
+        return best
+    }
+}
 
