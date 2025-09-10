@@ -201,6 +201,77 @@ class Other {
     }
   }
 
+  /**
+ * 在候选词列表中找到与目标字符串最相似的项
+ *
+ * 算法规则：
+ * 1. 先对字符串进行归一化（去掉非汉字/字母/数字并转小写）
+ * 2. 若完全相同，返回相似度 1
+ * 3. 若存在包含关系，相似度至少为 0.6
+ * 4. 否则使用 Levenshtein 编辑距离计算相似度
+ *
+ * @param {string} target - 要匹配的目标字符串
+ * @param {string[]} candidates - 候选字符串数组
+ * @returns {{ value: string|null, score: number }} 
+ *          最佳匹配结果，包含：
+ *          - `value`: 最相似的候选词（如果没有则为 null）
+ *          - `score`: 相似度分数（0 ~ 1 之间）
+ *
+ * @example
+ * const candidates = ["苹果", "香蕉", "菠萝"];
+ * const result = findBestMatch("苹", candidates);
+ * console.log(result);
+ * // { value: "苹果", score: 0.6... }
+ */
+  findBestMatch(target, candidates) {
+    // 相似度计算（内部闭包）
+    function similarity(a, b) {
+      // 归一化
+      const normalize = s =>
+        String(s).toLowerCase().replace(/[^\p{sc=Han}a-z0-9]/giu, '')
+
+      const na = normalize(a)
+      const nb = normalize(b)
+      if (!na || !nb) return 0
+      if (na === nb) return 1
+      if (na.includes(nb) || nb.includes(na)) {
+        const ratio = Math.min(na.length, nb.length) / Math.max(na.length, nb.length)
+        return Math.max(0.6, ratio)
+      }
+
+      // Levenshtein 距离
+      const levenshtein = (x, y) => {
+        const m = x.length, n = y.length
+        const dp = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0))
+        for (let i = 0; i <= m; i++) dp[i][0] = i
+        for (let j = 0; j <= n; j++) dp[0][j] = j
+        for (let i = 1; i <= m; i++) {
+          for (let j = 1; j <= n; j++) {
+            const cost = x[i - 1] === y[j - 1] ? 0 : 1
+            dp[i][j] = Math.min(
+              dp[i - 1][j] + 1,
+              dp[i][j - 1] + 1,
+              dp[i - 1][j - 1] + cost
+            )
+          }
+        }
+        return dp[m][n]
+      }
+
+      const dist = levenshtein(na, nb)
+      const maxLen = Math.max(na.length, nb.length)
+      return 1 - dist / Math.max(1, maxLen)
+    }
+
+    let best = { value: null, score: 0 }
+    for (const c of candidates) {
+      const s = similarity(target, c)
+      if (s > best.score) best = { value: c, score: s }
+    }
+    return best
+  }
+
+
 }
 
 export default Object.assign(new Other(), common)
