@@ -30,7 +30,7 @@ export class Guide extends plugin {
 
         let folder = path.join(setting.path, 'resources', 'guide', guideName)
         if (!fs.existsSync(folder) || !fs.statSync(folder).isDirectory()) {
-            // 模糊匹配：不帮用户定位目录，只返回匹配到的名字；候选来自 data/hero/nickname.yaml
+            // 模糊匹配；候选词来自 data/hero/nickname.yaml
             let nicknameMap = setting.nicknames || {}
             if (!nicknameMap || Object.keys(nicknameMap).length === 0) {
                 try {
@@ -93,7 +93,7 @@ export class Guide extends plugin {
             logger.error('[yoyo-plugin][攻略转发失败]', err)
         }
 
-        // 兼容：不支持转发时按批发送
+        // 不支持转发时按批发送
         const segs = fileUrls.map(url => segment.image(url))
         const batchSize = 20
         for (let i = 0; i < segs.length; i += batchSize) {
