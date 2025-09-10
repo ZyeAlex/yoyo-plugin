@@ -1,0 +1,30 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/guide/help/index.css" />
+{{/block}}
+
+{{block 'main'}}
+
+<div class="head-box">
+    <div class="title">攻略帮助 <span class="label">共{{guides.length}}个</span></div>
+    <div class="label">发送「{{rulePrefix}}名称攻略」查看该目录全部图片</div>
+    <div class="label">例：{{rulePrefix}}寒悠悠攻略</div>
+    <div class="label">发送「{{rulePrefix}}攻略帮助」查看此页</div>
+    <div class="label">资源路径：resources/guide/名称</div>
+    <div class="label">在对应文件夹内放入 .png/.jpg/.gif/.webp/.bmp/.svg</div>
+    <div class="label">注意：名称需和文件夹名一致</div>
+
+</div>
+
+<div class="main-box guide-list">
+    {{each guides g}}
+    <div class="guide-item">
+        <div class="name">{{g.name}}</div>
+        <div class="count">{{g.count}} 张</div>
+        <div class="hint">发送「{{rulePrefix}}{{g.name}}攻略」</div>
+    </div>
+    {{/each}}
+</div>
+
+{{/block}}
