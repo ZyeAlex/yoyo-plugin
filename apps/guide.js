@@ -30,8 +30,18 @@ export class Guide extends plugin {
 
         let folder = path.join(setting.path, 'resources', 'guide', guideName)
         if (!fs.existsSync(folder) || !fs.statSync(folder).isDirectory()) {
-            // 模糊匹配：不帮用户定位目录，只返回匹配到的名字；候选为 nickname.yaml 的全部值
-            const nicknameMap = setting.nicknames || {}
+            // 模糊匹配：不帮用户定位目录，只返回匹配到的名字；候选来自 data/hero/nickname.yaml
+            let nicknameMap = setting.nicknames || {}
+            if (!nicknameMap || Object.keys(nicknameMap).length === 0) {
+                try {
+                    const loaded = setting.getData('nickname', 'hero') || {}
+                    if (loaded && typeof loaded === 'object') {
+                        nicknameMap = loaded
+                    }
+                } catch (err) {
+                    logger.error('[yoyo-plugin][nickname读取]', err)
+                }
+            }
             const candidates = Object.values(nicknameMap).flat().filter(Boolean)
             const best = this.#findBestMatch(guideName, candidates)
             if (best?.score >= 0.5 && best.value) {
@@ -57,11 +67,16 @@ export class Guide extends plugin {
 
 
         // 以转发消息发送
-        const nodes = fileUrls.map(url => ({
+        const headerNode = {
+            message: [`${guideName}攻略`],
+            nickname: (e.bot?.nickname) || '[攻略]标题',
+            user_id: e.self_id || e.bot?.uin || 0
+        }
+        const nodes = [headerNode, ...fileUrls.map(url => ({
             message: [segment.image(url)],
             nickname: (e.bot?.nickname) || '[攻略]图片',
             user_id: e.self_id || e.bot?.uin || 0
-        }))
+        }))]
 
         try {
             let forward
@@ -75,7 +90,7 @@ export class Guide extends plugin {
                 return true
             }
         } catch (err) {
-            logger.error('[yoyo-plugin][guide-forward]', err)
+            logger.error('[yoyo-plugin][攻略转发失败]', err)
         }
 
         // 兼容：不支持转发时按批发送

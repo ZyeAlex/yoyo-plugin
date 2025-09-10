@@ -1,33 +1,12 @@
-.guide-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+.box {
+    margin-top: 36px;
 }
 
-.guide-item {
-    background: rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 12px;
+.box .title {
+    font-size: 28px;
 }
 
-.guide-item .name {
+.box .label {
     font-size: 16px;
-    font-weight: 700;
-}
-
-.guide-item .count {
     margin-top: 6px;
-    color: #ddd;
-}
-
-.guide-item .hint {
-    margin-top: 6px;
-    color: #a9e;
-}
-
-@media (max-width: 800px) {
-    .guide-list {
-        grid-template-columns: repeat(2, 1fr);
-    }
 }
