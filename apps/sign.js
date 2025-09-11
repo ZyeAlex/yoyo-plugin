@@ -7,20 +7,16 @@ export class Help extends plugin {
         super({
             name: '[悠悠助手]签到',
             event: 'message',
-            priority: 1000,
+            priority: 9999,
             rule: [
                 {
                     reg: `^${setting.rulePrefix}?(签到|打卡)$`,
                     fnc: 'sign'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?更换(今日)?老婆$`,
+                    reg: `^${setting.rulePrefix}?更?换个?(今日)?老婆$`,
                     fnc: 'updateSign'
-                },
-                {
-                    reg: `^${setting.rulePrefix}?清除错误签到数据$`,
-                    fnc: ''
-                },
+                }
             ]
         })
     }

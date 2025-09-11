@@ -8,7 +8,7 @@ export class Atlas extends plugin {
         super({
             name: '[悠悠助手]图鉴',
             event: 'message',
-            priority: 102,
+            priority: -1,
             rule: [
                 {
                     reg: `^${setting.rulePrefix}?(.{1,10}?)(图鉴|卡片|card|Card)$`,
@@ -68,7 +68,6 @@ export class Atlas extends plugin {
         if (name == '食品' || name == '食物' || name == '料理') {
             return this.foodList(e)
         }
-
         let heroId = setting.getHeroId(name)
         // 角色
         if (heroId) {
@@ -91,7 +90,7 @@ export class Atlas extends plugin {
             if (a.state == 2 || a.state == 3) return 1
             return 0
         })
-        return await render(e, 'hero/list', {
+        await render(e, 'hero/list', {
             heros: heroList
         })
     }
@@ -124,7 +123,7 @@ export class Atlas extends plugin {
     async heroAtlas(e, heroId, type = ['skill', 'talent']) {
         // 角色信息
         let heroMsg = setting.heros[heroId] || {}
-        return await render(e, 'hero/atlas', {
+        await render(e, 'hero/atlas', {
             ...heroMsg,
             type
         })
@@ -137,7 +136,7 @@ export class Atlas extends plugin {
         let pets = Object.values(setting.pets)
         pets = pets.filter(({ petIcon }) => petIcon)
         pets.sort((a, b) => a.iconographyNum - b.iconographyNum)
-        return await render(e, 'pet/list', {
+        await render(e, 'pet/list', {
             pets: pets.map(pet => {
                 return pet
             }),
@@ -157,7 +156,7 @@ export class Atlas extends plugin {
      */
     //   装备图鉴
     async accessoryList(e) {
-        return await render(e, 'accessory/list', {
+        await render(e, 'accessory/list', {
             accessories: setting.accessories.filter(({ name }) => name != '暂未开放')
         })
     }
@@ -166,7 +165,7 @@ export class Atlas extends plugin {
      */
     // 装备图鉴
     async achievementList(e) {
-        return await render(e, 'achievement/list', {
+        await render(e, 'achievement/list', {
             num: setting.achievements.reduce((num, { achievement }) => num += achievement.length, 0),
             achievements: setting.achievements
         })
@@ -176,7 +175,7 @@ export class Atlas extends plugin {
      */
     // 食品列表
     async foodList(e) {
-        return await render(e, 'food/list', {
+        await render(e, 'food/list', {
             foods: setting.foods
         })
     }
@@ -185,7 +184,7 @@ export class Atlas extends plugin {
      */
     //   建造列表
     async buildingList(e) {
-        return await render(e, 'building/list', {
+        await render(e, 'building/list', {
             buildings: setting.buildings.filter(building => building?.building?.[0]?.buildingPixelIcon)
         })
     }
