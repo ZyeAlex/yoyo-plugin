@@ -47,26 +47,12 @@
     z-index: 1;
     font-size: 36px;
     font-family: "title02";
-    color: #0b4f58;
     opacity: 1;
     margin-top: 14px;
     display: flex;
     justify-content: center;
     /* 白色描边 */
     text-shadow: 0 0 1px #fff, 1px 1px 3px rgba(255, 255, 255, 0.9);
-}
-
-.sign-rank-1 {
-    color: #FF8C00;
-}
-
-.sign-rank-2 {
-    color: #641f56;
-}
-
-.sign-rank-3 {
-    color: #0e6ab5;
-    /* 保底蓝色（常见SR色） */
 }
 
 .sign-xinghong {
@@ -116,10 +102,6 @@
 
 
 
-
-.has-sign {
-    color: #ff3300 !important;
-}
 
 .sign-history-title {
     font-size: 24px;

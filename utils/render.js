@@ -43,3 +43,22 @@ export default async function render(e, path, renderData = {}, cfg = {}) {
     }
   })
 }
+
+
+// 保存原图
+export async function saveRender(e, path, renderData, originalPicture) {
+  let msgRes = await e.reply([await render(e, path, renderData, { e, retType: 'base64' })])
+  if (msgRes) {
+    // 如果消息发送成功，就将message_id和图片路径存起来，3小时过期
+    const message_id = [e.message_id]
+    if (Array.isArray(msgRes.message_id)) {
+      message_id.push(...msgRes.message_id)
+    } else if (msgRes.message_id) {
+      message_id.push(msgRes.message_id)
+    }
+    for (const i of message_id) {
+      await redis.set(`yoyo-plugin:original-picture:${i}`, originalPicture, { EX: 3600 * 3 })
+    }
+
+  }
+}

@@ -1,4 +1,4 @@
-import render from '../utils/render.js'
+import render, { saveRender } from '../utils/render.js'
 import utils from '#utils'
 import setting from '#setting'
 import lodash from 'lodash'
@@ -14,6 +14,10 @@ export class Help extends plugin {
                     fnc: 'sign'
                 },
                 {
+                    reg: `^${setting.rulePrefix}?更换(今日)?老婆$`,
+                    fnc: 'updateSign'
+                },
+                {
                     reg: `^${setting.rulePrefix}?清除错误签到数据$`,
                     fnc: ''
                 },
@@ -21,15 +25,60 @@ export class Help extends plugin {
         })
     }
 
+    async updateSign(e) {
+        if (!e.group_id) return true
+        // 签到过滤
+        if (setting.config.signInclude?.length && !setting.config.signInclude.includes(e.group_id) || setting.config.signExclude?.length && setting.config.signExclude.includes(e.group_id)) return true
+        // 用户签到数据
+        let userSignInfo = setting.getUserData(e.group_id, e.user_id)
+        // todo
+        userSignInfo.heroName = setting.heros[userSignInfo.heroId]?.name || userSignInfo.heroName
+        userSignInfo.heroId = setting.heroIds[userSignInfo.heroName]
+        // 今日日期
+        let today = utils.formatDate(new Date(), 'YYYY-MM-DD')
+        if (userSignInfo.date == today) {
+            if (userSignInfo.xinghong <= 160) {
+                e.reply('你的星虹数量不足，无法更换今日老婆~')
+                return
+            }
+            userSignInfo.xinghong_sign = -160
+            userSignInfo.xinghong += userSignInfo.xinghong_sign
+            // 用户信息 排除男主角 排除没有图像的角色
+            let heros = Object.keys(setting.heros).filter(id => id != '199002' && setting.heroImgs[id]?.length)
+            if (!heros?.length) {
+                return e.reply('没有可签到的角色图片，请先上传角色图片！\n或参考readme安装图库')
+            }
+            userSignInfo.history[setting.heros[userSignInfo.heroId].name] = (userSignInfo.history[setting.heros[userSignInfo.heroId].name] || 0) - 1
+            if (userSignInfo.history[setting.heros[userSignInfo.heroId].name] <= 0) {
+                delete userSignInfo.history[setting.heros[userSignInfo.heroId].name]
+            }
+            userSignInfo.heroId = lodash.sample(heros)
+            userSignInfo.history[setting.heros[userSignInfo.heroId].name] = (userSignInfo.history[setting.heros[userSignInfo.heroId].name] || 0) + 1
+        }
+        // 保存签到数据
+        setting.saveUserData(e.group_id, e.user_id, userSignInfo)
+        // 发送签到数据
+        let signData = {
+            updateSign: true,
+            heroImg: lodash.sample(setting.heroImgs[userSignInfo.heroId]),
+            color: setting.heros[userSignInfo.heroId]?.element?.elementColor || '#000000',
+            xinghong: userSignInfo.xinghong,
+            xinghong_sign: userSignInfo.xinghong_sign,
+            heroName: setting.heros[userSignInfo.heroId].name,
+            username: e.sender.nickname || e.sender.card || '你',
+            userIcon: `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`,
+            hisHeros: Object.entries(userSignInfo.history).sort((a, b) => b[1] - a[1]),
+            heroNums: Object.keys(userSignInfo.history).length,
+            rank: userSignInfo.rank,
+            day: Object.values(userSignInfo.history).reduce((a, b) => a + b),
+        }
+        await saveRender(e, 'sign/index', signData, signData.heroImg)
+    }
 
     async sign(e) {
-        if (!e.group_id) {
-            return e.reply('请在群聊中使用签到功能')
-        }
+        if (!e.group_id) return true
         // 签到过滤
-        if (setting.config.signInclude?.length && !setting.config.signInclude.includes(e.group_id) || setting.config.signExclude?.length && setting.config.signExclude.includes(e.group_id)) {
-            return true
-        }
+        if (setting.config.signInclude?.length && !setting.config.signInclude.includes(e.group_id) || setting.config.signExclude?.length && setting.config.signExclude.includes(e.group_id)) return true
         // 用户签到数据
         let userSignInfo = setting.getUserData(e.group_id, e.user_id)
         // 今日是否签到
@@ -59,45 +108,33 @@ export class Help extends plugin {
             if (!heros?.length) {
                 return e.reply('没有可签到的角色图片，请先上传角色图片！\n或参考readme安装图库')
             }
-            const heroId = lodash.sample(heros)
-            userSignInfo.heroName = setting.heros[heroId].name
-            userSignInfo.history[userSignInfo.heroName] = (userSignInfo.history[userSignInfo.heroName] || 0) + 1
+            userSignInfo.heroId = lodash.sample(heros)
+            // todo
+            userSignInfo.heroName = setting.heros[userSignInfo.heroId]?.name || userSignInfo.heroName
+            userSignInfo.heroId = setting.heroIds[userSignInfo.heroName]
+            userSignInfo.history[setting.heros[userSignInfo.heroId].name] = (userSignInfo.history[setting.heros[userSignInfo.heroId].name] || 0) + 1
         }
-
-        // 角色图片
-        let heroImg = lodash.sample(setting.heroImgs[setting.getHeroId(userSignInfo.heroName)])
+        // todo
+        userSignInfo.heroName = setting.heros[userSignInfo.heroId]?.name || userSignInfo.heroName
+        userSignInfo.heroId = setting.heroIds[userSignInfo.heroName]
         // 保存签到数据
         setting.saveUserData(e.group_id, e.user_id, userSignInfo)
+        logger.info(userSignInfo)
         // 发送签到数据
-        let msgRes = await e.reply([
-            await render(e, 'sign/index', {
-                hasSign,
-                xinghong: userSignInfo.xinghong,
-                xinghong_sign: userSignInfo.xinghong_sign,
-                heroName: userSignInfo.heroName,
-                heroImg,
-                username: e.sender.nickname || e.sender.card || '你',
-                userIcon: `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`,
-                hisHeros: Object.entries(userSignInfo.history).sort((a, b) => b[1] - a[1]),
-                heroNums: Object.keys(userSignInfo.history).length,
-                rank: userSignInfo.rank,
-                day: Object.values(userSignInfo.history).reduce((a, b) => a + b)
-            }, { e, retType: 'base64' })
-        ])
-        if (msgRes) {
-            // 如果消息发送成功，就将message_id和图片路径存起来，3小时过期
-            const message_id = [e.message_id]
-            if (Array.isArray(msgRes.message_id)) {
-                message_id.push(...msgRes.message_id)
-            } else if (msgRes.message_id) {
-                message_id.push(msgRes.message_id)
-            }
-            for (const i of message_id) {
-                await redis.set(`yoyo-plugin:original-picture:${i}`, heroImg, { EX: 3600 * 3 })
-            }
-
+        let signData = {
+            hasSign,
+            heroImg: lodash.sample(setting.heroImgs[userSignInfo.heroId]),
+            color: setting.heros[userSignInfo.heroId]?.element?.elementColor || '#000000',
+            xinghong: userSignInfo.xinghong,
+            xinghong_sign: userSignInfo.xinghong_sign,
+            heroName: setting.heros[userSignInfo.heroId]?.name || userSignInfo.heroName,
+            username: e.sender.nickname || e.sender.card || '你',
+            userIcon: `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`,
+            hisHeros: Object.entries(userSignInfo.history).sort((a, b) => b[1] - a[1]),
+            heroNums: Object.keys(userSignInfo.history).length,
+            rank: userSignInfo.rank,
+            day: Object.values(userSignInfo.history).reduce((a, b) => a + b),
         }
-
-        return false
+        await saveRender(e, 'sign/index', signData, signData.heroImg)
     }
 }
