@@ -536,9 +536,9 @@ class Setting {
       // 时间差
       // 一个小时内不重复更新图标
       let time = await redis.get('yoyo:ui')
-      // if (time && utils.getDateDiffHours(time, new Date()) < 1) {
-      //   return logger.info(`[yoyo-plugin] 🎈 上次下载图库于一小时内，不再重复下载`)
-      // }
+      if (time && utils.getDateDiffHours(time, new Date()) < 1) {
+        return logger.info(`[yoyo-plugin] 🎈 上次下载图库于一小时内，不再重复下载`)
+      }
       // 搜集图标
       traverse(obj)
       let sourceIndex = 0 // 图片源
@@ -551,11 +551,9 @@ class Setting {
           const imgUrl = await getImgUrl(imgName, this.config.iconSource[sourceIndex])
           const success = await preDownImg(imgName, imgUrl)
           sourceIndex = 0
-          logger.info('[yoyo-plugin]' + success);
           logs[imgName] = [...(logs[imgName] || []), success]
           this.UI.push(imgName)
         } catch (error) {
-          logger.error('[yoyo-plugin]' + error);
           logs[imgName] = [...(logs[imgName] || []), error]
           // 更换图片源
           if (sourceIndex < this.config.iconSource.length - 1) {
@@ -565,7 +563,6 @@ class Setting {
             this.UI.push(imgName) // 不再重复下载该图片
           }
         }
-
         await utils.sleep(500)
         loading = false
       }
