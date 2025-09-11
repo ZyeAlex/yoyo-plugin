@@ -518,10 +518,7 @@ class Setting {
             return reject(`[${response.statusCode}] ❌️ ${imgName}下载失败`)
           }
           response.pipe(file);
-          file.on('finish', () => {
-            file.close();
-            resolve(`[${new URL('https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/').hostname.replace(/^www\./, '').split('.')[0]}] ✅ 图片下载成功：${imgName}`);
-          });
+          file.on('finish', () => resolve(file.close()));
         }).on('error', (err) => {
           fs.unlink(path.join(this.path, 'resources/UI', imgName), () => { });
           reject(` ❌️ ${err}`);
@@ -549,10 +546,9 @@ class Setting {
         loading = true
         try {
           const imgUrl = await getImgUrl(imgName, this.config.iconSource[sourceIndex])
-          const success = await preDownImg(imgName, imgUrl)
-          sourceIndex = 0
-          logs[imgName] = [...(logs[imgName] || []), success]
+          await preDownImg(imgName, imgUrl)
           this.UI.push(imgName)
+          sourceIndex = 0
         } catch (error) {
           logs[imgName] = [...(logs[imgName] || []), error]
           // 更换图片源
@@ -569,7 +565,7 @@ class Setting {
 
       if (!imgs.length) {
         // 保存日志
-        this.setData('uilogs', logs, 'logs')
+        this.setData('ui-logs', logs, 'logs')
         redis.set('yoyo:ui', new Date().toJSON())
 
       }
