@@ -95,6 +95,22 @@ export class Guide extends plugin {
         //     logger.error('[yoyo-plugin][攻略转发失败]', err)
         // }
 
+        // try {
+        //     let forward
+        //     if (e.group?.makeForwardMsg) {
+        //         forward = await e.group.makeForwardMsg(nodes)
+        //     } else if (e.friend?.makeForwardMsg) {
+        //         forward = await e.friend.makeForwardMsg(nodes)
+        //     }
+        //     if (forward) {
+        //         await e.reply(forward)
+        //         return true
+        //     }
+        // } catch (err) {
+        //     logger.error('[yoyo-plugin][攻略转发失败]', err)
+        // }
+
+        // 不支持转发时按批发送
         // 不支持转发时按批发送
         const segs = fileUrls.map(url => segment.image(url))
         const batchSize = 20
