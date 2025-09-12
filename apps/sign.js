@@ -13,10 +13,6 @@ export class Help extends plugin {
                     reg: `^${setting.rulePrefix}?(签到|打卡)$`,
                     fnc: 'sign'
                 },
-                {
-                    reg: `^${setting.rulePrefix}?清除错误签到数据$`,
-                    fnc: ''
-                },
             ]
         })
     }
