@@ -2,7 +2,7 @@ import setting from '#setting'
 import path from 'path'
 import fs from 'fs'
 import render from '#render'
-import Other from '#utils'
+import Other from '#other'
 
 export class Guide extends plugin {
     constructor() {
@@ -66,57 +66,35 @@ export class Guide extends plugin {
             return `file://${full}`
         })
 
-        try {
-            await e.reply(await Other.makeForwardMsg(e, fileUrls, `${guideName}攻略`))
-            return true
-        } catch {
-            logger.err('[yoyo-plugin]转发失败')
 
+
+        // 以转发消息发送
+        const headerNode = {
+            message: [`${guideName}攻略`],
+            nickname: (e.bot?.nickname) || '[攻略]标题',
+            user_id: e.self_id || e.bot?.uin || 0
+        }
+        const nodes = [headerNode, ...fileUrls.map(url => ({
+            message: [segment.image(url)],
+            nickname: (e.bot?.nickname) || '[攻略]图片',
+            user_id: e.self_id || e.bot?.uin || 0
+        }))]
+
+        try {
+            let forward
+            if (e.group?.makeForwardMsg) {
+                forward = await e.group.makeForwardMsg(nodes)
+            } else if (e.friend?.makeForwardMsg) {
+                forward = await e.friend.makeForwardMsg(nodes)
+            }
+            if (forward) {
+                await e.reply(forward)
+                return true
+            }
+        } catch (err) {
+            logger.error('[yoyo-plugin][攻略转发失败]', err)
         }
 
-        // // 以转发消息发送
-        // const headerNode = {
-        //     message: [`${guideName}攻略`],
-        //     nickname: (e.bot?.nickname) || '[攻略]标题',
-        //     user_id: e.self_id || e.bot?.uin || 0
-        // }
-        // const nodes = [headerNode, ...fileUrls.map(url => ({
-        //     message: [segment.image(url)],
-        //     nickname: (e.bot?.nickname) || '[攻略]图片',
-        //     user_id: e.self_id || e.bot?.uin || 0
-        // }))]
-
-        // try {
-        //     let forward
-        //     if (e.group?.makeForwardMsg) {
-        //         forward = await e.group.makeForwardMsg(nodes)
-        //     } else if (e.friend?.makeForwardMsg) {
-        //         forward = await e.friend.makeForwardMsg(nodes)
-        //     }
-        //     if (forward) {
-        //         await e.reply(forward)
-        //         return true
-        //     }
-        // } catch (err) {
-        //     logger.error('[yoyo-plugin][攻略转发失败]', err)
-        // }
-
-        // try {
-        //     let forward
-        //     if (e.group?.makeForwardMsg) {
-        //         forward = await e.group.makeForwardMsg(nodes)
-        //     } else if (e.friend?.makeForwardMsg) {
-        //         forward = await e.friend.makeForwardMsg(nodes)
-        //     }
-        //     if (forward) {
-        //         await e.reply(forward)
-        //         return true
-        //     }
-        // } catch (err) {
-        //     logger.error('[yoyo-plugin][攻略转发失败]', err)
-        // }
-
-        // 不支持转发时按批发送
         // 不支持转发时按批发送
         const segs = fileUrls.map(url => segment.image(url))
         const batchSize = 20
