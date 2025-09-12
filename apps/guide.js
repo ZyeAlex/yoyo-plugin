@@ -66,7 +66,13 @@ export class Guide extends plugin {
             return `file://${full}`
         })
 
-        Other.makeForwardMsg(e, fileUrls, `${guideName}攻略`)
+        try {
+            await e.reply(await Other.makeForwardMsg(e, fileUrls, `${guideName}攻略`))
+            return true
+        } catch {
+            logger.err('[yoyo-plugin]转发失败')
+
+        }
 
         // // 以转发消息发送
         // const headerNode = {
