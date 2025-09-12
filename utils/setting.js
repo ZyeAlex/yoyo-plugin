@@ -14,6 +14,7 @@ import { pipeline } from 'stream'
 import { getHeroData, getPetData } from '../api/wiki/data.js'
 import { getNotice } from '../api/wiki/page.js'
 import bot from 'nodemw'
+import other from '#utils'
 
 class Setting {
   constructor() {
@@ -328,6 +329,10 @@ class Setting {
           return heroId
         }
       }
+    }
+    const result = other.findBestMatch(name, this.nicknames)
+    if (result.score >= 0.5) {
+      return this.heroIds[result.value]
     }
   }
 
