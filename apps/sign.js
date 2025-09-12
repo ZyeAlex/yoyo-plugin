@@ -47,20 +47,19 @@ export class Help extends plugin {
             // 前5%加成
             let memeber = (await e.group.getMemberList()).length * 0.05
             if (userSignInfo.rank <= memeber) {
-                userSignInfo.xinghong_sign += Math.floor((memeber - userSignInfo.rank) ^ 1.2)
+                userSignInfo.xinghong_sign += (memeber - userSignInfo.rank) ^ 1.1
             }
             // 前1%加成
             memeber = Math.max((await e.group.getMemberList()).length * 0.01, 3)
             if (userSignInfo.rank <= memeber) {
-                userSignInfo.xinghong_sign += (memeber - userSignInfo.rank) ^ 2
+                userSignInfo.xinghong_sign += (memeber - userSignInfo.rank) ^ 1.1 * 10
             }
             // 前3加成
             if (userSignInfo.rank <= 3) {
-                userSignInfo.xinghong_sign += (4 - userSignInfo.rank) * 20
+                userSignInfo.xinghong_sign += (4 - userSignInfo.rank) * 100
             }
-            // userSignInfo.xinghong_sign = userSignInfo.rank <= 3 ? ((4 - userSignInfo.rank) * 160 + 160) : 160
-            if (!userSignInfo.xinghong) userSignInfo.xinghong = 0
-            userSignInfo.xinghong += userSignInfo.xinghong_sign
+            userSignInfo.xinghong_sign = Math.floor(userSignInfo.xinghong_sign)
+            userSignInfo.xinghong = (userSignInfo.xinghong || 0) + userSignInfo.xinghong_sign
             // 签到日期
             userSignInfo.date = today
             // 用户信息 排除男主角 排除没有图像的角色
