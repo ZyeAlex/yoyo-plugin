@@ -2,6 +2,9 @@ import setting from '#setting'
 import utils from '#utils'
 import { bookingnum } from '../api/manjuu.js'
 import { getUserInfo, getVideoInfo, getVideoOnline, shortUrl } from '../api/bilibili.js'
+
+const 兑换码 = ['<兑换码来源占位符>', '兑换码过期时间\n<时间占位符>', '<兑换码1>', '<兑换码2>', '<兑换码3>']
+
 /**
  * 新闻
  */
@@ -19,6 +22,10 @@ export class News extends plugin {
                 {
                     reg: `^${setting.rulePrefix}?公告$`,
                     fnc: 'notices'
+                },
+                {
+                    reg: `^${setting.rulePrefix}?兑换码$`,
+                    fnc: 'RedemptionCode'
                 }
             ]
         })
@@ -77,5 +84,7 @@ export class News extends plugin {
     }
 
 
-
+    async RedemptionCode(e) {
+        e.reply(utils.makeForwardMsg(e, 兑换码, '蓝色星原·旅谣兑换码'))
+    }
 }
