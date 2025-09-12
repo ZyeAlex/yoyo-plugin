@@ -7,10 +7,8 @@ if (!global.segment) {
 if (!global.core) {
   try {
     global.core = (await import("oicq")).core
-  } catch (err) {}
+  } catch (err) { }
 }
-
-logger.info('—————————yoyo-plugin载入中...———————————')
 
 const files = fs.readdirSync('./plugins/yoyo-plugin/apps').filter(file => file.endsWith('.js'))
 let ret = []
@@ -19,10 +17,10 @@ files.forEach((file) => {
 })
 ret = await Promise.allSettled(ret)
 
-logger.info('仓库地址 https://github.com/ZyeAlex/yoyo-plugin')
-logger.info('Created By 叶子🍃')
-logger.info('插件群号: 991709221')
-logger.info('—————————yoyo-plugin载入成功!———————————')
+logger.info('🍀🍀🍀🍀🍀🍀🍀🍀🍀\tyoyo-plugin载入中...\t🍀🍀🍀🍀🍀🍀🍀🍀🍀')
+logger.info('🍀\t仓库地址: https://gitee.com/yoyo-plugin/yoyo-plugin\t🍀')
+logger.info('🍀\t插件群号: 991709221\t\t\t\t\t🍀')
+logger.info('🍀🍀🍀🍀🍀🍀🍀🍀🍀\tyoyo-plugin载入成功!\t🍀🍀🍀🍀🍀🍀🍀🍀🍀')
 
 let apps = {}
 

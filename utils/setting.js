@@ -163,7 +163,7 @@ class Setting {
 
       })
     } catch (error) {
-      logger.error(`[yoyo-plugin][getHeroData]${error}`)
+      error && logger.error(`[yoyo-plugin][getHeroData]${error}`)
     }
   }
   async getPetData() {

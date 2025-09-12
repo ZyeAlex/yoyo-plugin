@@ -33,7 +33,7 @@ export default async function render(e, path, renderData = {}, cfg = {}) {
         rulePrefix: setting.config.rulePrefix[0] || '$',
         sys: {
           name, nameCH,
-          copyright: `插件: <span class="version">${nameCH} ${version}</span> 插件群: <span class="version">991709221</span>`,
+          copyright: `${nameCH}  <span class="version">${version}</span> `,
 
         },
         Math,
