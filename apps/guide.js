@@ -2,7 +2,7 @@ import setting from '#setting'
 import path from 'path'
 import fs from 'fs'
 import render from '#render'
-import Other from '#other'
+import Other from '#utils'
 
 export class Guide extends plugin {
     constructor() {
