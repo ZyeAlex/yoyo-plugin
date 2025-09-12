@@ -166,7 +166,6 @@ class Other {
     return forwardMsg
   }
 
-  // 权限检测
   /**
    * 获取用户权限
    * @param {*} e - 接收到的事件对象
@@ -175,6 +174,10 @@ class Other {
    * @param {object} opts.groupObj - 群对象
    * @param {boolean} opts.isReply - 是否发送消息
    * @returns {boolean|string} - 是否具有权限
+   * 
+   * @eg
+   * checkPermission(e,'admin')  
+   * 返回当前用户是否拥有admin权限
    */
   checkPermission(e, permission = "all", {
     groupObj = e.group || (e.bot ?? Bot)?.pickGroup?.(e.group_id),

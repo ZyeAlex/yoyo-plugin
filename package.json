@@ -9,7 +9,7 @@
   "imports": {
     "#setting": "./utils/setting.js",
     "#render": "./utils/render.js",
-    "#utils": "./utils/other.js"
+    "#utils": "./utils/index.js"
   },
   "keywords": [
     "Yunzai-Bot",

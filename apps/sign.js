@@ -43,15 +43,14 @@ export class Help extends plugin {
             userSignInfo.rank = signRanks[e.group_id][1]
             redis.set('yoyo:sign:rank', JSON.stringify(signRanks))
             // 签到领星虹
-            // e.group.getMemberList().length / 10 - userSignInfo.rank
             userSignInfo.xinghong_sign = 160
             // 前5%加成
-            let memeber = e.group.getMemberList().length * 0.05
+            let memeber = (await e.group.getMemberList()).length * 0.05
             if (userSignInfo.rank <= memeber) {
                 userSignInfo.xinghong_sign += Math.floor((memeber - userSignInfo.rank) ^ 1.2)
             }
             // 前1%加成
-            memeber = Math.max(e.group.getMemberList().length * 0.01, 3)
+            memeber = Math.max((await e.group.getMemberList()).length * 0.01, 3)
             if (userSignInfo.rank <= memeber) {
                 userSignInfo.xinghong_sign += (memeber - userSignInfo.rank) ^ 2
             }

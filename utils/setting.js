@@ -2,19 +2,18 @@
  * 配置文件 ———— 用于所有的配置和文件读写
  * 
  */
-import utils from '#utils'
 import path from 'path'
 import https from 'https'
 import fs from 'fs'
 import YAML from 'yaml'
 import chokidar from 'chokidar'
 import MD5 from 'md5'
+import bot from 'nodemw'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
 import { getHeroData, getPetData } from '../api/wiki/data.js'
 import { getNotice } from '../api/wiki/page.js'
-import bot from 'nodemw'
-import other from '#utils'
+import utils from '#utils'
 
 class Setting {
   constructor() {
@@ -330,7 +329,7 @@ class Setting {
         }
       }
     }
-    const result = other.findBestMatch(name, this.nicknames)
+    const result = utils.findBestMatch(name, this.nicknames)
     if (result.score >= 0.5) {
       return this.heroIds[result.value]
     }

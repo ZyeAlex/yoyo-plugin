@@ -2,7 +2,7 @@ import setting from '#setting'
 import path from 'path'
 import fs from 'fs'
 import render from '#render'
-import Other from '#other'
+import utils from '#utils'
 
 export class Guide extends plugin {
     constructor() {
@@ -45,7 +45,7 @@ export class Guide extends plugin {
                 }
             }
             const candidates = Object.values(nicknameMap).flat().filter(Boolean)
-            const best = Other.findBestMatch(guideName, candidates)
+            const best = utils.findBestMatch(guideName, candidates)
             if (best?.score >= 0.5 && best.value) {
                 await e.reply(`未找到「${guideName}」攻略，或许名字应为：` + best.value)
                 return true
