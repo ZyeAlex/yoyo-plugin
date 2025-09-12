@@ -5,7 +5,7 @@ import common from '../../../lib/common/common.js'
 /**
  * 杂项
  */
-class Other {
+class Utils {
   // 两段时间的差值
   formatTimeDiff(timestampDiff) {
     // 确保差值为正数
@@ -277,4 +277,4 @@ class Other {
 
 }
 
-export default Object.assign(new Other(), common)
+export default Object.assign(new Utils(), common)

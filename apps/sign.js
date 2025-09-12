@@ -65,8 +65,13 @@ export class Help extends plugin {
             userSignInfo.date = today
             // 用户信息 排除男主角 排除没有图像的角色
             let heros = Object.keys(setting.heros).filter(id => id != '199002' && setting.heroImgs[id]?.length)
+            if (!Object.keys(setting.heros).length) {
+                e.reply('角色数据加载中，请稍后重试...')
+                return
+            }
             if (!heros?.length) {
-                return e.reply('没有可签到的角色图片，请先上传角色图片！\n或参考readme安装图库')
+                e.reply('没有可签到的角色图片，请先上传角色图片！\n或参考readme安装图库')
+                return
             }
             userSignInfo.heroId = lodash.sample(heros)
             userSignInfo.history[setting.heros[userSignInfo.heroId].name] = (userSignInfo.history[setting.heros[userSignInfo.heroId].name] || 0) + 1

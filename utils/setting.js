@@ -126,6 +126,7 @@ class Setting {
    * 从Wiki获取配置数据
    */
   async getHeroData() {
+    this.heroIds = {} // 内部使用 角色->ID映射
     try {
       const heros = await getHeroData()
       Object.entries(heros).forEach(([heroId, heroData]) => {
@@ -142,7 +143,6 @@ class Setting {
         path.join(this.path, '/resources/img/hero'),
         ...(this.config.imgPath || []).map(imgPath => path.join(this.yunzaiPath, imgPath))
       ]
-
       // 遍历所有图片库路径
       heroImgPaths.forEach(heroImgPath => {
         // 查找角色图片
@@ -154,12 +154,12 @@ class Setting {
 
             let heroImgs = [...new Set([...(this.heroImgs[dir] || []), ...fs.readdirSync(path.join(heroImgPath, dir)).map(fileName => path.join(heroImgPath, dir, fileName))])]
             let heroId = this.getHeroId(dir)
+            logger.info(heroId)
             if (heroId) {
               this.heroImgs[heroId] = heroImgs
             }
           }
         })
-
 
       })
     } catch (error) {
