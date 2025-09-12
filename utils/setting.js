@@ -34,8 +34,7 @@ class Setting {
     /**
      * 角色数据
      */
-    this.heroIds = {} // 角色名对应角色ID  { 寒悠悠: 101003 }
-    this.nicknames = {} // 角色昵称  {101003:['唐悠悠']}
+    this.nicknames = this.getData('nickname', 'hero') // 角色昵称  {101003:['唐悠悠']}
     this.heros = this.getData('default', 'hero') || {} // 角色数据 { 101003:{ /* 角色数据 */ } }
     this.heroImgs = {} //角色图片 {101003:[]}
 
