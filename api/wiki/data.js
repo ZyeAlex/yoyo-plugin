@@ -47,7 +47,6 @@ const getHeroData = async () => {
             }
         }
     }
-    logger.info('[yoyo-plugin][getHeroData] ', '角色数据下载完成')
     return heros
 }
 
@@ -85,7 +84,6 @@ const getPetData = async () => {
             }
         }
     }
-    logger.info('[yoyo-plugin][getPetData] ', '奇波数据下载完成')
     return pets
 }
 

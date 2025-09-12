@@ -8,13 +8,23 @@
 
 <img class="sign-img" src="{{heroImg}}" alt="">
 {{if rank}}
-<div class="sign-rank sign-rank-{{rank}} {{hasSign&&'has-sign'}}">
-    <div>{{hasSign?'你已签到！':'签到成功！'}}今日在本群第{{rank}}个签到！</div>
-    <div class="sign-xinghong">
-        <span>签到星虹+{{xinghong_sign}}</span><br />
-        <span>总星虹数量：{{xinghong}}</span>
-    </div>
-</div>
+    {{if updateSign}}
+        <div class="sign-rank" style="color:{{color}}">
+            <div>今日老婆已更换！</div>
+            <div class="sign-xinghong">
+                <span style="color:red">签到星虹{{xinghong_sign}}</span><br />
+                <span>总星虹数量：{{xinghong}}</span>
+            </div>
+        </div>
+    {{else}}
+        <div class="sign-rank" style="color:{{color}}">
+            <div>{{hasSign?'你已签到！':'签到成功！'}}今日在本群第{{rank}}个签到！</div>
+            <div class="sign-xinghong">
+                <span>签到星虹+{{xinghong_sign}}</span><br />
+                <span>总星虹数量：{{xinghong}}</span>
+            </div>
+        </div>
+    {{/if}}
 {{/if}}
 <div class="sign-text">
     <div>
@@ -24,7 +34,6 @@
     </div>
     <div style="font-size:60px">「<span class="sign-hero">{{heroName}}</span>」</div>
 </div>
-{{if day>1}}
 <div class="section-box">
     <div class="sign-history-title">
         累积签到{{day}}天，共获得{{heroNums}}个老婆：
@@ -35,5 +44,4 @@
             <% } %>
     </div>
 </div>
-{{/if}}
 {{/block}}

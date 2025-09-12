@@ -12,7 +12,7 @@ export class Update extends plugin {
     super({
       name: '[悠悠助手]更新',
       event: 'message',
-      priority: 2000,
+      priority: 9999,
       rule: [
         {
           reg: `^(${setting.rulePrefix}|悠悠|yoyo)(强制)?更新$`,

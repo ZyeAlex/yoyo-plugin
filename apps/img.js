@@ -2,7 +2,6 @@ import setting from '#setting'
 import render from '#render'
 import utils from '#utils'
 import lodash from 'lodash'
-import common from '../../../lib/common/common.js'
 const imgReg = '(?:图片|照片|美图|美照)'
 // 缓存角色面板图片列表,给delHeroImg用，防止出现删除过程中索引变动问题
 const cacheHeroImgs = {}
@@ -12,7 +11,7 @@ export class Img extends plugin {
         super({
             name: '[悠悠助手]图片',
             event: 'message',
-            priority: 104,
+            priority: -1,
             rule: [
                 {
                     reg: `^${setting.rulePrefix}?(?:上传|添加)(.{0,10})${imgReg}$`,
@@ -35,8 +34,8 @@ export class Img extends plugin {
                     fnc: 'getHeroImgList'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?.{1,10}(查看)?原图$`,
-                    fnc: 'getOriginalPicture'
+                    reg: `^${setting.rulePrefix}?(查看)?原图$`,
+                    fnc: 'originalPic',
                 }
             ]
         })
@@ -91,10 +90,7 @@ export class Img extends plugin {
     // 随机角色图片
     async getRandomHeroImg(e) {
         const heroIds = Object.keys(setting.heros)
-        if (heroIds.length == 0) {
-            e.reply('没有角色呢~')
-            return false
-        }
+        if (heroIds.length == 0) return false
         // lodash 随机选一个
         this.getHeroImg(e, lodash.sample(heroIds))
     }
@@ -104,9 +100,7 @@ export class Img extends plugin {
         let heroName = e.msg.match(new RegExp(`^${setting.rulePrefix}?(?:上传|添加)(.{0,10})${imgReg}$`))[1]
         // 查询是否有此角色
         let heroId = setting.getHeroId(heroName)
-        if (!heroId) {
-            return e.reply('未找到此角色')
-        }
+        if (!heroId) return true // 本插件不处理
         // 权限检测
         utils.checkPermission(e, setting.config.imgUpAuth)
         let imgs = []
@@ -168,9 +162,7 @@ export class Img extends plugin {
         let [_, heroName, select] = e.msg.match(new RegExp(`^${setting.rulePrefix}?删除(.{1,10}?)${imgReg}([0-9,， ]+)$`))
         // 查询是否有此角色
         let heroId = setting.getHeroId(heroName)
-        if (!heroId) {
-            return e.reply('未找到此角色', true)
-        }
+        if (!heroId) return ture
         if (!cacheHeroImgs[heroId]?.length) {
             e.reply(`未获取到角色图片列表，请先「>${heroName}图片列表」`)
         }
@@ -185,7 +177,7 @@ export class Img extends plugin {
         }
     }
     // 获取原图
-    async getOriginalPicture(e) {
+    async originalPic(e) {
         let source
         if (e.reply_id) {
             source = { message_id: e.reply_id }
@@ -199,6 +191,7 @@ export class Img extends plugin {
             }
             // 获取原消息
             if (e.group?.getChatHistory) {
+                logger.info(await e.group.getChatHistory(e.source.seq, 1))
                 source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
             } else if (e.friend?.getChatHistory) {
                 source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
@@ -211,16 +204,18 @@ export class Img extends plugin {
         if (source?.message_id) {
             let imgPath = await redis.get(`yoyo-plugin:original-picture:${source.message_id}`)
             if (!e.isMaster) {
-                // e.reply('已禁止获取面板原图...')
+                // e.reply('已禁止获取原图...')
                 // return true
             }
             if (imgPath) {
                 e.reply(segment.image(imgPath), false, { recallMsg: 30 })
-                return false
+                return
             }
         }
 
         return true
 
     }
+
 }
+
