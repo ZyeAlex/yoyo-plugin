@@ -161,7 +161,7 @@ class Setting {
 
       })
     } catch (error) {
-      error && logger.error(`[yoyo-plugin][getHeroData]${error}`)
+      error && error != 'undefined' && logger.error(`[yoyo-plugin][getHeroData]${error}`)
     }
   }
   async getPetData() {
