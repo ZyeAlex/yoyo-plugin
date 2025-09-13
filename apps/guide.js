@@ -31,29 +31,13 @@ export class Guide extends plugin {
 
         let folder = path.join(setting.path, 'resources', 'guide', guideName)
         if (!fs.existsSync(folder) || !fs.statSync(folder).isDirectory()) {
-            // 模糊匹配；候选词来自 data/hero/nickname.yaml
-            let nicknameMap = setting.nicknames || {}
-            if (!nicknameMap || Object.keys(nicknameMap).length === 0) {
-                try {
-                    const loaded = setting.getData('nickname', 'hero') || {}
-                    if (loaded && typeof loaded === 'object') {
-                        nicknameMap = loaded
-                    }
-                } catch (err) {
-                    logger.error('[yoyo-plugin][nickname读取]', err)
-                    return false
-                }
+            const guideId = utils.findBestMatch(guideName, setting.heros)
+            if (guideId) {
+                await e.reply(`未找到「${guideName}」攻略，或许名字应为：` + setting.heros[guideId].name)
+                return
             }
-            const candidates = Object.values(nicknameMap).flat().filter(Boolean)
-            const best = utils.findBestMatch(guideName, candidates)
-            if (best?.score >= 0.5 && best.value) {
-                await e.reply(`未找到「${guideName}」攻略，或许名字应为：` + best.value)
-                return true
-            }
-            await e.reply(`未找到「${guideName}」攻略`)
             return true
         }
-
         const allFiles = fs.readdirSync(folder)
         const imageFiles = allFiles.filter(f => /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(f))
         if (imageFiles.length === 0) {

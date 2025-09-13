@@ -154,7 +154,6 @@ class Setting {
 
             let heroImgs = [...new Set([...(this.heroImgs[dir] || []), ...fs.readdirSync(path.join(heroImgPath, dir)).map(fileName => path.join(heroImgPath, dir, fileName))])]
             let heroId = this.getHeroId(dir)
-            logger.info(heroId)
             if (heroId) {
               this.heroImgs[heroId] = heroImgs
             }
@@ -312,7 +311,7 @@ class Setting {
 
 
   // 查询是否有此角色，有则返回角色ID
-  getHeroId(name) {
+  getHeroId(name, blur = true) {
     // name为 heroId
     if (name in this.heros) {
       return name
@@ -329,9 +328,8 @@ class Setting {
         }
       }
     }
-    const result = utils.findBestMatch(name, this.nicknames)
-    if (result.score >= 0.5) {
-      return this.heroIds[result.value]
+    if (blur) {
+      return utils.findBestMatch(name, this.heros)
     }
   }
 

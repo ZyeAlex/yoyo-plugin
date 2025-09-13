@@ -2,6 +2,7 @@
 import fs from 'fs'
 import sharp from 'sharp'
 import common from '../../../lib/common/common.js'
+import setting from '#setting';
 /**
  * 杂项
  */
@@ -214,7 +215,7 @@ class Utils {
  * 4. 否则使用 Levenshtein 编辑距离计算相似度
  *
  * @param {string} target - 要匹配的目标字符串
- * @param {string[]} candidates - 候选字符串数组
+ * @param {string[]} candidates - 候选字符串对象 { id:{name} }
  * @returns {{ value: string|null, score: number }} 
  *          最佳匹配结果，包含：
  *          - `value`: 最相似的候选词（如果没有则为 null）
@@ -226,7 +227,7 @@ class Utils {
  * console.log(result);
  * // { value: "苹果", score: 0.6... }
  */
-  findBestMatch(target, candidates) {
+  findBestMatch(target, candidates, score = 0.5) {
     // 相似度计算（内部闭包）
     function similarity(a, b) {
       // 归一化
@@ -267,11 +268,13 @@ class Utils {
     }
 
     let best = { value: null, score: 0 }
-    for (const c of candidates) {
-      const s = similarity(target, c)
-      if (s > best.score) best = { value: c, score: s }
+    Object.entries(candidates).forEach(([id, { name }]) => {
+      const s = similarity(target, name)
+      if (s > best.score) best = { value: id, score: s }
+    })
+    if (best?.score >= score && best.value) {
+      return best.value
     }
-    return best
   }
 
 
