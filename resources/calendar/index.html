@@ -1,0 +1,147 @@
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/calendar/index.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="calendar-container">
+    <!-- 标题容器 -->
+    <div class="title-container">
+        <div class="title-header">
+            <h1 class="main-title">活动日历</h1>
+            <div class="title-subtitle">蓝色星原·旅谣 - yoyo-plugin</div>
+            <div class="current-date">{{currentDate}}</div>
+        </div>
+    </div>
+
+    <!-- 角色UP容器 -->
+    <div class="character-events-container">
+        <div class="container-header">
+            <h2 class="container-title">角色祈愿活动</h2>
+            <div class="container-subtitle">Character Events</div>
+        </div>
+        <div class="character-events-content">
+            <div class="events-grid">
+                {{each characterEvents}}
+                <div class="event-card character-event">
+                    <div class="event-left-container">
+                        <div class="event-title">{{$value.title}}</div>
+                        <div class="event-description">{{$value.description}}</div>
+                        <div class="event-meta">
+                            <div class="event-date">{{$value.dateRange}}</div>
+                        </div>
+                        <div class="event-status {{$value.status}}">{{$value.statusText}}</div>
+                    </div>
+                    <div class="event-right-container">
+                        <div class="event-logos">
+                            {{each $value.logos}}
+                            <div class="event-logo">
+                                <img src="{{$value}}" alt="角色" />
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+
+    <!-- 宠物UP容器 -->
+    <div class="pet-events-container">
+        <div class="container-header">
+            <h2 class="container-title">宠物祈愿活动</h2>
+            <div class="container-subtitle">Pet Events</div>
+        </div>
+        <div class="pet-events-content">
+            <div class="events-grid">
+                {{each petEvents}}
+                <div class="event-card pet-event">
+                    <div class="event-left-container">
+                        <div class="event-title">{{$value.title}}</div>
+                        <div class="event-description">{{$value.description}}</div>
+                        <div class="event-meta">
+                            <div class="event-date">{{$value.dateRange}}</div>
+                        </div>
+                        <div class="event-status {{$value.status}}">{{$value.statusText}}</div>
+                    </div>
+                    <div class="event-right-container">
+                        <div class="event-logos">
+                            {{each $value.logos}}
+                            <div class="event-logo">
+                                <img src="{{$value}}" alt="宠物" />
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+
+    <!-- 武器UP容器 -->
+    <div class="weapon-events-container">
+        <div class="container-header">
+            <h2 class="container-title">武器祈愿活动</h2>
+            <div class="container-subtitle">Weapon Events</div>
+        </div>
+        <div class="weapon-events-content">
+            <div class="events-grid">
+                {{each weaponEvents}}
+                <div class="event-card weapon-event">
+                    <div class="event-left-container">
+                        <div class="event-title">{{$value.title}}</div>
+                        <div class="event-description">{{$value.description}}</div>
+                        <div class="event-meta">
+                            <div class="event-date">{{$value.dateRange}}</div>
+                        </div>
+                        <div class="event-status {{$value.status}}">{{$value.statusText}}</div>
+                    </div>
+                    <div class="event-right-container">
+                        <div class="event-logos">
+                            {{each $value.logos}}
+                            <div class="event-logo">
+                                <img src="{{$value}}" alt="武器" />
+                            </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+
+    <!-- 活动容器 -->
+    <div class="activity-events-container">
+        <div class="container-header">
+            <h2 class="container-title">限时活动</h2>
+            <div class="container-subtitle">Limited Events</div>
+        </div>
+        <div class="activity-events-content">
+            <div class="events-timeline">
+                {{each activityEvents}}
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <div class="timeline-day">{{$value.date.day}}</div>
+                        <div class="timeline-month">{{$value.date.month}}</div>
+                        <div class="timeline-year">{{$value.date.year}}</div>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">{{$value.title}}</div>
+                        <div class="timeline-desc">{{$value.description}}</div>
+                        <div class="timeline-duration">{{$value.duration}}</div>
+                        <div class="timeline-rewards">奖励: {{$value.rewards}}</div>
+                    </div>
+                    <div class="timeline-status {{$value.status}}">
+                        {{$value.statusText}}
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+
+
+</div>
+{{/block}}
