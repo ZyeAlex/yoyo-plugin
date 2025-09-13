@@ -107,8 +107,7 @@ export class Help extends plugin {
                 e.reply('你的星虹数量不足，无法更换今日老婆~')
                 return
             }
-            userSignInfo.xinghong_sign = -160
-            userSignInfo.xinghong += userSignInfo.xinghong_sign
+            userSignInfo.xinghong -= 160
             // 用户信息 排除男主角 排除没有图像的角色
             let heros = Object.keys(setting.heros).filter(id => id != '199002' && setting.heroImgs[id]?.length)
             if (!heros?.length) {
@@ -129,7 +128,7 @@ export class Help extends plugin {
             heroImg: lodash.sample(setting.heroImgs[userSignInfo.heroId]),
             color: setting.heros[userSignInfo.heroId]?.element?.elementColor || '#000000',
             xinghong: userSignInfo.xinghong,
-            xinghong_sign: userSignInfo.xinghong_sign,
+            xinghong_sign: -160,
             heroName: setting.heros[userSignInfo.heroId].name,
             username: e.sender.nickname || e.sender.card || '你',
             userIcon: `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`,
