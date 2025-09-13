@@ -68,6 +68,9 @@ helpGroup:
   - "icon": "tex_icon_item_rubbish01.png"
     "title": "$公告"
     "desc": "查看Wiki最新公告"
+  - "icon": "tex_icon_item_rubbish01.png"
+    "title": "$日历"
+    "desc": "查看卡池（如有）和活动日历"
 
 - "group": "管理功能"
   "auth": "master"

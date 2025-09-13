@@ -5,141 +5,49 @@
 {{/block}}
 
 {{block 'main'}}
-<!-- 标题容器 -->
-<div class="head-box">
-    <h1>
-        <img height="300" src="{{pluResPath}}/common/theme/logo_c.png">
-        活动日历
-    </h1>
-    <div class="label">{{currentDate}}</div>
-</div>
+<div class="calendar-container">
+    </br>
+    <!-- 页面标题 -->
+    <div class="page-title">{{pageTitle}}</div>
+    <div class="current-date">{{currentDate}}</div>
 
-<!-- 角色UP容器 -->
-<div class="section-box">
-    <div class="container-header">
-        <h2 class="container-title">角色祈愿活动</h2>
-        <div class="container-subtitle">Character Events</div>
-    </div>
-    <div class="character-events-content">
-        <div class="events-grid">
-            {{each characterEvents}}
-            <div class="event-card character-event">
-                <div class="event-left-container">
-                    <div class="event-title">{{$value.title}}</div>
-                    <div class="event-description">{{$value.description}}</div>
-                    <div class="event-meta">
-                        <div class="event-date">{{$value.dateRange}}</div>
-                    </div>
-                    <div class="event-status {{$value.status}}">{{$value.statusText}}</div>
-                </div>
-                <div class="event-right-container">
-                    <div class="event-logos">
-                        {{each $value.logos}}
-                        <div class="event-logo">
-                            <img src="{{$value}}" alt="角色" />
-                        </div>
-                        {{/each}}
-                    </div>
-                </div>
+    <!-- 卡池 -->
+    <div class="up-pools-container">
+        <h2 class="section-title">————————卡池列表————————</h2>
+        {{each upPools}}
+        <div class="up-pool-card">
+            <div class="up-pool-header">
+                <div class="up-pool-title">{{$value.title}}</div>
+                <div class="up-pool-dates">{{$value.startDate}} - {{$value.endDate}}</div>
+                <div class="up-pool-duration duration-{{$value.duration.status}}">{{$value.duration.text}}</div>
+            </div>
+            <div class="up-pool-grid">
+                {{each $value.items}}
+                <img src="{{$value}}" alt="UP物品" />
+                {{/each}}
             </div>
             {{/each}}
         </div>
+        {{/each}}
     </div>
 </div>
 
-<!-- 宠物UP容器 -->
-<div class="section-box">
-    <div class="container-header">
-        <h2 class="container-title">宠物祈愿活动</h2>
-        <div class="container-subtitle">Pet Events</div>
-    </div>
-    <div class="pet-events-content">
-        <div class="events-grid">
-            {{each petEvents}}
-            <div class="event-card pet-event">
-                <div class="event-left-container">
-                    <div class="event-title">{{$value.title}}</div>
-                    <div class="event-description">{{$value.description}}</div>
-                    <div class="event-meta">
-                        <div class="event-date">{{$value.dateRange}}</div>
-                    </div>
-                    <div class="event-status {{$value.status}}">{{$value.statusText}}</div>
-                </div>
-                <div class="event-right-container">
-                    <div class="event-logos">
-                        {{each $value.logos}}
-                        <div class="event-logo">
-                            <img src="{{$value}}" alt="宠物" />
-                        </div>
-                        {{/each}}
-                    </div>
-                </div>
+    <!-- 活动列表 -->
+    <div class="activity-events-container">
+        <h2 class="section-title">————————限时活动————————</h2>
+        {{each activityEvents}}
+        <div class="activity-card">
+            <div class="activity-left">
+                <img src="{{$value.logo}}" alt="活动Logo" />
+            </div>
+            <div class="activity-right">
+                <p class="activity-title">{{$value.title}}</p>
+                <p class="activity-dates">{{$value.startDate}} - {{$value.endDate}}</p>
+                <p class="activity-duration duration-{{$value.duration.status}}">{{$value.duration.text}}</p>
             </div>
             {{/each}}
         </div>
-    </div>
-</div>
-
-<!-- 武器UP容器 -->
-<div class="section-box">
-    <div class="container-header">
-        <h2 class="container-title">武器祈愿活动</h2>
-        <div class="container-subtitle">Weapon Events</div>
-    </div>
-    <div class="weapon-events-content">
-        <div class="events-grid">
-            {{each weaponEvents}}
-            <div class="event-card weapon-event">
-                <div class="event-left-container">
-                    <div class="event-title">{{$value.title}}</div>
-                    <div class="event-description">{{$value.description}}</div>
-                    <div class="event-meta">
-                        <div class="event-date">{{$value.dateRange}}</div>
-                    </div>
-                    <div class="event-status {{$value.status}}">{{$value.statusText}}</div>
-                </div>
-                <div class="event-right-container">
-                    <div class="event-logos">
-                        {{each $value.logos}}
-                        <div class="event-logo">
-                            <img src="{{$value}}" alt="武器" />
-                        </div>
-                        {{/each}}
-                    </div>
-                </div>
-            </div>
-            {{/each}}
-        </div>
-    </div>
-</div>
-
-<!-- 活动容器 -->
-<div class="section-box">
-    <div class="container-header">
-        <h2 class="container-title">限时活动</h2>
-        <div class="container-subtitle">Limited Events</div>
-    </div>
-    <div class="activity-events-content">
-        <div class="events-timeline">
-            {{each activityEvents}}
-            <div class="timeline-item">
-                <div class="timeline-date">
-                    <div class="timeline-day">{{$value.date.day}}</div>
-                    <div class="timeline-month">{{$value.date.month}}</div>
-                    <div class="timeline-year">{{$value.date.year}}</div>
-                </div>
-                <div class="timeline-content">
-                    <div class="timeline-title">{{$value.title}}</div>
-                    <div class="timeline-desc">{{$value.description}}</div>
-                    <div class="timeline-duration">{{$value.duration}}</div>
-                    <div class="timeline-rewards">奖励: {{$value.rewards}}</div>
-                </div>
-                <div class="timeline-status {{$value.status}}">
-                    {{$value.statusText}}
-                </div>
-            </div>
-            {{/each}}
-        </div>
+        {{/each}}
     </div>
 </div>
 

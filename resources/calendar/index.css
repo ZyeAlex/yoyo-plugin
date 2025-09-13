@@ -1,430 +1,253 @@
-.section-box {
-    margin: 0 20px 20px;
-    padding: 20px;
-}
-
-.head-box {
-    text-align: center;
-    font-family: title02, PingFangSC-Medium, "PingFang SC", sans-serif;
-    position: relative;
-    padding-top: 100px;
-    padding-bottom: 20px;
-}
-
-
-.head-box h1 img {
-    position: absolute;
-    transform: translate(-55%,-55%);
-    z-index: -1;
-}
-
-.head-box .label {
-    color: #9c690a;
-    text-shadow: 0 0 1px #ffffff, 1px 1px 3px rgba(255, 255, 255, 0.9);
-}
-
-
-
-.title-container {
-    background: transparent;
-    margin-bottom: 48px;
-    margin-top: 20px;
-}
-
-.container-header {
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.container-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: #333;
-    margin: 0 0 5px 0;
-}
-
-.container-subtitle {
-    font-size: 0.9rem;
-    color: #666;
-    font-weight: 300;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-
-/* 事件列表样式 */
-.events-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.event-card {
-    background: linear-gradient(145deg, #f8f9fa, #ffffff);
-    border-radius: 12px;
+/* 日历容器 */
+.calendar-container {
     padding: 12px;
-    display: flex;
-    align-items: stretch;
-    gap: 16px;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-    position: relative;
+    margin: 5px 20px 10px;
+    border-radius: 20px;
+
+    background: transparent;
+
     overflow: hidden;
-    min-height: 120px;
 }
 
-.event-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: #ddd;
-    transition: all 0.3s ease;
+/* 页面标题 */
+.page-title {
+    font-family: title01, title02, PingFangSC-Medium, "PingFang SC", sans-serif;
+    font-size: 36px;
+    color: #fff;
+    text-shadow:
+        0 0 5px #00bfff,
+        0 0 10px #00bfff,
+        0 0 1px #000,
+        1px 1px 3px rgba(0, 0, 0, 0.9);
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: bold;
 }
 
-.character-event::before {
-    background: #667eea;
+/* 当前日期 */
+.current-date {
+    font-family: title01, title02, PingFangSC-Medium, "PingFang SC", sans-serif;
+    font-size: 36px;
+    color: #fff;
+    text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 15px;
+    background-image: linear-gradient(to bottom, rgba(222, 222, 222, 0.9) 0%, rgba(222, 222, 222, 0.7) 100%);
 }
 
-.pet-event::before {
-    background: #4caf50;
+/* UP池容器 */
+.up-pools-container {
+    margin-bottom: 30px;
 }
 
-.weapon-event::before {
-    background: #ff9800;
+/* UP池卡片 */
+.up-pool-card {
+    -webkit-backdrop-filter: blur(.05rem);
+    backdrop-filter: blur(0.05rem);
+    background-image: linear-gradient(to bottom, rgba(222, 222, 222, 0.9) 0%, rgba(222, 222, 222, 0.7) 100%);
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1), -10px -10px 20px rgba(255, 255, 255, 0.3);
+    color: #525252;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 15px;
 }
 
-.event-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    border-color: #667eea;
+/* UP池标题区域 */
+.up-pool-header {
+    margin-bottom: 15px;
 }
 
-.event-logo {
-    width: 100px;
-    height: 100px;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 2px solid #ddd;
-    background: white;
-    flex-shrink: 0;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s ease;
+/* UP池标题 - 左上角大标题 */
+.up-pool-title {
+    font-family: title01, title02, PingFangSC-Medium, "PingFang SC", sans-serif;
+    font-size: 32px;
+    color: #fff;
+    text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+    margin-bottom: 8px;
+    font-weight: bold;
 }
 
-.event-logo:hover {
+/* UP池日期 */
+.up-pool-dates {
+    font-family: text01, sans-serif;
+    font-size: 20px;
+    color: #525252;
+    margin-bottom: 5px;
+}
+
+/* UP池持续时间 */
+.up-pool-duration {
+    font-family: text01, sans-serif;
+    font-size: 18px;
+    color: #d3bc8e;
+    font-weight: bold;
+}
+
+/* UP物品网格 - 一行4个 */
+.up-pool-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.up-pool-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.up-pool-grid img:hover {
     transform: scale(1.05);
 }
 
-.event-logo img {
+/* 活动列表容器 */
+.activity-events-container {
+    margin-top: 20px;
+}
+
+/* 活动列表标题 - 居中 */
+.section-title {
+    font-family: title01, title02, PingFangSC-Medium, "PingFang SC", sans-serif;
+    font-size: 28px;
+    color: #fff;
+    text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 活动卡片网格 - 在标题下面 */
+.activity-events-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 15px;
+}
+
+/* 确保标题不被网格影响 */
+.activity-events-container .section-title {
+    grid-column: 1 / -1;
+    margin-bottom: 15px;
+}
+
+/* 活动卡片 */
+.activity-card {
+    -webkit-backdrop-filter: blur(.05rem);
+    backdrop-filter: blur(0.05rem);
+    background-image: linear-gradient(to bottom, rgba(222, 222, 222, 0.9) 0%, rgba(222, 222, 222, 0.7) 100%);
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1), -10px -10px 20px rgba(255, 255, 255, 0.3);
+    color: #525252;
+    border-radius: 20px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.2s ease;
+}
+
+.activity-card:hover {
+    transform: translateY(-2px);
+}
+
+/* 活动左侧 - Logo */
+.activity-left {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+}
+
+.activity-left img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-/* 左右容器样式 */
-.event-left-container {
-    flex: 0 0 40%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 10px;
-}
-
-.event-right-container {
-    flex: 0 0 60%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 120px;
-}
-
-.event-logos {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.event-title {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #333;
-    margin: 0;
-}
-
-.event-description {
-    font-size: 0.9rem;
-    color: #666;
-    margin: 5px 0;
-    line-height: 1.4;
-}
-
-.event-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-.event-date {
-    font-size: 0.9rem;
-    color: #666;
-    font-weight: 500;
-}
-
-.event-time {
-    font-size: 0.8rem;
-    color: #999;
-    font-weight: 400;
-}
-
-
-.event-status {
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    text-align: center;
-    align-self: flex-start;
-}
-
-/* 时间线样式 */
-.events-timeline {
-    position: relative;
-    padding-left: 30px;
-}
-
-.events-timeline::before {
-    content: '';
-    position: absolute;
-    left: 15px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
-    background: linear-gradient(to bottom, #667eea, #764ba2);
-}
-
-.timeline-item {
-    position: relative;
-    margin-bottom: 30px;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    background: linear-gradient(145deg, #f8f9fa, #ffffff);
-    border-radius: 12px;
-    padding: 20px;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-}
-
-.timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -37px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: #667eea;
-    border: 3px solid white;
-    box-shadow: 0 0 0 3px #667eea;
-}
-
-.timeline-item:hover {
-    transform: translateX(5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    border-color: #667eea;
-}
-
-.timeline-date {
-    text-align: center;
-    min-width: 80px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
     border-radius: 8px;
-    padding: 10px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.timeline-day {
-    font-size: 1.5rem;
-    font-weight: bold;
-    line-height: 1;
-}
-
-.timeline-month {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    margin-top: 2px;
-}
-
-.timeline-year {
-    font-size: 0.7rem;
-    opacity: 0.8;
-    margin-top: 1px;
-}
-
-.timeline-content {
+/* 活动右侧 - 活动信息 */
+.activity-right {
     flex: 1;
+    min-width: 0;
 }
 
-.timeline-title {
-    font-size: 1.2rem;
+/* 活动标题 */
+.activity-title {
+    font-family: title01, title02, PingFangSC-Medium, "PingFang SC", sans-serif;
+    font-size: 20px;
+    color: #fff;
+    text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+    margin-bottom: 5px;
     font-weight: bold;
-    color: #333;
-    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.timeline-desc {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 5px;
-    line-height: 1.4;
-}
-
-.timeline-duration {
-    font-size: 0.8rem;
-    color: #999;
+/* 活动日期 */
+.activity-dates {
+    font-family: text01, sans-serif;
+    font-size: 16px;
+    color: #525252;
     margin-bottom: 3px;
 }
 
-.timeline-rewards {
-    font-size: 0.8rem;
-    color: #4caf50;
-    font-weight: 500;
-}
-
-.timeline-status {
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-}
-
-/* 日历视图样式 */
-.calendar-grid {
-    width: 100%;
-    background: white;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.calendar-header {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-}
-
-.day-name {
-    padding: 15px 10px;
-    text-align: center;
-    font-weight: bold;
-    font-size: 0.9rem;
-}
-
-.calendar-days {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 1px;
-    background: #e0e0e0;
-}
-
-.calendar-day {
-    background: white;
-    min-height: 60px;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    transition: all 0.3s ease;
-}
-
-.calendar-day:hover {
-    background: #f5f5f5;
-}
-
-.calendar-day.other-month {
-    background: #f8f9fa;
-    color: #ccc;
-}
-
-.calendar-day.today {
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
+/* 活动持续时间 */
+.activity-duration {
+    font-family: text01, sans-serif;
+    font-size: 14px;
+    color: #d3bc8e;
     font-weight: bold;
 }
 
-.calendar-day.has-event {
-    background: #fff3e0;
-    border: 2px solid #ff9800;
+/* 持续时间状态颜色 */
+.duration-not-started {
+    color: #ff6b6b !important;
+    /* 红色 - 未开始 */
 }
 
-.day-number {
-    font-size: 0.9rem;
-    font-weight: 500;
+.duration-ended {
+    color: #999 !important;
+    /* 灰色 - 已结束 */
 }
 
-.day-events {
-    display: flex;
-    gap: 2px;
-    margin-top: 2px;
+.duration-urgent {
+    color: #ff6b6b !important;
+    /* 红色 - 紧急（1天内） */
+    font-weight: bold;
 }
 
-.day-event-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
+.duration-warning {
+    color: #ffa726 !important;
+    /* 橙色 - 警告（3天内） */
+    font-weight: bold;
 }
 
-.day-event-dot.character {
-    background: #667eea;
+.duration-normal {
+    color: #4ecdc4 !important;
+    /* 青色 - 正常（3天以上） */
+    font-weight: bold;
 }
 
-.day-event-dot.pet {
-    background: #4caf50;
-}
+/* 响应式设计 */
+@media (max-width: 600px) {
+    .up-pool-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
 
-.day-event-dot.weapon {
-    background: #ff9800;
-}
+    .activity-events-container {
+        grid-template-columns: 1fr;
+    }
 
-.day-event-dot.activity {
-    background: #9c27b0;
-}
+    .up-pool-title {
+        font-size: 28px;
+    }
 
-/* 状态样式 */
-.event-status.active,
-.timeline-status.active {
-    background: #4caf50;
-    color: white;
-}
-
-.event-status.upcoming,
-.timeline-status.upcoming {
-    background: #ff9800;
-    color: white;
-}
-
-.event-status.ended,
-.timeline-status.ended {
-    background: #f44336;
-    color: white;
-}
-
-.event-status.ongoing,
-.timeline-status.ongoing {
-    background: #2196f3;
-    color: white;
+    .section-title {
+        font-size: 24px;
+    }
 }

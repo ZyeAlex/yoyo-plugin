@@ -2,25 +2,7 @@ import setting from '#setting'
 import render from '#render'
 import utils from '#utils'
 
-/**
- * 活动日历
- * characterEvents: 角色UP
- * petEvents: 宠物UP
- * weaponEvents: 武器UP
- * activityEvents: 活动
- * title: 活动标题
- * description: 活动描述
- * dateRange: 持续时间描述,
- * status: 活动状态（active,upcoming,ended）
- * statusText: 状态文字描述
- * logos: UP对象图片数组
- * 
- * 
- * duration: 活动持续时间
- * rewards: 活动奖励,
- * date: 活动前面的日历牌，占个位置以后放图片{ day: '15', month: '1月', year: '2024' },
- * 
- */
+
 export class Calendar extends plugin {
     constructor() {
         super({
@@ -54,129 +36,65 @@ export class Calendar extends plugin {
                 weekday: 'long'
             })
 
-            // 模拟活动数据
-            const data = {
+            const calendarData = {
+                pageTitle: "蓝色星原·旅谣 | 活动日历 | yoyo-plugin",
                 currentDate,
-                characterEvents: [
+
+                // 卡池列表
+                upPools: [
                     {
-                        title: '帕朵限时UP',
-                        description: '五星角色帕朵概率提升',
-                        dateRange: '2025-01-15 00:00 - 2025-01-17 00:22',
-                        status: 'active',
-                        statusText: '进行中',
-                        logos: [
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp',
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp',
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp'
+                        title: "角色UP卡池",
+                        startDate: "2025-09-13 00:00:00",
+                        endDate: "2025-09-20 23:59:59",
+
+                        items: [
+                            "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp",
+                            "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
                         ]
                     },
                     {
-                        title: '帕朵限时UP',
-                        description: '五星角色帕朵概率提升',
-                        dateRange: '2025-01-15 00:00 - 2025-01-17 00:22',
-                        status: 'upcoming',
-                        statusText: '即将开始',
-                        logos: [
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp',
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp',
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp'
-                        ]
-                    }
-                ],
-                petEvents: [
-                    {
-                        title: '罐头限时UP',
-                        description: '小罐头喵喵喵',
-                        dateRange: '2025-01-15 00:00:00 - 2025-01-17 00:22:22',
-                        status: 'active',
-                        statusText: '进行中',
-                        logos: [
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/status_bg.jpg',
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/status_bg.jpg',
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/status_bg.jpg'
+                        title: "武器UP卡池",
+                        startDate: "2025-09-13 00:00:00",
+                        endDate: "2025-09-20 23:59:59",
+
+                        items: [
+                            "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp",
+                            "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
                         ]
                     },
                     {
-                        title: '罐头限时UP',
-                        description: '小罐头喵喵喵',
-                        dateRange: '2025-01-15 00:00:00 - 2025-01-17 00:22:22',
-                        status: 'ended',
-                        statusText: '已结束',
-                        logos: [
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/status_bg.jpg',
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/status_bg.jpg',
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/status_bg.jpg'
+                        title: "宠物UP卡池",
+                        startDate: "2025-09-13 00:00:00",
+                        endDate: "2025-09-20 23:59:59",
+
+                        items: [
+                            "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp",
+                            "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
                         ]
                     }
                 ],
-                weaponEvents: [
-                    {
-                        title: '往世的空梦·夜之瞳限时UP',
-                        description: '小心，天上要下猫咯',
-                        dateRange: '2025-01-15 00:00:00 - 2025-01-17 00:22:22',
-                        status: 'active',
-                        statusText: '进行中',
-                        logos: [
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/status_bg.jpg',
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/status_bg.jpg',
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/status_bg.jpg'
-                        ]
-                    },
-                    {
-                        title: '往世的空梦·夜之瞳限时UP',
-                        description: '小心，天上要下猫咯',
-                        dateRange: '2025-01-15 00:00:00 - 2025-01-17 00:22:22',
-                        status: 'active',
-                        statusText: '进行中',
-                        logos: [
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/status_bg.jpg',
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/status_bg.jpg',
-                            'https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/status_bg.jpg'
-                        ]
-                    }
-                ],
+
+                // 活动列表
                 activityEvents: [
                     {
-                        title: '1活动1',
-                        description: '探索神秘的111',
-                        duration: '2024-01-15 至 2024-01-30',
-                        rewards: '111',
-                        date: { day: '15', month: '1月', year: '2024' },
-                        status: 'active',
-                        statusText: '进行中'
+                        title: "限时秘境活动",
+                        startDate: "09.13 04:00",
+                        endDate: "09.20 23:59",
+                        logo: "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
                     },
                     {
-                        title: '1活动1',
-                        description: '探索神秘的111',
-                        duration: '2024-01-15 至 2024-01-30',
-                        rewards: '111',
-                        date: { day: '15', month: '1月', year: '2024' },
-                        status: 'upcoming',
-                        statusText: '即将开始'
-                    },
-                    {
-                        title: '1活动1',
-                        description: '探索神秘的111',
-                        duration: '2024-01-15 至 2024-01-30',
-                        rewards: '111',
-                        date: { day: '15', month: '1月', year: '2024' },
-                        status: 'active',
-                        statusText: '进行中'
-                    },
-                    {
-                        title: '好的1',
-                        description: 'Thanks♪(･ω･)ﾉ',
-                        duration: '2024-01-10 至 2024-01-17',
-                        rewards: '8888888888',
-                        date: { day: '10', month: '1月', year: '2024' },
-                        status: 'ended',
-                        statusText: '已结束'
+                        title: "周末特别活动",
+                        startDate: "09.14 00:00",
+                        endDate: "09.15 23:59",
+                        logo: "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
                     }
                 ]
-            }
+            };
+
+
 
             // 渲染页面
-            return await render(e, 'calendar/index', data)
+            return await render(e, 'calendar/index', getDurations(calendarData),)
         } catch (error) {
             logger.error('[yoyo-plugin][活动日历渲染失败]', error)
             return e.reply('活动日历渲染失败，请稍后重试')
@@ -184,4 +102,69 @@ export class Calendar extends plugin {
     }
 
 
+}
+
+// 计算剩余时间并返回新的对象
+function getDurations(data) {
+    const now = new Date();
+
+    // 处理卡池
+    const upPools = data.upPools.map(pool => {
+        const start = new Date(pool.startDate);
+        const end = new Date(pool.endDate);
+        const status = getStatus(now, start, end);
+        const duration = formatDuration(now, start, end);
+        return {
+            ...pool,
+            status,
+            duration
+        };
+    });
+
+    // 处理活动
+    const activityEvents = data.activityEvents.map(evt => {
+        const start = new Date(evt.startDate);
+        const end = new Date(evt.endDate);
+        const status = getStatus(now, start, end);
+        const duration = formatDuration(now, start, end);
+        return {
+            ...evt,
+            status,
+            duration
+        };
+    });
+
+    return {
+        ...data,
+        upPools,
+        activityEvents
+    };
+}
+
+// 判断状态
+function getStatus(now, start, end) {
+    if (now < start) return "未开始";
+    if (now > end) return "已结束";
+    return "进行中";
+}
+
+// 将毫秒差值格式化为 天/小时/分钟/秒
+function formatDuration(now, start, end) {
+    if (now < start) return { text: "未开始", status: "not-started" };
+    if (now > end) return { text: "已结束", status: "ended" };
+    const diff = end - now;
+    const d = Math.floor(diff / 1000 / 60 / 60 / 24);
+    const h = Math.floor(diff / 1000 / 60 / 60 % 24);
+    const m = Math.floor(diff / 1000 / 60 % 60);
+    const s = Math.floor(diff / 1000 % 60);
+
+    // 根据剩余时间设置不同状态
+    let status = "normal"; // 默认状态
+    if (d <= 1) status = "urgent"; // 1天内显示紧急状态
+    else if (d <= 3) status = "warning"; // 3天内显示警告状态
+
+    return {
+        text: `${d}天 ${h}小时 ${m}分 ${s}秒`,
+        status: status
+    };
 }
