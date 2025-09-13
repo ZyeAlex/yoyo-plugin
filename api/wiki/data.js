@@ -34,11 +34,11 @@ const getHeroData = async () => {
                 try {
                     res(await parseLua(data, 'data'))
                 } catch (error) {
-                    
-                    rej() // rej(`未查询到角色【${heroIds[heroId]}】[${heroId}] 的数据`)
+                    // rej(`未查询到角色【${heroIds[heroId]}】[${heroId}] 的数据`)
+                    rej()
                 }
             });
-        }).catch((err) => logger.error('[yoyo-plugin][getHeroData]', err))
+        }).catch((err) => err && logger.error('[yoyo-plugin][getHeroData]', err))
         if (data) {
             heros[heroId] = data
         } else {

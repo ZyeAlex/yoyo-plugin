@@ -83,14 +83,6 @@ class Setting {
       if (!fs.existsSync(`${this.configPath}${file}`)) {
         fs.copyFileSync(`${this.defPath}${file}`, `${this.configPath}${file}`)
       }
-      let config_name = file.replace('.yaml', '')
-      const watcher = chokidar.watch(`${this.configPath}${file}`)
-      watcher.on('change', () => {
-        logger.mark(`[蓝色星原旅谣插件][修改配置文件][${config_name}]`)
-        if (this[config_name]) {
-          this[config_name] = this.getConfig(config_name)
-        }
-      })
     }
   }
   async initData() {
@@ -161,7 +153,7 @@ class Setting {
 
       })
     } catch (error) {
-      error && error != 'undefined' && logger.error(`[yoyo-plugin][getHeroData]${error}`)
+      logger.error(`[yoyo-plugin][getHeroData]${error}`)
     }
   }
   async getPetData() {
@@ -234,7 +226,9 @@ class Setting {
   }
   // 设置对应模块用户配置
   setConfig(app, Object) {
-    return this.setYaml(app, 'config', { ...this.getdefSet(app), ...Object })
+    let config = { ...this.getdefSet(app), ...Object }
+    this[app] = config // 修改配置
+    return this.setYaml(app, 'config', config)
   }
   // 获取对应模块默认配置
   getdefSet(app) {
@@ -534,7 +528,8 @@ class Setting {
       // 一个小时内不重复更新图标
       let time = await redis.get('yoyo:ui')
       if (time && utils.getDateDiffHours(time, new Date()) < 1) {
-        return logger.info(`[yoyo-plugin] 🎈 上次下载图库于一小时内，不再重复下载`)
+        // logger.info(`[yoyo-plugin] 🎈 上次下载图库于一小时内，不再重复下载`)
+        return 
       }
       // 搜集图标
       traverse(obj)
