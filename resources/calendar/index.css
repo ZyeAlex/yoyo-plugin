@@ -1,42 +1,29 @@
-.main-title {
-    font-size: 3.2rem;
-    font-weight: 900;
-    color: #000000;
-    letter-spacing: 2px;
-    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.25), 0 1px 0 #764ba2;
-    margin-bottom: 10px;
-    text-align: center;
-    font-family: 'Microsoft YaHei', 'Arial Black', 'Arial', sans-serif;
+.section-box {
+    margin: 0 20px 20px;
+    padding: 20px;
 }
 
-.title-subtitle {
-    font-size: 1.3rem;
-    color: #0e0e6d;
+.head-box {
     text-align: center;
-    font-weight: 400;
-    letter-spacing: 1.5px;
-    margin-bottom: 8px;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    font-family: title02, PingFangSC-Medium, "PingFang SC", sans-serif;
+    position: relative;
+    padding-top: 100px;
+    padding-bottom: 20px;
 }
 
-.current-date {
-    font-size: 1.1rem;
-    color: #694706;
-    font-weight: 300;
-    margin-top: 4px;
-    text-align: center;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.12);
+
+.head-box h1 img {
+    position: absolute;
+    transform: translate(-55%,-55%);
+    z-index: -1;
 }
 
-body {
-    min-height: 100vh;
-    /* background: url(https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/975A23DBE45F2D2370491144DA07C13F.png); */
-    border-radius: 15px;
-    padding: 15px;
-    box-shadow: none;
-    border: none;
-    /* 全透明，去除毛玻璃效果 */
+.head-box .label {
+    color: #9c690a;
+    text-shadow: 0 0 1px #ffffff, 1px 1px 3px rgba(255, 255, 255, 0.9);
 }
+
+
 
 .title-container {
     background: transparent;
@@ -64,9 +51,6 @@ body {
     letter-spacing: 1px;
 }
 
-.calendar-container {
-    background-color: #ffffff;
-}
 
 /* 事件列表样式 */
 .events-grid {

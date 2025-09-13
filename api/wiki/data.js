@@ -75,7 +75,7 @@ const getPetData = async () => {
                     rej(error)
                 }
             });
-        }).catch((err) => logger.error('[yoyo-plugin][getPetData]', err))
+        }).catch((err) => {logger.error('[yoyo-plugin][getPetData]', `${petId}数据加载失败`)})
         if (data) {
             pets[petId] = data
         } else {
