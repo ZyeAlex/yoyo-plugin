@@ -4,6 +4,22 @@ import utils from '#utils'
 
 /**
  * 活动日历
+ * characterEvents: 角色UP
+ * petEvents: 宠物UP
+ * weaponEvents: 武器UP
+ * activityEvents: 活动
+ * title: 活动标题
+ * description: 活动描述
+ * dateRange: 持续时间描述,
+ * status: 活动状态（active,upcoming,ended）
+ * statusText: 状态文字描述
+ * logos: UP对象图片数组
+ * 
+ * 
+ * duration: 活动持续时间
+ * rewards: 活动奖励,
+ * date: 活动前面的日历牌，占个位置以后放图片{ day: '15', month: '1月', year: '2024' },
+ * 
  */
 export class Calendar extends plugin {
     constructor() {
