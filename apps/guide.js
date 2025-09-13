@@ -12,7 +12,7 @@ export class Guide extends plugin {
             priority: 105,
             rule: [
                 {
-                    reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)?(.{1,20})攻略$`,
+                    reg: `^${setting.rulePrefix}?(.{1,20})攻略$`,
                     fnc: 'sendGuideImages'
                 },
                 {
@@ -24,9 +24,9 @@ export class Guide extends plugin {
     }
 
     async sendGuideImages(e) {
-        const match = e.msg.match(new RegExp(`^(${setting.rulePrefix}|悠悠|yy|yoyo)?(.{1,20})攻略$`))
+        const match = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,20})攻略$`))
         if (!match) return true
-        let guideName = (match[2] || '').trim()
+        let guideName = (match[1] || '').trim()
         if (!guideName) return true
 
         let folder = path.join(setting.path, 'resources', 'guide', guideName)

@@ -8,7 +8,7 @@ import setting from '#setting';
  */
 class Utils {
   // 两段时间的差值
-  formatTimeDiff(timestampDiff) {
+  formatTimeDiff(timestampDiff, t = 'm') {
     // 确保差值为正数
     const diff = Math.abs(timestampDiff);
     // 计算各时间单位
@@ -20,8 +20,8 @@ class Utils {
     // 构建结果数组
     const parts = [];
     if (hours > 0) parts.push(`${hours}小时`);
-    if (minutes > 0) parts.push(`${minutes}分`);
-    if (seconds > 0 || parts.length === 0) parts.push(`${seconds}秒`); // 至少显示秒
+    if (minutes > 0 && t != 'h') parts.push(`${minutes}分钟`);
+    if (t == 's' && (seconds > 0 || parts.length === 0)) parts.push(`${seconds}秒`); // 至少显示秒
     return parts.join('');
   }
   // 时间格式化 YYYY-MM-DD hh:mm:ss

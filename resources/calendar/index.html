@@ -26,9 +26,11 @@
                 <img src="{{$value}}" alt="UP物品" />
                 {{/each}}
             </div>
+            {{/each}}
         </div>
         {{/each}}
     </div>
+</div>
 
     <!-- 活动列表 -->
     <div class="activity-events-container">
@@ -43,8 +45,10 @@
                 <p class="activity-dates">{{$value.startDate}} - {{$value.endDate}}</p>
                 <p class="activity-duration duration-{{$value.duration.status}}">{{$value.duration.text}}</p>
             </div>
+            {{/each}}
         </div>
         {{/each}}
     </div>
 </div>
+
 {{/block}}

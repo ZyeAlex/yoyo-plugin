@@ -126,7 +126,7 @@ export class Atlas extends plugin {
         await render(e, 'hero/atlas', {
             ...heroMsg,
             type
-        })
+        }, { origin: 'BWiki' })
     }
     /**
      * 奇波
@@ -141,7 +141,7 @@ export class Atlas extends plugin {
                 return pet
             }),
             length: pets.length
-        })
+        }, { origin: 'BWiki' })
     }
     // 奇波图鉴
     async petAtlas(e, petId) {
@@ -149,7 +149,7 @@ export class Atlas extends plugin {
         pet.evolution = (setting.pets[petId].evolution || []).map(petId => {
             return setting.pets[petId]
         })
-        return await render(e, 'pet/atlas', pet)
+        return await render(e, 'pet/atlas', pet, { origin: 'BWiki' })
     }
     /**
      * 装备

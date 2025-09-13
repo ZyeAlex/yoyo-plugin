@@ -20,7 +20,11 @@ export default async function render(e, path, renderData = {}, cfg = {}) {
       commonHtml[file.replace('.html', '')] = setting.path + '/resources/common/' + file
     }
   })
+  // 背景图片
   let bgImg = lodash.sample(Object.values(setting.pets))?.kiboBoxCardIcon?.[2] || 'tex_pet_kibo_card_background_500001.png'
+  // copyright
+  let copyright = ` 蓝色星原旅谣 | ${nameCH}  <span class="version">${version}</span> `
+  if (cfg.origin) copyright += `| 数据源 <span class="version">${cfg.origin}</span> `
   return e.runtime.render('yoyo-plugin', path, renderData, {
     ...cfg,
     beforeRender({ data }) {
@@ -31,11 +35,7 @@ export default async function render(e, path, renderData = {}, cfg = {}) {
         layout: setting.path + '/resources/common/layout.html',
         bgImg,
         rulePrefix: setting.config.rulePrefix[0] || '$',
-        sys: {
-          name, nameCH,
-          copyright: `${nameCH}  <span class="version">${version}</span> `,
-
-        },
+        sys: { name, nameCH, copyright },
         Math,
         JSON,
         quality: 100
