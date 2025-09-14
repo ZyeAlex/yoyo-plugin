@@ -95,7 +95,6 @@ class Setting {
 
     // 获取角色
     this.getHeroData().then(() => this.getImg(this.heros, 'hero'))
-    this.getHeroImgs()
     // 获取奇波
     this.getPetData().then(() => this.getImg(this.pets, 'pets'))
     // 获取成就
@@ -124,6 +123,8 @@ class Setting {
           this.heroIds[heroData.name] = heroId
         }
       })
+      // 获取角色图片
+      this.getHeroImgs()
     } catch (error) {
       logger.error(`[yoyo-plugin][getHeroData]${error}`)
     }
