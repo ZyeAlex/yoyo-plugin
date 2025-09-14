@@ -1,27 +1,30 @@
-# 资源配置  
-# 图标载入地址，  git 从 https://gitee.com/yoyo-plugin/yoyo-icon 载入   wiki  从bwiki载入
-iconSource:
-- wiki
-- https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/
-# 角色图片
-imgMaxSize: 10 #上传图片大小限制 MB
-imgPath:  #角色图片库的路径 从Bot根目录开始，如 'plugins/yoyo-image/' ，路径下须是以角色命名的文件夹
-- plugins/yoyo-image
-imgUpAuth: all # 图片上传权限 "master"|"admin"|"owner"|"all"
-imgDelAuth: all # 图片删除权限 "master"|"admin"|"owner"|"all"
-
-# 监测PV播放量
-PVList:
-- BV1Jr421n7n4
-- BV1KUopYZEs5
-
-# 签到群聊
-signInclude: []
-signExclude: []
-
 # 指令前缀 若和别的游戏冲突，更换其他前缀即可
 rulePrefix:
 - "~"
 - "～"
 - "#?蓝原"
 - "#?蓝色星原"
+
+# 角色图片
+imgMaxSize: 10 #上传图片大小限制 MB
+imgPath:
+#角色图片库的路径 从Bot根目录开始，如 'plugins/yoyo-image/' ，路径下须是以角色命名的文件夹
+- plugins/yoyo-image
+imgUpAuth: all # 图片上传权限 "master"|"admin"|"owner"|"all"
+imgDelAuth: all # 图片删除权限 "master"|"admin"|"owner"|"all"
+# 资源配置  
+# 图标载入地址，  git 从 https://gitee.com/yoyo-plugin/yoyo-icon 载入   wiki  从bwiki载入
+iconSource:
+- wiki
+- https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/
+# 监测PV播放量
+PVList:
+- BV1Jr421n7n4
+- BV1KUopYZEs5
+# 签到群聊
+signInclude: []
+signExclude: []
+#AI配置
+aiInclude: []
+apiKey: ''
+baseURL: 'https://api.deepseek.com'
