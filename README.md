@@ -43,6 +43,7 @@
         let path = 'plugins/yoyo-image' // 要添加的仓库地址，从Bot根路径开始
         if (!setting.config.imgPath.includes(path)) {
           setting.config.imgPath.push(path)
+          setting.getHeroImgs()
           setting.setConfig('config', setting.config)
         }
         ```

@@ -16,5 +16,4 @@ resources/UI/
 .bat
 
 
-api/deepseek.js
-api/gpt.js
+gpt.js

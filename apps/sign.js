@@ -47,7 +47,7 @@ export class Help extends plugin {
             // 前5%加成
             let memeber = (await e.group.getMemberList()).length * 0.05
             if (userSignInfo.rank <= memeber) {
-                userSignInfo.xinghong_sign += (memeber - userSignInfo.rank) ^ 1.1
+                userSignInfo.xinghong_sign += (memeber - userSignInfo.rank) ^ 1.2
             }
             // 前1%加成
             memeber = Math.max((await e.group.getMemberList()).length * 0.01, 3)

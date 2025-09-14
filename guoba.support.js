@@ -10,22 +10,16 @@ import path from 'path'
 
 export function supportGuoba() {
   let allGroup = [];
-  Bot.gl.forEach((v, k) => { allGroup.push({ label: `${v.group_name}(${k})`, value: k }); });
+  Bot.gl.forEach((v, k) => { k != 'stdin' && allGroup.push({ label: `${v.group_name}(${k})`, value: k }); });
   return {
     pluginInfo: {
       name: 'yoyo-plugin',
       title: '蓝色星原旅谣插件',
-      author: '@ZyeAlex',
+      author: '@蓝色星原旅谣',
       authorLink: 'https://gitee.com/yoyo-plugin',
       link: 'https://gitee.com/yoyo-plugin/yoyo-plugin',
       isV3: true,
       description: '「蓝色星原：旅谣」插件，包括角色面板、角色图鉴、角色图片等一系列功能',
-      // 显示图标，此为个性化配置
-      // 图标可在 https://icon-sets.iconify.design 这里进行搜索
-      icon: 'mdi:stove',
-      // 图标颜色，例：#FF0000 或 rgb(255, 0, 0)
-      iconColor: '#f4c436',
-      // 如果想要显示成图片，也可以填写图标路径（绝对路径）
       iconPath: path.join(setting.path, '/resources/common/theme/logo_c.png'),
     },
     // 配置项信息
@@ -33,20 +27,8 @@ export function supportGuoba() {
       // 配置项 schemas
       schemas: [
         {
-          field: "config.iconSource",
-          label: "图标载入地址",
-          bottomHelpMessage: '插件图标载入地址',
-          component: 'Select',
-          componentProps: {
-            allowAdd: true,
-            allowDel: true,
-            mode: 'multiple',
-            options: [
-              { label: 'wiki', value: 'wiki' },
-              { label: 'gitee', value: 'https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/' }
-            ],
-            // placeholder: '自动撤回模式选择',
-          },
+          component: "Divider",
+          label: "图片配置"
         },
         {
           field: "config.imgPath",
@@ -107,15 +89,12 @@ export function supportGuoba() {
             placeholder: '请输入图片大小'
           }
         },
+
+
+
         {
-          field: 'config.PVList',
-          label: '监测PV播放量',
-          // bottomHelpMessage: '',
-          component: 'GTags',
-          componentProps: {
-            allowAdd: true,
-            allowDel: true,
-          },
+          component: "Divider",
+          label: "签到配置"
         },
         {
           field: 'config.signInclude',
@@ -141,6 +120,45 @@ export function supportGuoba() {
             options: allGroup,
           },
         },
+
+
+        {
+          component: "Divider",
+          label: "AI配置"
+        },
+        {
+          field: 'config.apiKey',
+          component: "Input",
+          label: 'API-KEY',
+          bottomHelpMessage: 'DeepSeek api-key',
+        },
+        {
+          field: 'config.chatLong',
+          label: '对话长度',
+          component: 'InputNumber',
+          required: true,
+          componentProps: {
+            min: 0,
+            max: 100,
+          }
+        },
+        {
+          field: 'config.aiInclude',
+          label: 'AI开启群聊',
+          bottomHelpMessage: '默认全部关闭',
+          component: 'Select',
+          componentProps: {
+            allowAdd: true,
+            allowDel: true,
+            mode: 'multiple',
+            options: allGroup,
+          },
+        },
+
+        {
+          component: "Divider",
+          label: "其他配置"
+        },
         {
           field: 'config.rulePrefix',
           label: '插件指令前缀',
@@ -151,10 +169,41 @@ export function supportGuoba() {
             allowDel: true,
           },
         },
+        {
+          field: 'config.PVList',
+          label: '监测PV播放量',
+          // bottomHelpMessage: '',
+          component: 'GTags',
+          componentProps: {
+            allowAdd: true,
+            allowDel: true,
+          },
+        },
+        {
+          field: "config.iconSource",
+          label: "图标载入地址",
+          bottomHelpMessage: '插件图标载入地址',
+          component: 'Select',
+          componentProps: {
+            allowAdd: true,
+            allowDel: true,
+            mode: 'multiple',
+            options: [
+              { label: 'wiki', value: 'wiki' },
+              { label: 'gitee', value: 'https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/' }
+            ],
+            // placeholder: '自动撤回模式选择',
+          },
+        },
+
+
+
       ],
       // 获取配置数据方法（用于前端填充显示数据）
       getConfigData() {
-        return setting.merge()
+        return {
+          config: setting.config
+        }
       },
       // 设置配置的方法（前端点确定后调用的方法）
       setConfigData(data, { Result }) {
@@ -162,8 +211,8 @@ export function supportGuoba() {
         for (let [keyPath, value] of Object.entries(data)) {
           lodash.set(config, keyPath, value)
         }
-        config = lodash.merge({}, setting.merge, config)
-        setting.analysis(config)
+        setting.config = config.config
+        setting.setData('config', config.config, '/config')
         return Result.ok({}, '保存成功~')
       }
     },
