@@ -5,12 +5,12 @@ import OpenAI from "openai"
 let client,
     messageGroups = [],
     tools = []
-export class Help extends plugin {
+export class GPT extends plugin {
     constructor() {
         super({
             name: '[悠悠助手]悠悠AI',
             event: 'message.group',
-            priority: 9999,
+            priority: 10000,
             rule: [
                 {
                     fnc: 'chat',
@@ -67,7 +67,7 @@ export class Help extends plugin {
         messages.chat.push(message)
         messages.chat.push(response.choices[0].message)
         // 长度限制
-        if (message.chat.length > setting.config.chatLong * 2) {
+        if (messages.chat.length > setting.config.chatLong * 2) {
             messages.chat = messages.chat.slice(2)
         }
     }

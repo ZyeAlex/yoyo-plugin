@@ -2,7 +2,7 @@ import render, { saveRender } from '../utils/render.js'
 import utils from '#utils'
 import setting from '#setting'
 import lodash from 'lodash'
-export class Help extends plugin {
+export class Sign extends plugin {
     constructor() {
         super({
             name: '[悠悠助手]签到',
