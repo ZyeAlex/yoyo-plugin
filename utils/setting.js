@@ -130,7 +130,7 @@ class Setting {
   }
   async getHeroImgs() {
     // 清空图片
-    this.this.heroImgs = {}
+    this.heroImgs = {}
     // 初始化hero path
     if (!fs.existsSync(path.join(this.path, '/resources/img/hero'))) {
       fs.mkdirSync(path.join(this.path, '/resources/img/hero'), { recursive: true })
