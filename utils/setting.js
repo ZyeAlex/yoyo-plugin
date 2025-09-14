@@ -6,7 +6,6 @@ import path from 'path'
 import https from 'https'
 import fs from 'fs'
 import YAML from 'yaml'
-import OpenAI from "openai"
 import MD5 from 'md5'
 import bot from 'nodemw'
 import { promisify } from 'util'
