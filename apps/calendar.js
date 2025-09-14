@@ -11,15 +11,15 @@ export class Calendar extends plugin {
             priority: 100,
             rule: [
                 {
-                    reg: `^${setting.rulePrefix}?活动日历$`,
+                    reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)?活动日历$`,
                     fnc: 'showCalendar'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?日历$`,
+                    reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)?日历$`,
                     fnc: 'showCalendar'
                 },
                 {
-                    reg: `^${setting.rulePrefix}?活动$`,
+                    reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)?活动$`,
                     fnc: 'showCalendar'
                 }
             ]
@@ -78,14 +78,14 @@ export class Calendar extends plugin {
                 activityEvents: [
                     {
                         title: "限时秘境活动",
-                        startDate: "09.13 04:00",
-                        endDate: "09.20 23:59",
+                        startDate: "2025-09-18 00:00:00",
+                        endDate: "2025-09-20 23:59:59",
                         logo: "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
                     },
                     {
                         title: "周末特别活动",
-                        startDate: "09.14 00:00",
-                        endDate: "09.15 23:59",
+                        startDate: "2025-09-13 00:00:00",
+                        endDate: "2025-09-20 23:59:59",
                         logo: "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
                     }
                 ]
@@ -94,7 +94,7 @@ export class Calendar extends plugin {
 
 
             // 渲染页面
-            return await render(e, 'calendar/index', getDurations(calendarData),)
+            return await render(e, 'calendar/index', getDurations(calendarData))
         } catch (error) {
             logger.error('[yoyo-plugin][活动日历渲染失败]', error)
             return e.reply('活动日历渲染失败，请稍后重试')
@@ -116,6 +116,8 @@ function getDurations(data) {
         const duration = formatDuration(now, start, end);
         return {
             ...pool,
+            startDate: formatDateShort(pool.startDate),
+            endDate: formatDateShort(pool.endDate),
             status,
             duration
         };
@@ -129,6 +131,8 @@ function getDurations(data) {
         const duration = formatDuration(now, start, end);
         return {
             ...evt,
+            startDate: formatDateShort(evt.startDate),
+            endDate: formatDateShort(evt.endDate),
             status,
             duration
         };
@@ -139,6 +143,18 @@ function getDurations(data) {
         upPools,
         activityEvents
     };
+}
+
+// 格式化日期为短格式
+function formatDateShort(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear().toString().slice(-2); // 取年份后两位
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 月份，补零
+    const day = date.getDate().toString().padStart(2, '0'); // 日期，补零
+    const hours = date.getHours().toString().padStart(2, '0'); // 小时，补零
+    const minutes = date.getMinutes().toString().padStart(2, '0'); // 分钟，补零
+
+    return `${year}.${month}.${day} ${hours}:${minutes}`;
 }
 
 // 判断状态
