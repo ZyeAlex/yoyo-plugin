@@ -2,7 +2,6 @@
 import fs from 'fs'
 import sharp from 'sharp'
 import common from '../../../lib/common/common.js'
-import setting from '#setting';
 /**
  * 杂项
  */
