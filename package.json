@@ -8,6 +8,7 @@
   "type": "module",
   "imports": {
     "#setting": "./utils/setting.js",
+    "#plugin": "./utils/plugin.js",
     "#render": "./utils/render.js",
     "#utils": "./utils/index.js"
   },

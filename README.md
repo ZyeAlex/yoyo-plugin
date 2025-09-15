@@ -1,5 +1,6 @@
-<img decoding="async" align=right src="https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/tex_icon_hero_l_101003.png" width="300px">
+<img decoding="async" align=right src="https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/tex_icon_hero_l_101003.png" width="200px">
 
+<div align="left">
 
 # <div align="center">悠悠助手 （ yoyo-plugin ）</div>
 
@@ -14,6 +15,10 @@
 </div>
 <div align="center"><img src="https://api.moedog.org/count/@ZyeAlex.readme"  /></div>
 
+</div>
+
+
+---
 
 
 ## 开发说明
