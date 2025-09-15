@@ -9,18 +9,18 @@ export default plugin({
     priority: 101,
     rule: [
         {
-            reg: `^${setting.rulePrefix}?.{1,10}设置(别名|昵称|称号|外号).{1,10}$`,
+            reg: `^${setting.rulePrefix}?(.{1,10}?)设置(?:别名|昵称|称号|外号)(.{1,10}?)$`,
             fnc: setNickname
         },
         {
-            reg: `^${setting.rulePrefix}?.{1,10}删除(别名|昵称|称号|外号).{1,10}$`,
+            reg: `^${setting.rulePrefix}?(.{1,10}?)删除(?:别名|昵称|称号|外号)(.{1,10}?)$`,
             fnc: delNickname
         }
     ]
 })
 
-function setNickname(e) {
-    let [_, heroName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10}?)设置(?:别名|昵称|称号|外号)(.{1,10}?)$`))
+function setNickname(e, reg) {
+    let [_, heroName, nickname] = e.msg.match(reg)
     let heroId = setting.getHeroId(heroName)
     if (!heroId) {
         return e.reply('未找到此角色')
@@ -32,8 +32,8 @@ function setNickname(e) {
     return e.reply(res ? '别名设置成功' : '别名设置失败')
 }
 
-function delNickname(e) {
-    let [_, heroName, nickname] = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,10}?)删除(?:别名|昵称|称号|外号)(.{1,10}?)$`))
+function delNickname(e, reg) {
+    let [_, heroName, nickname] = e.msg.match(reg)
     let heroId = setting.getHeroId(heroName)
     if (!heroId) {
         return e.reply('未找到此角色')

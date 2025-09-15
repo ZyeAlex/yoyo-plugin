@@ -27,7 +27,7 @@ export const Img = plugin({
             fnc: getHeroImg
         },
         {
-            reg: `^${setting.rulePrefix}?.{1,10}${imgReg}(列表|表列|合集|集合)$`,
+            reg: `^${setting.rulePrefix}?(.{1,10})${imgReg}(列表|表列|合集|集合)$`,
             fnc: getHeroImgList
         },
         {
@@ -72,6 +72,7 @@ async function getHeroImg(e, reg, heroId, heroIndex) {
 async function getHeroImgList(e, reg) {
     // 从e.msg字符串里面匹配(\w)
     let heroName = e.msg.match(reg)[1]
+    logger.info(e.msg.match(reg)[1])
     // 查询是否有此角色
     let heroId = setting.getHeroId(heroName)
     if (!heroId) return true

@@ -57,8 +57,7 @@ async function update_plugin(e) {
   }
   return true
 }
-async function migrate(e) {
-  let reg = new RegExp(`^(?:${setting.rulePrefix}|悠悠|yoyo)切?换(github|gitee)?源$`, 'i')
+async function migrate(e,reg) {
   let originName = e.msg.match(reg)[1] || ''
   let origin = (await execSync('git remote -v get-url origin', { cwd: setting.path })).toString().trim()
   if (/gitee/i.test(origin) && originName.toLowerCase() != 'gitee') {

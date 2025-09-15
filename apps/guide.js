@@ -22,8 +22,8 @@ export const Guide = plugin({
 
 
 
-async function sendGuideImages(e) {
-    const match = e.msg.match(new RegExp(`^(${setting.rulePrefix}|悠悠|yy|yoyo)?(.{1,10}?)攻略$`))
+async function sendGuideImages(e,reg) {
+    const match = e.msg.match(reg)
     if (!match) return true
     let guideName = (match[2] || '').trim()
     if (!guideName) return true

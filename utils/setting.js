@@ -256,9 +256,9 @@ class Setting {
         }
       }
     }
-    if (blur) {
-      return utils.findBestMatch(name, this.heros )
-    }
+    // if (blur) {
+    //   return utils.findBestMatch(name, this.heros )
+    // }
   }
 
   // 设置昵称
