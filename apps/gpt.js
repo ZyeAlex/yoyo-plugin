@@ -2,37 +2,39 @@ import setting from '#setting'
 import OpenAI from "openai"
 import path from 'path'
 import { getBalance } from '../api/other.js'
+import plugin from '#plugin'
 
-let client,
-    messageGroups = [],
-    tools = []
-export class GPT extends plugin {
-    constructor() {
-        super({
-            name: '[悠悠助手]悠悠AI',
-            event: 'message.group',
-            priority: 10000,
-            rule: [
-                {
-                    reg: `^${setting.rulePrefix}?余额$`,
-                    fnc: 'showBalance',
-                },
-                {
-                    fnc: 'chat',
-                    log: false
-                }
-            ]
-        })
-    }
-    async chat(e) {
-        if (!this.initChat(e)) return true // 初始化
+export const GPT = plugin({
+    name: '[悠悠助手]悠悠AI',
+    event: 'message.group',
+    priority: 10000,
+    rule: [
+        {
+            reg: `^${setting.rulePrefix}?余额$`,
+            fnc: showBalance,
+        },
+        {
+            fnc: chat,
+            log: false
+        }
+    ]
+})
 
-        let messages = messageGroups[e.group_id]
-        if (!messages) messages = messageGroups[e.group_id] = {
-            system: [
-                {
-                    role: "system",
-                    content: `                    
+
+let client
+let messageGroups = []
+let tools = []
+
+
+async function chat(e) {
+    if (!initChat(e)) return true // 初始化
+
+    let messages = messageGroups[e.group_id]
+    if (!messages) messages = messageGroups[e.group_id] = {
+        system: [
+            {
+                role: "system",
+                content: `                    
                     你的身份设定：
                     你将扮演的角色是游戏蓝色星原旅谣中的寒悠悠，以下是你的背景设定：
                     属性：火
@@ -61,75 +63,74 @@ export class GPT extends plugin {
 
                     如果你不知道该如何回答，则回复 [CQ:None]
                     ` }
-            ],
-            chat: []
-        }
-
-
-        let message = { role: "user", content: `用户名:${e.sender.nickname}，userid:${e.user_id} 说：${e.msg}` }
-
-        let response = await client.chat.completions.create({
-            model: 'deepseek-chat',
-            frequency_penalty: 0.2,
-            presence_penalty: 0.2,
-            temperature: setting.config.temperature,
-            messages: [
-                ...messages.system,
-                ...messages.chat,
-                message
-            ],
-            //tools: tools,
-            //tool_choice: "auto" 
-        })
-        // 内容
-        let originalRetMsg = response.choices[0].message.content
-        // 过滤
-        if (originalRetMsg.includes('[CQ:None]')) return true
-        // 回复
-        e.reply(originalRetMsg)
-        // 添加记录
-        messages.chat.push(message)
-        messages.chat.push(response.choices[0].message)
-        // 长度限制
-        if (messages.chat.length > setting.config.chatLong * 2) {
-            messages.chat = messages.chat.slice(2)
-        }
-    }
-
-    initChat(e) {
-        if (!setting.config.apiKey) return //没有配置api-key
-        if (e.message.filter(msg => msg.type === 'at').every(({ qq }) => qq != e.self_id)) return  // 过滤出艾特消息
-        if (!(setting.config.aiInclude || []).includes(e.group_id)) return   // 过滤群聊
-        if (!client) {
-            client = new OpenAI({
-                baseURL: setting.config.baseURL,
-                apiKey: setting.config.apiKey
-            })
-        }
-        return true
-    }
-    async showBalance(e) {
-        // 余额查询函数
-        let balanceData = await getBalance()
-        if (!balanceData || !balanceData.balance_infos || balanceData.balance_infos.length === 0) {
-            return true;
-        }
-        // 获取第一个币种的信息
-        const balanceInfo = balanceData.balance_infos[0];
-        const replyMsg = [
-            segment.image(path.join(setting.path, 'resources/common/theme/logo.png')),
-            '【YOYO AI 余额信息】\n',
-            `货币: ${balanceInfo.currency || '未知'}\n`,
-            `总余额: ${balanceInfo.total_balance || '未知'}\n`,
-            `赠送余额: ${balanceInfo.granted_balance || '未知'}\n`,
-            `充值余额: ${balanceInfo.topped_up_balance || '未知'}\n`,
-            `查询时间: ${new Date().toLocaleString()}`,
-        ]
-        e.reply(replyMsg);
+        ],
+        chat: []
     }
 
 
+    let message = { role: "user", content: `用户名:${e.sender.nickname}，userid:${e.user_id} 说：${e.msg}` }
 
-
-
+    let response = await client.chat.completions.create({
+        model: 'deepseek-chat',
+        frequency_penalty: 0.2,
+        presence_penalty: 0.2,
+        temperature: setting.config.temperature,
+        messages: [
+            ...messages.system,
+            ...messages.chat,
+            message
+        ],
+        //tools: tools,
+        //tool_choice: "auto" 
+    })
+    // 内容
+    let originalRetMsg = response.choices[0].message.content
+    // 过滤
+    if (originalRetMsg.includes('[CQ:None]')) return true
+    // 回复
+    e.reply(originalRetMsg)
+    // 添加记录
+    messages.chat.push(message)
+    messages.chat.push(response.choices[0].message)
+    // 长度限制
+    if (messages.chat.length > setting.config.chatLong * 2) {
+        messages.chat = messages.chat.slice(2)
+    }
 }
+
+function initChat(e) {
+    if (!setting.config.apiKey) return //没有配置api-key
+    if (e.message.filter(msg => msg.type === 'at').every(({ qq }) => qq != e.self_id)) return  // 过滤出艾特消息
+    if (!(setting.config.aiInclude || []).includes(e.group_id)) return   // 过滤群聊
+    if (!client) {
+        client = new OpenAI({
+            baseURL: setting.config.baseURL,
+            apiKey: setting.config.apiKey
+        })
+    }
+    return true
+}
+
+async function showBalance(e) {
+    // 余额查询函数
+    let balanceData = await getBalance()
+    if (!balanceData || !balanceData.balance_infos || balanceData.balance_infos.length === 0) {
+        return true;
+    }
+    // 获取第一个币种的信息
+    const balanceInfo = balanceData.balance_infos[0];
+    const replyMsg = [
+        segment.image(path.join(setting.path, 'resources/common/theme/logo.png')),
+        '【YOYO AI 余额信息】\n',
+        `货币: ${balanceInfo.currency || '未知'}\n`,
+        `总余额: ${balanceInfo.total_balance || '未知'}\n`,
+        `赠送余额: ${balanceInfo.granted_balance || '未知'}\n`,
+        `充值余额: ${balanceInfo.topped_up_balance || '未知'}\n`,
+        `查询时间: ${new Date().toLocaleString()}`,
+    ]
+    e.reply(replyMsg);
+}
+
+
+
+
