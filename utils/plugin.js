@@ -16,7 +16,7 @@ function getPlugin(config) {
     function Plugin() {
         funcs.forEach((func) => this[func.name] = func.bind(this))
     }
-    Plugin.prototype = new plugin(Object.assign({ ...config, rules }))
+    Plugin.prototype = new plugin(Object.assign({ ...config, rule: rules }))
     Plugin.prototype.constructor = Plugin
     return Plugin
 }
