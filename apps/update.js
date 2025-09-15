@@ -20,7 +20,7 @@ export class Update extends plugin {
           permission: 'master'
         },
         {
-          reg: `^(${setting.rulePrefix}|悠悠|yoyo)迁移仓库$`,
+          reg: new RegExp(`^(?:${setting.rulePrefix}|悠悠|yoyo)切?换(github|gitee)?源(github|gitee)?$`, 'i'),
           fnc: 'migrate',
           permission: 'master'
         },
@@ -46,7 +46,7 @@ export class Update extends plugin {
 
     if (Update_Plugin.getPlugin(name)) {
       if (this.e.msg.includes('强制')) {
-        await execSync('git reset --hard origin/master', { cwd: `${process.cwd()}/plugins/${name}/` })
+        await execSync('git reset --hard origin/master', { cwd: setting.path })
       }
       await Update_Plugin.runUpdate(name)
       if (Update_Plugin.isUp) {
@@ -55,9 +55,21 @@ export class Update extends plugin {
     }
     return true
   }
-  async migrate() {
-    await execSync('git remote set-url origin https://gitee.com/yoyo-plugin/yoyo-plugin', { cwd: `${process.cwd()}/plugins/${name}/` })
-    this.reply('仓库地址已迁移')
+  async migrate(e) {
+    let reg = new RegExp(`^(?:${setting.rulePrefix}|悠悠|yoyo)切?换(github|gitee)?源$`, 'i')
+    let originName = e.msg.match(reg)[1] || ''
+    let origin = (await execSync('git remote -v get-url origin', { cwd: setting.path })).toString().trim()
+    if (/gitee/i.test(origin) && originName.toLowerCase() != 'gitee') {
+      await execSync('git remote set-url origin https://github.com/ZyeAlex/yoyo-plugin', { cwd: setting.path })
+      this.reply('[yoyo-plugin]已切换至Github开发源')
+      return
+    }
+    if (/github/i.test(origin) && originName.toLowerCase() != 'github') {
+      await execSync('git remote set-url origin https://gitee.com/yoyo-plugin/yoyo-plugin', { cwd: setting.path })
+      this.reply('[yoyo-plugin]已切换至Gitee用户源')
+      return
+    }
+    this.reply('[yoyo-plugin]插件已在当前源')
   }
 
   async update_log() {

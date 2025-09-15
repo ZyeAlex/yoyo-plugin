@@ -32,13 +32,27 @@
 <summary>三方图片库开发支持</summary>
 
   - 本插件默认支持三方角色图片库，发布图片库满足以下条件即可：
+
     - 加载图片库
-      > 你的图片库需要主动修改 `plugins/yoyo-plugin/config/config.yaml`，<br />
-      > 并在图片库加载的时候检测并添加 `plugins/图片库名称` 至 `imgPath` 字段。<br />
-      > 如果没有配置项，请在`readme`注明让用户自己配置
+
+        > 你需要将图片地址添加至yoyo-plugin的config, 以下是参考代码 
+
+        ```js
+        // main.js
+        import setting from '../yoyo-plugin/utils/setting.js'
+        let path = 'plugins/yoyo-image' // 要添加的仓库地址，从Bot根路径开始
+        if (!setting.config.imgPath.includes(path)) {
+          setting.config.imgPath.push(path)
+          setting.setConfig('config', setting.config)
+        }
+        ```
+
     - 图片库格式
+
       > 图片以「角色名」或「角色ID」命名文件夹，命名需符合官方角色名规范，否则无法读取，推荐使用 「角色ID」来命名避免匹配错误
+
     - 图片格式
+
       > 图片无明确长宽要求，图片会默认居中裁切，人物位置居中即可。
 
 </details> 
