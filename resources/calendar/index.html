@@ -1,0 +1,52 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/calendar/index.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="calendar-container">
+    </br>
+    <!-- 页面标题 -->
+    <div class="page-title">{{pageTitle}}</div>
+    <div class="current-date">{{currentDate}}</div>
+
+    <!-- 卡池 -->
+    <div class="up-pools-container">
+        <h2 class="section-title">————————卡池列表————————</h2>
+        {{each upPools}}
+        <div class="up-pool-card">
+            <div class="up-pool-header">
+                <div class="up-pool-title">{{$value.title}}</div>
+                <div class="up-pool-dates">{{$value.startDate}} - {{$value.endDate}}</div>
+                <div class="up-pool-duration duration-{{$value.duration.status}}">{{$value.duration.text}}</div>
+            </div>
+            <div class="up-pool-grid">
+                {{each $value.items}}
+                <img src="{{$value}}" alt="UP物品" />
+                {{/each}}
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</div>
+
+<!-- 活动列表 -->
+<div class="activity-events-container">
+    <h2 class="section-title">————————限时活动————————</h2>
+    {{each activityEvents}}
+    <div class="activity-card">
+        <div class="activity-left">
+            <img src="{{$value.logo}}" alt="活动Logo" />
+        </div>
+        <div class="activity-right">
+            <p class="activity-title">{{$value.title}}</p>
+            <p class="activity-dates">{{$value.startDate}} - {{$value.endDate}}</p>
+            <p class="activity-duration duration-{{$value.duration.status}}">{{$value.duration.text}}</p>
+        </div>
+    </div>
+    {{/each}}
+</div>
+</div>
+
+{{/block}}

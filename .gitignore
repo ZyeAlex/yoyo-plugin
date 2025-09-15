@@ -1,0 +1,16 @@
+/node_modules/
+# 数据
+data/user/
+data/logs/
+data/hero/hero.yaml
+data/hero/id.yaml
+data/pet/id.yaml
+data/pet/pet.yaml
+# 用户配置
+config/config.yaml
+# 用户上传资源
+resources/img/hero/
+# 下载图标
+resources/UI/
+# 日志
+.bat

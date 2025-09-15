@@ -1,0 +1,109 @@
+/* 标题 */
+.head-box {
+  border-radius: 15px;
+  padding: 30px 20px 10px;
+  position: relative;
+  color: #fff;
+  font-family: title01, title02, PingFangSC-Medium, "PingFang SC", sans-serif;
+  font-size: 48px;
+  text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+
+.head-box .label {
+  font-size: 24px;
+}
+
+
+
+
+
+/* 列表样式 */
+
+.nav-box {
+  position: relative;
+  padding: 12px;
+  margin: 5px 20px 10px;
+  border-radius: 24px;
+  background-image: linear-gradient(to bottom, #dedede 0%, #dedede 50%, rgba(222, 222, 222, 0.8) 100%);
+  color: #525252;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1) inset, -3px -3px 5px rgba(255, 255, 255, 0.3) inset;
+}
+
+.nav-box .item {
+  position: relative;
+  padding-left: 1.5em;
+  margin: 8px 0;
+  font-size: 24px;
+}
+
+.nav-box .item::before {
+  content: "🍀 ";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2em;
+  margin-right: 0.5em;
+}
+
+
+
+/* 主體 */
+.main-box {
+  padding: 12px;
+  margin: 5px 20px 10px;
+  border-radius: 20px;
+  background-image: linear-gradient(to bottom, rgba(222, 222, 222, 0.9) 0%, rgba(222, 222, 222, 0.7) 100%);
+  color: #525252;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1) inset, -3px -3px 5px rgba(255, 255, 255, 0.3) inset;
+  overflow: hidden;
+}
+
+.section-box {
+  /* 浅灰偏白 */
+  -webkit-backdrop-filter: blur(.05rem);
+  backdrop-filter: blur(0.05rem);
+  background-image: linear-gradient(to bottom, rgba(222, 222, 222, 0.9) 0%, rgba(222, 222, 222, 0.7) 100%);
+  box-shadow:
+    10px 10px 20px rgba(0, 0, 0, 0.1),
+    /* 深色阴影 */
+    -10px -10px 20px rgba(255, 255, 255, 0.3);
+  /* 白色高光 */
+  color: #525252;
+  border-radius: 20px;
+  padding: 12px;
+  margin: 5px 20px 10px;
+}
+
+
+
+/* mark样式 */
+mark {
+  background-color: #2F2F2F;
+  /* 灰黑色背景 */
+  color: #D4AF37;
+  /* 烫金色文本（接近金色） */
+  border-radius: 8px;
+  /* 圆角 */
+  padding: 1px 5px 3px 4px;
+  /* 可选：增加内边距使文本不贴边 */
+}
+
+/* 背景样式 */
+.background {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  /* background-position: center; */
+  background-size: 100% auto;
+  /* 或 'contain'，根据你的需求调整 */
+  background-repeat: repeat;
+  filter: blur(5px);
+  /* 调整模糊程度 */
+  opacity: 0.8;
+  /* 调整半透明程度 */
+  z-index: -1;
+}

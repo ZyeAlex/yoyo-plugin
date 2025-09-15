@@ -1,0 +1,13 @@
+.head-box {
+    margin-top: 24px;
+}
+
+.head-box .title {
+    font-size: 50px;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+.head-box .label {
+    margin-top: 60px;
+}

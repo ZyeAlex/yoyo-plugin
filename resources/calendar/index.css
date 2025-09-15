@@ -1,0 +1,253 @@
+/* 日历容器 */
+.calendar-container {
+    padding: 12px;
+    margin: 5px 20px 10px;
+    border-radius: 20px;
+
+    background: transparent;
+
+    overflow: hidden;
+}
+
+/* 页面标题 */
+.page-title {
+    font-family: title01, title02, PingFangSC-Medium, "PingFang SC", sans-serif;
+    font-size: 36px;
+    color: #fff;
+    text-shadow:
+        0 0 5px #00bfff,
+        0 0 10px #00bfff,
+        0 0 1px #000,
+        1px 1px 3px rgba(0, 0, 0, 0.9);
+    text-align: center;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+/* 当前日期 */
+.current-date {
+    font-family: title01, title02, PingFangSC-Medium, "PingFang SC", sans-serif;
+    font-size: 36px;
+    color: #fff;
+    text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 15px;
+    background-image: linear-gradient(to bottom, rgba(222, 222, 222, 0.9) 0%, rgba(222, 222, 222, 0.7) 100%);
+}
+
+/* UP池容器 */
+.up-pools-container {
+    margin-bottom: 30px;
+}
+
+/* UP池卡片 */
+.up-pool-card {
+    -webkit-backdrop-filter: blur(.05rem);
+    backdrop-filter: blur(0.05rem);
+    background-image: linear-gradient(to bottom, rgba(222, 222, 222, 0.9) 0%, rgba(222, 222, 222, 0.7) 100%);
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1), -10px -10px 20px rgba(255, 255, 255, 0.3);
+    color: #525252;
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+/* UP池标题区域 */
+.up-pool-header {
+    margin-bottom: 15px;
+}
+
+/* UP池标题 - 左上角大标题 */
+.up-pool-title {
+    font-family: title01, title02, PingFangSC-Medium, "PingFang SC", sans-serif;
+    font-size: 32px;
+    color: #fff;
+    text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+/* UP池日期 */
+.up-pool-dates {
+    font-family: text01, sans-serif;
+    font-size: 20px;
+    color: #525252;
+    margin-bottom: 5px;
+}
+
+/* UP池持续时间 */
+.up-pool-duration {
+    font-family: text01, sans-serif;
+    font-size: 18px;
+    color: #d3bc8e;
+    font-weight: bold;
+}
+
+/* UP物品网格 - 一行4个 */
+.up-pool-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.up-pool-grid img {
+    width: 50%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.up-pool-grid img:hover {
+    transform: scale(1.05);
+}
+
+/* 活动列表容器 */
+.activity-events-container {
+    margin-top: 20px;
+}
+
+/* 活动列表标题 - 居中 */
+.section-title {
+    font-family: title01, title02, PingFangSC-Medium, "PingFang SC", sans-serif;
+    font-size: 28px;
+    color: #fff;
+    text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+    margin-bottom: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* 活动卡片网格 - 在标题下面 */
+.activity-events-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 15px;
+}
+
+/* 确保标题不被网格影响 */
+.activity-events-container .section-title {
+    grid-column: 1 / -1;
+    margin-bottom: 15px;
+}
+
+/* 活动卡片 */
+.activity-card {
+    -webkit-backdrop-filter: blur(.05rem);
+    backdrop-filter: blur(0.05rem);
+    background-image: linear-gradient(to bottom, rgba(222, 222, 222, 0.9) 0%, rgba(222, 222, 222, 0.7) 100%);
+    box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.1), -10px -10px 20px rgba(255, 255, 255, 0.3);
+    color: #525252;
+    border-radius: 20px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.2s ease;
+}
+
+.activity-card:hover {
+    transform: translateY(-2px);
+}
+
+/* 活动左侧 - Logo */
+.activity-left {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+}
+
+.activity-left img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* 活动右侧 - 活动信息 */
+.activity-right {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 活动标题 */
+.activity-title {
+    font-family: title01, title02, PingFangSC-Medium, "PingFang SC", sans-serif;
+    font-size: 20px;
+    color: #fff;
+    text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+    margin-bottom: 5px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 活动日期 */
+.activity-dates {
+    font-family: text01, sans-serif;
+    font-size: 16px;
+    color: #525252;
+    margin-bottom: 3px;
+}
+
+/* 活动持续时间 */
+.activity-duration {
+    font-family: text01, sans-serif;
+    font-size: 14px;
+    color: #d3bc8e;
+    font-weight: bold;
+}
+
+/* 持续时间状态颜色 */
+.duration-not-started {
+    color: #ff6b6b !important;
+    /* 红色 - 未开始 */
+}
+
+.duration-ended {
+    color: #999 !important;
+    /* 灰色 - 已结束 */
+}
+
+.duration-urgent {
+    color: #ff6b6b !important;
+    /* 红色 - 紧急（1天内） */
+    font-weight: bold;
+}
+
+.duration-warning {
+    color: #ffa726 !important;
+    /* 橙色 - 警告（3天内） */
+    font-weight: bold;
+}
+
+.duration-normal {
+    color: #4ecdc4 !important;
+    /* 青色 - 正常（3天以上） */
+    font-weight: bold;
+}
+
+/* 响应式设计 */
+@media (max-width: 600px) {
+    .up-pool-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .activity-events-container {
+        grid-template-columns: 1fr;
+    }
+
+    .up-pool-title {
+        font-size: 28px;
+    }
+
+    .section-title {
+        font-size: 24px;
+    }
+}

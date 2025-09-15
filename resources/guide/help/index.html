@@ -1,0 +1,22 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/guide/help/index.css" />
+{{/block}}
+
+{{block 'main'}}
+
+<div class="head-box">
+    <div class="title">攻略帮助 <span class="label">共{{guides.length}}个角色攻略</span></div>
+    <div class="label">发送「{{rulePrefix}}名称攻略」查看该角色图片攻略</div>
+    <div class="label">例：{{rulePrefix}}寒悠悠攻略</div>
+    <div class="label">发送「{{rulePrefix}}攻略帮助」查看此页</div>
+    <div class="label">图片攻略路径：resources/guide/名称</div>
+    <div class="label">在对应文件夹内放入 .png/.jpg/.gif/.webp/.bmp/.svg</div>
+    <div class="label">注意：文件夹名需要与角色名一致</div>
+
+</div>
+
+
+
+{{/block}}

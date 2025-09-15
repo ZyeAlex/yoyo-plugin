@@ -1,0 +1,101 @@
+.hero-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.hero-list::after {
+    content: "";
+    flex: auto;
+    min-width: 100px;
+    /* 或指定宽度，如 width: 30% */
+}
+
+.hero-item {
+    box-sizing: border-box;
+    margin: 5px 6px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.hero-item .hero-img {
+    width: 115px;
+    height: 125px;
+    position: relative;
+}
+
+.hero-item .hero-img img {
+    width: 130px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+
+.hero-item img.hero-career {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 35px;
+    border-radius: 10px;
+    padding: 1px;
+    background-color: gray;
+}
+
+.hero-rarity {
+    height: 0;
+    overflow: visible;
+}
+
+.hero-rarity img {
+    height: 20px;
+    margin-left: 50%;
+    transform: translate(-50%, -12px);
+}
+
+.hero-text {
+    width: 100%;
+    text-align: center;
+    color: #dadada;
+    font-size: 22px;
+}
+
+
+/* 稀有度 */
+.hero-3 .hero-img {
+    background-image: linear-gradient(to bottom,
+            rgba(148, 90, 255, 0.3) 0%,
+            rgba(148, 90, 255, 0.1) 75%,
+            rgba(148, 90, 255, 0.2) 100%);
+
+}
+
+.hero-3 .hero-text {
+    padding: 5px 0 3px 0;
+    border-top: 3px solid #945aff;
+    background-image: linear-gradient(to bottom, #2d1b4d, #2d1b4d, #190f2b, #050309);
+}
+
+.hero-4 .hero-text {
+    padding: 5px 0 3px 0;
+    border-top: 3px solid #ecc566;
+    background-image: linear-gradient(to bottom, #473b1f, #473b1f, #2b2413, #080704);
+}
+
+.hero-4 .hero-img {
+    background-image: linear-gradient(to bottom,
+            rgba(236, 197, 102, 0.3) 0%,
+            rgba(236, 197, 102, 0.1) 75%,
+            rgba(236, 197, 102, 0.2) 100%)
+}
+
+.hero-3.hero-item {
+    box-shadow: 0px 0px 0 1px #945aff;
+}
+
+.hero-4.hero-item {
+    box-shadow: 0px 0px 0 1px #ecc566;
+}

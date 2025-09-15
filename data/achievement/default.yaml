@@ -1,0 +1,942 @@
+- id: 1001
+  achiName: 星临之刻
+  achiRes: tex_achievement_icon_01.png
+  achiPage: tex_achievement_page_icon_xd2.png
+  reward: 9#10044#1
+  achievement:
+    - id: 1001001
+      groupId: 1001
+      achiLevel: 1
+      achiName: 惩戒捣蛋鬼
+      achiDesc: 完成任务【恶作剧的风灵偶】
+      finishCondi: 2007#816024
+      param: 1
+      nextAchi: null
+      firstAchi: 1001001
+      reward: 10#1#5
+- id: 1002
+  achiName: 闪耀群星
+  achiRes: tex_achievement_icon_02.png
+  achiPage: tex_achievement_page_icon_tdwx2.png
+  reward: 9#10044#1
+  achievement:
+    - id: 1002001
+      groupId: 1002
+      achiLevel: 1
+      achiName: 伙伴·其一
+      achiDesc: 突破到2阶的角色，拥有3个
+      finishCondi: 13001#2#3
+      param: 3
+      nextAchi: 1002002
+      firstAchi: 1002001
+      reward: 10#1#5
+    - id: 1002002
+      groupId: 1002
+      achiLevel: 2
+      achiName: 伙伴·其二
+      achiDesc: 突破到4阶的角色，拥有3个
+      finishCondi: 13001#4#3
+      param: 3
+      nextAchi: 1002003
+      firstAchi: 1002001
+      reward: 10#1#10
+    - id: 1002003
+      groupId: 1002
+      achiLevel: 3
+      achiName: 伙伴·其三
+      achiDesc: 突破到5阶的角色，拥有3个
+      finishCondi: 13001#5#3
+      param: 3
+      nextAchi: null
+      firstAchi: 1002001
+      reward: 10#1#20
+    - id: 1002004
+      groupId: 1002
+      achiLevel: 1
+      achiName: 第一桶金
+      achiDesc: 收取金币本奖励2次
+      finishCondi: 12004#14#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1002004
+      reward: 10#1#5
+    - id: 1002005
+      groupId: 1002
+      achiLevel: 1
+      achiName: 升华·其一
+      achiDesc: 突破到2阶的灵子，拥有3个
+      finishCondi: 13004#2#3
+      param: 3
+      nextAchi: 1002006
+      firstAchi: 1002005
+      reward: 10#1#5
+    - id: 1002006
+      groupId: 1002
+      achiLevel: 2
+      achiName: 升华·其二
+      achiDesc: 突破到3阶的灵子，拥有3个
+      finishCondi: 13004#3#3
+      param: 3
+      nextAchi: 1002007
+      firstAchi: 1002005
+      reward: 10#1#10
+    - id: 1002007
+      groupId: 1002
+      achiLevel: 3
+      achiName: 升华·其三
+      achiDesc: 突破到4阶的灵子，拥有3个
+      finishCondi: 13004#4#3
+      param: 3
+      nextAchi: null
+      firstAchi: 1002005
+      reward: 10#1#20
+    - id: 1002008
+      groupId: 1002
+      achiLevel: 1
+      achiName: 武器大师·其一
+      achiDesc: 稀有度4，等级10的装备，拥有1件
+      finishCondi: 13005#4#10#1
+      param: 1
+      nextAchi: 1002009
+      firstAchi: 1002008
+      reward: 10#1#5
+    - id: 1002009
+      groupId: 1002
+      achiLevel: 2
+      achiName: 武器大师·其二
+      achiDesc: 稀有度4，等级15的装备，拥有3件
+      finishCondi: 13005#4#15#3
+      param: 3
+      nextAchi: 1002010
+      firstAchi: 1002008
+      reward: 10#1#10
+    - id: 1002010
+      groupId: 1002
+      achiLevel: 3
+      achiName: 武器大师·其三
+      achiDesc: 稀有度4，等级20的装备，拥有5件
+      finishCondi: 13005#4#20#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1002008
+      reward: 10#1#20
+    - id: 1002011
+      groupId: 1002
+      achiLevel: 2
+      achiName: 明星
+      achiDesc: 好感等级5级的角色，拥有3个
+      finishCondi: 13007#5#3
+      param: 3
+      nextAchi: null
+      firstAchi: 1002011
+      reward: 10#1#10
+    - id: 1002012
+      groupId: 1002
+      achiLevel: 1
+      achiName: 星启·其一
+      achiDesc: 星识等级达到20
+      finishCondi: 2004#20
+      param: 20
+      nextAchi: 1002013
+      firstAchi: 1002012
+      reward: 10#1#5
+    - id: 1002013
+      groupId: 1002
+      achiLevel: 2
+      achiName: 星启·其二
+      achiDesc: 星识等级达到40
+      finishCondi: 2004#40
+      param: 40
+      nextAchi: 1002014
+      firstAchi: 1002012
+      reward: 10#1#10
+    - id: 1002014
+      groupId: 1002
+      achiLevel: 3
+      achiName: 星启·其三
+      achiDesc: 星识等级达到60
+      finishCondi: 2004#60
+      param: 60
+      nextAchi: null
+      firstAchi: 1002012
+      reward: 10#1#20
+    - id: 1002015
+      groupId: 1002
+      achiLevel: 1
+      achiName: 专属印记·其一
+      achiDesc: 稀有度4，等级20的灵子，拥有1件
+      finishCondi: 13006#4#20#1
+      param: 1
+      nextAchi: 1002016
+      firstAchi: 1002015
+      reward: 10#1#5
+    - id: 1002016
+      groupId: 1002
+      achiLevel: 2
+      achiName: 专属印记·其二
+      achiDesc: 稀有度4，等级60的灵子，拥有3件
+      finishCondi: 13006#4#60#3
+      param: 3
+      nextAchi: 1002017
+      firstAchi: 1002015
+      reward: 10#1#10
+    - id: 1002017
+      groupId: 1002
+      achiLevel: 3
+      achiName: 专属印记·其三
+      achiDesc: 稀有度4，等级80的灵子，拥有5件
+      finishCondi: 13006#4#80#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1002015
+      reward: 10#1#20
+- id: 1003
+  achiName: 奇想逸闻
+  achiRes: tex_achievement_icon_03.png
+  achiPage: tex_achievement_page_icon_hyl2.png
+  reward: 9#10044#1
+  achievement:
+    - id: 1003001
+      groupId: 1003
+      achiLevel: 1
+      achiName: 记录生活
+      achiDesc: 在新芽山谷地区拍照2次
+      finishCondi: 13033#100#0#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1003001
+      reward: 10#1#5
+    - id: 1003002
+      groupId: 1003
+      achiLevel: 2
+      achiName: 空军一号
+      achiDesc: 钓鱼累计触发打捞事件10次
+      finishCondi: 13029#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1003002
+      reward: 10#1#10
+    - id: 1003003
+      groupId: 1003
+      achiLevel: 1
+      achiName: 庖丁解鱼
+      achiDesc: 钓鱼产物进行加工5次
+      finishCondi: 13030#309#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1003003
+      reward: 10#1#5
+    - id: 1003004
+      groupId: 1003
+      achiLevel: 3
+      achiName: 金色传说
+      achiDesc: 钓鱼获得金冠长度区间的鱼3条
+      finishCondi: 13031#3#3
+      param: 3
+      nextAchi: null
+      firstAchi: 1003004
+      reward: 10#1#20
+    - id: 1003005
+      groupId: 1003
+      achiLevel: 1
+      achiName: 变色龙
+      achiDesc: 调整2次星脉活跃度
+      finishCondi: 13032#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1003005
+      reward: 10#1#5
+- id: 1004
+  achiName: 星结奇遇
+  achiRes: tex_achievement_icon_04.png
+  achiPage: tex_achievement_page_icon_yjwj2.png
+  reward: 9#10044#1
+  achievement:
+    - id: 1004001
+      groupId: 1004
+      achiLevel: 1
+      achiName: 新芽山谷神偷
+      achiDesc: 在新芽山谷累计抱蛋2个
+      finishCondi: 13008#100#0#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1004001
+      reward: 10#1#5
+    - id: 1004002
+      groupId: 1004
+      achiLevel: 2
+      achiName: 需要降温
+      achiDesc: 拥有火属性奇波4种
+      finishCondi: 13009#1#4
+      param: 4
+      nextAchi: null
+      firstAchi: 1004002
+      reward: 10#1#10
+    - id: 1004003
+      groupId: 1004
+      achiLevel: 1
+      achiName: 蔬菜储备
+      achiDesc: 拥有菜鸡进化系2种奇波
+      finishCondi: 13010#5#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1004003
+      reward: 10#1#5
+    - id: 1004004
+      groupId: 1004
+      achiLevel: 1
+      achiName: 新芽山谷训练师
+      achiDesc: 在新芽山谷星结奇波10个
+      finishCondi: 13011#100#0#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1004004
+      reward: 10#1#5
+    - id: 1004005
+      groupId: 1004
+      achiLevel: 1
+      achiName: 幼儿园
+      achiDesc: 星结幼年成长时期奇波5个
+      finishCondi: 13012#1#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1004005
+      reward: 10#1#5
+    - id: 1004006
+      groupId: 1004
+      achiLevel: 3
+      achiName: 天赋异禀
+      achiDesc: 总评C或以上的奇波，拥有5只
+      finishCondi: 13013#1#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1004006
+      reward: 10#1#20
+    - id: 1004007
+      groupId: 1004
+      achiLevel: 2
+      achiName: 凌厉伙伴
+      achiDesc: 攻击天赋，评级D或以上的奇波，拥有5只
+      finishCondi: 13014#1#2#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1004007
+      reward: 10#1#10
+    - id: 1004008
+      groupId: 1004
+      achiLevel: 2
+      achiName: 双料状元
+      achiDesc: 两项天赋评级D的奇波，拥有5只
+      finishCondi: 13015#2#2#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1004008
+      reward: 10#1#10
+    - id: 1004009
+      groupId: 1004
+      achiLevel: 3
+      achiName: 进化！
+      achiDesc: 将5只奇波进化到成长期
+      finishCondi: 13016#2#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1004009
+      reward: 10#1#20
+    - id: 1004010
+      groupId: 1004
+      achiLevel: 2
+      achiName: 幼玩园
+      achiDesc: 幼年期的奇波，拥有10只
+      finishCondi: 13017#1#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1004010
+      reward: 10#1#10
+    - id: 1004011
+      groupId: 1004
+      achiLevel: 3
+      achiName: 华贵基质
+      achiDesc: 至少有1个金因子的奇波，拥有5只
+      finishCondi: 13018#1#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1004011
+      reward: 10#1#20
+    - id: 1004012
+      groupId: 1004
+      achiLevel: 1
+      achiName: 稀有基质
+      achiDesc: 至少有1个稀有因子的奇波，拥有5只
+      finishCondi: 13019#1#2
+      param: 5
+      nextAchi: null
+      firstAchi: 1004012
+      reward: 10#1#5
+    - id: 1004013
+      groupId: 1004
+      achiLevel: 1
+      achiName: 孵蛋达人
+      achiDesc: 孵蛋10次
+      finishCondi: 12007#0#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1004013
+      reward: 10#1#5
+    - id: 1004014
+      groupId: 1004
+      achiLevel: 1
+      achiName: 归去兮
+      achiDesc: 放生奇波10只
+      finishCondi: 12010#0#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1004014
+      reward: 10#1#5
+    - id: 1004015
+      groupId: 1004
+      achiLevel: 1
+      achiName: 收菜
+      achiDesc: 星结菜鸡进化系的奇波5次
+      finishCondi: 12014#5#0#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1004015
+      reward: 10#1#5
+- id: 1005
+  achiName: 踏破·新芽山谷
+  achiRes: tex_achievement_icon_05.png
+  achiPage: ""
+  reward: 9#10044#1
+  achievement:
+    - id: 1005001
+      groupId: 1005
+      achiLevel: 1
+      achiName: 元素解谜·狼嚎平原
+      achiDesc: 在狼嚎平原区域完成奇波属性解谜2次
+      finishCondi: 13034#100#100004#161#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1005001
+      reward: 10#1#5
+    - id: 1005002
+      groupId: 1005
+      achiLevel: 1
+      achiName: 翻译家·狼嚎平原
+      achiDesc: 在狼嚎平原区域完成奇波沟通解谜2次
+      finishCondi: 13034#100#100004#162#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1005002
+      reward: 10#1#5
+    - id: 1005003
+      groupId: 1005
+      achiLevel: 1
+      achiName: 元素解谜·倚风林地
+      achiDesc: 在倚风林地区域完成奇波属性解谜2次
+      finishCondi: 13034#100#100001#161#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1005003
+      reward: 10#1#5
+    - id: 1005004
+      groupId: 1005
+      achiLevel: 1
+      achiName: 翻译家·倚风林地
+      achiDesc: 在倚风林地区域完成奇波沟通解谜2次
+      finishCondi: 13034#100#100001#162#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1005004
+      reward: 10#1#5
+    - id: 1005005
+      groupId: 1005
+      achiLevel: 1
+      achiName: 元素解谜·雾叶密林
+      achiDesc: 在雾叶密林区域完成奇波属性解谜2次
+      finishCondi: 13034#100#100002#161#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1005005
+      reward: 10#1#5
+    - id: 1005006
+      groupId: 1005
+      achiLevel: 1
+      achiName: 翻译家·雾叶密林
+      achiDesc: 在雾叶密林区域完成奇波沟通解谜2次
+      finishCondi: 13034#100#100002#162#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1005006
+      reward: 10#1#5
+    - id: 1005007
+      groupId: 1005
+      achiLevel: 1
+      achiName: 元素解谜·缘岩山地
+      achiDesc: 在缘岩山地区域完成奇波属性解谜2次
+      finishCondi: 13034#100#100003#161#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1005007
+      reward: 10#1#5
+    - id: 1005008
+      groupId: 1005
+      achiLevel: 1
+      achiName: 翻译家·缘岩山地
+      achiDesc: 在缘岩山地区域完成奇波沟通解谜2次
+      finishCondi: 13034#100#100003#162#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1005008
+      reward: 10#1#5
+    - id: 1005009
+      groupId: 1005
+      achiLevel: 1
+      achiName: 木材据点·新芽山谷
+      achiDesc: 在新芽山谷的伐木小屋产出50个物品
+      finishCondi: 13024#100#0#1#50
+      param: 50
+      nextAchi: null
+      firstAchi: 1005009
+      reward: 10#1#5
+    - id: 1005010
+      groupId: 1005
+      achiLevel: 1
+      achiName: 石头据点·新芽山谷
+      achiDesc: 在新芽山谷的采石小屋产出50个物品
+      finishCondi: 13024#100#0#2#50
+      param: 50
+      nextAchi: null
+      firstAchi: 1005010
+      reward: 10#1#5
+    - id: 1005011
+      groupId: 1005
+      achiLevel: 1
+      achiName: 矿物据点·新芽山谷
+      achiDesc: 在新芽山谷的采矿小屋产出50个物品
+      finishCondi: 13024#100#0#3#50
+      param: 50
+      nextAchi: null
+      firstAchi: 1005011
+      reward: 10#1#5
+    - id: 1005012
+      groupId: 1005
+      achiLevel: 1
+      achiName: 狩猎据点·新芽山谷
+      achiDesc: 在新芽山谷的狩猎场产出50个物品
+      finishCondi: 13024#100#0#4#50
+      param: 50
+      nextAchi: null
+      firstAchi: 1005012
+      reward: 10#1#5
+    - id: 1005013
+      groupId: 1005
+      achiLevel: 1
+      achiName: 元素据点·新芽山谷
+      achiDesc: 在新芽山谷的元素祭坛产出50个物品
+      finishCondi: 13024#100#0#5#50
+      param: 50
+      nextAchi: null
+      firstAchi: 1005013
+      reward: 10#1#5
+    - id: 1005014
+      groupId: 1005
+      achiLevel: 1
+      achiName: 大手笔·城镇
+      achiDesc: 在城镇商店购买商品20次
+      finishCondi: 12013#110100#20
+      param: 20
+      nextAchi: null
+      firstAchi: 1005014
+      reward: 10#1#5
+    - id: 1005015
+      groupId: 1005
+      achiLevel: 2
+      achiName: 大手笔·云游
+      achiDesc: 在云游商店购买商品10次
+      finishCondi: 12013#120100#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1005015
+      reward: 10#1#10
+- id: 1006
+  achiName: 大地之赐
+  achiRes: tex_achievement_icon_06.png
+  achiPage: ""
+  reward: 9#10044#1
+  achievement:
+    - id: 1006001
+      groupId: 1006
+      achiLevel: 1
+      achiName: 锄头技艺·其一
+      achiDesc: 种植心得等级10
+      finishCondi: 11010#2#10
+      param: 10
+      nextAchi: 1006002
+      firstAchi: 1006001
+      reward: 10#1#5
+    - id: 1006002
+      groupId: 1006
+      achiLevel: 2
+      achiName: 锄头技艺·其二
+      achiDesc: 种植心得等级20
+      finishCondi: 11010#2#20
+      param: 20
+      nextAchi: 1006003
+      firstAchi: 1006001
+      reward: 10#1#10
+    - id: 1006003
+      groupId: 1006
+      achiLevel: 3
+      achiName: 锄头技艺·其三
+      achiDesc: 种植心得等级30
+      finishCondi: 11010#2#30
+      param: 30
+      nextAchi: null
+      firstAchi: 1006001
+      reward: 10#1#20
+    - id: 1006004
+      groupId: 1006
+      achiLevel: 1
+      achiName: 匠人技艺·其一
+      achiDesc: 匠人心得等级10
+      finishCondi: 11010#1#10
+      param: 10
+      nextAchi: 1006005
+      firstAchi: 1006004
+      reward: 10#1#5
+    - id: 1006005
+      groupId: 1006
+      achiLevel: 2
+      achiName: 匠人技艺·其二
+      achiDesc: 匠人心得等级20
+      finishCondi: 11010#1#20
+      param: 20
+      nextAchi: 1006006
+      firstAchi: 1006004
+      reward: 10#1#10
+    - id: 1006006
+      groupId: 1006
+      achiLevel: 3
+      achiName: 匠人技艺·其三
+      achiDesc: 匠人心得等级30
+      finishCondi: 11010#1#30
+      param: 30
+      nextAchi: null
+      firstAchi: 1006004
+      reward: 10#1#20
+    - id: 1006007
+      groupId: 1006
+      achiLevel: 1
+      achiName: 采集技艺·其一
+      achiDesc: 采集心得等级10
+      finishCondi: 11010#3#10
+      param: 10
+      nextAchi: 1006008
+      firstAchi: 1006007
+      reward: 10#1#5
+    - id: 1006008
+      groupId: 1006
+      achiLevel: 2
+      achiName: 采集技艺·其二
+      achiDesc: 采集心得等级20
+      finishCondi: 11010#3#20
+      param: 20
+      nextAchi: 1006009
+      firstAchi: 1006007
+      reward: 10#1#10
+    - id: 1006009
+      groupId: 1006
+      achiLevel: 3
+      achiName: 采集技艺·其三
+      achiDesc: 采集心得等级30
+      finishCondi: 11010#3#30
+      param: 30
+      nextAchi: null
+      firstAchi: 1006007
+      reward: 10#1#20
+    - id: 1006010
+      groupId: 1006
+      achiLevel: 1
+      achiName: 放牧技艺·其一
+      achiDesc: 牧场心得等级10
+      finishCondi: 11010#4#10
+      param: 10
+      nextAchi: 1006011
+      firstAchi: 1006010
+      reward: 10#1#5
+    - id: 1006011
+      groupId: 1006
+      achiLevel: 2
+      achiName: 放牧技艺·其二
+      achiDesc: 牧场心得等级20
+      finishCondi: 11010#4#20
+      param: 20
+      nextAchi: 1006012
+      firstAchi: 1006010
+      reward: 10#1#10
+    - id: 1006012
+      groupId: 1006
+      achiLevel: 3
+      achiName: 放牧技艺·其三
+      achiDesc: 牧场心得等级30
+      finishCondi: 11010#4#30
+      param: 30
+      nextAchi: null
+      firstAchi: 1006010
+      reward: 10#1#20
+    - id: 1006013
+      groupId: 1006
+      achiLevel: 1
+      achiName: 开荒
+      achiDesc: 开垦农田30次
+      finishCondi: 12031#0#30
+      param: 30
+      nextAchi: null
+      firstAchi: 1006013
+      reward: 10#1#5
+    - id: 1006014
+      groupId: 1006
+      achiLevel: 1
+      achiName: 浇灌
+      achiDesc: 为农田浇水50次
+      finishCondi: 13020#50
+      param: 50
+      nextAchi: null
+      firstAchi: 1006014
+      reward: 10#1#5
+    - id: 1006015
+      groupId: 1006
+      achiLevel: 1
+      achiName: 丰收
+      achiDesc: 农田收获作物100个
+      finishCondi: 13021#0#100
+      param: 100
+      nextAchi: null
+      firstAchi: 1006015
+      reward: 10#1#5
+    - id: 1006016
+      groupId: 1006
+      achiLevel: 1
+      achiName: 撤回
+      achiDesc: 农田铲除作物20次
+      finishCondi: 13022#20
+      param: 20
+      nextAchi: null
+      firstAchi: 1006016
+      reward: 10#1#5
+    - id: 1006017
+      groupId: 1006
+      achiLevel: 1
+      achiName: 开饭！
+      achiDesc: 奇波餐桌为奇波补充饱腹值500
+      finishCondi: 13023#500
+      param: 500
+      nextAchi: null
+      firstAchi: 1006017
+      reward: 10#1#5
+    - id: 1006018
+      groupId: 1006
+      achiLevel: 1
+      achiName: 开炉
+      achiDesc: 在工作台生产熔炉2个
+      finishCondi: 13025#1000#20041#2
+      param: 2
+      nextAchi: null
+      firstAchi: 1006018
+      reward: 10#1#5
+    - id: 1006019
+      groupId: 1006
+      achiLevel: 1
+      achiName: 千锤百炼·其一
+      achiDesc: 制造出稀有度2的装备5个
+      finishCondi: 12038#2#5
+      param: 5
+      nextAchi: 1006020
+      firstAchi: 1006019
+      reward: 10#1#5
+    - id: 1006020
+      groupId: 1006
+      achiLevel: 2
+      achiName: 千锤百炼·其二
+      achiDesc: 制造出稀有度3的装备5个
+      finishCondi: 12038#3#5
+      param: 5
+      nextAchi: 1006021
+      firstAchi: 1006019
+      reward: 10#1#10
+    - id: 1006021
+      groupId: 1006
+      achiLevel: 3
+      achiName: 千锤百炼·其三
+      achiDesc: 制造出稀有度4的装备10个
+      finishCondi: 12038#4#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1006019
+      reward: 10#1#20
+    - id: 1006022
+      groupId: 1006
+      achiLevel: 1
+      achiName: 甜蜜之家
+      achiDesc: 家园目前摆放了15个建筑
+      finishCondi: 12027#0#15
+      param: 15
+      nextAchi: null
+      firstAchi: 1006022
+      reward: 10#1#5
+    - id: 1006023
+      groupId: 1006
+      achiLevel: 1
+      achiName: 回炉制造
+      achiDesc: 熔炉产出道具10个
+      finishCondi: 13025#2004#0#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1006023
+      reward: 10#1#5
+    - id: 1006024
+      groupId: 1006
+      achiLevel: 1
+      achiName: CutCut
+      achiDesc: 锯木台加工道具10个
+      finishCondi: 13025#2001#0#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1006024
+      reward: 10#1#5
+    - id: 1006025
+      groupId: 1006
+      achiLevel: 1
+      achiName: 红瓦青砖
+      achiDesc: 砖窑产出道具10个
+      finishCondi: 13025#2006#0#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1006025
+      reward: 10#1#5
+    - id: 1006026
+      groupId: 1006
+      achiLevel: 1
+      achiName: 锃亮
+      achiDesc: 制革台产出道具10个
+      finishCondi: 13025#2007#0#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1006026
+      reward: 10#1#5
+    - id: 1006027
+      groupId: 1006
+      achiLevel: 1
+      achiName: 蛛系奇波
+      achiDesc: 纺车产出道具10个
+      finishCondi: 13025#2008#0#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1006027
+      reward: 10#1#5
+    - id: 1006028
+      groupId: 1006
+      achiLevel: 1
+      achiName: 大厨
+      achiDesc: 烹饪锅产出道具10个
+      finishCondi: 13025#10001#0#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1006028
+      reward: 10#1#5
+- id: 1007
+  achiName: 历战荣光
+  achiRes: tex_achievement_icon_07.png
+  achiPage: ""
+  reward: 9#10044#1
+  achievement:
+    - id: 1007001
+      groupId: 1007
+      achiLevel: 1
+      achiName: 力大砖飞
+      achiDesc: 最后一击使用重击，共击败20个敌人
+      finishCondi: 13027#2#20
+      param: 20
+      nextAchi: null
+      firstAchi: 1007001
+      reward: 10#1#5
+    - id: 1007002
+      groupId: 1007
+      achiLevel: 2
+      achiName: 游刃有余
+      achiDesc: 最后一击使用极限反击，共击败20个敌人
+      finishCondi: 13027#11#20
+      param: 20
+      nextAchi: null
+      firstAchi: 1007002
+      reward: 10#1#10
+    - id: 1007003
+      groupId: 1007
+      achiLevel: 1
+      achiName: 专属招式
+      achiDesc: 最后一击使用角色主动技能，共击败20个敌人
+      finishCondi: 13027#3#20
+      param: 20
+      nextAchi: null
+      firstAchi: 1007003
+      reward: 10#1#5
+    - id: 1007004
+      groupId: 1007
+      achiLevel: 2
+      achiName: 华丽收场
+      achiDesc: 最后一击使用必杀技，共击败10个敌人
+      finishCondi: 13027#4#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1007004
+      reward: 10#1#10
+    - id: 1007005
+      groupId: 1007
+      achiLevel: 2
+      achiName: 就是你了！
+      achiDesc: 最后一击使用角色指挥技能，共击败10个敌人
+      finishCondi: 13027#5#10
+      param: 10
+      nextAchi: null
+      firstAchi: 1007005
+      reward: 10#1#10
+    - id: 1007006
+      groupId: 1007
+      achiLevel: 2
+      achiName: 必杀必杀必杀
+      achiDesc: 10秒内，释放3次必杀技；达成5次
+      finishCondi: 13028#10#3#4#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1007006
+      reward: 10#1#10
+    - id: 1007007
+      groupId: 1007
+      achiLevel: 2
+      achiName: 极限舞者
+      achiDesc: 6秒内，使用2次极限反击；达成5次
+      finishCondi: 13028#6#2#11#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1007007
+      reward: 10#1#10
+    - id: 1007008
+      groupId: 1007
+      achiLevel: 2
+      achiName: 秀一下
+      achiDesc: 10秒内，释放3次角色主动技能；达成5次
+      finishCondi: 13028#10#3#3#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1007008
+      reward: 10#1#10
+    - id: 1007009
+      groupId: 1007
+      achiLevel: 2
+      achiName: 不许动！
+      achiDesc: 5秒内，释放3次重击；达成5次
+      finishCondi: 13028#5#3#2#5
+      param: 5
+      nextAchi: null
+      firstAchi: 1007009
+      reward: 10#1#10

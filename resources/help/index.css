@@ -1,0 +1,72 @@
+.container {
+  background: url("../common/theme/main.png") top left no-repeat;
+  background-size: 100% auto;
+}
+
+.main-box {
+  padding: 0;
+}
+
+.help-group {
+  background-color: #333;
+  color: #ebebeb;
+  text-align: center;
+  padding: 6px;
+}
+
+.help-table {}
+
+
+.help-table .tr {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.help-table .tr .td {
+  width: 33%;
+  position: relative;
+  margin: 1px;
+}
+
+.help-table .td:nth-child(odd) {
+  background-color: #dadada;
+
+}
+
+.help-table .td:nth-child(even) {
+  background-color: #ededed;
+}
+
+
+.help-icon {
+  margin: 5px;
+  width: 55px;
+  height: 55px;
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  display: block;
+  position: absolute;
+  border-radius: 5px;
+  left: 0px;
+  top: 0px;
+}
+
+.help-title {
+  display: block;
+  color: #333;
+  text-shadow: 0 0 1px #000;
+  font-size: 22px;
+  margin-left: 60px;
+  padding: 6px;
+  font-family: text01;
+}
+
+.help-desc {
+  display: block;
+  color: #6c6c6c;
+  font-size: 14px;
+  margin-left: 60px;
+  padding: 0 0 12px 6px;
+  font-family: number01;
+}
