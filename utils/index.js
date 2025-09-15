@@ -206,27 +206,14 @@ class Utils {
   }
 
   /**
- * 在候选词列表中找到与目标字符串最相似的项
- *
- * 算法规则：
- * 1. 先对字符串进行归一化（去掉非汉字/字母/数字并转小写）
- * 2. 若完全相同，返回相似度 1
- * 3. 若存在包含关系，相似度至少为 0.6
- * 4. 否则使用 Levenshtein 编辑距离计算相似度
- *
- * @param {string} target - 要匹配的目标字符串
- * @param {string[]} candidates - 候选字符串对象 { id:{name} }
- * @returns {{ value: string|null, score: number }} 
- *          最佳匹配结果，包含：
- *          - `value`: 最相似的候选词（如果没有则为 null）
- *          - `score`: 相似度分数（0 ~ 1 之间）
- *
- * @example
- * const candidates = ["苹果", "香蕉", "菠萝"];
- * const result = findBestMatch("苹", candidates);
- * console.log(result);
- * // { value: "苹果", score: 0.6... }
- */
+   * 在候选列表中查找与目标字符串最相似的项，并返回其对应的键（id）。
+   *
+   * @param {string} target - 要匹配的目标字符串。
+   * @param {Object.<string, string[]>} candidates - 候选对象，键为 id，值为字符串数组（别名列表）。
+   * @param {number} [score=0.5] - 最低相似度阈值（0~1 之间），低于此值则返回 `undefined`。
+   * 
+   * @returns {string|undefined} - 返回匹配到的候选项 id，如果没有达到阈值则返回 `undefined`。
+   */
   findBestMatch(target, candidates, score = 0.5) {
     // 相似度计算（内部闭包）
     function similarity(a, b) {
@@ -268,10 +255,15 @@ class Utils {
     }
 
     let best = { value: null, score: 0 }
-    Object.entries(candidates).forEach(([id, { name }]) => {
-      const s = similarity(target, name)
-      if (s > best.score) best = { value: id, score: s }
+    Object.entries(candidates).forEach(([id, names]) => {
+      names.forEach(n => {
+        const s = similarity(target, n)
+        if (s > best.score) {
+          best = { value: id, score: s }
+        }
+      })
     })
+
     if (best?.score >= score && best.value) {
       return best.value
     }

@@ -1,7 +1,7 @@
 {
   "version": "0.5.5-beta",
   "name": "yoyo-plugin",
-  "nameCH":"悠悠助手",
+  "nameCH": "悠悠助手",
   "author": "子叶",
   "description": "云崽QQ机器人的《蓝色星原：旅谣》插件",
   "main": "main.js",
