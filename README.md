@@ -31,6 +31,8 @@
 
   > 请在 [GitHub](https://github.com/ZyeAlex/yoyo-plugin)  fork 本仓库，修改并测试完成后提交PR
 
+- [开发文档](./插件开发API说明.md)
+
 ### 插件支持说明
 <!-- 合并 -->
 <details>
