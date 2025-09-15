@@ -31,9 +31,9 @@ export class Guide extends plugin {
 
         let folder = path.join(setting.path, 'resources', 'guide', guideName)
         if (!fs.existsSync(folder) || !fs.statSync(folder).isDirectory()) {
-            const guideId = utils.findBestMatch(guideName, setting.nicknames)
+            const guideId = utils.findBestMatch(guideName, setting.heros)
             if (guideId) {
-                await e.reply(`未找到「${guideName}」攻略，或许名字应为：` + setting.nicknames[String(guideId)][0])
+                await e.reply(`未找到「${guideName}」攻略，或许名字应为：` + setting.heros[guideId].name)
                 return
             }
             return true

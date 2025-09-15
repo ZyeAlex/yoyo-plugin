@@ -208,7 +208,7 @@ class Utils {
    * 在候选列表中查找与目标字符串最相似的项，并返回其对应的键（id）。
    *
    * @param {string} target - 要匹配的目标字符串。
-   * @param {Object.<string, string[]>} candidates - 候选对象，键为 id，值为字符串数组（别名列表）。
+   * @param {Object.<string, Object>} candidates - 候选对象，键为 id，值为{id,name}对象（角色名列表）。
    * @param {number} [score=0.5] - 最低相似度阈值（0~1 之间），低于此值则返回 `undefined`。
    * 
    * @returns {string|undefined} - 返回匹配到的候选项 id，如果没有达到阈值则返回 `undefined`。
@@ -254,13 +254,12 @@ class Utils {
     }
 
     let best = { value: null, score: 0 }
-    Object.entries(candidates).forEach(([id, names]) => {
-      names.forEach(n => {
-        const s = similarity(target, n)
-        if (s > best.score) {
-          best = { value: id, score: s }
-        }
-      })
+    Object.entries(candidates).forEach(([id, hero]) => {
+      const n = hero.name;
+      const s = similarity(target, n);
+      if (s > best.score) {
+        best = { value: id, score: s };
+      }
     })
 
     if (best?.score >= score && best.value) {
