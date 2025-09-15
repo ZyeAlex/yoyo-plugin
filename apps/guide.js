@@ -12,7 +12,7 @@ export class Guide extends plugin {
             priority: 105,
             rule: [
                 {
-                    reg: `^${setting.rulePrefix}?(.{1,20})攻略$`,
+                    reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)?(.{1,10}?)攻略$`,
                     fnc: 'sendGuideImages'
                 },
                 {
@@ -24,16 +24,16 @@ export class Guide extends plugin {
     }
 
     async sendGuideImages(e) {
-        const match = e.msg.match(new RegExp(`^${setting.rulePrefix}?(.{1,20})攻略$`))
+        const match = e.msg.match(new RegExp(`^(${setting.rulePrefix}|悠悠|yy|yoyo)?(.{1,10}?)攻略$`))
         if (!match) return true
-        let guideName = (match[1] || '').trim()
+        let guideName = (match[2] || '').trim()
         if (!guideName) return true
 
         let folder = path.join(setting.path, 'resources', 'guide', guideName)
         if (!fs.existsSync(folder) || !fs.statSync(folder).isDirectory()) {
-            const guideId = utils.findBestMatch(guideName, Object.values(setting.nicknames).flat())
+            const guideId = utils.findBestMatch(guideName, setting.nicknames)
             if (guideId) {
-                await e.reply(`未找到「${guideName}」攻略，或许名字应为：` + setting.heros[guideId].name)
+                await e.reply(`未找到「${guideName}」攻略，或许名字应为：` + setting.nicknames[String(guideId)][0])
                 return
             }
             return true
@@ -45,6 +45,7 @@ export class Guide extends plugin {
             return true
         }
 
+        // 本地图片
         const fileUrls = imageFiles.map(file => {
             const full = path.join(folder, file).replace(/\\/g, '/')
             return `file://${full}`
@@ -74,6 +75,8 @@ export class Guide extends plugin {
             if (forward) {
                 await e.reply(forward)
                 return true
+            } else {
+                logger.warn('[yoyo-plugin]当前环境不支持转发攻略，改为普通消息发送')
             }
         } catch (err) {
             logger.error('[yoyo-plugin][攻略转发失败]', err)
@@ -81,7 +84,7 @@ export class Guide extends plugin {
 
         // 不支持转发时按批发送
         const segs = fileUrls.map(url => segment.image(url))
-        const batchSize = 20
+        const batchSize = 3
         for (let i = 0; i < segs.length; i += batchSize) {
             const batch = segs.slice(i, i + batchSize)
             await e.reply(batch)
