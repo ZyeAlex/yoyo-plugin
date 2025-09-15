@@ -1,5 +1,6 @@
-<img decoding="async" align=right src="https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/tex_icon_hero_l_101003.png" width="300px">
+<img decoding="async" align=right src="https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/tex_icon_hero_l_101003.png" width="200px">
 
+<div align="left">
 
 # <div align="center">悠悠助手 （ yoyo-plugin ）</div>
 
@@ -14,6 +15,10 @@
 </div>
 <div align="center"><img src="https://api.moedog.org/count/@ZyeAlex.readme"  /></div>
 
+</div>
+
+
+---
 
 
 ## 开发说明
@@ -25,6 +30,8 @@
 - 提交代码：
 
   > 请在 [GitHub](https://github.com/ZyeAlex/yoyo-plugin)  fork 本仓库，修改并测试完成后提交PR
+
+- [开发文档](./插件开发API说明.md)
 
 ### 插件支持说明
 <!-- 合并 -->
@@ -39,12 +46,9 @@
 
         ```js
         // main.js
-        import setting from '../yoyo-plugin/utils/setting.js'
+        import { img } from '../yoyo-plugin/interface.js'
         let path = 'plugins/yoyo-image' // 要添加的仓库地址，从Bot根路径开始
-        if (!setting.config.imgPath.includes(path)) {
-          setting.config.imgPath.push(path)
-          setting.setConfig('config', setting.config)
-        }
+        img(path)
         ```
 
     - 图片库格式

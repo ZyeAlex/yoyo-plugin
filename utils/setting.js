@@ -6,7 +6,6 @@ import path from 'path'
 import https from 'https'
 import fs from 'fs'
 import YAML from 'yaml'
-import chokidar from 'chokidar'
 import MD5 from 'md5'
 import bot from 'nodemw'
 import { promisify } from 'util'
@@ -21,15 +20,11 @@ class Setting {
     this.yunzaiPath = process.cwd().replace(/\\/g, '/')
     // 本插件地址
     this.path = this.yunzaiPath + '/plugins/yoyo-plugin'
-    /** 默认设置 */
-    this.defPath = `${this.path}/config/default/`
-    this.defSet = {}
-    /** 用户设置 */
-    this.configPath = `${this.path}/config/`
-    this.config = {}
-    /** 数据设置 */
-    this.dataPath = `${this.path}/data/`
-    this.data = {}
+
+    // 初始化config
+    this.initConfig()
+    // 匹配前缀
+    this.rulePrefix = '(?:(?:' + this.config.rulePrefix.join('|') + ') *)'
 
     /**
      * 角色数据
@@ -66,25 +61,26 @@ class Setting {
      */
     this.buildings = this.getData('default', 'building') || []
 
-    // 初始化
-    this.initConfig()
+    // 初始化数据
     this.initData()
-    // 初始化config
-    this.config = this.getConfig('config')
-    // 匹配前缀
-    this.rulePrefix = '(?:(?:' + this.config.rulePrefix.join('|') + ') *)'
 
   }
-
-  /** 初始化配置 */
+  // 配置文件
   async initConfig() {
-    const files = fs.readdirSync(this.defPath).filter(file => file.endsWith('.yaml'))
-    for (let file of files) {
-      if (!fs.existsSync(`${this.configPath}${file}`)) {
-        fs.copyFileSync(`${this.defPath}${file}`, `${this.configPath}${file}`)
-      }
+    if (!fs.existsSync(path.join(this.path, 'config/config.yaml'))) {
+      fs.copyFileSync(path.join(this.path, 'config/default.yaml'), 'config/config.yaml')
     }
+    let defConfig = this.getData('default', '/config')
+    this.config = this.getData('config', '/config')
+    // 增量更新配置
+    Object.keys(defConfig).forEach(key => {
+      if (!(key in this.config)) {
+        this.config[key] = defConfig[key]
+      }
+    })
+    this.setData('config', this.config, '/config')
   }
+  /** 初始化数据 */
   async initData() {
     // 初始化logs
     if (!fs.existsSync(path.join(this.path, '/data/logs'))) {
@@ -127,34 +123,40 @@ class Setting {
           this.heroIds[heroData.name] = heroId
         }
       })
-      // 初始化hero path
-      if (!fs.existsSync(path.join(this.path, '/resources/img/hero'))) {
-        fs.mkdirSync(path.join(this.path, '/resources/img/hero'), { recursive: true })
-      }
-      let heroImgPaths = [
-        path.join(this.path, '/resources/img/hero'),
-        ...(this.config.imgPath || []).map(imgPath => path.join(this.yunzaiPath, imgPath))
-      ]
-      // 遍历所有图片库路径
-      heroImgPaths.forEach(heroImgPath => {
-        // 查找角色图片
-        if (!fs.existsSync(heroImgPath)) return
-        let heroImgDirs = fs.readdirSync(heroImgPath)
-        heroImgDirs.forEach(dir => {
-          // 如果dir是目录
-          if (!dir.startsWith('.') && fs.statSync(path.join(heroImgPath, dir)).isDirectory()) {
-            let heroId = this.getHeroId(dir)
-            if (heroId) {
-              let heroImgs = [...new Set([...(this.heroImgs[heroId] || []), ...fs.readdirSync(path.join(heroImgPath, dir)).map(fileName => path.join(heroImgPath, dir, fileName))])]
-              this.heroImgs[heroId] = heroImgs
-            }
-          }
-        })
-
-      })
+      // 获取角色图片
+      this.getHeroImgs()
     } catch (error) {
       logger.error(`[yoyo-plugin][getHeroData]${error}`)
     }
+  }
+  async getHeroImgs() {
+    // 清空图片
+    this.heroImgs = {}
+    // 初始化hero path
+    if (!fs.existsSync(path.join(this.path, '/resources/img/hero'))) {
+      fs.mkdirSync(path.join(this.path, '/resources/img/hero'), { recursive: true })
+    }
+    let heroImgPaths = [
+      path.join(this.path, '/resources/img/hero'),
+      ...(this.config.imgPath || []).map(imgPath => path.join(this.yunzaiPath, imgPath))
+    ]
+    // 遍历所有图片库路径
+    heroImgPaths.forEach(heroImgPath => {
+      // 查找角色图片
+      if (!fs.existsSync(heroImgPath)) return
+      let heroImgDirs = fs.readdirSync(heroImgPath)
+      heroImgDirs.forEach(dir => {
+        // 如果dir是目录
+        if (!dir.startsWith('.') && fs.statSync(path.join(heroImgPath, dir)).isDirectory()) {
+          let heroId = this.getHeroId(dir)
+          if (heroId) {
+            let heroImgs = [...new Set([...(this.heroImgs[heroId] || []), ...fs.readdirSync(path.join(heroImgPath, dir)).map(fileName => path.join(heroImgPath, dir, fileName))])]
+            this.heroImgs[heroId] = heroImgs
+          }
+        }
+      })
+
+    })
   }
   async getPetData() {
     try {
@@ -196,105 +198,38 @@ class Setting {
     }
   }
 
-  // 配置对象化 用于锅巴插件界面填充
-  merge() {
-    let sets = {}
-    let appsConfig = fs.readdirSync(this.defPath).filter(file => file.endsWith(".yaml"));
-    for (let appConfig of appsConfig) {
-      // 依次将每个文本填入键
-      let filename = appConfig.replace(/.yaml/g, '').trim()
-      sets[filename] = this.getConfig(filename)
-    }
-    return sets
-  }
-  // 配置对象分析 用于锅巴插件界面设置
-  analysis(config) {
-    for (let key of Object.keys(config)) {
-      this.setConfig(key, config[key])
-    }
-  }
-
-
-  /**
-   * 操作config
-   */
-
-
-  // 获取对应模块用户配置
-  getConfig(app) {
-    return { ...this.getdefSet(app), ...this.getYaml(app, 'config') }
-  }
-  // 设置对应模块用户配置
-  setConfig(app, Object) {
-    let config = { ...this.getdefSet(app), ...Object }
-    this[app] = config // 修改配置
-    return this.setYaml(app, 'config', config)
-  }
-  // 获取对应模块默认配置
-  getdefSet(app) {
-    return this.getYaml(app, 'defSet')
-  }
-  // 读取YAML文件 返回对象
-  getYaml(app, type) {
-    let file = this.getFilePath(app, type)
-    if (this[type][app]) return this[type][app]
-    try {
-      this[type][app] = YAML.parse(fs.readFileSync(file, 'utf8'))
-    } catch (error) {
-      logger.error(`[${app}] 格式错误 ${error}`)
-      return false
-    }
-    return this[type][app]
-  }
-  // 将对象写入YAML文件
-  setYaml(app, type, Object) {
-    let file = this.getFilePath(app, type)
-    try {
-      fs.writeFileSync(file, YAML.stringify(Object), 'utf8')
-    } catch (error) {
-      logger.error(`[${app}] 写入失败 ${error}`)
-      return false
-    }
-  }
-  // 获取YAML文件目录
-  getFilePath(app, type) {
-    if (type === 'defSet') return `${this.defPath}${app}.yaml`
-    else {
-      try {
-        if (!fs.existsSync(`${this.configPath}${app}.yaml`)) {
-          fs.copyFileSync(`${this.defPath}${app}.yaml`, `${this.configPath}${app}.yaml`)
-        }
-      } catch (error) {
-        logger.error(`蓝色星原插件缺失默认文件[${app}]${error}`)
-      }
-      return `${this.configPath}${app}.yaml`
-    }
-  }
-
-
   /**
    * 操作 data
    */
   // 获取对应模块数据文件
-  getData(filename, path = '') {
-    path = `${this.dataPath}${path}/`
+  getData(filename, dataPath = '') {
+    let filePath
+    if (!dataPath.includes('data') && !dataPath.includes('config')) {
+      filePath = path.join(this.path, '/data', dataPath, filename + '.yaml')
+    } else {
+      filePath = path.join(this.path, dataPath, filename + '.yaml')
+    }
     try {
-      if (!fs.existsSync(`${path}${filename}.yaml`)) { return false }
-      return YAML.parse(fs.readFileSync(`${path}${filename}.yaml`, 'utf8'))
+      if (!fs.existsSync(filePath)) { return false }
+      return YAML.parse(fs.readFileSync(filePath, 'utf8'))
     } catch (error) {
       logger.error(`[${filename}] 读取失败 ${error}`)
       return false
     }
   }
   // 写入对应模块数据文件
-  setData(filename, data, path = '') {
-    path = `${this.dataPath}${path}/`
+  setData(filename, data, dataPath = '') {
+    if (!dataPath.includes('data') && !dataPath.includes('config')) {
+      dataPath = path.join(this.path, '/data', dataPath)
+    } else {
+      dataPath = path.join(this.path, dataPath)
+    }
     try {
-      if (!fs.existsSync(path)) {
+      if (!fs.existsSync(dataPath)) {
         // 递归创建目录
-        fs.mkdirSync(path, { recursive: true })
+        fs.mkdirSync(dataPath, { recursive: true })
       }
-      fs.writeFileSync(`${path}${filename}.yaml`, YAML.stringify(data), 'utf8')
+      fs.writeFileSync(path.join(dataPath, filename + '.yaml'), YAML.stringify(data), 'utf8')
     } catch (error) {
       logger.error(`[${filename}] 写入失败 ${error}`)
       return
@@ -321,9 +256,9 @@ class Setting {
         }
       }
     }
-    if (blur) {
-      return utils.findBestMatch(name, this.heros)
-    }
+    // if (blur) {
+    //   return utils.findBestMatch(name, this.heros )
+    // }
   }
 
   // 设置昵称
@@ -404,7 +339,7 @@ class Setting {
       }
 
       // 角色图片文件夹地址
-      let heroImgPath = `${this.path}/resources/img/hero/${this.heros[heroId].name}`
+      let heroImgPath = path.join(this.path, '/resources/img/hero', this.heros[heroId].name)
       if (!fs.existsSync(heroImgPath)) {
         fs.mkdirSync(heroImgPath, { recursive: true })
       }
@@ -529,7 +464,7 @@ class Setting {
       let time = await redis.get('yoyo:ui')
       if (time && utils.getDateDiffHours(time, new Date()) < 1) {
         // logger.info(`[yoyo-plugin] 🎈 上次下载图库于一小时内，不再重复下载`)
-        return 
+        return
       }
       // 搜集图标
       traverse(obj)

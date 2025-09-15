@@ -25,6 +25,8 @@ PVList:
 signInclude: []
 signExclude: []
 #AI配置
-aiInclude: []
-apiKey: ''
+aiInclude: [] # 对话群聊
+chatLong: 50 # 对话长度
+temperature: 1.3
+apiKey: '' # 前去 https://platform.deepseek.com/ 购买api-key
 baseURL: 'https://api.deepseek.com'
