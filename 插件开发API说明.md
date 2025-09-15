@@ -3,7 +3,7 @@
 ### setting 
 > 存放所有与 `config` `data` 交互逻辑，并存储其状态
 ```js
-import setting from '#setting'`
+import setting from '#setting'
 ```
 | 属性  |说明  | 示例 |
 |---|---|---|
@@ -12,7 +12,7 @@ import setting from '#setting'`
 |setting.path|yoyo地址||
 |setting.rulePrefix|前缀||
 |setting.heros|角色信息|`{ 101003:{ name:'寒悠悠',id:101003,...... } }`|
-|setting.heroIds|角色名称->角色ID|`{ 寒悠悠:101003,... }`|
+|<font color=gray><s>setting.heroIds</s></font>|<font color=gray><s>内部使用</s></font>| |
 |setting.nicknames|角色昵称|`{ 101003:['唐悠悠',...] }`|
 |setting.heroImgs|角色图片|`{ 101003:[ 'c:/xxx.png','c:/yyy.png' ],...  }`|
 |setting.pets|奇波信息|`{ 500001:{ name:'迅狼',id:500001,...... } }`|
