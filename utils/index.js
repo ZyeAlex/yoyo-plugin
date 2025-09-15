@@ -6,6 +6,16 @@ import common from '../../../lib/common/common.js'
  * 杂项
  */
 class Utils {
+  // 节流函数
+  throttle(func, delay) {
+    let lastCall = 0;
+    return function (...args) {
+      const now = new Date().getTime();
+      if (now - lastCall < delay) return;
+      lastCall = now;
+      return func.apply(this, args);
+    };
+  }
   // 两段时间的差值
   formatTimeDiff(timestampDiff, t = 'm') {
     // 确保差值为正数
