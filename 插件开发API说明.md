@@ -55,6 +55,8 @@ function test(e,reg){
 
 ### 三方支持
 
+> 感谢每一位开发者对本项目做出的贡献
+
 - 三方图库支持
 
     - 加载图片库
@@ -72,3 +74,40 @@ function test(e,reg){
     - 图片格式
 
       > 图片无明确长宽要求，图片会默认居中裁切，人物位置居中即可。
+
+
+- 三方立绘图支持
+
+    - 加载图片库
+
+        ```js
+        // main.js
+        import { characterImg } from '../yoyo-plugin/interface.js'
+        let path = 'resources/lsxy/character-img' // 要添加的仓库地址，从Bot根路径开始
+        characterImg(path)
+        ```
+    - 图片库格式
+
+      > 图片以「角色名」或「角色ID」命名文件夹，命名需符合官方角色名规范，否则无法读取，推荐使用 「角色ID」来命名避免匹配错误
+
+    - 图片格式
+
+      > 立绘图为透明背景、角色居中图片（参考官方立绘）
+
+- 三方攻略库支持
+
+    - 加载攻略库
+
+        ```js
+        // main.js
+        import { guide } from '../yoyo-plugin/interface.js'
+        let path = 'resources/lsxy/guide' // 要添加的仓库地址，从Bot根路径开始
+        characterImg(path,'hero')
+        ```
+    - 攻略库格式
+
+      > 攻略图以「角色名」或「角色ID」命名文件夹，命名需符合官方角色名规范，否则无法读取，推荐使用 「角色ID」来命名避免匹配错误
+
+    - 攻略图格式
+
+      > .png /.jpg /.gif /.webp /.bmp /.svg

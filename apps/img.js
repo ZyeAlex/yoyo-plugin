@@ -19,11 +19,7 @@ export const Img = plugin({
             fnc: delHeroImg
         },
         {
-            reg: `^${setting.rulePrefix}?随机(角色)?${imgReg}$`,
-            fnc: getRandomHeroImg
-        },
-        {
-        reg: `^${setting.rulePrefix}?(?!上传|添加|随机(角色)?)(.{0,10})${imgReg}([0-9])*$`,
+            reg: `^${setting.rulePrefix}?(?!上传|添加|随机(角色)?)(.{0,10})${imgReg}([0-9])*$`,
             fnc: getHeroImg
         },
         {
@@ -43,14 +39,10 @@ const cacheHeroImgs = {}
 
 
 // 角色图片
-async function getHeroImg(e, reg, heroId, heroIndex) {
-    // 从e.msg字符串里面匹配(\w)
-    if (!heroId) {
-        let _,__, heroName
-        [_,__, heroName, heroIndex] = e.msg.match(reg)
-        // 查询是否有此角色
-        heroId = setting.getHeroId(heroName)
-    }
+async function getHeroImg(e, reg) {
+    let [_, __, heroName, heroIndex] = e.msg.match(reg)
+    // 查询是否有此角色
+    let heroId = setting.getHeroId(heroName)
     if (!heroId) return true
     // 当前角色图片
     let heroImg = setting.heroImgs[heroId]
@@ -89,13 +81,7 @@ async function getHeroImgList(e, reg) {
         color: setting.heros[heroId]?.element?.elementColor || '#000000',
     })
 }
-// 随机角色图片
-async function getRandomHeroImg(e, reg) {
-    const heroIds = Object.keys(setting.heros)
-    if (heroIds.length == 0) return false
-    // lodash 随机选一个
-    getHeroImg(e, null, lodash.sample(heroIds))
-}
+
 
 // 删除角色图片
 async function delHeroImg(e, reg) {

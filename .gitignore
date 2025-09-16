@@ -4,6 +4,7 @@ data/user/
 data/logs/
 data/hero/hero.yaml
 data/hero/id.yaml
+data/hero/nickname.yaml
 data/pet/id.yaml
 data/pet/pet.yaml
 # 用户配置

@@ -28,7 +28,7 @@ class Setting {
     /**
      * 角色数据
      */
-    this.nicknames = this.getData('data/hero/nickname') // 角色昵称  {101003:['唐悠悠']}
+    this.nicknames = this.getData('data/hero/default_nickname') || {} // 角色昵称  {101003:['唐悠悠']}
     this.heros = this.getData('data/hero/default') || {} // 角色数据 { 101003:{ /* 角色数据 */ } }
     this.heroImgs = {} //角色图片 {101003:[]}
 
@@ -121,6 +121,14 @@ class Setting {
       this.getHeroImgs()
     } catch (error) {
       logger.error(`[yoyo-plugin][getHeroData]${error}`)
+    }
+
+    // 设置角色昵称
+    if (!fs.existsSync(path.join(this.path, 'data/hero/nickname.yaml'))) {
+      fs.copyFileSync(path.join(this.path, 'data/hero/default_nickname.yaml'), path.join(this.path, 'data/hero/nickname.yaml'))
+    } else {
+      const nicknames = this.getData('data/hero/nickname')
+      Object.entries(nicknames).forEach(([id, names]) => this.nicknames[id] = [... new Set([...(this.nicknames[id] || []), ...names])])
     }
   }
   async getHeroImgs() {
@@ -256,29 +264,7 @@ class Setting {
     }
   }
 
-  // 设置昵称
-  setHeroNickname(name, nickname) {
-    if (!this.nicknames[name]) {
-      this.nicknames[name] = []
-    }
-    if (!this.nicknames[name].includes(nickname)) {
-      this.nicknames[name].push(nickname)
-    }
-    return this.setData('data/hero/nickname', this.nicknames)
-  }
-  // 删除昵称
-  delHeroNickname(name, nickname) {
-    if (!this.nicknames[name]) {
-      return '该角色没有此别名'
-    }
-    if (this.nicknames[name].includes(nickname)) {
-      this.nicknames[name].splice(this.nicknames[name].indexOf(nickname), 1)
-    }
-    const res = this.setData('data/hero/nickname', this.nicknames)
-    return res ? '删除别名成功' : '删除别名失败'
-  }
-
-  // 获取用户签到数据列表
+  // 获取用户数据列表
   getUserData(group_id, user_id) {
     if (!this.userData) {
       this.userData = {}

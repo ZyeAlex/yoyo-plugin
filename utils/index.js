@@ -136,15 +136,12 @@ class Utils {
       const info = await bot.getGroupMemberInfo(e.group_id, bot.uin)
       nickname = info.card || info.nickname
     } catch { }
-    let userInfo = {
-      user_id: bot.uin,
-      nickname,
-    }
 
     let forwardMsg = []
     msg.forEach(v => {
       forwardMsg.push({
-        ...userInfo,
+        user_id: bot.uin || e.self_id,
+        nickname,
         message: v,
       })
     })
@@ -157,7 +154,6 @@ class Utils {
     } else {
       forwardMsg = await Bot.makeForwardMsg(forwardMsg)
     }
-
     if (dec) {
       /** 处理描述 */
       if (typeof (forwardMsg.data) === 'object') {

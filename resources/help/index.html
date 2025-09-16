@@ -19,7 +19,7 @@
         {{each group.list help}}
         <div class="td">
           <div class="help-icon" style="background-image: url({{pluResPath}}/UI/{{help.icon}})"></div>
-          <div class="help-title">{{help.title.replace(/\$/g, rulePrefix)}}</div>
+          <div class="help-title" style="font-size:{{help['font-size']||'22px'}}">{{help.title.replace(/\$/g, rulePrefix)}}</div>
           <div class="help-desc">{{help.desc}}</div>
         </div>
         {{/each}}

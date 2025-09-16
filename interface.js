@@ -3,8 +3,8 @@ import setting from './utils/setting.js'
 import utils from './utils/index.js'
 
 
-const setConfig = utils.throttle(() => {
-    setting.getHeroImgs();
+const setConfig = utils.throttle((...fns) => {
+    fns.forEach(fn => fn())
     setting.setConfig('config', setting.config);
 }, 1000)
 
@@ -12,6 +12,21 @@ const setConfig = utils.throttle(() => {
 export const img = (path) => {
     if (!setting.config.imgPath.includes(path)) {
         setting.config.imgPath.push(path);
+        setConfig(setting.getHeroImgs())
+    }
+};
+export const characterImg = (path) => {
+    if (!setting.config.characterImgPath.includes(path)) {
+        setting.config.characterImgPath.push(path);
         setConfig()
     }
+};
+
+export const guide = (path, type) => {
+    switch (type) {
+        case 'hero':
+            setting.config.heroGuidePath.push(path);
+            break;
+    }
+    setConfig()
 };

@@ -9,7 +9,11 @@ rulePrefix:
 imgMaxSize: 10 #上传图片大小限制 MB
 imgPath:
 #角色图片库的路径 从Bot根目录开始，如 'plugins/yoyo-image/' ，路径下须是以角色命名的文件夹
+# todo
 - plugins/yoyo-image
+characterImgPath: [] #立绘图 无背景图片 
+# todo
+heroGuidePath: [] #角色攻略图
 imgUpAuth: all # 图片上传权限 "master"|"admin"|"owner"|"all"
 imgDelAuth: all # 图片删除权限 "master"|"admin"|"owner"|"all"
 # 资源配置  

@@ -45,34 +45,34 @@ export const Atlas = plugin({
 
 function atlas(e, reg) {
     // 名称
-    let name = e.msg.match(reg)[1]
+    let atlasName = e.msg.match(reg)[1]
 
-    if (name == '角色') {
+    if (atlasName == '角色') {
         return heroList(e)
     }
-    if (name == '奇波' || name == '宠物') {
+    if (atlasName == '奇波' || atlasName == '宠物') {
         return petList(e)
     }
-    if (name == '装备') {
+    if (atlasName == '装备') {
         return accessoryList(e)
     }
-    if (name == '成就') {
+    if (atlasName == '成就') {
         return achievementList(e)
     }
-    if (name == '建造') {
+    if (atlasName == '建造') {
         return buildingList(e)
     }
-    if (name == '食品' || name == '食物' || name == '料理') {
+    if (atlasName == '食品' || atlasName == '食物' || atlasName == '料理') {
         return foodList(e)
     }
-    let heroId = setting.getHeroId(name)
+    let heroId = setting.getHeroId(atlasName,false)
     // 角色
     if (heroId) {
         return heroAtlas(e, heroId)
     }
     // 奇波
-    if (setting.petIds[name]) {
-        return petAtlas(e, setting.petIds[name])
+    if (setting.petIds[atlasName]) {
+        return petAtlas(e, setting.petIds[atlasName])
     }
     return true
 }
