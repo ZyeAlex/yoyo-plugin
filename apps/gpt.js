@@ -3,6 +3,7 @@ import OpenAI from "openai"
 import path from 'path'
 import { getBalance } from '../api/other.js'
 import plugin from '#plugin'
+import { loadData, searchWiki } from '../api/KnowledgeBase.js'
 
 export const GPT = plugin({
     name: '[悠悠助手]悠悠AI',
@@ -25,7 +26,16 @@ let client
 let messageGroups = []
 let tools = []
 
-
+/**
+ * 
+ * 导出函数： loadData(e), searchWiki(query, topK)
+ * loadData(e) 传入事件对象，加载数据到向量数据库
+ * searchWiki(query, topK) 传入查询内容和返回结果数量，返回查询结果数组
+ * 结果对象格式： { score: number, metadata: { text: string, type: string } }
+ * type 可能的值： accessory, achievement, building, food
+ * 波奇和角色因为wiki不完全，未定
+ * 
+ */
 async function chat(e) {
     if (!initChat(e)) return true // 初始化
 
