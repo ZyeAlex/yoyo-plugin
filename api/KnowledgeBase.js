@@ -6,28 +6,38 @@ import * as lancedb from "@lancedb/lancedb";
  * 知识库交互文件
  * 向量化模型： text-embedding-3-small
  * 向量数据库： LanceDB
+ * 数据库位置： ./data/lancedb
  * AI模型： deepseek-chat
  * 数据来源： wiki数据
  * AI中转站： 柏拉图AI
  * 导出函数： loadData(e), searchWiki(query, topK)
  * loadData(e) 传入事件对象，加载数据到向量数据库
- * searchWiki(query, topK) 传入查询内容和返回结果数量，返回查询结果数组
- * 结果对象格式： { score: number, metadata: { text: string, type: string } }
- * type 可能的值： accessory, achievement, building, food
+ * searchWiki(query, topK) 传入查询内容和返回结果数量，返回查询结果文本
  * 波奇和角色因为wiki不完全，未定
  */
 
 
 
 // wiki数据
-const accessoryData = setting.accessories
-const achievementData = setting.achievements
-const buildingData = setting.buildings
-const foodData = setting.foods
+const accessoryData = cleanEmptyFields(setting.accessories)
+const achievementData = cleanEmptyFields(setting.achievements)
+const buildingData = cleanEmptyFields(setting.buildings)
+const foodData = cleanEmptyFields(setting.foods)
 
 
-const apiKey = 'sk-**************************'; // 替换为你的 柏拉图AI API 密钥
-const apiUrl = 'https://api.bltcy.ai/v1/'; // 柏拉图AI api地址
+const apiKey = setting.config.embedding.apiKey; // 替换为你的 柏拉图AI API 密钥
+const apiUrl = setting.config.embedding.baseURL; // 柏拉图AI api地址
+const model = setting.config.embedding.model || 'text-embedding-3-small'; // 使用的嵌入模型
+
+if (apiKey === '' || apiKey === null || apiKey === undefined) {
+    throw new Error("请在配置文件中填写向量化的apiKey");
+}
+if (apiUrl === '' || apiUrl === null || apiUrl === undefined) {
+    throw new Error("请在配置文件中填写向量化的apiUrl");
+}
+if (model === '' || model === null || model === undefined) {
+    logger.warn("未在配置文件中填写向量化的model，默认使用 text-embedding-3-small");
+}
 
 // LanceDB 配置
 const DB_DIR = `${setting.path}/data/lancedb`;
@@ -39,128 +49,384 @@ const client = new OpenAI({
     timeout: 30000
 });
 
-// 处理数据
-// 装备文本生成
-function generateAccessoryText(equipment) {
-    const id = equipment.id ?? '未知ID';
-    const name = equipment.name ?? '未知装备';
-    const type = getTypeText(equipment.type);
-    const rarity = equipment.rarity ?? '未知品质';
-    const mainAttr = parseMainAttr(equipment.mainAttr);
-    const subAttr = equipment.subAttr ?? '无';
-    const headRank = equipment.headRank ?? '无';
-    const setId = equipment.setId ?? '无';
-    const subParameter = equipment.subParameter ?? '无';
-    const exp = equipment.exp ?? '无';
-    const desc = equipment.desc ?? '暂无描述';
-    const commonItemId = equipment.commonItemId ?? '无';
-    const texture = (equipment.texture || []).join(',');
+// ======================================
+// 数据洗练
+// ======================================
+/**
+ * 递归清理对象或数组中所有 null、undefined、空字符串字段
+ * @param {Object|Array} obj
+ * @returns {Object|Array}
+ */
+function cleanEmptyFields(obj) {
+    if (Array.isArray(obj)) {
+        return obj
+            .map(cleanEmptyFields)
+            .filter(item => {
+                // 过滤掉空对象或空数组
+                if (item === null || item === undefined) return false;
+                if (typeof item === "string" && item.trim() === "") return false;
+                if (Array.isArray(item) && item.length === 0) return false;
+                if (typeof item === "object" && Object.keys(item).length === 0) return false;
+                return true;
+            });
 
-    function getTypeText(type) {
-        if (!type) return '未知类型';
-        else {
-            return type;
+    } else if (typeof obj === "object" && obj !== null) {
+        const cleaned = {};
+        for (const [key, value] of Object.entries(obj)) {
+            if (value === null || value === undefined) continue;
+            if (typeof value === "string" && value.trim() === "") continue;
+
+            const nested = cleanEmptyFields(value);
+            if (nested === null) continue;
+            if (typeof nested === "object" && Object.keys(nested).length === 0) continue;
+
+            cleaned[key] = nested;
         }
+        return cleaned;
+    } else {
+        return obj; // 基本类型直接返回
+    }
+}
+
+// ======================================
+// 数据处理
+// ======================================
+async function splitAllDataIntoTrunks() {
+    let accessoryTrunk = []
+    let achievementTrunk = []
+    let buildingTrunk = []
+    let foodTrunk = []
+    let len = 0;
+
+
+    accessoryData.forEach(accessory => {
+        accessoryTrunk.push(...splitEquipmentToChunks(accessory, 500));
+    });
+    achievementData.forEach(achievement => {
+        achievementTrunk.push(...splitAchievementToChunks(achievement, 500));
+    });
+    buildingData.forEach(building => {
+        buildingTrunk.push(...splitBuildingToChunks(building, 500));
+    });
+    foodData.forEach(food => {
+        foodTrunk.push(...splitFoodToChunks(food, 500));
+    });
+
+    len = accessoryTrunk.length
+        + achievementTrunk.length
+        + buildingTrunk.length
+        + foodTrunk.length;
+    return {
+        accessoryTrunk,
+        achievementTrunk,
+        buildingTrunk,
+        foodTrunk,
+        len
+    };
+}
+
+/**
+ * 将装备数据拆分
+ * @param {Object} equip - 一条清理过空字段的装备对象
+ * @param {number} maxLen - 每个 chunk 最大长度
+ * @returns {Array<{id: string, text: string}>}
+ */
+function splitEquipmentToChunks(equip, maxLen = 500) {
+    const chunks = [];
+
+    // 完整有效字段映射
+    const fieldMap = {
+        "装备ID": equip.id,
+        "装备名": equip.name,
+        "装备星级": equip.rarity,
+        "装备类型": equip.type,
+        "装备头部等级": equip.headRank,
+        "装备套装ID": equip.setId,
+        "装备主属性": equip.mainAttr,
+        "装备副属性": equip.subAttr,
+        "装备子参数": equip.subParameter,
+        "装备经验": equip.exp,
+        "通用物品ID": equip.commonItemId,
+        "描述": equip.desc
+    };
+
+    // 拼接成文本，只保留有值的
+    const texts = [];
+    for (const [key, value] of Object.entries(fieldMap)) {
+        if (value === null || value === undefined) continue;
+        if (typeof value === "string" && value.trim() === "") continue;
+        if (Array.isArray(value) && value.length === 0) continue;
+        texts.push(`${key}: ${value}`);
     }
 
-    function parseMainAttr(mainAttr) {
-        if (!mainAttr) return '无主属性';
-        else {
-            return mainAttr
-        }
 
+    if (texts.length > 0) {
+        chunks.push({
+            id: `equipment_${equip.id}`,
+            parentId: equip.id,
+            text: texts.join('\n').trim()
+        });
     }
 
-    return `装备ID:${id} 名称:${name} 类型:${type} 品质:${rarity} 主属性:${mainAttr} 副属性:${subAttr} 头衔等级:${headRank} 套装:${setId} 子参数:${subParameter} 经验:${exp} 模板ID:${commonItemId} 图标:${texture} 描述:${desc}`;
-}
-
-
-// 成就文本生成
-function generateAchievementText(achi) {
-    const achiName = achi.achiName ?? '';
-    const achiRes = achi.achiRes ?? '';
-    const achiPage = achi.achiPage ?? '';
-    const reward = achi.reward ?? '';
-
-    const subAchievements = (achi.achievement || [])
-        .map(sub => {
-            const id = sub.id ?? '';
-            const level = sub.achiLevel ?? '';
-            const name = sub.achiName ?? '';
-            const desc = sub.achiDesc ?? '';
-            const finishCondi = sub.finishCondi ?? '';
-            const param = sub.param ?? '';
-            const nextAchi = sub.nextAchi ?? '';
-            const firstAchi = sub.firstAchi ?? '';
-            const subReward = sub.reward ?? '';
-
-            return `子成就ID: ${id}，名称: ${name}，等级: ${level}，完成条件: ${finishCondi}，描述: ${desc}，参数: ${param}，下一成就: ${nextAchi}，首成就: ${firstAchi}，奖励: ${subReward}`;
-        })
-        .join('； ');
-
-    return `成就ID: ${achi.id}，名称: ${achiName}，奖励: ${reward}，图标: ${achiRes}，页面图标: ${achiPage}。${subAchievements}`;
+    return chunks;
 }
 
 
 
-// 建筑文本生成
-function generateBuildingText(buildingGroup) {
-    const name = buildingGroup.name ?? '';
-    const type = buildingGroup.type ?? '';
+/**
+ * 将成就数据拆分
+ * @param {Object} achiGroup - 一条清理过空字段的成就对象
+ * @param {number} maxLen - 每个 chunk 最大长度
+ * @returns {Array<{id: string, text: string}>}
+ */
+function splitAchievementToChunks(achiGroup, maxLen = 500) {
+    const chunks = [];
 
-    const buildingLevels = (buildingGroup.building || []).map(level => {
-        const lvl = level.level ?? '';
-        const lvlName = level.name ?? '';
-        const desc = level.desc ?? '';
-        const upgradeDesc = level.upgradeDesc ?? '';
-        const upgradeCondition = level.upgradeCondition ?? '';
-        const material = level.material ?? '';
-        const trough = level.trough ?? '';
-        const exp = level.exp ?? '';
-        const prosperity = level.prosperity ?? '';
+    // 拼接成就组有效字段
+    const groupFields = {
+        "成就组ID": achiGroup.id,
+        "成就组名": achiGroup.achiName,
+        "组奖励": achiGroup.reward
+    };
 
-        return `等级 ${lvl} (${lvlName}): ${desc} 升级效果: ${upgradeDesc}，所需材料: ${material}，升级条件: ${upgradeCondition}，产量/容量: ${trough}，经验: ${exp}，繁荣度: ${prosperity}`;
-    }).join('\n');
+    const groupTexts = [];
+    for (const [key, value] of Object.entries(groupFields)) {
+        if (value === null || value === undefined) continue;
+        if (typeof value === "string" && value.trim() === "") continue;
+        if (Array.isArray(value) && value.length === 0) continue;
+        groupTexts.push(`${key}: ${value}`);
+    }
 
-    return `建筑: ${name}（类型: ${type}）\n${buildingLevels}`;
+
+    if (groupTexts.length > 0) {
+        chunks.push({
+            id: `achievement_${achiGroup.id}`,
+            parentId: achiGroup.id,
+            text: groupTexts.join('\n').trim()
+        });
+    }
+
+
+    achiGroup.achievement?.forEach((achi, idx) => {
+        // 拼接每个成就有效字段
+        const achiFields = {
+            "成就ID": achi.id,
+            // "所属组ID": achi.groupId,
+            "等级": achi.achiLevel,
+            "名称": achi.achiName,
+            "描述": achi.achiDesc,
+            "完成条件": achi.finishCondi,
+            "参数": achi.param,
+            "下一成就": achi.nextAchi,
+            "首个成就ID": achi.firstAchi,
+            "奖励": achi.reward
+        };
+
+        const achiTexts = [];
+        for (const [key, value] of Object.entries(achiFields)) {
+            if (value === null || value === undefined) continue;
+            if (typeof value === "string" && value.trim() === "") continue;
+            if (Array.isArray(value) && value.length === 0) continue;
+            achiTexts.push(`${key}: ${value}`);
+        }
+
+
+        if (achiTexts.length > 0) {
+            chunks.push({
+                id: `achievement_${achiGroup.id}-${idx + 1}`,
+                parentId: achiGroup.id,
+                text: achiTexts.join('\n').trim()
+            });
+        }
+    });
+
+    return chunks;
 }
 
 
 
-// 食物文本生成
-function generateFoodText(food) {
-    const id = food.id ?? '未指明食物ID';
-    const name = food.name ?? '未指明食物名称';
-    const foodTypeId = food.foodType?.id ?? '未指明食物归属类型ID';
-    const foodTypeName = food.foodType?.name ?? '未指明食物归属类型名称';
-    const icon = food.icon ?? '未指明食物图标存放路径';
-    const unlockLevel = food.unlockLevel ?? '未指明解锁等级';
 
-    const materials = (food.material || []).map(m => {
-        const mId = m.id ?? '未指明所需材料ID';
-        const mName = m.name ?? '未指明所需材料名称';
-        const mDesc = m.desc ?? '未指明所需材料描述';
-        const specialDesc = m.specialDesc ?? '未指明所需材料特殊说明';
-        const way1desc = m.way1desc ?? '未指明获取方式1说明';
-        const way2desc = m.way2desc ?? '未指明获取方式2说明';
-        const way3desc = m.way3desc ?? '未指明获取方式3说明';
+/**
+ * 将建筑数据拆分
+ * @param {Object} buildingGroup - 一条清理过空字段的建筑对象
+ * @param {number} maxLen - 每个 chunk 最大长度
+ * @returns {Array<{id: string, text: string}>}
+ */
+function splitBuildingToChunks(buildingGroup, maxLen = 500) {
+    const chunks = [];
 
-        return `材料ID: ${mId}，名称: ${mName}，描述: ${mDesc}，特殊说明: ${specialDesc}，获取方式: ${[way1desc, way2desc, way3desc].filter(Boolean).join('、')}`;
-    }).join('； ');
+    // 建筑组有效字段
+    const groupFields = {
+        "建筑组ID": buildingGroup.groupId,
+        "建筑组名": buildingGroup.name,
+        "类型": buildingGroup.type,
+        "解锁条件": buildingGroup.unlockCondi,
+        "是否可升级": buildingGroup.isUpgradable,
+        "是否可存放": buildingGroup.isStorable,
+        "交互优先级": buildingGroup.interactPriority,
+        "操作按钮": buildingGroup.startButtonWord,
+        "生产类型标题": buildingGroup.produceTypeTitle
+    };
 
-    return `食物ID: ${id}，食物名称: ${name}，食物归属类型ID：${foodTypeId}，食物归属类型名称: ${foodTypeName}，食物图标存放路径: ${icon}，解锁等级: ${unlockLevel}。制造所需材料: ${materials}`;
+    const groupTexts = [];
+    for (const [key, value] of Object.entries(groupFields)) {
+        if (value === null || value === undefined) continue;
+        if (typeof value === "string" && value.trim() === "") continue;
+        if (Array.isArray(value) && value.length === 0) continue;
+        groupTexts.push(`${key}: ${value}`);
+    }
+
+    if (groupTexts.length > 0) {
+        chunks.push({
+            id: `build_${buildingGroup.groupId}`,
+            parentId: buildingGroup.groupId,
+            text: groupTexts.join('\n').trim()
+        });
+    }
+
+
+    buildingGroup.building?.forEach((level, lvlIdx) => {
+        // 单个等级的有效字段
+        const levelFields = {
+            "建筑ID": level.id,
+            "等级": level.level,
+            "名称": level.name,
+            "描述": level.desc,
+            "附加描述": level.desc_2,
+            "升级描述": level.upgradeDesc,
+            "升级条件": level.upgradeCondition,
+            "消耗材料": Array.isArray(level.material) ? level.material.map(m => `${m.name}x${m.num}`).join("、") : "",
+            "时间": level.time,
+            "科技经验": level.technologyExp,
+            "下一级": level.nextLevel,
+            "仓库容量": level.stackNum,
+            "槽位数": level.slotNumber,
+            "槽位大小": level.trough,
+            "是否显示名称": level.isShowName,
+            "经验": level.exp,
+            "繁荣度": level.prosperity,
+            "路径": level.path,
+            "参数": level.param,
+            "产出": level.ouput
+        };
+
+        const levelTexts = [];
+        for (const [key, value] of Object.entries(levelFields)) {
+            if (value === null || value === undefined) continue;
+            if (typeof value === "string" && value.trim() === "") continue;
+            if (Array.isArray(value) && value.length === 0) continue;
+            levelTexts.push(`${key}: ${value}`);
+        }
+
+
+        if (levelTexts.length > 0) {
+            chunks.push({
+                id: `build_${buildingGroup.groupId}-${lvlIdx + 1}`,
+                parentId: buildingGroup.groupId,
+                text: levelTexts.join('\n').trim()
+            });
+        }
+    });
+
+    return chunks;
 }
 
 
-// 角色/波奇未定
+/**
+ * 食物数据拆分
+ * @param {Object} food - 一条清理过空字段的食物对象
+ * @param {number} maxLen - 每个 chunk 最大长度
+ * @returns {Array<{id: string, text: string}>}
+ */
+function splitFoodToChunks(food, maxLen = 500) {
+    const chunks = [];
+
+    const GroupFields = {
+        "食物ID": food.id,
+        "食物名": food.name,
+        "食物类型ID": food.foodType?.id,
+        "食物类型名称": food.foodType?.name,
+        "是否需要宠物": food.isNeedPet,
+        "食物解锁等级": food.unlockLevel
+    };
+
+    const groupTexts = [];
+    for (const [key, value] of Object.entries(GroupFields)) {
+        if (value === null || value === undefined) continue;
+        if (typeof value === "string" && value.trim() === "") continue;
+        if (Array.isArray(value) && value.length === 0) continue;
+        groupTexts.push(`${key}: ${value}`);
+    }
+
+
+    if (groupTexts.length > 0) {
+        chunks.push({
+            id: `food_${food.id}`,
+            parentId: food.id,
+            text: groupTexts.join('\n').trim()
+        });
+    }
+
+
+    // 先把每个材料都拆成文本
+    food.material?.forEach((mat, matIdx) => {
+        // 单个材料有效字段
+        const materialFields = {
+            "材料ID": mat.id,
+            "材料名": mat.name,
+            "材料描述": mat.desc,
+            "材料附加描述": mat.specialDesc,
+            "材料星级": mat.rarity,
+            "材料类型": mat.type,
+            "材料类型名称": mat.typeName,
+            "在背包中": mat.inBag,
+            "材料标签": mat.tag,
+            "最大数量": mat.maxNum,
+            "堆叠数量": mat.stackNum,
+            "存在类型": mat.existType,
+            "存在数量": mat.existNum,
+            "使用类型": mat.useType,
+            "背包类型": mat.bagType,
+            "子类型": mat.subType,
+            "子ID": mat.subId,
+            "礼包奖励": mat.giftBagReward,
+            "使用功能": mat.useFunction,
+            "获取方式1": mat.way1desc,
+            "获取方式2": mat.way2desc,
+            "获取方式3": mat.way3desc
+        };
+
+        const materialTexts = [];
+        for (const [key, value] of Object.entries(materialFields)) {
+            if (value === null || value === undefined) continue;
+            if (typeof value === "string" && value.trim() === "") continue;
+            if (Array.isArray(value) && value.length === 0) continue;
+            materialTexts.push(`${key}: ${value}`);
+        }
 
 
 
+        if (materialTexts.length > 0) {
+            chunks.push({
+                id: `food_${food.id}-${matIdx + 1}`,
+                parentId: food.id,
+                text: materialTexts.join('\n').trim()
+            });
+        }
 
+    });
+
+    return chunks;
+}
+
+
+// ======================================
+// 向量化操作
+// ======================================
 async function embedText(text) {
     try {
         const res = await client.embeddings.create({
-            model: "text-embedding-3-small",
+            model: model,
             input: text,
         });
 
@@ -170,37 +436,15 @@ async function embedText(text) {
 
         return embedding instanceof Float32Array ? embedding : new Float32Array(embedding);
     } catch (err) {
-        console.error("[yoyo-plugin]生成向量出错:", err);
+        logger.error("[yoyo-plugin]生成向量出错:", err);
         return new Float32Array(1536).fill(0);
     }
 }
 
 
-// 文本拆分函数
-function splitText(text, maxLen = 500) {
-    const chunks = [];
-    let start = 0;
-
-    while (start < text.length) {
-        const end = Math.min(start + maxLen, text.length);
-
-        // 尝试在句号或逗号处截断，避免生硬切割
-        let splitPoint = text.lastIndexOf("，", end);
-        if (splitPoint === -1 || splitPoint <= start) {
-            splitPoint = text.lastIndexOf("。", end);
-        }
-        if (splitPoint === -1 || splitPoint <= start) {
-            splitPoint = end;
-        }
-
-        chunks.push(text.slice(start, splitPoint).trim());
-        start = splitPoint;
-    }
-
-    return chunks.filter(c => c.length > 0);
-}
-
-
+//=====================================
+// 向量数据库操作
+//=====================================
 
 
 /**
@@ -209,19 +453,18 @@ function splitText(text, maxLen = 500) {
  */
 export async function loadData(e) {
     try {
-
+        const trunks = await splitAllDataIntoTrunks();
+        const db = await lancedb.connect(DB_DIR);
 
         // 成就
-        logger.info("[yoyo-plugin]开始写入成就数据...");
-        e.reply("[yoyo-plugin]开始写入成就数据...");
-        await loadCategoryData('achievement', achievementData);
+        logger.info(`[yoyo-plugin]开始写入向量数据库...`);
+        e.reply(`[yoyo-plugin]开始写入向量数据库...目前为全量更新，数据量${trunks.len}条,耗时约10分15秒`);
+        await loadCategoryData(db, 'achievement', trunks.achievementTrunk);
         logger.info("[yoyo-plugin]成就数据写入完成");
         e.reply("[yoyo-plugin]成就数据写入完成");
 
         // 食物
-        logger.info("[yoyo-plugin]开始写入食物数据...");
-        e.reply("[yoyo-plugin]开始写入食物数据...");
-        await loadCategoryData('food', foodData);
+        await loadCategoryData(db, 'food', trunks.foodTrunk);
         logger.info("[yoyo-plugin]食物数据写入完成");
         e.reply("[yoyo-plugin]食物数据写入完成");
 
@@ -229,18 +472,14 @@ export async function loadData(e) {
 
 
         // 装备
-        logger.info("[yoyo-plugin]开始写入装备数据...");
-        e.reply("[yoyo-plugin]开始写入装备数据...");
-        await loadCategoryData('accessory', accessoryData);
+        await loadCategoryData(db, 'accessory', trunks.accessoryTrunk);
         logger.info("[yoyo-plugin]装备数据写入完成");
         e.reply("[yoyo-plugin]装备数据写入完成");
 
 
 
         // 建筑
-        logger.info("[yoyo-plugin]开始写入建筑数据...");
-        e.reply("[yoyo-plugin]开始写入建筑数据...");
-        await loadCategoryData('building', buildingData);
+        await loadCategoryData(db, 'building', trunks.buildingTrunk);
         logger.info("[yoyo-plugin]建筑数据写入完成");
         e.reply("[yoyo-plugin]建筑数据写入完成");
 
@@ -268,17 +507,18 @@ export async function searchWiki(query, topK = 3) {
         }
     }));
 
+    // 搜索所有 chunk
     const resultsArr = await Promise.all(categories.map(async category => {
         const table = tables[category];
         if (!table) return [];
         try {
-            const aa = await table.search(queryVector).limit(topK)
+            const aa = await table.search(queryVector).limit(30); // 临时拉取更多 chunk 用于聚合
             const results = await aa.toArray();
-
 
             return results.map(x => ({
                 score: x._distance,
-                metadata: x.metadata
+                metadata: x.metadata,
+                category
             }));
         } catch (err) {
             logger.warn(`[searchWiki] 搜索表 wiki_${category} 出错:`, err);
@@ -287,57 +527,70 @@ export async function searchWiki(query, topK = 3) {
     }));
 
     const flatResults = resultsArr.flat();
-    return flatResults.sort((a, b) => a.score - b.score).slice(0, topK);
+
+    // 按 parentId 聚合
+    const parentMap = {};
+    flatResults.forEach(item => {
+        const pid = item.metadata.parentId || 'unknown';
+        if (!parentMap[pid]) parentMap[pid] = { scoreList: [], chunks: [], category: item.category };
+        parentMap[pid].scoreList.push(item.score);
+        parentMap[pid].chunks.push(item.metadata);
+    });
+
+    const aggregated = Object.entries(parentMap).map(([parentId, data]) => {
+        return {
+            parentId,
+            category: data.category,
+            score: Math.min(...data.scoreList), // 聚合策略：取最小距离
+            chunks: data.chunks
+        };
+    });
+
+    // 返回 topK parent
+    let results = aggregated.sort((a, b) => a.score - b.score).slice(0, topK);
+    return results.map(r => {
+        const text = r.chunks.map(c => c.text).join("\n");
+        return `[${r.category}][parentId=${r.parentId}]\n${text}`;
+    }).join("\n\n");
 }
 
 
 
 
 
-async function loadCategoryData(category, data) {
+async function loadCategoryData(db, category, data) {
     const tableName = `wiki_${category}`;
     const rows = [];
     let num = 0;
-    let totalChunks = 0;
+    let totalChunks = data.length;
 
     for (const item of data) {
         let text;
-        switch (category) {
-            case 'accessory': text = generateAccessoryText(item); break;
-            case 'achievement': text = generateAchievementText(item); break;
-            case 'building': text = generateBuildingText(item); break;
-            case 'food': text = generateFoodText(item); break;
-            default: text = "未定义的类别"; break;
-        }
 
-        const safeText = text || '';
-        const chunks = splitText(safeText, 500); // 每 500 字符拆分
-        totalChunks += chunks.length;
+        text = item.text || '';
+        const metadata = {
+            text: text,
+            type: category || '',
+            parentId: item.parentId || 'unknown',  // 父级ID，方便后续聚合
+            chunkIndex: item.id || 'unknown' // 当前块ID
+        };
 
-        for (const [i, chunk] of chunks.entries()) {
-            const metadata = {
-                text: chunk,
-                type: category || '',
-                parentId: item.id || 'unknown',  // 父级ID，方便后续聚合
-                chunkIndex: i
-            };
+        const float32Vector = await embedText(text);
 
-            const float32Vector = await embedText(chunk);
+        logger.info(`[yoyo-plugin]生成${category}向量 ${++num}/${totalChunks}`);
 
-            logger.info(`[yoyo-plugin]生成${category}向量 ${++num}/${totalChunks} (chunk ${i})`);
+        // const id = `${category}-${item.id || 'unknown'}-chunk${i}`;
 
-            const id = `${category}-${item.id || 'unknown'}-chunk${i}`;
+        rows.push({
+            id: item.id,
+            vector: Array.from(float32Vector),
+            metadata
+        });
 
-            rows.push({
-                id: id,
-                vector: Array.from(float32Vector),
-                metadata
-            });
-        }
     }
 
     try {
-        const db = await lancedb.connect(DB_DIR);
+
         const tableNames = await db.tableNames();
 
         if (tableNames.includes(tableName)) {
