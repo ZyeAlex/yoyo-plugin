@@ -30,9 +30,7 @@ let tools = []
  * 
  * 导出函数： loadData(e), searchWiki(query, topK)
  * loadData(e) 传入事件对象，加载数据到向量数据库
- * searchWiki(query, topK) 传入查询内容和返回结果数量，返回查询结果数组
- * 结果对象格式： { score: number, metadata: { text: string, type: string } }
- * type 可能的值： accessory, achievement, building, food
+ * searchWiki(query, topK) 传入查询内容和返回结果数量，返回查询结果文本
  * 波奇和角色因为wiki不完全，未定
  * 
  */
