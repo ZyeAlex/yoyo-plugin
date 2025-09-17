@@ -176,6 +176,33 @@ async function embedText(text) {
 }
 
 
+// 文本拆分函数
+function splitText(text, maxLen = 500) {
+    const chunks = [];
+    let start = 0;
+
+    while (start < text.length) {
+        const end = Math.min(start + maxLen, text.length);
+
+        // 尝试在句号或逗号处截断，避免生硬切割
+        let splitPoint = text.lastIndexOf("，", end);
+        if (splitPoint === -1 || splitPoint <= start) {
+            splitPoint = text.lastIndexOf("。", end);
+        }
+        if (splitPoint === -1 || splitPoint <= start) {
+            splitPoint = end;
+        }
+
+        chunks.push(text.slice(start, splitPoint).trim());
+        start = splitPoint;
+    }
+
+    return chunks.filter(c => c.length > 0);
+}
+
+
+
+
 /**
  * 加载数据到向量数据库
  * @param {*} e 传入的事件对象
@@ -271,70 +298,60 @@ async function loadCategoryData(category, data) {
     const tableName = `wiki_${category}`;
     const rows = [];
     let num = 0;
-    const sum = data.length;
+    let totalChunks = 0;
 
-    // 生成所有行数据
     for (const item of data) {
         let text;
         switch (category) {
-            case 'accessory':
-                text = generateAccessoryText(item);
-                break;
-            case 'achievement':
-                text = generateAchievementText(item);
-                break;
-            case 'building':
-                text = generateBuildingText(item);
-                break;
-            case 'food':
-                text = generateFoodText(item);
-                break;
-            default:
-                text = "未定义的类别";
-                break;
+            case 'accessory': text = generateAccessoryText(item); break;
+            case 'achievement': text = generateAchievementText(item); break;
+            case 'building': text = generateBuildingText(item); break;
+            case 'food': text = generateFoodText(item); break;
+            default: text = "未定义的类别"; break;
         }
 
         const safeText = text || '';
-        const metadata = {
-            text: safeText,
-            type: category || ''
-        };
+        const chunks = splitText(safeText, 500); // 每 500 字符拆分
+        totalChunks += chunks.length;
 
-        const float32Vector = await embedText(safeText);
+        for (const [i, chunk] of chunks.entries()) {
+            const metadata = {
+                text: chunk,
+                type: category || '',
+                parentId: item.id || 'unknown',  // 父级ID，方便后续聚合
+                chunkIndex: i
+            };
 
-        logger.info('[yoyo-plugin]vector type:', float32Vector.constructor.name);
-        logger.info('[yoyo-plugin]vector length:', float32Vector.length);
-        logger.info(`生成${category}向量 ${++num}/${sum}`);
+            const float32Vector = await embedText(chunk);
 
-        const id = `${category}-${item.id || 'unknown'}`;
+            logger.info(`[yoyo-plugin]生成${category}向量 ${++num}/${totalChunks} (chunk ${i})`);
 
-        rows.push({
-            id: id,
-            vector: Array.from(float32Vector),
-            metadata
-        });
+            const id = `${category}-${item.id || 'unknown'}-chunk${i}`;
+
+            rows.push({
+                id: id,
+                vector: Array.from(float32Vector),
+                metadata
+            });
+        }
     }
 
     try {
         const db = await lancedb.connect(DB_DIR);
         const tableNames = await db.tableNames();
 
-        // 如果表已存在，先删除
         if (tableNames.includes(tableName)) {
             logger.info(`[yoyo-plugin]删除已存在的表: ${tableName}`);
             await db.dropTable(tableName);
         }
 
-        // 创建新表
         logger.info(`[yoyo-plugin]创建新表: ${tableName}`);
-        const table = await db.createTable(tableName, rows, {
+        await db.createTable(tableName, rows, {
             vectorColumn: "vector",
-            vectorIndex: { type: "IVFFlat", metric: "cosine" } // 使用余弦相似度
+            vectorIndex: { type: "IVFFlat", metric: "cosine" }
         });
 
-
         logger.info(`[yoyo-plugin]表 ${tableName} 创建完成，共写入 ${rows.length} 条记录`);
-
     } catch (error) {
         logger.error(`[yoyo-plugin]写入${category}数据出错:`, error);
         throw error;
