@@ -21,7 +21,7 @@ class Setting {
     this.path = this.yunzaiPath + '/plugins/yoyo-plugin'
 
     // 初始化config
-    this.initConfig()
+    this.config = this.initConfig()
     // 匹配前缀
     this.rulePrefix = '(?:(?:' + this.config.rulePrefix.join('|') + ') *)'
 
@@ -60,19 +60,21 @@ class Setting {
 
   }
   // 配置文件
-  async initConfig() {
+  initConfig() {
     if (!fs.existsSync(path.join(this.path, 'config/config.yaml'))) {
       fs.copyFileSync(path.join(this.path, 'config/default.yaml'), 'config/config.yaml')
     }
-    let defConfig = this.getData('config/default',)
-    this.config = this.getData('config/config')
+    let defConfig = this.getData('config/default')
+    let config = this.getData('config/config') || {}
+
     // 增量更新配置
     Object.keys(defConfig).forEach(key => {
-      if (!(key in this.config)) {
-        this.config[key] = defConfig[key]
+      if (!(key in config)) {
+        config[key] = defConfig[key]
       }
     })
-    this.setData('config/config', this.config)
+    this.setData('config/config', config)
+    return config
   }
   /** 初始化数据 */
   async initData() {
