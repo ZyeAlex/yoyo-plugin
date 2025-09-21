@@ -57,7 +57,7 @@ class Setting {
     /**
      * 任务道具
      */
-    this.taskItems = this.getData('data/task_item/default') || []
+    this.taskItems = this.getData('data/task-item/default') || []
 
     // 初始化数据
     this.initData()
@@ -105,6 +105,8 @@ class Setting {
     this.getUI(this.foods)
     // 获取建造
     this.getUI(this.buildings)
+    // 获取任务道具
+    this.getUI(this.taskItems)
     // 获取公告
     // todo  获取公告  测试
     this.notices = await getNotice()
