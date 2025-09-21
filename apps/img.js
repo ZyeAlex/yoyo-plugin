@@ -19,7 +19,7 @@ export const Img = plugin({
             fnc: delHeroImg
         },
         {
-            reg: `^${setting.rulePrefix}?(?!上传|添加|随机(角色)?)(.{0,10})${imgReg}([0-9])*$`,
+            reg: `^${setting.rulePrefix}?(?!上传|添加|随机(?!角色)?)(.{0,10})${imgReg}([0-9]{0,4})$`,
             fnc: getHeroImg
         },
         {
@@ -40,7 +40,7 @@ const cacheHeroImgs = {}
 
 // 角色图片
 async function getHeroImg(e, reg) {
-    let [_, __, heroName, heroIndex] = e.msg.match(reg)
+    let [_, heroName, heroIndex] = e.msg.match(reg)
     // 查询是否有此角色
     let heroId = setting.getHeroId(heroName)
     if (!heroId) return true
@@ -64,7 +64,6 @@ async function getHeroImg(e, reg) {
 async function getHeroImgList(e, reg) {
     // 从e.msg字符串里面匹配(\w)
     let heroName = e.msg.match(reg)[1]
-    logger.info(e.msg.match(reg)[1])
     // 查询是否有此角色
     let heroId = setting.getHeroId(heroName)
     if (!heroId) return true

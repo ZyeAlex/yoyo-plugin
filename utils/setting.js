@@ -54,6 +54,10 @@ class Setting {
      * 建造系统
      */
     this.buildings = this.getData('data/building/default') || []
+    /**
+     * 任务道具
+     */
+    this.taskItems = this.getData('data/task_item/default') || []
 
     // 初始化数据
     this.initData()
@@ -217,7 +221,7 @@ class Setting {
       if (!fs.existsSync(filePath)) { return false }
       return YAML.parse(fs.readFileSync(filePath, 'utf8'))
     } catch (error) {
-      logger.error(`[${filename}] 读取失败 ${error}`)
+      logger.error(`[${filename}] 读取失败 ${error}` )
       return false
     }
   }

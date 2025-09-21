@@ -1,6 +1,5 @@
 import OpenAI from "openai";
 import setting from "#setting";
-import * as lancedb from "@lancedb/lancedb";
 
 /**
  * 知识库交互文件
@@ -29,15 +28,15 @@ const apiKey = setting.config.embedding.apiKey; // 替换为你的 柏拉图AI A
 const apiUrl = setting.config.embedding.baseURL; // 柏拉图AI api地址
 const model = setting.config.embedding.model || 'text-embedding-3-small'; // 使用的嵌入模型
 
-if (apiKey === '' || apiKey === null || apiKey === undefined) {
-    throw new Error("请在配置文件中填写向量化的apiKey");
-}
-if (apiUrl === '' || apiUrl === null || apiUrl === undefined) {
-    throw new Error("请在配置文件中填写向量化的apiUrl");
-}
-if (model === '' || model === null || model === undefined) {
-    logger.warn("未在配置文件中填写向量化的model，默认使用 text-embedding-3-small");
-}
+// if (apiKey === '' || apiKey === null || apiKey === undefined) {
+//     throw new Error("请在配置文件中填写向量化的apiKey");
+// }
+// if (apiUrl === '' || apiUrl === null || apiUrl === undefined) {
+//     throw new Error("请在配置文件中填写向量化的apiUrl");
+// }
+// if (model === '' || model === null || model === undefined) {
+//     logger.warn("未在配置文件中填写向量化的model，默认使用 text-embedding-3-small");
+// }
 
 // LanceDB 配置
 const DB_DIR = `${setting.path}/data/lancedb`;
@@ -454,7 +453,8 @@ async function embedText(text) {
 export async function loadData(e) {
     try {
         const trunks = await splitAllDataIntoTrunks();
-        const db = await lancedb.connect(DB_DIR);
+        const { connect } = await import('@lancedb/lancedb');
+        const db = await connect(DB_DIR);
 
         // 成就
         logger.info(`[yoyo-plugin]开始写入向量数据库...`);
@@ -494,8 +494,9 @@ export async function loadData(e) {
 }
 
 export async function searchWiki(query, topK = 3) {
+    const { connect } = await import('@lancedb/lancedb');
     const queryVector = Array.from(await embedText(query));
-    const db = await lancedb.connect(DB_DIR);
+    const db = await connect(DB_DIR);
     const categories = ['accessory', 'achievement', 'building', 'food'];
 
     const tables = {};

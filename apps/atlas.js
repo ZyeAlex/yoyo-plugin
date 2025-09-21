@@ -37,6 +37,10 @@ export const Atlas = plugin({
             fnc: buildingList
         },
         {
+            reg: `^${setting.rulePrefix}?((任务?)道具列表|全部(任务?)道具)$`,
+            fnc: taskItemList
+        },
+        {
             reg: `^${setting.rulePrefix}?(料理|食物|食品)列表|全部(料理|食物|食品)$`,
             fnc: foodList
         }
@@ -62,10 +66,13 @@ function atlas(e, reg) {
     if (atlasName == '建造') {
         return buildingList(e)
     }
+    if (atlasName == '道具'||atlasName == '任务道具') {
+        return taskItemList(e)
+    }
     if (atlasName == '食品' || atlasName == '食物' || atlasName == '料理') {
         return foodList(e)
     }
-    let heroId = setting.getHeroId(atlasName,false)
+    let heroId = setting.getHeroId(atlasName, false)
     // 角色
     if (heroId) {
         return heroAtlas(e, heroId)
@@ -94,7 +101,7 @@ async function heroList(e) {
     })
 }
 // 角色信息
-async function heroInfo(e,reg) {
+async function heroInfo(e, reg) {
     let name = e.msg.match(reg)[1]
     let heroId = setting.getHeroId(name)
     if (!heroId) return true
@@ -184,5 +191,14 @@ async function foodList(e) {
 async function buildingList(e) {
     await render(e, 'building/list', {
         buildings: setting.buildings.filter(building => building?.building?.[0]?.buildingPixelIcon)
+    })
+}
+/**
+ * 建造
+ */
+//   建造列表
+async function taskItemList(e) {
+    await render(e, 'task-item/list', {
+        taskItems: setting.taskItems
     })
 }

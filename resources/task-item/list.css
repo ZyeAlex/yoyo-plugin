@@ -1,0 +1,32 @@
+.task-list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.task-item {
+    box-sizing: border-box;
+    margin: 5px 6px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    background-color: #dee0e4;
+}
+
+.task-img {
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    width: 105px;
+    height: 105px;
+    object-fit: contain;
+    object-position: center center;
+}
+
+.task-text {
+    width: 100%;
+    text-align: center;
+    color: #dadada;
+    font-size: 22px;
+    border-top: 3px solid #adafb3;
+    background-color: #172335;
+}

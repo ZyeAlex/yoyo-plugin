@@ -1,0 +1,26 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/task/list.css" />
+{{/block}}
+
+
+{{block 'main'}}
+
+<div class="head-box">
+    <div class="title">任务道具 <span class="label">共{{taskItems.length}}件</span> </div>
+</div>
+<!-- <div class="nav-box">
+    <div class="item">发送 <mark>{{rulePrefix}}寒悠悠图鉴</mark> 查看角色图鉴 </div>
+    <div class="item">发送 <mark>{{rulePrefix}}寒悠悠图片列表</mark> 查看角色图片 </div>
+</div> -->
+<div class="main-box task-list">
+    {{each taskItems taskItem idx}}
+    <div class="task-item">
+        <img class="task-img"   src="{{pluResPath}}/UI/{{taskItem.icon}}" alt="">
+        <div class="task-text">{{task.name}}</div>
+    </div>
+    {{/each}}
+</div>
+
+{{/block}}
