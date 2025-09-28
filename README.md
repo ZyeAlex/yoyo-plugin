@@ -175,13 +175,6 @@
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
-
-
-device_id=b12f29cd78ec33cfc131fc5276032ad1;
-Hm_lvt_605f96f2a6f4ab824b6f4215f2825d3e=1757913612,1758020715; 
-Hm_lpvt_605f96f2a6f4ab824b6f4215f2825d3e=1758020715; 
-HMACCOUNT=D1FE435915C3F66E; 
 cdn_sec_tc=7ae4df2117580207149381568eeecfc54cdda86774f24df7116145fb08; 
 acw_tc=0a472f8e17580207149695167e5e2371dca4407e17d3f8ed592d2d7b3535e1; 
 ucookie=98e2fe37-15ac-44dc-8e3e-521fcf540be6
