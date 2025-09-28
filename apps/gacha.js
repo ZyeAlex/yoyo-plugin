@@ -10,10 +10,13 @@ export const Gacha = plugin({
     rule: [
         {
             reg: `^${setting.rulePrefix}?(模拟)?(抽卡)$`,
-            fnc(e, reg) {
-                e.reply(reg)
-                e.reply('该功能暂未开发')
-            }
+            fnc: simulatedGacha
         }
     ]
 })
+
+
+async function simulatedGacha(e, reg) {
+    e.reply(reg)
+    e.reply('该功能暂未开发')
+}

@@ -1,108 +1,105 @@
 import setting from '#setting'
 import render from '#render'
 import utils from '#utils'
+import plugin from '#plugin'
+
+export const Calendar = plugin({
+    name: '[悠悠助手]活动日历',
+    event: 'message',
+    priority: 100,
+    rule: [
+        {
+            reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)?活动日历$`,
+            fnc: showCalendar
+        },
+        {
+            reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)?日历$`,
+            fnc: showCalendar
+        },
+        {
+            reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)?活动$`,
+            fnc: showCalendar
+        }
+    ]
+})
 
 
-export class Calendar extends plugin {
-    constructor() {
-        super({
-            name: '[悠悠助手]活动日历',
-            event: 'message',
-            priority: 100,
-            rule: [
+async function showCalendar(e) {
+    try {
+        const now = new Date()
+        const currentDate = now.toLocaleDateString('zh-CN', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            weekday: 'long'
+        })
+
+        const calendarData = {
+            pageTitle: "蓝色星原·旅谣 | 活动日历 | yoyo-plugin",
+            currentDate,
+
+            // 卡池列表
+            upPools: [
                 {
-                    reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)?活动日历$`,
-                    fnc: 'showCalendar'
+                    title: "角色UP卡池",
+                    startDate: "2025-09-13 00:00:00",
+                    endDate: "2025-09-20 23:59:59",
+
+                    items: [
+                        "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp",
+                        "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
+                    ]
                 },
                 {
-                    reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)?日历$`,
-                    fnc: 'showCalendar'
+                    title: "武器UP卡池",
+                    startDate: "2025-09-13 00:00:00",
+                    endDate: "2025-09-20 23:59:59",
+
+                    items: [
+                        "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp",
+                        "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
+                    ]
                 },
                 {
-                    reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)?活动$`,
-                    fnc: 'showCalendar'
+                    title: "宠物UP卡池",
+                    startDate: "2025-09-13 00:00:00",
+                    endDate: "2025-09-20 23:59:59",
+
+                    items: [
+                        "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp",
+                        "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
+                    ]
+                }
+            ],
+
+            // 活动列表
+            activityEvents: [
+                {
+                    title: "限时秘境活动",
+                    startDate: "2025-09-18 00:00:00",
+                    endDate: "2025-09-20 23:59:59",
+                    logo: "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
+                },
+                {
+                    title: "周末特别活动",
+                    startDate: "2025-09-13 00:00:00",
+                    endDate: "2025-09-20 23:59:59",
+                    logo: "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
                 }
             ]
-        })
+        };
+
+
+
+        // 渲染页面
+        return await render(e, 'calendar/index', getDurations(calendarData))
+    } catch (error) {
+        logger.error('[yoyo-plugin][活动日历渲染失败]', error)
+        return e.reply('活动日历渲染失败，请稍后重试')
     }
-
-    async showCalendar(e) {
-        try {
-            const now = new Date()
-            const currentDate = now.toLocaleDateString('zh-CN', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                weekday: 'long'
-            })
-
-            const calendarData = {
-                pageTitle: "蓝色星原·旅谣 | 活动日历 | yoyo-plugin",
-                currentDate,
-
-                // 卡池列表
-                upPools: [
-                    {
-                        title: "角色UP卡池",
-                        startDate: "2025-09-13 00:00:00",
-                        endDate: "2025-09-20 23:59:59",
-
-                        items: [
-                            "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp",
-                            "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
-                        ]
-                    },
-                    {
-                        title: "武器UP卡池",
-                        startDate: "2025-09-13 00:00:00",
-                        endDate: "2025-09-20 23:59:59",
-
-                        items: [
-                            "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp",
-                            "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
-                        ]
-                    },
-                    {
-                        title: "宠物UP卡池",
-                        startDate: "2025-09-13 00:00:00",
-                        endDate: "2025-09-20 23:59:59",
-
-                        items: [
-                            "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp",
-                            "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
-                        ]
-                    }
-                ],
-
-                // 活动列表
-                activityEvents: [
-                    {
-                        title: "限时秘境活动",
-                        startDate: "2025-09-18 00:00:00",
-                        endDate: "2025-09-20 23:59:59",
-                        logo: "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
-                    },
-                    {
-                        title: "周末特别活动",
-                        startDate: "2025-09-13 00:00:00",
-                        endDate: "2025-09-20 23:59:59",
-                        logo: "https://gitee.com/Elvin-Apocalys/pic-bed/raw/master/Pardofelis/Pardofelis_1.webp"
-                    }
-                ]
-            };
-
-
-
-            // 渲染页面
-            return await render(e, 'calendar/index', getDurations(calendarData))
-        } catch (error) {
-            logger.error('[yoyo-plugin][活动日历渲染失败]', error)
-            return e.reply('活动日历渲染失败，请稍后重试')
-        }
-    }
-
-
 }
+
+
 
 // 计算剩余时间并返回新的对象
 function getDurations(data) {

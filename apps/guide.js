@@ -33,13 +33,6 @@ async function guide(e, reg) {
         await e.reply(`未找到「${guideName}」攻略，或许名字应为：` + setting.heros[guideId].name)
         return
     }
-    // guideId = utils.findBestMatch(guideName, setting.pets)
-    // if (guideId) {
-    //     await e.reply(`未找到「${guideName}」攻略，或许名字应为：` + setting.pets[guideId].name)
-    //     return
-    // }
-
-
 }
 
 // 角色攻略

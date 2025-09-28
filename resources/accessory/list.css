@@ -22,11 +22,14 @@
     object-position: center center;
 }
 
+
 .accessory-text {
     width: 100%;
     text-align: center;
     color: #dadada;
     font-size: 22px;
     border-top: 3px solid #adafb3;
+    padding-top:5px;
+    padding-bottom: 3px;
     background-color: #172335;
 }

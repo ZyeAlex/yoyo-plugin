@@ -179,7 +179,7 @@ async function setList(e) {
 //   装备图鉴
 async function accessoryList(e) {
     await render(e, 'accessory/list', {
-        accessories: setting.accessories.filter(({ name }) => name != '暂未开放')
+        accessories: Object.values(setting.accessories).filter(({ name }) => name != '暂未开放').sort((a, b) => b.rarity - a.rarity)
     })
 }
 /**
@@ -211,11 +211,11 @@ async function buildingList(e) {
     })
 }
 /**
- * 建造
+ * 任务道具
  */
-//   建造列表
+//   任务道具
 async function taskItemList(e) {
     await render(e, 'task-item/list', {
-        taskItems: setting.taskItems
+        taskItems: setting.taskItems.filter(item => item.name)
     })
 }

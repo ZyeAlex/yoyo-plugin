@@ -8,14 +8,16 @@
 <div class="head-box">
     <div class="title">套装图鉴 <span class="label">共{{sets.length}}件</span> </div>
 </div>
-
+<div class="nav-box">
+    <div class="item">发送 <mark>{{rulePrefix}}装备图鉴</mark> 查看全部装备 </div>
+</div>
 
 <div class="main-box set-list">
     {{each sets se}}
-    <div class="set-item">
+    <div class="set-item rarity-{{se.rarity}}">
         <img width="160" src="{{pluResPath}}/UI/{{se.accessories[0].texture[2]}}">
         <div>
-            <div class="set-name">{{se.name}}</div>
+            <div class="set-name">{{se.name}}&nbsp;&nbsp;<img height="20" src="{{pluResPath}}/common/rarity/rarity-{{se.rarity||0}}.png"></div>
             <div class="set-skill">{{@se.skill.split('|').join('<br />')}}</div>
             <div class="set-accessories">
                 {{each se.accessories.slice(1) accessory}}

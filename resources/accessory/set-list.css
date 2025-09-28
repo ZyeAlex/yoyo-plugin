@@ -1,6 +1,8 @@
 
 .set-item{
     display: flex;
+    border-radius: 12px;
+    margin:12px;
 }
 .set-item>img{
     padding: 20px;
@@ -9,4 +11,6 @@
 .set-name{
     font-size: 36px;
     font-family: title01,title02;
+    margin-top: 12px;
+    margin-bottom: 12px ;
 }

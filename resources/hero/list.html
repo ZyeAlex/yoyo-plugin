@@ -16,8 +16,8 @@
 </div>
 <div class="main-box hero-list">
     {{each heros hero idx}}
-    <div class="hero-item hero-{{hero.rarity?.id||3}}">
-        <div class="hero-img">
+    <div class="hero-item rarity-{{hero.rarity?.id||3}}">
+        <div class="hero-img img">
             <img src="{{pluResPath}}/UI/{{hero.avatarTexture?.[3]}}"
                 onerror="this.onerror=null; this.src='{{pluResPath}}/common/hero/icon.png';this.style=' width: 85px;'">
         </div>
@@ -25,10 +25,10 @@
         <img class="hero-career" src="{{pluResPath}}/UI/{{hero.position?.icon[0]}}"
             style="background-color:{{hero.element?.elementColor}}; width: 35px;border-radius: 10px;padding: 1px;">
         {{/if}}
-        <div class="hero-rarity">
+        <div class="rarity">
             <img src="{{pluResPath}}/common/rarity/rarity-{{hero.rarity?.id||3}}.png">
         </div>
-        <div class="hero-text ">{{hero.name}}</div>
+        <div class="hero-text text">{{hero.name}}</div>
     </div>
     {{/each}}
 </div>

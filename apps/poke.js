@@ -1,5 +1,3 @@
-import render from '#render'
-import setting from '#setting'
 import plugin from '#plugin'
 
 export const Help = plugin({

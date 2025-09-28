@@ -10,15 +10,17 @@
 <div class="head-box">
     <div class="title">装备图鉴 <span class="label">共{{accessories.length}}件</span> </div>
 </div>
-<!-- <div class="nav-box">
-    <div class="item">发送 <mark>{{rulePrefix}}寒悠悠图鉴</mark> 查看角色图鉴 </div>
-    <div class="item">发送 <mark>{{rulePrefix}}寒悠悠图片列表</mark> 查看角色图片 </div>
-</div> -->
+<div class="nav-box">
+    <div class="item">发送 <mark>{{rulePrefix}}套装图鉴</mark> 查看装备套装效果 </div>
+</div>
 <div class="main-box accessory-list">
     {{each accessories accessory idx}}
-    <div class="accessory-item">
-        <img class="accessory-img" src="{{pluResPath}}/UI/{{accessory.texture[2]}}"  />
-        <div class="accessory-text">{{accessory.name}}</div>
+    <div class="accessory-item rarity-{{accessory.rarity||0}}">
+        <img class="accessory-img img" src="{{pluResPath}}/UI/{{accessory.texture[2]}}" />
+        <div class="rarity">
+            <img src="{{pluResPath}}/common/rarity/rarity-{{accessory.rarity||0}}.png">
+        </div>
+        <div class="accessory-text text">{{accessory.name}}</div>
     </div>
     {{/each}}
 </div>
