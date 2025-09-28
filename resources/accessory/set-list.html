@@ -1,0 +1,31 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/accessory/set-list.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="head-box">
+    <div class="title">套装图鉴 <span class="label">共{{sets.length}}件</span> </div>
+</div>
+
+
+<div class="main-box set-list">
+    {{each sets se}}
+    <div class="set-item">
+        <img width="160" src="{{pluResPath}}/UI/{{se.accessories[0].texture[2]}}">
+        <div>
+            <div class="set-name">{{se.name}}</div>
+            <div class="set-skill">{{@se.skill.split('|').join('<br />')}}</div>
+            <div class="set-accessories">
+                {{each se.accessories.slice(1) accessory}}
+                <img width="100" src="{{pluResPath}}/UI/{{accessory.texture[2]}}">
+                {{/each}}
+            </div>
+        </div>
+
+    </div>
+    {{/each}}
+</div>
+
+{{/block}}

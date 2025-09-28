@@ -1,9 +1,8 @@
 import setting from '#setting'
-import OpenAI from "openai"
 import path from 'path'
 import { getBalance } from '../api/other.js'
 import plugin from '#plugin'
-import { loadData, searchWiki } from '../api/KnowledgeBase.js'
+// import { loadData, searchWiki } from '../api/KnowledgeBase.js'
 
 export const GPT = plugin({
     name: '[悠悠助手]悠悠AI',
@@ -35,7 +34,7 @@ let tools = []
  * 
  */
 async function chat(e) {
-    if (!initChat(e)) return true // 初始化
+    if (!await initChat(e)) return true // 初始化
 
     let messages = messageGroups[e.group_id]
     if (!messages) messages = messageGroups[e.group_id] = {
@@ -106,11 +105,12 @@ async function chat(e) {
     }
 }
 
-function initChat(e) {
+async function initChat(e) {
     if (!setting.config.apiKey) return //没有配置api-key
     if (e.message.filter(msg => msg.type === 'at').every(({ qq }) => qq != e.self_id)) return  // 过滤出艾特消息
     if (!(setting.config.aiInclude || []).includes(e.group_id)) return   // 过滤群聊
     if (!client) {
+        const OpenAI = await import('openai')
         client = new OpenAI({
             baseURL: setting.config.baseURL,
             apiKey: setting.config.apiKey

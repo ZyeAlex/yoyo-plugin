@@ -1,0 +1,12 @@
+
+.set-item{
+    display: flex;
+}
+.set-item>img{
+    padding: 20px;
+}
+
+.set-name{
+    font-size: 36px;
+    font-family: title01,title02;
+}

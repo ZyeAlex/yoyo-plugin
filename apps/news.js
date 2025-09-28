@@ -51,10 +51,10 @@ async function data(e) {
         arr.push(`\nPV${i + 1}数据：${view}(${total})`)
     }
     let _data_cache = await redis.get('yoyo:news:data')
-    let _date_diff = utils.formatTimeDiff(new Date().getTime() - _data_cache.time, 'm')
-    if (_data_cache && _date_diff) {
+    let newTime = new Date().getTime()
+    if (_data_cache) {
         _data_cache = JSON.parse(_data_cache)
-        arr.push(`\n🍀 距离上次查询${_date_diff} `)
+        arr.push(`\n🍀 距离上次查询${utils.formatTimeDiff(newTime - _data_cache.time)} `)
         if (_data_cache.bookingnum !== d1.value) {
             arr.push(`\n预约人数增加了：${d1.value - _data_cache.bookingnum}人`)
         }
@@ -69,7 +69,7 @@ async function data(e) {
         })
     }
     redis.set('yoyo:news:data', JSON.stringify({
-        time: new Date().getTime(),
+        time: newTime,
         bookingnum: d1?.value,
         fans: d2?.value?.data?.card?.fans,
         ...obj

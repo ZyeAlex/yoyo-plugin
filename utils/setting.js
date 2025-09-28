@@ -8,7 +8,7 @@ import YAML from 'yaml'
 import MD5 from 'md5'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
-import { getHeroData, getPetData } from '../api/wiki/data.js'
+import { getWikiData } from '../api/wiki/data.js'
 import { getNotice } from '../api/wiki/page.js'
 import utils from '#utils'
 import initUI from './UI.js'
@@ -37,15 +37,16 @@ class Setting {
      */
     this.petIds = {}
     this.pets = this.getData('data/pet/default') || {}
+    /**
+     * 装备系统
+     */
+    this.sets = {}//套装效果
+    this.accessories =  {}//装备列表
 
     /**
      * 成就系统
      */
     this.achievements = this.getData('data/achievement/default') || []
-    /**
-     * 装备系统
-     */
-    this.accessories = this.getData('data/accessory/default') || []
     /**
      * 食物系统
      */
@@ -100,7 +101,7 @@ class Setting {
     // 获取成就
     this.getUI(this.achievements)
     // 获取装备
-    this.getUI(this.accessories)
+    this.getAccessoryData().then(() => this.getUI(this.accessories))
     // 获取食物
     this.getUI(this.foods)
     // 获取建造
@@ -113,18 +114,16 @@ class Setting {
   }
 
   /**
-   * 从Wiki获取配置数据
+   * 从网络获取配置数据
    */
   async getHeroData() {
     this.heroIds = {} // 内部使用 角色->ID映射
     try {
-      const heros = await getHeroData()
-      Object.entries(heros).forEach(([heroId, heroData]) => {
-        if (heroData) {
-          this.heros[heroId] = heroData
-          this.heroIds[heroData.name] = heroId
-        }
-      })
+      Object.assign(this.heros, await getWikiData('Hero'))
+      this.heroIds = Object.entries(this.heros).reduce((heroIds, [heroId, { name }]) => {
+        heroIds[name] = heroId
+        return heroIds
+      }, {})
       // 获取角色图片
       this.getHeroImgs()
     } catch (error) {
@@ -170,41 +169,61 @@ class Setting {
   }
   async getPetData() {
     try {
-      const pets = await getPetData()
       let rank = {}
-      Object.entries(pets).forEach(([petId, petData]) => {
-        if (petData) {
-          this.pets[petId] = petData
-          this.petIds[petData.name] = petId
-          // 记录进化路线
-          let nextPetId = petData?.rank?.evolutionAfterStart
-          let rankArr = rank[petId] || rank[nextPetId] || []
-          rank[petId] = rankArr
+      Object.assign(this.pets, await getWikiData('Kibo'))
+      this.petIds = Object.entries(this.pets).reduce((petIds, [petId, { name }]) => {
+        petIds[name] = petId
+        return petIds
+      }, {})
+      Object.entries(this.pets).forEach(([petId, petData]) => {
+        // 记录进化路线
+        let nextPetId = petData?.rank?.evolutionAfterStart
+        let rankArr = rank[petId] || rank[nextPetId] || []
+        rank[petId] = rankArr
+        if (nextPetId) {
+          rank[nextPetId] = rankArr
 
-          if (nextPetId) {
-            rank[nextPetId] = rankArr
-
-            // 当前节点是否存在
-            let index = rankArr.findIndex(item => item == petId)
-            let nextIndex = rankArr.findIndex(item => item == nextPetId)
-            if (index > -1 && nextIndex > -1) {
-              return
-            }
-            if (index > -1) {
-              rankArr.splice(index + 1, 0, nextPetId)
-            } else if (nextIndex > -1) {
-              rankArr.splice(nextIndex, 0, petId)
-            } else {
-              rankArr.unshift(nextPetId)
-              rankArr.unshift(petId)
-            }
-
+          // 当前节点是否存在
+          let index = rankArr.findIndex(item => item == petId)
+          let nextIndex = rankArr.findIndex(item => item == nextPetId)
+          if (index > -1 && nextIndex > -1) {
+            return
           }
-          petData.evolution = rankArr
+          if (index > -1) {
+            rankArr.splice(index + 1, 0, nextPetId)
+          } else if (nextIndex > -1) {
+            rankArr.splice(nextIndex, 0, petId)
+          } else {
+            rankArr.unshift(nextPetId)
+            rankArr.unshift(petId)
+          }
+
         }
+        petData.evolution = rankArr
       })
     } catch (error) {
       logger.error(`[yoyo-plugin][getPetData]${error}`)
+    }
+  }
+  async getAccessoryData() {
+    try {
+      let accessories = await getWikiData('Accessory')
+      Object.values(accessories).forEach(item => (typeof item.texture == 'string') && (item.texture = item.texture.split(',')))// 兼容
+      Object.assign(this.accessories, accessories)
+      Object.entries(this.accessories).forEach(([accessoryId, { rarity, setId }]) => {
+        if (setId?.id) {
+          if (!this.sets[setId.id]) {
+            this.sets[setId.id] = {
+              rarity,
+              ...setId,
+              accessories: []
+            }
+          }
+          this.sets[setId.id].accessories.push(accessoryId)
+        }
+      })
+    } catch (error) {
+      logger.error(`[yoyo-plugin][getAccessoryData]${error}`)
     }
   }
 
@@ -223,7 +242,7 @@ class Setting {
       if (!fs.existsSync(filePath)) { return false }
       return YAML.parse(fs.readFileSync(filePath, 'utf8'))
     } catch (error) {
-      logger.error(`[${filename}] 读取失败 ${error}` )
+      logger.error(`[${filename}] 读取失败 ${error}`)
       return false
     }
   }

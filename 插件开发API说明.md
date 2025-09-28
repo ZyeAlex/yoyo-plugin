@@ -17,8 +17,9 @@ import setting from '#setting'
 |setting.heroImgs|角色图片|`{ 101003:[ 'c:/xxx.png','c:/yyy.png' ],...  }`|
 |setting.pets|奇波信息|`{ 500001:{ name:'迅狼',id:500001,...... } }`|
 |setting.petIds|奇波名称->奇波ID|`{ 迅狼:500001,... }`|
+|setting.sets|套装列表||
+|setting.accessories|装备列表||
 |setting.achievements|成就系统||
-|setting.accessories|装备系统||
 |setting.foods|食物系统||
 |setting.buildings|建造系统||
 

@@ -122,38 +122,38 @@ export function supportGuoba() {
         },
 
 
-        {
-          component: "Divider",
-          label: "AI配置"
-        },
-        {
-          field: 'config.apiKey',
-          component: "Input",
-          label: 'API-KEY',
-          bottomHelpMessage: 'DeepSeek api-key',
-        },
-        {
-          field: 'config.chatLong',
-          label: '对话长度',
-          component: 'InputNumber',
-          required: true,
-          componentProps: {
-            min: 0,
-            max: 100,
-          }
-        },
-        {
-          field: 'config.aiInclude',
-          label: 'AI开启群聊',
-          bottomHelpMessage: '默认全部关闭',
-          component: 'Select',
-          componentProps: {
-            allowAdd: true,
-            allowDel: true,
-            mode: 'multiple',
-            options: allGroup,
-          },
-        },
+        // {
+        //   component: "Divider",
+        //   label: "AI配置"
+        // },
+        // {
+        //   field: 'config.apiKey',
+        //   component: "Input",
+        //   label: 'API-KEY',
+        //   bottomHelpMessage: 'DeepSeek api-key',
+        // },
+        // {
+        //   field: 'config.chatLong',
+        //   label: '对话长度',
+        //   component: 'InputNumber',
+        //   required: true,
+        //   componentProps: {
+        //     min: 0,
+        //     max: 100,
+        //   }
+        // },
+        // {
+        //   field: 'config.aiInclude',
+        //   label: 'AI开启群聊',
+        //   bottomHelpMessage: '默认全部关闭',
+        //   component: 'Select',
+        //   componentProps: {
+        //     allowAdd: true,
+        //     allowDel: true,
+        //     mode: 'multiple',
+        //     options: allGroup,
+        //   },
+        // },
 
         {
           component: "Divider",

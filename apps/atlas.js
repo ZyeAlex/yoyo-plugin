@@ -25,6 +25,10 @@ export const Atlas = plugin({
             fnc: petList
         },
         {
+            reg: `^${setting.rulePrefix}?(套装列表|全部套装)$`,
+            fnc: setList
+        },
+        {
             reg: `^${setting.rulePrefix}?(装备列表|全部装备)$`,
             fnc: accessoryList
         },
@@ -57,6 +61,9 @@ function atlas(e, reg) {
     if (atlasName == '奇波' || atlasName == '宠物') {
         return petList(e)
     }
+    if (atlasName == '套装') {
+        return setList(e)
+    }
     if (atlasName == '装备') {
         return accessoryList(e)
     }
@@ -66,7 +73,7 @@ function atlas(e, reg) {
     if (atlasName == '建造') {
         return buildingList(e)
     }
-    if (atlasName == '道具'||atlasName == '任务道具') {
+    if (atlasName == '道具' || atlasName == '任务道具') {
         return taskItemList(e)
     }
     if (atlasName == '食品' || atlasName == '食物' || atlasName == '料理') {
@@ -159,6 +166,16 @@ async function petAtlas(e, petId) {
 /**
  * 装备
  */
+async function setList(e) {
+    await render(e, 'accessory/set-list', {
+        sets: Object.values(setting.sets).map(set => {
+            return {
+                ...set,
+                accessories: set.accessories.map(id => setting.accessories[id]).sort((a, b) => a.type - b.type)
+            }
+        })
+    })
+}
 //   装备图鉴
 async function accessoryList(e) {
     await render(e, 'accessory/list', {

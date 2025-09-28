@@ -10,99 +10,27 @@ const client = new bot({
 });
 
 
-
-// 从wiki拿到角色数据
-const getHeroData = async () => {
-    const heroIds = await new Promise(res => {
-        client.getArticle("模块:Hero/id", async function (err, data) {
-            // error handling
-            try {
-                if (err) throw new Error(err)
-                res(await parseLua(data, 'data'))
-            } catch (error) {
-                logger.error('[yoyo-plugin][getHeroData] ', error)
-                return res({});
-            }
-        });
-    })
-    let heros = {}
-    for (let heroId in heroIds) {
-        const data = await new Promise((res, rej) => {
-            client.getArticle("模块:Hero/" + heroId, async function (err, data) {
-                // error handling
-                if (err) return rej()
-                try {
-                    res(await parseLua(data, 'data'))
-                } catch (error) {
-                    // rej(`未查询到角色【${heroIds[heroId]}】[${heroId}] 的数据`)
-                    rej()
-                }
-            });
-        }).catch((err) => err && logger.error('[yoyo-plugin][getHeroData]', err))
-        if (data) {
-            heros[heroId] = data
-        } else {
-            heros[heroId] = {
-                id: heroId,
-                name: heroIds[heroId]
-            }
-        }
-    }
-    return heros
-}
-
-// 从 wiki拿到奇波数据
-const getPetData = async () => {
-    const petIds = await new Promise(res => {
-        client.getArticle("模块:Kibo/id", async function (err, data) {
-            try {
-                if (err) throw new Error(err)
-                return res(await parseLua(data, 'data'))
-            } catch (error) {
-                logger.error('[yoyo-plugin][getPetData] ', error)
-                return res({});
-            }
-        });
-    })
-    let pets = {}
-    for (let petId in petIds) {
-        const data = await new Promise((res, rej) => {
-            client.getArticle("模块:Kibo/" + petId, async function (err, data) {
-                try {
-                    if (err) return rej()
-                    res(await parseLua(data, 'data'))
-                } catch (error) {
-                    rej(error)
-                }
-            });
-        }).catch((err) => {logger.error('[yoyo-plugin][getPetData]', `${petId}数据加载失败`)})
-        if (data) {
-            pets[petId] = data
-        } else {
-            pets[petId] = {
-                id: petId,
-                name: petIds[petId]
-            }
-        }
-    }
-    return pets
-}
-
-// 解析Lua  key为属性
-async function parseLua(lua, key) {
+/**
+ * 将Lua解析为Lua AST
+ * 并从抽象语法树中提取数据
+ * 
+ * @param {*} lua Lua String
+ * @param {*} key 要提取的属性
+ * @returns 
+ */
+const parseLua = async (lua, key) => {
     function convertExpressionToJS(expr) {
         switch (expr.type) {
             case 'NumericLiteral':
                 return expr.value;
             case 'StringLiteral':
-                return JSON.parse(expr.raw) || expr.value;  // Note: expr.raw includes quotes, but value is the raw string content
+                return JSON.parse(expr.raw) || expr.value;  
             case 'BooleanLiteral':
                 return expr.value;
             case 'NilLiteral':
                 return null;
             case 'TableConstructorExpression':
                 return convertTableToJS(expr);
-            // Add more cases as needed, e.g., for VarargLiteral, Identifier (would require scope resolution), etc.
             default:
                 throw new Error(`Unsupported expression type: ${expr.type}`);
         }
@@ -122,12 +50,12 @@ async function parseLua(lua, key) {
         let obj = {};
         tableExpr.fields.forEach(field => {
             if (field.type === 'TableKeyString') {
-                // String key: key = value
+                //  key = value
                 const key = field.key.name;
                 const value = convertExpressionToJS(field.value);
                 obj[key] = value;
             } else if (field.type === 'TableKey') {
-                // Expression key: [expr] = value
+                //key: [expr] = value
                 const key = convertExpressionToJS(field.key);
                 const value = convertExpressionToJS(field.value);
                 obj[key] = value;
@@ -163,12 +91,57 @@ async function parseLua(lua, key) {
 
 }
 
+/**
+ * 从Wiki中拿数据
+ * 
+ * @param {*} module 要提取的模块名称 https://wiki.biligame.com/ap/模块:【模块名称】/
+ * @returns 
+ */
+const getWikiData = async (module) => {
+    const ids = await new Promise(res => {
+        client.getArticle(`模块:${module}/id`, async function (err, data) {
+            // error handling
+            try {
+                if (err) throw new Error(err)
+                res(await parseLua(data, 'data'))
+            } catch (error) {
+                logger.error('[yoyo-plugin][getWikiData] ', error)
+                return res({});
+            }
+        });
+    })
+    let objs = {}
+    for (let id in ids) {
+        const data = await new Promise((res, rej) => {
+            client.getArticle(`模块:${module}/` + id, async function (err, data) {
+                // error handling
+                if (err) return rej()
+                try {
+                    res(await parseLua(data, 'data'))
+                } catch (error) {
+                    rej()
+                }
+            });
+        }).catch((err) => err && logger.error('[yoyo-plugin][getWikiData]', err))
+        if (data) {
+            objs[id] = data
+        } else {
+            objs[id] = {
+                id,
+                name: ids[id]
+            }
+        }
+    }
+    return objs
+}
+
+
+
 
 
 
 export {
-    getHeroData,
-    getPetData
+    getWikiData
 }
 
 
