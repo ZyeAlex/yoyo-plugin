@@ -22,10 +22,12 @@ export const Sign = plugin({
 
 
 async function sign(e) {
-    if (!e.group_id) return true
     // 签到过滤
-    if (setting.config.signInclude?.length && !setting.config.signInclude.includes(e.group_id) || setting.config.signExclude?.length && setting.config.signExclude.includes(e.group_id)) return true
-    // 用户签到数据
+    if (
+        !setting.config.sign ||
+        setting.config.signInclude?.length && !setting.config.signInclude.includes(e.group_id) ||
+        setting.config.signExclude?.length && setting.config.signExclude.includes(e.group_id) ||
+        !e.group_id) return true
     let userSignInfo = setting.getUserData(e.group_id, e.user_id)
     // 今日是否签到
     let hasSign = false

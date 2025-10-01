@@ -97,6 +97,11 @@ export function supportGuoba() {
           label: "签到配置"
         },
         {
+          field: "config.sign",
+          label: "开启签到",
+          component: "Switch"
+        },
+        {
           field: 'config.signInclude',
           label: '签到群白名单',
           // bottomHelpMessage: '签到群白名单 (默认所有)',

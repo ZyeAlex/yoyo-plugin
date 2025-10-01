@@ -26,6 +26,7 @@ PVList:
 - BV1Jr421n7n4
 - BV1KUopYZEs5
 # 签到群聊
+sign: true
 signInclude: []
 signExclude: []
 #AI配置
