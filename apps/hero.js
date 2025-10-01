@@ -29,9 +29,7 @@ export default plugin({
 function setNickname(e, reg) {
     let [_, heroName1, heroName2, nickname] = e.msg.match(reg)
     let heroId = setting.getHeroId(heroName1 || heroName2)
-    if (!heroId) {
-        return e.reply('未找到此角色')
-    }
+    if (!heroId) return true
     if (nickname.length > 10) {
         return e.reply('昵称长度不能超过10位！')
     }
@@ -70,6 +68,7 @@ function delNickname(e, reg) {
 async function getNickname(e, reg) {
     let [_, heroName] = e.msg.match(reg)
     let heroId = setting.getHeroId(heroName)
+    if (!heroId) return true
     let heroMsg = setting.heros[heroId] || {}
     await render(e, 'hero/atlas', {
         ...heroMsg,
