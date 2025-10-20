@@ -77,7 +77,7 @@ async function poke(e) {
 
             } else {
                 // 表情包回复
-                await IMAGE()
+                e.reply(await IMAGE(file, { isface: true }))
 
             }
         }
@@ -105,6 +105,8 @@ async function AI() {
 }
 
 // 图片回复函数
-async function IMAGE() {
-    return
+async function IMAGE(file, options = {}) {
+    const imgSeg = segment.image(file)
+    imgSeg.sub_type = options.isface ? 1 : 0
+    return imgSeg
 }
