@@ -6,7 +6,7 @@ import lodash from 'lodash'
 export default plugin({
     name: '[悠悠助手]角色',
     event: 'message',
-    priority: 101,
+    priority: 100,
     rule: [
         {
             reg: `^${setting.rulePrefix}?(?:(.{1,10}?)设置|设置(.{1,10}?))(?:别名|昵称|称号|外号)(.{1,10}?)$`,

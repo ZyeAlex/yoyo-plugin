@@ -6,7 +6,7 @@ import plugin from '#plugin'
 export const Atlas = plugin({
     name: '[悠悠助手]图鉴',
     event: 'message',
-    priority: -1,
+    priority: 100,
     rule: [
         {
             reg: `^${setting.rulePrefix}?(.{1,10}?)(图鉴|卡片|card|Card)$`,

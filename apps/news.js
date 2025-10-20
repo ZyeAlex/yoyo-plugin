@@ -8,7 +8,7 @@ import { getUserInfo, getVideoInfo, getVideoOnline, shortUrl } from '../api/bili
 export const News = plugin({
     name: '[悠悠助手]资讯',
     event: 'message',
-    priority: 1000,
+    priority: 9999,
     rule: [
         {
             reg: `^${setting.rulePrefix}?(数据(信息)?|预约(人数)?)$`,

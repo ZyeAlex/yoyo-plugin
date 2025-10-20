@@ -4,7 +4,7 @@ import plugin from '#plugin'
 export const Settings = plugin({
     name: '[悠悠助手]设置',
     event: 'message',
-    priority: 105,
+    priority: 100,
     rule: [
         {
             reg: `^${setting.rulePrefix}设置(.{1,10})$`,
