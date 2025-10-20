@@ -1,11 +1,11 @@
 import plugin from '#plugin'
 import setting from '#setting'
 import OpenAI from "openai"
-// AI配置
-const openai = new OpenAI({
-    baseURL: setting.config.baseURL,
-    apiKey: setting.config.apikey,
-});
+// // AI配置
+// const openai = new OpenAI({
+//     baseURL: setting.config.baseURL,
+//     apiKey: setting.config.apikey,
+// });
 
 
 // 类型概率配置,总和1
@@ -92,17 +92,17 @@ async function poke(e) {
 
 // 功能函数
 // AI回复函数
-async function AI() {
-    let this_mood = mood[Math.ceil(Math.random() * mood.length) - 1]
-    const prompt = `你是一只名叫罐头的小猫咪，你现在的心情是${this_mood}，请根据这个心情来回复用户。每句话结尾都要加一个喵字。`
-    const user_input = `用户名:${e.sender.nickname}，userid:${e.user_id} 戳了一下你，你要根据你的心情并且使用不超过8个字来回复他喵。}。`
+// async function AI() {
+//     let this_mood = mood[Math.ceil(Math.random() * mood.length) - 1]
+//     const prompt = `你是一只名叫罐头的小猫咪，你现在的心情是${this_mood}，请根据这个心情来回复用户。每句话结尾都要加一个喵字。`
+//     const user_input = `用户名:${e.sender.nickname}，userid:${e.user_id} 戳了一下你，你要根据你的心情并且使用不超过8个字来回复他喵。}。`
 
-    const completion = await openai.chat.completions.create({
-        messages: [{ role: "system", content: `${prompt}` }, { role: "user", content: `${user_input}` }],
-        model: "deepseek-chat",
-    });
-    return completion.choices[0].message.content.trim()
-}
+//     const completion = await openai.chat.completions.create({
+//         messages: [{ role: "system", content: `${prompt}` }, { role: "user", content: `${user_input}` }],
+//         model: "deepseek-chat",
+//     });
+//     return completion.choices[0].message.content.trim()
+// }
 
 // 图片回复函数
 async function IMAGE(file, options = {}) {
