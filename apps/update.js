@@ -12,7 +12,7 @@ const version = packageJson.version || Version.version
 export const Update = plugin({
   name: '[悠悠助手]更新',
   event: 'message',
-  priority: 9999,
+  priority: 100,
   rule: [
     {
       reg: `^(${setting.rulePrefix}|悠悠|yoyo)(强制)?更新$`,

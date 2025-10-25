@@ -7,7 +7,7 @@ import plugin from '#plugin'
 export const Guide = plugin({
     name: '[悠悠助手]攻略',
     event: 'message',
-    priority: 9999,
+    priority: 100,
     rule: [
         {
             reg: `^${setting.rulePrefix}?(.{1,10}?)攻略$`,
