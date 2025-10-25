@@ -7,7 +7,7 @@ import plugin from '#plugin'
 export const GPT = plugin({
     name: '[悠悠助手]悠悠AI',
     event: 'message.group',
-    priority: 9999,
+    priority: 10000,
     rule: [
         {
             reg: `^${setting.rulePrefix}?余额$`,
