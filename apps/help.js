@@ -8,7 +8,7 @@ export const Help = plugin({
   priority: setting.config.help ? -1 : 100,
   rule: [
     {
-      reg: `^(${setting.rulePrefix}|悠悠|yy|yoyo)?(帮助|help|小?助手|菜单|功能)$`,
+      reg: `^(#|悠悠|yy|yoyo)?(帮助|help|小?助手|菜单|功能)$`,
       fnc: help
     }
   ]

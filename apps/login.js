@@ -9,11 +9,11 @@ export const Gacha = plugin({
     priority: 100,
     rule: [
         {
-            reg: `^${setting.rulePrefix}登录$`,
+            reg: `^#登录$`,
             fnc: login
         },
         {
-            reg: `^${setting.rulePrefix}扫码登录$`,
+            reg: `^#扫码登录$`,
             fnc: scanLogin
         },
     ]

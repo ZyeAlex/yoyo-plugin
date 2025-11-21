@@ -9,7 +9,7 @@ export const Gacha = plugin({
     priority: 100,
     rule: [
         {
-            reg: `^${setting.rulePrefix}?(模拟)?(抽卡)$`,
+            reg: `^#?(模拟)?(抽卡)$`,
             fnc: simulatedGacha
         }
     ]

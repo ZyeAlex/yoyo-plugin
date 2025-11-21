@@ -10,11 +10,11 @@ export const Sign = plugin({
     priority: 9999,
     rule: [
         {
-            reg: `^${setting.rulePrefix}?(签到|打卡)$`,
+            reg: `^#?(签到|打卡)$`,
             fnc: sign
         },
         {
-            reg: `^${setting.rulePrefix}?更?换个?(今日)?老婆$`,
+            reg: `^#?更?换个?(今日)?老婆$`,
             fnc: updateSign
         }
     ]

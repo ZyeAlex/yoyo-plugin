@@ -10,7 +10,7 @@ export const Guide = plugin({
     priority: 100,
     rule: [
         {
-            reg: `^${setting.rulePrefix}?(.{1,10}?)攻略$`,
+            reg: `^#?(.{1,10}?)攻略$`,
             fnc: guide
         }
     ]

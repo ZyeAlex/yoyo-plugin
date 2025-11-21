@@ -11,23 +11,23 @@ export const Img = plugin({
     priority: -1,
     rule: [
         {
-            reg: `^${setting.rulePrefix}?(?:上传|添加)(.{0,10})${imgReg}$`,
+            reg: `^#?(?:上传|添加)(.{0,10})${imgReg}$`,
             fnc: uploadHeroImg
         },
         {
-            reg: `^${setting.rulePrefix}?删除(.{1,10}?)${imgReg}([0-9,， ]+)$`,
+            reg: `^#?删除(.{1,10}?)${imgReg}([0-9,， ]+)$`,
             fnc: delHeroImg
         },
         {
-            reg: `^${setting.rulePrefix}?(?!上传|添加|随机(?!角色)?)(.{0,10})${imgReg}([0-9]{0,4})$`,
+            reg: `^#?(?!上传|添加|随机(?!角色)?)(.{0,10})${imgReg}([0-9]{0,4})$`,
             fnc: getHeroImg
         },
         {
-            reg: `^${setting.rulePrefix}?(.{1,10})${imgReg}(列表|表列|合集|集合)$`,
+            reg: `^#?(.{1,10})${imgReg}(列表|表列|合集|集合)$`,
             fnc: getHeroImgList
         },
         {
-            reg: `^${setting.rulePrefix}?(查看)?原图$`,
+            reg: `^#?(查看)?原图$`,
             fnc: originalPic
         }
     ]

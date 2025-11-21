@@ -15,7 +15,7 @@ export const Update = plugin({
   priority: 100,
   rule: [
     {
-      reg: `^(${setting.rulePrefix}|悠悠|yoyo)(强制)?更新$`,
+      reg: `^(#|悠悠|yoyo)(强制)?更新$`,
       fnc: update_plugin,
       permission: 'master'
     },
@@ -25,13 +25,13 @@ export const Update = plugin({
       permission: 'master'
     },
     {
-      reg: `${setting.rulePrefix}更新日志$`,
+      reg: `#更新日志$`,
 
       fnc: update_log,
       permission: 'master'
     },
     {
-      reg: `${setting.rulePrefix}?(删除|清除|清空|重置|清理)(错误|无效|脏)数据$`,
+      reg: `#?(删除|清除|清空|重置|清理)(错误|无效|脏)数据$`,
       fnc: clearErrorData,
       permission: 'master'
     },

@@ -10,7 +10,7 @@ export const GPT = plugin({
     priority: 10000,
     rule: [
         {
-            reg: `^${setting.rulePrefix}?余额$`,
+            reg: `^#?余额$`,
             fnc: showBalance,
         },
         {

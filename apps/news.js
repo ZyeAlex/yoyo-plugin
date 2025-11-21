@@ -11,15 +11,15 @@ export const News = plugin({
     priority: 9999,
     rule: [
         {
-            reg: `^${setting.rulePrefix}?(数据(信息)?|预约(人数)?)$`,
+            reg: `^#?(数据(信息)?|预约(人数)?)$`,
             fnc: data
         },
         {
-            reg: `^${setting.rulePrefix}?公告$`,
+            reg: `^#?公告$`,
             fnc: notices
         },
         {
-            reg: `^${setting.rulePrefix}?兑换码$`,
+            reg: `^#?兑换码$`,
             fnc: RedemptionCode
         }
     ]

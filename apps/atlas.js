@@ -9,43 +9,43 @@ export const Atlas = plugin({
     priority: 100,
     rule: [
         {
-            reg: `^${setting.rulePrefix}?(.{1,10}?)(图鉴|卡片|card|Card)$`,
+            reg: `^#?(.{1,10}?)(图鉴|卡片|card|Card)$`,
             fnc: atlas
         },
         {
-            reg: `^${setting.rulePrefix}?(.{1,10}?)((?:技能|星赐|台词|语音|文本)[\n+,，、]?)+(图鉴)?$`,
+            reg: `^#?(.{1,10}?)((?:技能|星赐|台词|语音|文本)[\n+,，、]?)+(图鉴)?$`,
             fnc: heroInfo
         },
         {
-            reg: `^${setting.rulePrefix}?(角色列表|全部角色|所有角色)$`,
+            reg: `^#?(角色列表|全部角色|所有角色)$`,
             fnc: heroList
         },
         {
-            reg: `^${setting.rulePrefix}?(奇波列表|全部奇波|所有奇波|奇波图鉴)$`,
+            reg: `^#?(奇波列表|全部奇波|所有奇波|奇波图鉴)$`,
             fnc: petList
         },
         {
-            reg: `^${setting.rulePrefix}?(套装列表|全部套装)$`,
+            reg: `^#?(套装列表|全部套装)$`,
             fnc: setList
         },
         {
-            reg: `^${setting.rulePrefix}?(装备列表|全部装备)$`,
+            reg: `^#?(装备列表|全部装备)$`,
             fnc: accessoryList
         },
         {
-            reg: `^${setting.rulePrefix}?(成就列表|全部成就)$`,
+            reg: `^#?(成就列表|全部成就)$`,
             fnc: achievementList
         },
         {
-            reg: `^${setting.rulePrefix}?(建造列表|全部建造)$`,
+            reg: `^#?(建造列表|全部建造)$`,
             fnc: buildingList
         },
         {
-            reg: `^${setting.rulePrefix}?((任务?)道具列表|全部(任务?)道具)$`,
+            reg: `^#?((任务?)道具列表|全部(任务?)道具)$`,
             fnc: taskItemList
         },
         {
-            reg: `^${setting.rulePrefix}?(料理|食物|食品)列表|全部(料理|食物|食品)$`,
+            reg: `^#?(料理|食物|食品)列表|全部(料理|食物|食品)$`,
             fnc: foodList
         }
     ]

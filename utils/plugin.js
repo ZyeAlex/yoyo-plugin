@@ -1,11 +1,11 @@
+import setting from '#setting'
 function getPlugin(config) {
     const rules = []
     const funcs = []
     config.rule?.forEach((rule, index) => {
+        if (typeof rule.reg == 'string') rule.reg.replace('#', setting.rulePrefix)
         let name = rule.fnc.name
-        if (name == 'fnc') {
-            name = name + '_' + index
-        }
+        if (name == 'fnc') name = name + '_' + index
         rules.push({ ...rule, fnc: name })
         const f = (e) => rule.fnc(e, typeof reg == 'string' ? new RegExp(rule.reg) : rule.reg)
         Object.defineProperty(f, 'name', { value: name });

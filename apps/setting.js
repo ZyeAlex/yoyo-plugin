@@ -7,15 +7,15 @@ export const Settings = plugin({
     priority: 100,
     rule: [
         {
-            reg: `^${setting.rulePrefix}设置(.{1,10})$`,
+            reg: `^#设置(.{1,10})$`,
             fnc: settings
         }
     ]
 })
 
-async function settings(e) {
-    if (!e.isMaster) { return }
-    let match = e.msg.match(new RegExp(`^${setting.rulePrefix}设置(.+)$`))
+async function settings(e,reg) {
+    if (!e.isMaster)  return 
+    let match = e.msg.match(reg)
     if (match) {
         let text = match[1].slice(0, 10)
         if (text.includes(`覆盖帮助`)) {
