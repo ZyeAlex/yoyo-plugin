@@ -35,8 +35,4 @@ chatLong: 50 # 对话长度
 temperature: 1.3
 apiKey: '' # 前去 https://platform.deepseek.com/ 购买api-key
 baseURL: 'https://api.deepseek.com'
-embedding:
-  apiKey: '' # 前去 https://api.bltcy.ai/ 购买api-key
-  baseURL: 'https://api.bltcy.ai/v1/'
-  model: 'text-embedding-3-small'
 help: false #是否使用yoyo帮助为默认帮助
