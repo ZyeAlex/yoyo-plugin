@@ -3,7 +3,7 @@ function getPlugin(config) {
     const rules = []
     const funcs = []
     config.rule?.forEach((rule, index) => {
-        if (typeof rule.reg == 'string') rule.reg.replace('#', setting.rulePrefix)
+        if (typeof rule.reg == 'string') rule.reg = rule.reg.replace('#', setting.rulePrefix)
         let name = rule.fnc.name
         if (name == 'fnc') name = name + '_' + index
         rules.push({ ...rule, fnc: name })
