@@ -56,7 +56,7 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
 
 // 保存原图
 export async function saveRender(e, p, renderData, originalPicture) {
-  let msgRes = await e.reply([await render(e, p, renderData, { e, retType: 'base64' })])
+  let msgRes = await e.reply([await render(e, p, renderData, { e, retType: 'base64' })],false,{recallMsg:60})
   if (msgRes) {
     // 如果消息发送成功，就将message_id和图片路径存起来，3小时过期
     const message_id = [e.message_id]
