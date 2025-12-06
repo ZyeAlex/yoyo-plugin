@@ -5,7 +5,7 @@ import plugin from '#plugin'
 export const Help = plugin({
   name: '[悠悠助手]帮助',
   event: 'message',
-  priority: setting.config.help ? -1 : 100,
+  priority: setting.config.setting.help ? -1 : 100,
   rule: [
     {
       reg: `^(#|悠悠|yy|yoyo)?(帮助|help|小?助手|菜单|功能)$`,

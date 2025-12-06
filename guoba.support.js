@@ -200,6 +200,15 @@ export function supportGuoba() {
             // placeholder: '自动撤回模式选择',
           },
         },
+        {
+          component: "Divider",
+          label: "其他配置项"
+        },{
+          field: "config.setting.help",
+          label: "覆盖#帮助",
+          bottomHelpMessage: "开启后将#帮助时会覆盖为本插件帮助信息",
+          component: "Switch",
+        }
 
 
 
