@@ -7,10 +7,9 @@ rulePrefix:
 
 # 角色图片
 imgMaxSize: 10 #上传图片大小限制 MB
-imgPath:
-#角色图片库的路径 从Bot根目录开始，如 'plugins/yoyo-image/' ，路径下须是以角色命名的文件夹
-# todo
+imgPath: #角色图片库的路径 从Bot根目录开始，如 'plugins/yoyo-image/' ，路径下须是以角色命名的文件夹
 - plugins/yoyo-image
+# todo
 characterImgPath: [] #立绘图 无背景图片 
 # todo
 heroGuidePath: [] #角色攻略图
@@ -27,7 +26,7 @@ PVList:
 - BV1KUopYZEs5
 # 签到
 sign: true # 开启签到
-signWithdrawal: 60 # 签到撤回
+signWithdrawal: 300 # 签到撤回
 signInclude: [] # 签到包含群聊
 signExclude: [] # 签到排除群聊
 #AI配置

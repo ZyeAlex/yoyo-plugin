@@ -22,8 +22,6 @@ export const shortUrl = async (long_url) => {
         "share_id": "public.webview.0.0.pv",
         "share_mode": Math.ceil(Math.random() * 10),
     })
-    logger.info(res?.data?.content)
-    logger.info(long_url)
     return res?.data?.content || long_url
 }
 
