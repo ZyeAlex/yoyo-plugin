@@ -4,7 +4,7 @@ import utils from '#utils'
 import lodash from 'lodash'
 import plugin from '#plugin'
 
-const imgReg = '(?:图片|照片|美图|美照)'
+const imgReg = '(?:图片?|照片|美图|美照)'
 export const Img = plugin({
     name: '[悠悠助手]图片',
     event: 'message',
@@ -131,11 +131,11 @@ async function originalPic(e) {
     }
     if (source?.message_id) {
         let imgPath = await redis.get(`yoyo:original-picture:${source.message_id}`)
-        if (!e.isMaster) {
-            // e.reply('已禁止获取原图...')
-            // return true
-        }
         if (imgPath) {
+            if (!e.isMaster) {
+                // e.reply('已禁止获取原图...')
+                // return true
+            }
             e.reply(segment.image(imgPath), false, { recallMsg: 30 })
             return
         }

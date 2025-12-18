@@ -25,10 +25,11 @@ iconSource:
 PVList:
 - BV1Jr421n7n4
 - BV1KUopYZEs5
-# 签到群聊
-sign: true
-signInclude: []
-signExclude: []
+# 签到
+sign: true # 开启签到
+signWithdrawal: 60 # 签到撤回
+signInclude: [] # 签到包含群聊
+signExclude: [] # 签到排除群聊
 #AI配置
 aiInclude: [] # 对话群聊
 chatLong: 50 # 对话长度

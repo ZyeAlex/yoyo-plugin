@@ -95,7 +95,7 @@ async function sign(e) {
         rank: userSignInfo.rank,
         day: Object.values(userSignInfo.history).reduce((a, b) => a + b),
     }
-    await saveRender(e, 'sign/index', signData, signData.heroImg)
+    await saveRender(e, 'sign/index', signData.heroImg, signData, false, { recallMsg: setting.config.signWithdrawal })
 }
 async function updateSign(e) {
     if (!e.group_id) return true
@@ -140,5 +140,5 @@ async function updateSign(e) {
         rank: userSignInfo.rank,
         day: Object.values(userSignInfo.history).reduce((a, b) => a + b),
     }
-    await saveRender(e, 'sign/index', signData, signData.heroImg)
+    await saveRender(e, 'sign/index', signData.heroImg, signData, false, { recallMsg: setting.config.signWithdrawal })
 }
