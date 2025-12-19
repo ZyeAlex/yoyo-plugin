@@ -26,7 +26,7 @@ PVList:
 - BV1KUopYZEs5
 # 签到
 sign: true # 开启签到
-signWithdrawal: 300 # 签到撤回
+signWithdrawal: 90 # 签到撤回
 signInclude: [] # 签到包含群聊
 signExclude: [] # 签到排除群聊
 #AI配置
