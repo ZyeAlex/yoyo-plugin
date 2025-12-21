@@ -128,7 +128,7 @@
 
 ## 安装方法 
 
-1. 确保已部署 Yunzai Bot，如果未安装，推荐使用 [LLBot](www.luckylillia.com) + [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai) 的机器人部署方案
+1. 确保已部署 Yunzai Bot，如果未安装，推荐使用 [LLBot]( https://luckylillia.com/guide/getting-started ) + [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai) 的机器人部署方案
 
 2. 推荐使用git进行安装，方便后续升级，在Yunzai根目录内打开终端执行以下命令（不推荐clone GitHub仓库，该仓库为开发分支）
   - gitee
