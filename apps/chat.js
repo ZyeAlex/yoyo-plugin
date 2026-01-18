@@ -18,9 +18,6 @@ export const Chat = plugin({
 
 // 智能体
 let agent
-if (setting.config.apiKey) {
-    agent = new Agent()
-}
 
 // 保存群组内历史聊天内容
 const groupUsrMsgs = {}
@@ -33,7 +30,10 @@ async function chat(e) {
         !(setting.config.aiInclude || []).includes(e.group_id) ||
         (setting.config.aiExclued || []).includes(e.group_id)
     ) return true
-    await agent.initModel()
+
+    if (!agent) {
+        agent = new Agent()
+    }
 
     // 过滤艾特消息
     if (!groupUsrMsgs[e.group_id]) groupUsrMsgs[e.group_id] = []
@@ -49,7 +49,7 @@ async function chat(e) {
         if (Math.random() > setting.config.RandomMsgProbability) {
             return true
         }
-        
+
     } else {
         groupUsrMsgs[e.group_id].push({
             user_id: e.user_id,
