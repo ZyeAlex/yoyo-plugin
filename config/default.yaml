@@ -7,7 +7,8 @@ rulePrefix:
 
 # 角色图片
 imgMaxSize: 10 #上传图片大小限制 MB
-imgPath: #角色图片库的路径 从Bot根目录开始，如 'plugins/yoyo-image/' ，路径下须是以角色命名的文件夹
+imgPath:
+#角色图片库的路径 从Bot根目录开始，如 'plugins/yoyo-image/' ，路径下须是以角色命名的文件夹
 - plugins/yoyo-image
 # todo
 characterImgPath: [] #立绘图 无背景图片 
@@ -29,12 +30,13 @@ sign: true # 开启签到
 signWithdrawal: 90 # 签到撤回
 signInclude: [] # 签到包含群聊
 signExclude: [] # 签到排除群聊
-#AI配置
-aiInclude: [] # 对话群聊
-chatLong: 50 # 对话长度
-temperature: 1.3
-apiKey: '' # 前去 https://platform.deepseek.com/ 购买api-key
-baseURL: 'https://api.deepseek.com'
 
-setting:
-  help: false #是否使用yoyo帮助为默认帮助
+# AI
+model: '' # 模型名称
+apiKey: '' # api-key
+baseURL: '' # 模型地址
+msgCacheLength: 10 # 群组内历史聊天内容长度
+RandomMsgProbability: 0 # 触发对话概率
+MaxUsrMsgCount: 10 # 上下文对话保存数量
+aiInclude: []
+aiExclued: []

@@ -4,11 +4,3 @@ import setting from '#setting'
 export const hitokoto = () => http.get('https://v1.hitokoto.cn/?c=a&c=b&c=c')
 
 
-// deepseek
-
-export const getBalance = () => http.get('https://api.deepseek.com/user/balance', {}, {
-    headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${setting.config.apiKey}`
-    }
-})
