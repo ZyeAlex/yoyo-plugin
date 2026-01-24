@@ -31,6 +31,10 @@ signWithdrawal: 90 # 签到撤回
 signInclude: [] # 签到包含群聊
 signExclude: [] # 签到排除群聊
 
+
+# 进群欢迎
+increase: 
+  123456: 欢迎进群~星临者~
 # AI
 model: '' # 模型名称
 apiKey: '' # api-key

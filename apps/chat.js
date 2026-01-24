@@ -72,7 +72,7 @@ async function chat(e) {
     groupUsrMsgs[e.group_id] = []
 
     reply.map(async reply => {
-        await e.reply(reply)
+        await e.reply(handleMsgs(reply))
         await utils.sleep(Math.random() * 1000 + 1000)
     })
 
@@ -81,8 +81,13 @@ async function chat(e) {
 
 // 处理对话
 function handleMsgs(msg) {
-    let isAt = false
-    return (msg, isAt)
+    let reply = []
+    msg = msg.reply(/\[at:(\d+)\]/, (_, qq) => {
+        reply.push(segment.at(qq))
+        return ''
+    })
+    reply.push(msg)
+    return reply
 }
 
 
