@@ -41,7 +41,7 @@ class Setting {
      * 装备系统
      */
     this.sets = {}//套装效果
-    this.accessories =  {}//装备列表
+    this.accessories = {}//装备列表
 
     /**
      * 成就系统
@@ -120,15 +120,18 @@ class Setting {
     this.heroIds = {} // 内部使用 角色->ID映射
     try {
       Object.assign(this.heros, await getWikiData('Hero'))
-      this.heroIds = Object.entries(this.heros).reduce((heroIds, [heroId, { name }]) => {
-        heroIds[name] = heroId
-        return heroIds
-      }, {})
-      // 获取角色图片
-      this.getHeroImgs()
+      this.setData('data/hero/hero', this.heros)
     } catch (error) {
+      Object.assign(this.heros, this.getData('data/hero/hero') || {})
       logger.error(`[yoyo-plugin][getHeroData]${error}`)
     }
+    this.heroIds = Object.entries(this.heros).reduce((heroIds, [heroId, { name }]) => {
+      heroIds[name] = heroId
+      return heroIds
+    }, {})
+
+    // 获取角色图片
+    this.getHeroImgs()
 
     // 设置角色昵称
     if (!fs.existsSync(path.join(this.path, 'data/hero/nickname.yaml'))) {
@@ -171,10 +174,6 @@ class Setting {
     try {
       let rank = {}
       Object.assign(this.pets, await getWikiData('Kibo'))
-      this.petIds = Object.entries(this.pets).reduce((petIds, [petId, { name }]) => {
-        petIds[name] = petId
-        return petIds
-      }, {})
       Object.entries(this.pets).forEach(([petId, petData]) => {
         // 记录进化路线
         let nextPetId = petData?.rank?.evolutionAfterStart
@@ -201,9 +200,16 @@ class Setting {
         }
         petData.evolution = rankArr
       })
+      this.setData('data/pet/pet', this.pets)
     } catch (error) {
+      Object.assign(this.pets, this.getData('data/pet/pet') || {})
       logger.error(`[yoyo-plugin][getPetData]${error}`)
     }
+    this.petIds = Object.entries(this.pets).reduce((petIds, [petId, { name }]) => {
+      petIds[name] = petId
+      return petIds
+    }, {})
+
   }
   async getAccessoryData() {
     try {

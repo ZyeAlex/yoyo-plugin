@@ -38,5 +38,4 @@ baseURL: '' # 模型地址
 msgCacheLength: 10 # 群组内历史聊天内容长度
 RandomMsgProbability: 0 # 触发对话概率
 MaxUsrMsgCount: 10 # 上下文对话保存数量
-aiInclude: []
-aiExclued: []
+aiInclude: [] # AI触发的群聊

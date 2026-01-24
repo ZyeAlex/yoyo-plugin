@@ -1,7 +1,7 @@
 import setting from '#setting'
 import plugin from '#plugin'
 import Agent from '../agent/agent.js'
-
+import utils from '#utils'
 
 
 export const Chat = plugin({
@@ -26,10 +26,7 @@ async function chat(e) {
     //没有配置api-key
     if (!setting.config.apiKey) return true
     // 过滤群聊
-    if (
-        !(setting.config.aiInclude || []).includes(e.group_id) ||
-        (setting.config.aiExclued || []).includes(e.group_id)
-    ) return true
+    if (!(setting.config.aiInclude || []).includes(e.group_id)) return true
 
     if (!agent) {
         agent = new Agent()
@@ -74,10 +71,19 @@ async function chat(e) {
     // 发送对话后，用户历史聊天内容将由大模型上下文保存，所以进行清空
     groupUsrMsgs[e.group_id] = []
 
-    e.reply(reply)
+    reply.map(async reply => {
+        await e.reply(reply)
+        await utils.sleep(Math.random() * 1000 + 1000)
+    })
+
+
 }
 
-
+// 处理对话
+function handleMsgs(msg) {
+    let isAt = false
+    return (msg, isAt)
+}
 
 
 

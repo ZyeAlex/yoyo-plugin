@@ -5,6 +5,7 @@ import { tool_functions, tools } from './tool.js'
 import { systemPrompt, userPrompt, slangPrompt } from './prompt/index.js'
 import YAML from 'yaml';
 import path from 'path'
+import { AIMessage, SystemMessage, HumanMessage } from 'langchain'
 // 加载yaml
 const { model, apiKey, baseURL, msgCacheLength } = YAML.parse(fs.readFileSync(path.join(import.meta.dirname, '../config/config.yaml'), 'utf8'));
 
@@ -67,9 +68,9 @@ class Agent {
                 });
             }
         } catch (e) {
-            console.log('黑话提取失败:', e);
+            logger.info('黑话提取失败:', content)
             // JSON解析失败，降级使用原始回复（黑话提取失败不影响主流程）
-            finalReply = content;
+            finalReply = [content];
         }
 
         return finalReply;
@@ -80,11 +81,11 @@ class Agent {
      * @param {*} param0 
      * @returns 
      */
-    async handleMsgs() {
+    async handleMsgs(group_id) {
         if (!msgCacheLength) {
             this.groupMsgs[group_id] = []
         } else {
-             this.groupMsgs[group_id] = this.groupMsgs[group_id].slice(-msgCacheLength);
+            this.groupMsgs[group_id] = this.groupMsgs[group_id].slice(-msgCacheLength);
         }
     }
 
@@ -98,9 +99,9 @@ class Agent {
             const slangs = (await slangsDB.getSlangs()).reduce((s, slang) => s + slangPrompt(slang), '');
 
             // 拼接最终System Prompt（替换群名+群ID，加入黑话上下文）
-            const systemMessage = { role: 'system', content: systemPrompt({ group_name, group_id, slangs }) };
+            const systemMessage = new SystemMessage(systemPrompt({ group_name, group_id, slangs }))
             const userMessageContent = messages.reduce((str, message) => str + userPrompt(message), '')
-            const userMessage = { role: 'human', content: userMessageContent };
+            const userMessage = new HumanMessage(userMessageContent)
 
             // 单次调用模型
             let res = await this.model.invoke([systemMessage, ...this.groupMsgs[group_id], userMessage], {
@@ -116,48 +117,17 @@ class Agent {
             // 提取黑话
             let content = await this.extractSlangs(res.content);
             // 保存AI回复
-            this.groupMsgs[group_id].push({ role: 'AI', content: JSON.stringify(content) })
+            this.groupMsgs[group_id].push(new AIMessage(JSON.stringify(content)))
             // 处理历史对话
-            this.handleMsgs()
+            this.handleMsgs(group_id)
             // 5. 返回最终回复
             return content;
 
         } catch (error) {
             console.error('聊天处理失败：', error);
-            return ''
+            return ['']
         }
     }
 }
 
 export default Agent
-
-
-
-
-// 调用示例
-const agent = new Agent()
-const reply = await agent.chat({
-    group_name: '蓝色星原旅谣交流群',
-    group_id: '123456',
-    messages: [
-        {
-            user_id: '789',
-            user_name: '玩家3',
-            at: false,
-            content: '蓝原三测开了没'
-        },
-        {
-            user_id: '782',
-            user_name: '玩家4',
-            at: false,
-            content: '感觉忒拉拉好涩啊'
-        },
-        {
-            user_id: '781',
-            user_name: '玩家4',
-            at: true,
-            content: '杭州今天天气怎么样'
-        },
-    ]
-});
-console.log(reply);
