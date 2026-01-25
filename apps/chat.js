@@ -16,6 +16,7 @@ export const Chat = plugin({
     ]
 })
 
+
 // 智能体
 let agent
 
@@ -71,11 +72,10 @@ async function chat(e) {
     // 发送对话后，用户历史聊天内容将由大模型上下文保存，所以进行清空
     groupUsrMsgs[e.group_id] = []
 
-    reply.map(async reply => {
-        await e.reply(handleMsgs(reply))
+    for (rep in reply) {
+        await e.reply(handleMsgs(rep))
         await utils.sleep(Math.random() * 1000 + 1000)
-    })
-
+    }
 
 }
 

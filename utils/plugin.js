@@ -1,4 +1,5 @@
 import setting from '#setting'
+import plugin from '../../../lib/plugins/plugin.js'
 function getPlugin(config) {
     const rules = []
     const funcs = []
@@ -11,11 +12,17 @@ function getPlugin(config) {
         Object.defineProperty(f, 'name', { value: name });
         funcs.push(f)
     })
-    function Plugin() {
-        funcs.forEach((func) => this[func.name] = func.bind(this))
+    config.func?.forEach(f => {
+        funcs.push(f)
+    })
+    class Plugin extends plugin {
+        constructor() {
+            super({ ...config, rule: rules })
+            funcs.forEach((func) => {
+                this[func.name] = func.bind(this)
+            })
+        }
     }
-    Plugin.prototype = new plugin({ ...config, rule: rules })
-    Plugin.prototype.constructor = Plugin
     return Plugin
 }
 

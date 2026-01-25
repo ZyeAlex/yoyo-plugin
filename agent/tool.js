@@ -4,8 +4,9 @@ import setting from '../utils/setting.js'
 export const tool_functions = {
     get_infos: async () => {
         return JSON.stringify({
-            角色: Array.from(Object.keys(setting.heroIds)),
-            奇波: Array.from(Object.keys(setting.petIds))
+            '角色': Array.from(Object.keys(setting.heroIds)),
+            '角色的别名(外号)': Object.entries(setting.nicknames).map(([id, nick]) => ({ [setting.heros[id].name]: nick })),
+            '奇波': Array.from(Object.keys(setting.petIds))
         })
 
     },
@@ -56,6 +57,10 @@ export const tools = [
                 "required": ["name", "type"] // 参数约束
             }
         }
-    },
+    }
 ];
+
+
+
+
 
