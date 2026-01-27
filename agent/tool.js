@@ -31,7 +31,7 @@ export const tool_functions = {
         }
     },
     // 生成图片的核心函数
-    generate_image: async ({ prompt, style, size }) => {
+    generate_image: async ({ prompt, image, size }) => {
         if (!imgModel) {
             return
         }
@@ -39,6 +39,7 @@ export const tool_functions = {
         let response = await client.images.generate({
             model: imgModel,
             prompt,
+            image,
             size,
             extra_body: {
                 "watermark": true,
@@ -86,7 +87,7 @@ export const tools = [
         "type": "function",
         "function": {
             "name": "generate_image",
-            "description": "根据用户提供的提示词生成指定风格和尺寸的图片",
+            "description": "根据用户提供的提示词生成指定风格和尺寸的图片，或者对已有图片进行修改调整",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -98,6 +99,14 @@ export const tools = [
                         "type": "string",
                         "description": "图片尺寸，如720x1280、1080x1920等",
                         "default": "1080x1920",
+                    },
+                    "image": {
+                        "type": ["string", "array"],
+                        "description": "图片的URL地址，当需要修改图片时，传入这个参数，传入单个URL（字符串）或多个URL（数组）均可",
+                        "items": { // 仅当类型为数组时生效，定义数组元素类型
+                            "type": "string",
+                            "description": "单个图片的URL地址"
+                        }
                     }
                 },
                 "required": ["prompt"] // 必填参数
