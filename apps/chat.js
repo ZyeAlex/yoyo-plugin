@@ -24,6 +24,10 @@ let agent
 const groupUsrMsgs = {}
 
 async function chat(e) {
+    // if (e.group_id == 81138585) {
+    //     console.log(e);
+    // }
+
     //没有配置api-key
     if (!setting.config.apiKey) return true
     // 过滤群聊
@@ -43,17 +47,22 @@ async function chat(e) {
             content: e.msg
         })
 
-        // 对话触发概率
-        if (Math.random() > setting.config.RandomMsgProbability) {
-            return true
+        // todo AI自然对话 暂时不考虑
+
+        return
+    } else {
+        // 用户消息
+        let content = e.msg
+        // 用户回复了图片
+        if (e.img?.length) {
+            content += '\n' + '图片列表：' + e.img
         }
 
-    } else {
         groupUsrMsgs[e.group_id].push({
             user_id: e.user_id,
             user_name: e.user_name,
             at: true,
-            content: e.msg
+            content
         })
     }
 
@@ -72,7 +81,14 @@ async function chat(e) {
     // 发送对话后，用户历史聊天内容将由大模型上下文保存，所以进行清空
     groupUsrMsgs[e.group_id] = []
 
-    for (rep in reply) {
+    for (let rep of reply) {
+        if (rep == '[CQ:None]') break
+        if (rep.includes('[CQ:Image]')) {
+            await e.reply(
+                segment.image(rep.replace('[CQ:Image]', ''))
+            )
+            break
+        }
         await e.reply(handleMsgs(rep))
         await utils.sleep(Math.random() * 1000 + 1000)
     }
@@ -82,7 +98,7 @@ async function chat(e) {
 // 处理对话
 function handleMsgs(msg) {
     let reply = []
-    msg = msg.reply(/\[at:(\d+)\]/, (_, qq) => {
+    msg = msg.replace(/\[at:(\d+)\]/, (_, qq) => {
         reply.push(segment.at(qq))
         return ''
     })

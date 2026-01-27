@@ -33,13 +33,14 @@ signExclude: [] # 签到排除群聊
 
 
 # 进群欢迎
-increase: 
-  123456: 欢迎进群~星临者~
+increaseInclude: 
+  123456: 欢迎进群~\n星临者~
+increaseCd: 10 # 秒
 # AI
-model: '' # 模型名称
-apiKey: '' # api-key
 baseURL: '' # 模型地址
+apiKey: '' # api-key
+model: '' # 模型名称
+imgModel: '' # 图片生成模型名称
 msgCacheLength: 10 # 群组内历史聊天内容长度
-RandomMsgProbability: 0 # 触发对话概率
 MaxUsrMsgCount: 10 # 上下文对话保存数量
 aiInclude: [] # AI触发的群聊

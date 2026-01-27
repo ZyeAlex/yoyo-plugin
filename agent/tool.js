@@ -1,5 +1,13 @@
 import { http } from '../utils/http.js'
 import setting from '../utils/setting.js'
+import YAML from 'yaml';
+import path from 'path'
+import fs from 'fs'
+import { OpenAI } from 'openai'
+// 加载yaml
+const { imgModel, apiKey, baseURL } = YAML.parse(fs.readFileSync(path.join(import.meta.dirname, '../config/config.yaml'), 'utf8'));
+
+let client
 
 export const tool_functions = {
     get_infos: async () => {
@@ -21,7 +29,23 @@ export const tool_functions = {
                     setting.pets[setting.petIds[name]]
                 )
         }
-    }
+    },
+    // 生成图片的核心函数
+    generate_image: async ({ prompt, style, size }) => {
+        if (!imgModel) {
+            return
+        }
+        if (!client) client = new OpenAI({ baseURL, apiKey })
+        let response = await client.images.generate({
+            model: imgModel,
+            prompt,
+            size,
+            extra_body: {
+                "watermark": true,
+            },
+        })
+        return '图片生成成功，请将`[CQ:Image]' + response.data[0].url + '`作为一条消息原封不动返回给用户，不要对这条消息做出任何修改或添加'
+    },
 }
 
 export const tools = [
@@ -57,7 +81,29 @@ export const tools = [
                 "required": ["name", "type"] // 参数约束
             }
         }
-    }
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "generate_image",
+            "description": "根据用户提供的提示词生成指定风格和尺寸的图片",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "prompt": {
+                        "type": "string",
+                        "description": "图片生成的提示词，描述图片内容、元素、氛围等"
+                    },
+                    "size": {
+                        "type": "string",
+                        "description": "图片尺寸，如720x1280、1080x1920等",
+                        "default": "1080x1920",
+                    }
+                },
+                "required": ["prompt"] // 必填参数
+            }
+        }
+    },
 ];
 
 

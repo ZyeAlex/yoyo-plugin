@@ -19,7 +19,7 @@ export const Img = plugin({
             fnc: delHeroImg
         },
         {
-            reg: `^#?(?!上传|添加|随机(?!角色)?)(.{0,10})${imgReg}([0-9]{0,4})$`,
+            reg: `^#?(?!上传|添加|随机(?!角色)?)(.{0,5})${imgReg}([0-9]{0,4})$`,
             fnc: getHeroImg
         },
         {

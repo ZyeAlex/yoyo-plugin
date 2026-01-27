@@ -1,7 +1,5 @@
 import plugin from '#plugin'
 import setting from '#setting'
-/** 冷却cd 30s */
-let cd = 30
 
 export const increase = plugin({
   name: '[悠悠助手]进退群通知',
@@ -14,11 +12,11 @@ export const increase = plugin({
 async function accept(e) {
   /** 定义入群欢迎内容 */
   if (e.user_id === e.bot.uin) return
-  if (!setting.config?.increase[e.group_id]) return
+  if (!setting.config.increaseInclude?.[e.group_id]) return
   /** cd */
-  let key = `Yz:newcomers:${e.group_id}`
+  let key = `[yoyo-plugin]new-comers-${e.group_id}`
   if (await redis.get(key)) return
-  redis.set(key, '1', { EX: cd })
+  redis.set(key, '1', { EX: setting.config.increaseCd })
 
   let nickname
   if (e.nickname) {
@@ -36,7 +34,7 @@ async function accept(e) {
   await e.reply([
     segment.at(e.user_id),
     segment.image(`https://q1.qlogo.cn/g?b=qq&s=0&nk=${e.user_id}`),
-    setting.config.increase[e.group_id]
+    setting.config.increaseInclude[e.group_id].replace(/(\\n)|(<br\/?>)/g, '\n')
   ])
 }
 
