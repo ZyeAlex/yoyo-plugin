@@ -11,7 +11,7 @@ export const Increase = plugin({
 async function accept(e) {
   /** 定义入群欢迎内容 */
   if (e.user_id === e.bot.uin) return
-  let group_cfg = setting.config.increaseInclude?.find(({ group_id }) => group_id = e.group_id)
+  let group_cfg = setting.config.increaseInclude?.find(({ group_id }) => group_id == e.group_id)
   if (!group_cfg) return
   /** cd */
   let key = `[yoyo-plugin]new-comers-${e.group_id}`
