@@ -35,7 +35,7 @@ const word_list = [// 固有文本回复列表
     '4',
     '5',
 ]
-export const Help = plugin({
+export const Poke = plugin({
     name: '[悠悠助手]戳一戳',
     event: 'notice.group.poke',
     priority: 9999,

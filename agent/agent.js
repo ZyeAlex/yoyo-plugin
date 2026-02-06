@@ -1,10 +1,11 @@
-import { ChatOpenAI } from '@langchain/openai'
 import fs from 'fs'
-import { slangsDB } from './db.js'
-import { tool_functions, tools } from './tool.js'
-import { systemPrompt, userPrompt, slangPrompt } from './prompt/index.js'
 import YAML from 'yaml';
 import path from 'path'
+import { slangsDB } from './db.js'
+import { tool_functions, tools } from './tool.js'
+import { systemPrompt, slangPrompt } from './prompt/index.js'
+import { ChatOpenAI } from '@langchain/openai'
+
 import { AIMessage, SystemMessage, HumanMessage } from 'langchain'
 // 加载yaml
 const { model, apiKey, baseURL, msgCacheLength } = YAML.parse(fs.readFileSync(path.join(import.meta.dirname, '../config/config.yaml'), 'utf8'));
@@ -58,8 +59,12 @@ class Agent {
     async extractSlangs(content) {
         let finalReply = '';
         try {
-            const result = JSON.parse(content)
-            finalReply = result.reply
+            const result = JSON.parse(
+                content.replace(/^```\s*json\s*/i, '')
+                    .replace(/\s*```\s*$/, '')
+                    .trim()
+            )
+            finalReply = result.messages
             // 提取黑话并批量保存到LanceDB（全局）
             if (Array.isArray(result.slangs) && result.slangs.length > 0) {
                 await slangsDB.saveSlangs({
@@ -70,7 +75,7 @@ class Agent {
         } catch (e) {
             logger.info('黑话提取失败:', content)
             // JSON解析失败，降级使用原始回复（黑话提取失败不影响主流程）
-            finalReply = [content];
+            finalReply = [[{ "type": "text", "text": content }]];
         }
 
         return finalReply;
@@ -90,7 +95,7 @@ class Agent {
     }
 
     // 核心聊天方法    messages:[ { user_id,user_name,at,content } ]
-    async chat({ group_name, group_id, messages }) {
+    async chat({ group_name, group_id, self_id, messages }) {
         try {
 
             if (!this.groupMsgs[group_id]) this.groupMsgs[group_id] = []
@@ -99,9 +104,10 @@ class Agent {
             const slangs = (await slangsDB.getSlangs()).reduce((s, slang) => s + slangPrompt(slang), '');
 
             // 拼接最终System Prompt（替换群名+群ID，加入黑话上下文）
-            const systemMessage = new SystemMessage(systemPrompt({ group_name, group_id, slangs }))
-            const userMessageContent = messages.reduce((str, message) => str + userPrompt(message), '')
-            const userMessage = new HumanMessage(userMessageContent)
+            const systemMessage = new SystemMessage(systemPrompt({ group_name, group_id, self_id, slangs }))
+
+            const userMessage = new HumanMessage(JSON.stringify(messages))
+
 
             // 单次调用模型
             let res = await this.model.invoke([systemMessage, ...this.groupMsgs[group_id], userMessage], {
@@ -115,6 +121,8 @@ class Agent {
             // 处理工具调用
             res = await this.handleToolCall(group_id, res, systemMessage)
             // 提取黑话
+
+
             let content = await this.extractSlangs(res.content);
             // 保存AI回复
             this.groupMsgs[group_id].push(new AIMessage(JSON.stringify(content)))

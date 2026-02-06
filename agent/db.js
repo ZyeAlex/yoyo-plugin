@@ -2,13 +2,14 @@
 import { Low } from 'lowdb'
 import { JSONFile } from 'lowdb/node'
 import fs from 'fs'
+import path from 'path'
 class Slangs {
     constructor() {
         // recursive: true → 若父文件夹不存在则自动创建，且文件夹已存在时不会报错
-        if (!fs.existsSync('../data/db/')) {
-            fs.mkdirSync('../data/db/', { recursive: true })
+        if (!fs.existsSync((path.join(import.meta.dirname, '../data/db/')))) {
+            fs.mkdirSync(path.join(import.meta.dirname, '../data/db/'), { recursive: true })
         }
-        const adapter = new JSONFile('../data/db/slangs.json')
+        const adapter = new JSONFile(path.join(import.meta.dirname, '../data/db/slangs.json'))
         this.db = new Low(adapter, {})
         this.db.read()
     }
@@ -48,7 +49,7 @@ class Slangs {
     // 删除已过时黑话
     async delSlangs() {
         await this.db.read()
-        
+
         await this.db.write()
     }
 }

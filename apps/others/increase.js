@@ -1,18 +1,18 @@
 import plugin from '#plugin'
 import setting from '#setting'
 
-export const increase = plugin({
+export const Increase = plugin({
   name: '[悠悠助手]进退群通知',
   event: 'notice.group.increase',
   priority: 9999,
   func: [accept]
 })
 
-
 async function accept(e) {
   /** 定义入群欢迎内容 */
   if (e.user_id === e.bot.uin) return
-  if (!setting.config.increaseInclude?.[e.group_id]) return
+  let group_cfg = setting.config.increaseInclude?.find(({ group_id }) => group_id = e.group_id)
+  if (!group_cfg) return
   /** cd */
   let key = `[yoyo-plugin]new-comers-${e.group_id}`
   if (await redis.get(key)) return
@@ -34,7 +34,7 @@ async function accept(e) {
   await e.reply([
     segment.at(e.user_id),
     segment.image(`https://q1.qlogo.cn/g?b=qq&s=0&nk=${e.user_id}`),
-    setting.config.increaseInclude[e.group_id].replace(/(\\n)|(<br\/?>)/g, '\n')
+    group_cfg.text.replace(/(\\n)|(<br\/?>)/g, '\n')
   ])
 }
 

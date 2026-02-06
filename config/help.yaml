@@ -26,6 +26,7 @@ helpGroup:
   - "title": "#料理图鉴"
     "desc": "查看所有食物"
     "icon": "tex_icon_item_meat04.png"
+
 - "group": "角色"
   "list":
   - "title": "#寒悠悠技能"
@@ -67,20 +68,29 @@ helpGroup:
     "desc": "删除角色昵称"
     "font-size": "18px"
 
-- "group": "日常"
+- "group": "工具"
   "list":
-  - "title": "#签到"
-    "icon": "tex_icon_item_buildtool03.png"
-    "desc": "每日签到并领取老婆"
   - "title": "#数据"
     "icon": "tex_icon_item_skin03.png"
     "desc": "PV数据统计"
   - "title": "#公告"
-    "icon": "tex_icon_item_rubbish01.png"
+    "icon": "Icon.png"
     "desc": "查看Wiki最新公告"
-  - "title": "#日历"
-    "icon": "tex_icon_item_rubbish01.png"
-    "desc": "查看卡池（如有）和活动日历"
+
+- "group": "娱乐"
+  "list":
+  - "title": "#签到"
+    "icon": "tex_icon_item_buildtool03.png"
+    "desc": "每日签到并领取老婆"
+  - "title": "#你是什么猪"
+    "icon": "Icon.png"
+    "desc": "看看群友是什么种类的猪"
+  - "title": "~表情列表"
+    "icon": "Icon.png"
+    "desc": "「撅」等互动表情"
+  - "title": "YoAI"
+    "icon": "Icon.png"
+    "desc": "@悠悠和她互动"
 
 - "group": "管理功能"
   "auth": "master"

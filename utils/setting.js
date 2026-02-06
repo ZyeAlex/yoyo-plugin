@@ -29,14 +29,14 @@ class Setting {
      * 角色数据
      */
     this.nicknames = this.getData('data/hero/default_nickname') || {} // 角色昵称  {101003:['唐悠悠']}
-    this.heros = this.getData('data/hero/default') || {} // 角色数据 { 101003:{ /* 角色数据 */ } }
+    this.heros = this.getData('data/hero/hero') || {} // 角色数据 { 101003:{ /* 角色数据 */ } }
     this.heroImgs = {} //角色图片 {101003:[]}
 
     /**
      * 奇波数据
      */
     this.petIds = {}
-    this.pets = this.getData('data/pet/default') || {}
+    this.pets = this.getData('data/pet/pet') || {}
     /**
      * 装备系统
      */
@@ -122,7 +122,6 @@ class Setting {
       Object.assign(this.heros, await getWikiData('Hero'))
       this.setData('data/hero/hero', this.heros)
     } catch (error) {
-      Object.assign(this.heros, this.getData('data/hero/hero') || {})
       logger.error(`[yoyo-plugin][getHeroData]${error}`)
     }
     this.heroIds = Object.entries(this.heros).reduce((heroIds, [heroId, { name }]) => {
@@ -202,14 +201,12 @@ class Setting {
       })
       this.setData('data/pet/pet', this.pets)
     } catch (error) {
-      Object.assign(this.pets, this.getData('data/pet/pet') || {})
       logger.error(`[yoyo-plugin][getPetData]${error}`)
     }
     this.petIds = Object.entries(this.pets).reduce((petIds, [petId, { name }]) => {
       petIds[name] = petId
       return petIds
     }, {})
-
   }
   async getAccessoryData() {
     try {

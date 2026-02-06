@@ -5,7 +5,7 @@ import path from 'path'
 import fs from 'fs'
 import { OpenAI } from 'openai'
 // 加载yaml
-const { imgModel, apiKey, baseURL } = YAML.parse(fs.readFileSync(path.join(import.meta.dirname, '../config/config.yaml'), 'utf8'));
+const { imgModel, model, apiKey, baseURL } = YAML.parse(fs.readFileSync(path.join(import.meta.dirname, '../config/config.yaml'), 'utf8'));
 
 let client
 
@@ -29,6 +29,29 @@ export const tool_functions = {
                     setting.pets[setting.petIds[name]]
                 )
         }
+    },
+    analyze_image: async ({ image_urls, description = '请分析图片中的内容' }) => {
+
+        if (!client) client = new OpenAI({ baseURL, apiKey })
+        let response = await client.responses.create({
+            model,
+            input: [
+                {
+                    role: 'user',
+                    content: [
+                        ...image_urls.map(image_url => ({
+                            "type": "input_image",
+                            "image_url": image_url
+                        })),
+                        {
+                            "type": "input_text",
+                            "text": description
+                        }
+                    ]
+                }
+            ]
+        })
+        return response.output_text
     },
     // 生成图片的核心函数
     generate_image: async ({ prompt, image, size }) => {
@@ -86,6 +109,31 @@ export const tools = [
     {
         "type": "function",
         "function": {
+            "name": "analyze_image",
+            "description": "对指定图片进行内容分析",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "image_urls": {
+                        "type": ["array"],
+                        "description": "需要分析的图片URL地址,传入URL数组",
+                        "items": {
+                            "type": "string",
+                            "description": "图片的URL地址"
+                        }
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "需要如何分析图片，比如「请分析图片中的内容」"
+                    }
+                },
+                "required": ["image_urls"]
+            }
+        }
+    },
+    {
+        "type": "function",
+        "function": {
             "name": "generate_image",
             "description": "根据用户提供的提示词生成指定风格和尺寸的图片，或者对已有图片进行修改调整",
             "parameters": {
@@ -98,7 +146,6 @@ export const tools = [
                     "size": {
                         "type": "string",
                         "description": "图片尺寸，如720x1280、1080x1920等",
-                        "default": "1080x1920",
                     },
                     "image": {
                         "type": ["string", "array"],

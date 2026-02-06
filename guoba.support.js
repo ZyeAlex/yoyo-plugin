@@ -1,6 +1,8 @@
 import lodash from 'lodash'
 import setting from "#setting"
 import path from 'path'
+import fs from 'fs'
+
 /**
  *  支持锅巴
  *  锅巴插件：https://gitee.com/guoba-yunzai/guoba-plugin.git
@@ -11,21 +13,41 @@ import path from 'path'
 export function supportGuoba() {
   let allGroup = [];
   Bot.gl.forEach((v, k) => { k != 'stdin' && allGroup.push({ label: `${v.group_name}(${k})`, value: k }); });
+
+  console.log(allGroup);
+
+
+  let packageJson = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'));
   return {
     pluginInfo: {
-      name: 'yoyo-plugin',
-      title: '蓝色星原旅谣插件',
-      author: '@蓝色星原旅谣',
-      authorLink: 'https://gitee.com/yoyo-plugin',
-      link: 'https://gitee.com/yoyo-plugin/yoyo-plugin',
+      name: packageJson.name,
+      title: packageJson.title,
+      author: packageJson.author,
+      authorLink: packageJson.authorLink,
+      link: packageJson.link,
+      description: packageJson.description,
       isV3: true,
-      description: '「蓝色星原：旅谣」插件，包括角色面板、角色图鉴、角色图片等一系列功能',
       iconPath: path.join(setting.path, '/resources/common/theme/logo_c.png'),
     },
     // 配置项信息
     configInfo: {
       // 配置项 schemas
       schemas: [
+
+        {
+          component: "Divider",
+          label: "基础配置"
+        },
+        {
+          field: 'config.rulePrefix',
+          label: '插件指令前缀',
+          bottomHelpMessage: '插件指令前缀 (正则)',
+          component: 'GTags',
+          componentProps: {
+            allowAdd: true,
+            allowDel: true,
+          },
+        },
         {
           component: "Divider",
           label: "图片配置"
@@ -90,11 +112,9 @@ export function supportGuoba() {
           }
         },
 
-
-
         {
           component: "Divider",
-          label: "签到配置"
+          label: "娱乐功能"
         },
         {
           field: "config.sign",
@@ -102,9 +122,13 @@ export function supportGuoba() {
           component: "Switch"
         },
         {
+          field: "config.signWithdrawal",
+          label: "是否自动撤回签到图片",
+          component: "Switch"
+        },
+        {
           field: 'config.signInclude',
           label: '签到群白名单',
-          // bottomHelpMessage: '签到群白名单 (默认所有)',
           component: 'Select',
           componentProps: {
             allowAdd: true,
@@ -116,7 +140,83 @@ export function supportGuoba() {
         {
           field: 'config.signExclude',
           label: '签到群黑名单',
-          // bottomHelpMessage: '',
+          component: 'Select',
+          componentProps: {
+            allowAdd: true,
+            allowDel: true,
+            mode: 'multiple',
+            options: allGroup,
+          },
+        },
+        {
+          field: "config.emoticon",
+          label: "开启表情包",
+          component: "Switch"
+        },
+        {
+          field: 'config.emoticonServer',
+          label: '表情包服务地址',
+          bottomHelpMessage: '可以配置多个，系统将会检测能用的服务器',
+          component: 'GTags',
+          componentProps: {
+            allowAdd: true,
+            allowDel: true,
+          },
+        },
+
+        {
+          component: "Divider",
+          label: "AI配置"
+        },
+        {
+          field: 'config.baseURL',
+          component: "Input",
+          label: 'baseURL',
+          bottomHelpMessage: '服务URL地址',
+        },
+        {
+          field: 'config.apiKey',
+          component: "Input",
+          label: 'API-KEY',
+          bottomHelpMessage: '服务API-KEY',
+        },
+        {
+          field: 'config.model',
+          component: "Input",
+          label: '对话模型',
+          bottomHelpMessage: '对话模型名称，如`deepseek-R1-20261`',
+        },
+        {
+          field: 'config.imgModel',
+          component: "Input",
+          label: '图片生成模型',
+          bottomHelpMessage: '图片生成模型名称',
+        },
+        {
+          field: 'config.msgCacheLength',
+          label: '群组历史',
+          bottomHelpMessage: '群组内历史聊天内容长度',
+          component: 'InputNumber',
+          required: true,
+          componentProps: {
+            min: 0,
+            max: 50,
+          }
+        },
+        {
+          field: 'config.MaxUsrMsgCount',
+          label: '上下文历史',
+          bottomHelpMessage: '上下文对话保存数量',
+          component: 'InputNumber',
+          required: true,
+          componentProps: {
+            min: 0,
+            max: 50,
+          }
+        },
+        {
+          field: 'config.aiInclude',
+          label: 'AI开启群聊',
           component: 'Select',
           componentProps: {
             allowAdd: true,
@@ -126,53 +226,9 @@ export function supportGuoba() {
           },
         },
 
-
-        // {
-        //   component: "Divider",
-        //   label: "AI配置"
-        // },
-        // {
-        //   field: 'config.apiKey',
-        //   component: "Input",
-        //   label: 'API-KEY',
-        //   bottomHelpMessage: 'DeepSeek api-key',
-        // },
-        // {
-        //   field: 'config.chatLong',
-        //   label: '对话长度',
-        //   component: 'InputNumber',
-        //   required: true,
-        //   componentProps: {
-        //     min: 0,
-        //     max: 100,
-        //   }
-        // },
-        // {
-        //   field: 'config.aiInclude',
-        //   label: 'AI开启群聊',
-        //   bottomHelpMessage: '默认全部关闭',
-        //   component: 'Select',
-        //   componentProps: {
-        //     allowAdd: true,
-        //     allowDel: true,
-        //     mode: 'multiple',
-        //     options: allGroup,
-        //   },
-        // },
-
         {
           component: "Divider",
           label: "其他配置"
-        },
-        {
-          field: 'config.rulePrefix',
-          label: '插件指令前缀',
-          bottomHelpMessage: '插件指令前缀 (正则)',
-          component: 'GTags',
-          componentProps: {
-            allowAdd: true,
-            allowDel: true,
-          },
         },
         {
           field: 'config.PVList',
@@ -201,16 +257,50 @@ export function supportGuoba() {
           },
         },
         {
-          component: "Divider",
-          label: "其他配置项"
-        },{
-          field: "config.setting.help",
-          label: "覆盖#帮助",
-          bottomHelpMessage: "开启后将#帮助时会覆盖为本插件帮助信息",
-          component: "Switch",
-        }
-
-
+          field: "config.increaseInclude",
+          label: "进群欢迎配置",
+          bottomHelpMessage: "配置进群欢迎内容",
+          component: "GSubForm",
+          componentProps: {
+            multiple: true,
+            modalProps: {
+              title: "进群欢迎配置"
+            },
+            schemas: [
+              {
+                field: "group_id",
+                label: "群组",
+                required: true,
+                component: "Select",
+                bottomHelpMessage: "配置「默认」选项后所有群组默认统一返回该欢迎词",
+                componentProps: {
+                  options: [
+                    { label: '默认', value: 0 },
+                    ...allGroup
+                  ],
+                },
+              },
+              {
+                field: "text",
+                label: "欢迎词",
+                required: true,
+                component: "Input",
+                bottomHelpMessage: "「\\n」为换行"
+              }
+            ]
+          }
+        },
+        {
+          field: 'config.increaseCd',
+          label: '进群欢迎间隔',
+          bottomHelpMessage: '进群欢迎的间隔时间(单位:s)',
+          component: 'InputNumber',
+          required: true,
+          componentProps: {
+            min: 0,
+            max: 300,
+          }
+        },
 
       ],
       // 获取配置数据方法（用于前端填充显示数据）

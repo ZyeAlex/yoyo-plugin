@@ -1,0 +1,23 @@
+/* 内容主盒子：核心布局，实现每行5个item - 紧凑版 */
+.main {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 2px;
+    /* 行列间距分开调小：垂直8px，水平12px，排版更密 */
+    margin: 10px 0 10px 10px;
+}
+
+.item {
+    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    /* 左对齐 */
+    padding: 5px 10px;
+    /* 增加内边距 */
+    background-color: rgba(248, 248, 248, 0.8);
+    /* 浅背景替代边框 */
+    border-radius: 4px;
+    font-size: 16px;
+    color: #555;
+}

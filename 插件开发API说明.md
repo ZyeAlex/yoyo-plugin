@@ -10,7 +10,6 @@ import setting from '#setting'
 |setting.config|<font color=bluesky>配置</font>|请参考[config](./config/default.yaml)|
 |setting.yunzaiPath|yunzai地址||
 |setting.path|yoyo地址||
-|setting.rulePrefix|前缀||
 |setting.heros|角色信息|`{ 101003:{ name:'寒悠悠',id:101003,...... } }`|
 |<font color=gray><s>setting.heroIds</s></font>|<font color=gray><s>内部使用</s></font>| |
 |setting.nicknames|角色昵称|`{ 101003:['唐悠悠',...] }`|

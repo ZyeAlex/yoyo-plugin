@@ -1,8 +1,8 @@
-import render, { saveRender } from '../utils/render.js'
+import { saveRender } from '#render'
 import utils from '#utils'
 import setting from '#setting'
-import lodash from 'lodash'
 import plugin from '#plugin'
+import lodash from 'lodash'
 
 export const Sign = plugin({
     name: '[悠悠助手]签到',
@@ -95,8 +95,9 @@ async function sign(e) {
         rank: userSignInfo.rank,
         day: Object.values(userSignInfo.history).reduce((a, b) => a + b),
     }
-    await saveRender(e, 'sign/index', signData.heroImg, signData, false, { recallMsg: setting.config.signWithdrawal })
+    await saveRender(e, 'sign/index', signData.heroImg, signData, false, { recallMsg: setting.config.signWithdrawal ? 100 : 0 })
 }
+
 async function updateSign(e) {
     if (!e.group_id) return true
     // 签到过滤
@@ -140,5 +141,5 @@ async function updateSign(e) {
         rank: userSignInfo.rank,
         day: Object.values(userSignInfo.history).reduce((a, b) => a + b),
     }
-    await saveRender(e, 'sign/index', signData.heroImg, signData, false, { recallMsg: setting.config.signWithdrawal })
+    await saveRender(e, 'sign/index', signData.heroImg, signData, false, { recallMsg: setting.config.signWithdrawal ? 100 : 0 })
 }

@@ -27,15 +27,21 @@ PVList:
 - BV1KUopYZEs5
 # 签到
 sign: true # 开启签到
-signWithdrawal: 90 # 签到撤回
+signWithdrawal: false # 签到撤回
 signInclude: [] # 签到包含群聊
 signExclude: [] # 签到排除群聊
 
 
 # 进群欢迎
-increaseInclude: 
-  123456: 欢迎进群~\n星临者~
+increaseInclude:
+  - group_id: 123456
+    text: 欢迎来到普罗米利亚！星临者！
 increaseCd: 10 # 秒
+# 表情包
+emoticon: false
+# 表情包服务器 (如果有自建服务器，请加上服务器地址)
+emoticonServer:
+  - https://h.winterqkl.cn
 # AI
 baseURL: '' # 模型地址
 apiKey: '' # api-key

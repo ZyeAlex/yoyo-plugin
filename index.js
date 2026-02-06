@@ -1,5 +1,5 @@
 import fs from 'node:fs'
-
+import path from 'path'
 if (!global.segment) {
   global.segment = (await import("oicq")).segment
 }
@@ -10,10 +10,17 @@ if (!global.core) {
   } catch (err) { }
 }
 
-const files = fs.readdirSync('./plugins/yoyo-plugin/apps').filter(file => file.endsWith('.js'))
+
+
+const app = fs.readdirSync('./plugins/yoyo-plugin/apps').filter(file => file.endsWith('.js'))
+const other = fs.readdirSync('./plugins/yoyo-plugin/apps/others').filter(file => file.endsWith('.js'))
+
 let ret = []
-files.forEach((file) => {
+app.forEach((file) => {
   ret.push(import(`./apps/${file}`))
+})
+other.forEach((file) => {
+  ret.push(import(`./apps/others/${file}`))
 })
 ret = await Promise.allSettled(ret)
 
@@ -23,6 +30,7 @@ logger.info('\t插 件 群: https://qm.qq.com/q/Mk3jyhIqSm')
 logger.info('\t插件群号: 991709221')
 logger.info('🍀🍀🍀🍀🍀🍀🍀🍀🍀\tyoyo-plugin载入成功!\t🍀🍀🍀🍀🍀🍀🍀🍀🍀')
 
+const files = [...app, ...other]
 let apps = {}
 
 for (let i in files) {

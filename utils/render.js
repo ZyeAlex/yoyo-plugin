@@ -11,7 +11,7 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
   }
   let packageJson = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'));
   const name = packageJson.name
-  const nameCH = packageJson.nameCH
+  const title = packageJson.title
   const version = packageJson.version || Version.version
 
   // 遍历 setting.path + '/resources/common' 下的html, 保存为 { name:'path/name.html' }
@@ -32,7 +32,7 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
     bgImg = '/common/pet/background.png'
   }
   // copyright
-  let copyright = ` 蓝色星原旅谣 | ${nameCH}  <span class="version">${version}</span> `
+  let copyright = ` 蓝色星原旅谣 | ${title}  <span class="version">${version}</span> `
   if (cfg.origin) copyright += `| 数据源 <span class="version">${cfg.origin}</span> `
   return e.runtime.render('yoyo-plugin', p, renderData, {
     ...cfg,
@@ -44,7 +44,7 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
         layout: setting.path + '/resources/common/layout.html',
         bgImg,
         rulePrefix: setting.config.rulePrefix[0] || '$',
-        sys: { name, nameCH, copyright },
+        sys: { name, title, copyright },
         Math,
         JSON,
         quality: 100
