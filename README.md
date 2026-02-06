@@ -13,8 +13,7 @@
 <img src="https://gitee.com/yoyo-plugin/yoyo-plugin/badge/star.svg"/>
 
 </div>
-<div align="center"><img src="https://api.moedog.org/count/@ZyeAlex.readme"  /></div>
-
+<div align="center"><img src="https://api.moedog.org/count/@ZyeAlex:yoyo-plugin?theme=asoul"  /></div>
 </div>
 
 
