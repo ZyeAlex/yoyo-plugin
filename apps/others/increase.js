@@ -10,12 +10,12 @@ export const Increase = plugin({
 
 async function accept(e) {
   /** 定义入群欢迎内容 */
-  if (e.user_id === e.bot.uin) return
+  if (e.user_id === e.bot.uin) return true
   let group_cfg = setting.config.increaseInclude?.find(({ group_id }) => group_id == e.group_id)
-  if (!group_cfg) return
+  if (!group_cfg) return true
   /** cd */
   let key = `[yoyo-plugin]new-comers-${e.group_id}`
-  if (await redis.get(key)) return
+  if (await redis.get(key)) return true
   redis.set(key, '1', { EX: setting.config.increaseCd })
 
   let nickname

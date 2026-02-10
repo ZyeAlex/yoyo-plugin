@@ -34,7 +34,7 @@ export const createHttp = ({
         return axiosClone(config)
     }
 
-    const get = (method) => {
+    const urlParam = (method) => {
         return http[method] = (
             url,
             params,
@@ -46,7 +46,7 @@ export const createHttp = ({
             })
         }
     }
-    const post = (method) => {
+    const bodyParam = (method) => {
         return http[method] = (
             url,
             data = {},
@@ -56,12 +56,13 @@ export const createHttp = ({
         }
     }
 
-    http.get = get('get')
-    http.delete = get('delete')
-    http.head = get('head')
-    http.post = post('post')
-    http.put = post('put')
-    http.patch = post('patch')
+    http.get = urlParam('get')
+    http.delete = urlParam('delete')
+    http.head = urlParam('head')
+
+    http.post = bodyParam('post')
+    http.put = bodyParam('put')
+    http.patch = bodyParam('patch')
 
     return http
 }

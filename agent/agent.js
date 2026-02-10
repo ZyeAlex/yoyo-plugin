@@ -3,10 +3,10 @@ import YAML from 'yaml';
 import path from 'path'
 import { slangsDB } from './db.js'
 import { tool_functions, tools } from './tool.js'
-import { systemPrompt, slangPrompt } from './prompt/index.js'
+import { systemPrompt } from './prompt/index.js'
 import { ChatOpenAI } from '@langchain/openai'
 
-import { AIMessage, SystemMessage, HumanMessage } from 'langchain'
+import { AIMessage, SystemMessage, HumanMessage, ToolMessage } from 'langchain'
 // 加载yaml
 const { model, apiKey, baseURL, msgCacheLength } = YAML.parse(fs.readFileSync(path.join(import.meta.dirname, '../config/config.yaml'), 'utf8'));
 
@@ -16,11 +16,11 @@ class Agent {
 
         // 保存对话内容
         this.groupMsgs = {}
-        // 初始化大模型（含Function Call配置）
+        // 初始化大模型
         this.initModel();
     }
 
-    // 初始化大模型（整合Function Call）
+    // 初始化大模型
     initModel() {
         this.model = new ChatOpenAI({
             model,
@@ -32,20 +32,19 @@ class Agent {
     }
 
     // 处理工具调用
-    async handleToolCall(group_id, res, systemMessage) {
+    async handleToolCall(group_id, res, systemMessage, e) {
         if (res.tool_calls?.length) {
             for (const tool_call of res.tool_calls) {
                 const { name, args, id } = tool_call;
                 // 执行工具函数
-                const toolResult = await tool_functions[name](args);
+                const content = await tool_functions[name](args, e);
                 // 将工具结果作为新消息，再次调用模型生成最终回复
-                const functionMessage = JSON.stringify({
+                const toolMessage = JSON.stringify({
                     role: 'tool',
                     id,
-                    content: toolResult
+                    content
                 });
-                // 生成带工具结果的回复
-                res = await this.model.invoke([systemMessage, ...this.groupMsgs[group_id], functionMessage]);
+                res = await this.model.invoke([systemMessage, ...this.groupMsgs[group_id], toolMessage]);
             }
         }
         return res;
@@ -95,13 +94,13 @@ class Agent {
     }
 
     // 核心聊天方法    messages:[ { user_id,user_name,at,content } ]
-    async chat({ group_name, group_id, self_id, messages }) {
+    async chat({ group_name, group_id, self_id, messages }, reply) {
         try {
 
             if (!this.groupMsgs[group_id]) this.groupMsgs[group_id] = []
 
             // 获取全局有效黑话，融入System Prompt
-            const slangs = (await slangsDB.getSlangs()).reduce((s, slang) => s + slangPrompt(slang), '');
+            const slangs = (await slangsDB.getSlangs()).values()
 
             // 拼接最终System Prompt（替换群名+群ID，加入黑话上下文）
             const systemMessage = new SystemMessage(systemPrompt({ group_name, group_id, self_id, slangs }))
@@ -116,13 +115,12 @@ class Agent {
                 // 工具调用策略：auto（自动判断是否调用）、none（不调用）、{name: "工具名"}（强制调用指定工具）
                 tool_choice: "auto",
             })
+
             // 保存用户消息
             this.groupMsgs[group_id].push(userMessage)
             // 处理工具调用
-            res = await this.handleToolCall(group_id, res, systemMessage)
+            res = await this.handleToolCall(group_id, res, systemMessage, reply)
             // 提取黑话
-
-
             let content = await this.extractSlangs(res.content);
             // 保存AI回复
             this.groupMsgs[group_id].push(new AIMessage(JSON.stringify(content)))

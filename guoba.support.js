@@ -13,10 +13,6 @@ import fs from 'fs'
 export function supportGuoba() {
   let allGroup = [];
   Bot.gl.forEach((v, k) => { k != 'stdin' && allGroup.push({ label: `${v.group_name}(${k})`, value: k }); });
-
-  console.log(allGroup);
-
-
   let packageJson = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'));
   return {
     pluginInfo: {
@@ -231,16 +227,6 @@ export function supportGuoba() {
           label: "其他配置"
         },
         {
-          field: 'config.PVList',
-          label: '监测PV播放量',
-          // bottomHelpMessage: '',
-          component: 'GTags',
-          componentProps: {
-            allowAdd: true,
-            allowDel: true,
-          },
-        },
-        {
           field: "config.iconSource",
           label: "图标载入地址",
           bottomHelpMessage: '插件图标载入地址',
@@ -276,7 +262,7 @@ export function supportGuoba() {
                 componentProps: {
                   options: [
                     { label: '默认', value: 0 },
-                    ...allGroup
+                    ...allGroup.filter(({value}) => !setting.config.increaseInclude?.find(({group_id}) => group_id == value))
                   ],
                 },
               },

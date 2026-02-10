@@ -6,7 +6,7 @@ import plugin from '#plugin'
 export const Gacha = plugin({
     name: '[悠悠助手]抽卡',
     event: 'message',
-    priority: 100,
+    priority: 9999,
     rule: [
         {
             reg: `^#?(模拟)?(抽卡)$`,
@@ -17,6 +17,6 @@ export const Gacha = plugin({
 
 
 async function simulatedGacha(e, reg) {
-    e.reply(reg)
-    e.reply('该功能暂未开发')
+    // e.reply(reg)
+    return true
 }

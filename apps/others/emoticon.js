@@ -48,7 +48,7 @@ for (const v of Object.values(res)) {
 }
 
 async function accept(e) {
-  if (!e.msg || !setting.config.emoticon) return
+  if (!e.msg || !setting.config.emoticon) return true
 
   const match = e.msg.match?.(new RegExp(`^(${Object.keys(dict).join("|")})`))?.[0]
   if (!match) return

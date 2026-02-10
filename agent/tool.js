@@ -1,11 +1,11 @@
 import { http } from '../utils/http.js'
-import setting from '../utils/setting.js'
+import setting, { subscribe } from '#setting'
 import YAML from 'yaml';
 import path from 'path'
 import fs from 'fs'
 import { OpenAI } from 'openai'
 // 加载yaml
-const { imgModel, model, apiKey, baseURL } = YAML.parse(fs.readFileSync(path.join(import.meta.dirname, '../config/config.yaml'), 'utf8'));
+const { imgModel, model, multimodal, apiKey, baseURL } = YAML.parse(fs.readFileSync(path.join(import.meta.dirname, '../config/config.yaml'), 'utf8'));
 
 let client
 
@@ -30,35 +30,40 @@ export const tool_functions = {
                 )
         }
     },
-    analyze_image: async ({ image_urls, description = '请分析图片中的内容' }) => {
-
-        if (!client) client = new OpenAI({ baseURL, apiKey })
-        let response = await client.responses.create({
-            model,
-            input: [
-                {
-                    role: 'user',
-                    content: [
-                        ...image_urls.map(image_url => ({
-                            "type": "input_image",
-                            "image_url": image_url
-                        })),
-                        {
-                            "type": "input_text",
-                            "text": description
-                        }
-                    ]
-                }
-            ]
-        })
-        return response.output_text
+    analyze_image: async ({ image_urls, description = '请分析图片中的内容', text }, e) => {
+        try {
+            if (!client) client = new OpenAI({ baseURL, apiKey })
+            if (text) e.reply(text)
+            let response = await client.responses.create({
+                model: multimodal || model,
+                input: [
+                    {
+                        role: 'user',
+                        content: [
+                            ...image_urls.map(image_url => ({
+                                "type": "input_image",
+                                "image_url": image_url
+                            })),
+                            {
+                                "type": "input_text",
+                                "text": description
+                            }
+                        ]
+                    }
+                ]
+            })
+            return response.output_text
+        } catch (error) {
+            return '当前模型不支持图片识别，需要配置多模态模型'
+        }
     },
     // 生成图片的核心函数
-    generate_image: async ({ prompt, image, size }) => {
+    generate_image: async ({ prompt, image, size, text }, e) => {
         if (!imgModel) {
-            return
+            return '未配置图片生成模型'
         }
         if (!client) client = new OpenAI({ baseURL, apiKey })
+        if (text) e.reply(text)
         let response = await client.images.generate({
             model: imgModel,
             prompt,
@@ -68,8 +73,11 @@ export const tool_functions = {
                 "watermark": true,
             },
         })
-        return '图片生成成功，请将`[CQ:Image]' + response.data[0].url + '`作为一条消息原封不动返回给用户，不要对这条消息做出任何修改或添加'
-    },
+
+        // response.data[0].url
+
+        return `{"res":"图片已生成成功","img_url":"${response.data[0].url}"}`
+    }
 }
 
 export const tools = [
@@ -125,6 +133,10 @@ export const tools = [
                     "description": {
                         "type": "string",
                         "description": "需要如何分析图片，比如「请分析图片中的内容」"
+                    },
+                    "text": {
+                        "type": "string",
+                        "description": "在分析之前回复给用户的内容，比如「我来看看」"
                     }
                 },
                 "required": ["image_urls"]
@@ -154,7 +166,11 @@ export const tools = [
                             "type": "string",
                             "description": "单个图片的URL地址"
                         }
-                    }
+                    },
+                    "text": {
+                        "type": "string",
+                        "description": "图片生成前给用户的反馈，比如：我将要为你生成xxx的图片",
+                    },
                 },
                 "required": ["prompt"] // 必填参数
             }

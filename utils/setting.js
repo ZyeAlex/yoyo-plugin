@@ -385,9 +385,41 @@ class Setting {
     })
     return true
   }
-
-
 }
+
+
+/*
+ * @Description: 发布订阅
+ * @Author: Zye
+ * @Date: 2022-12-08
+ */
+function Subscribe() {
+  // 存放订阅者
+  const callbacks = [];
+  // 设置订阅者
+  const setCallback = (callback) => {
+    if (callbacks.includes(callback))
+      return;
+    callbacks.push(callback);
+  };
+  // 移除订阅者
+  // const removeCallBack = (callback) => {
+  //     const index = callbacks.indexOf(callback);
+  //     index > -1 && callbacks.splice(index, 1);
+  // };
+  return {
+    send(...args) {
+      callbacks.forEach((callback) => callback(...args));
+    },
+    set onmessage(callback) {
+      if (callbacks.includes(callback)) return;
+      callbacks.push(callback);
+    },
+    
+  };
+}
+export const subscribe = Subscribe()
+
 
 
 export default new Setting()

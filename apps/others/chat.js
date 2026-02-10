@@ -41,7 +41,7 @@ async function accept(e) {
         message: await Promise.all(e.message.map(async item => {
             if (item.type == 'at' && item.qq == e.self_id) isAt = true
             if (item.type == 'reply') {
-                const result = await e.bot.adapter.getMsg({ bot: e.bot }, e.message_id)
+                const result = await e.bot.adapter.getMsg({ bot: e.bot }, item.id)
                 item.user_id = result.user_id
                 item.message = result.message
             }
@@ -68,7 +68,7 @@ async function accept(e) {
         group_id: e.group_id,
         self_id: e.self_id,
         messages: groupUsrMsgs[e.group_id]
-    })
+    }, e)
 
 
 
@@ -76,9 +76,8 @@ async function accept(e) {
     groupUsrMsgs[e.group_id] = []
 
 
-
     for (let message of messages) {
-
+        if (!message) break
         message = message.map(item => {
             if (item.type == "image") {
                 return segment.image(item.url)

@@ -21,10 +21,7 @@ imgDelAuth: all # 图片删除权限 "master"|"admin"|"owner"|"all"
 iconSource:
 - wiki
 - https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/
-# 监测PV播放量
-PVList:
-- BV1Jr421n7n4
-- BV1KUopYZEs5
+
 # 签到
 sign: true # 开启签到
 signWithdrawal: false # 签到撤回
@@ -46,6 +43,7 @@ emoticonServer:
 baseURL: '' # 模型地址
 apiKey: '' # api-key
 model: '' # 模型名称
+multimodal: '' # 多模态模型
 imgModel: '' # 图片生成模型名称
 msgCacheLength: 10 # 群组内历史聊天内容长度
 MaxUsrMsgCount: 10 # 上下文对话保存数量

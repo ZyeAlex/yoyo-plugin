@@ -17,6 +17,3 @@ export const systemPrompt = compileTemplate(fs.readFileSync(import.meta.dirname 
 
 
 
-// 黑话迭代提示词
-export const slangPrompt = compileTemplate(`黑话名称：【{slang}】当前含义：【{meaning}】当前含义已迭代次数：【{freq}】\n`)
-
