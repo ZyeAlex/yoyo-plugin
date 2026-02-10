@@ -16,7 +16,7 @@ async function accept(e) {
   /** cd */
   let key = `[yoyo-plugin]new-comers-${e.group_id}`
   if (await redis.get(key)) return true
-  redis.set(key, '1', { EX: setting.config.increaseCd })
+  redis.set(key, 'yoyo', { EX: setting.config.increaseCd })
 
   let nickname
   if (e.nickname) {

@@ -57,39 +57,54 @@ async function accept(e) {
   const id = keyword[0] || e.at || e.user_id
   const item = dict[match]
 
-
   const pick = await e.group?.pickMember?.(id) || await e.bot?.pickFriend?.(id)
   const info = await pick?.getInfo?.() || pick?.info || pick
   const name = info?.card || info?.nickname
 
   const formData = new FormData()
-  if (item.params_type.min_images == 2) {
-    const imgUrl = `http://q2.qlogo.cn/headimg_dl?dst_uin=${e.user_id}&spec=5`
-    const imgRes = await fetch(imgUrl)
-    const buffer = Buffer.from(await imgRes.arrayBuffer())
-    formData.append("images", new Blob([buffer]))
-  }
 
-  if (item.params_type.min_images != 0) {
-    let reply
-    if (e.getReply) {
-      reply = await e.getReply()
-    } else if (e.source) {
-      if (e.group?.getChatHistory)
-        reply = (await e.group.getChatHistory(e.source.seq, 1)).pop()
-      else if (e.friend?.getChatHistory)
-        reply = (await e.friend.getChatHistory(e.source.time, 1)).pop()
-    }
-    if (reply?.message) for (const i of reply.message)
-      if (i.type == "image" || i.type == "file") {
-        e.img = [i.url]
-        break
+  if (item.params_type.min_images > 0) {
+    // 可以有图，来从回复、发送和头像找图
+    let imgUrls = []
+    if (e.source || e.reply_id) {
+      // 优先从回复找图
+      let reply
+      if (e.getReply) {
+        reply = await e.getReply()
+      } else if (e.source) {
+        if (e.group?.getChatHistory)
+          reply = (await e.group.getChatHistory(e.source.seq, 1)).pop()
       }
+      if (reply?.message) {
+        for (let val of reply.message) {
+          if (val.type === 'image' || val.type === "file") {
+            imgUrls.push(val.url)
+          }
+        }
+      }
+    } else if (e.img) {
+      imgUrls.push(...e.img)
+    } else if (e.message.filter(m => m.type === 'at').length > 0) {
+      // 艾特的用户的头像
+      let ats = e.message.filter(m => m.type === 'at')
+      imgUrls = ats.map(at => at.qq).map(qq => `https://q1.qlogo.cn/g?b=qq&s=160&nk=${qq}`)
+    }
+    if (!imgUrls || imgUrls.length === 0) {
+      // 如果都没有，用发送者的头像
+      imgUrls = [`https://q1.qlogo.cn/g?b=qq&s=160&nk=${e.user_id}`]
+    }
+    if (imgUrls.length < item.params_type.min_images && imgUrls.indexOf(`https://q1.qlogo.cn/g?b=qq&s=0&nk=${e.user_id}`) === -1) {
+      // 如果数量不够，补上发送者头像，且放到最前面
+      let me = [`https://q1.qlogo.cn/g?b=qq&s=160&nk=${e.user_id}`]
+      imgUrls = me.concat(imgUrls)
+    }
 
-    const imgUrl = `http://q2.qlogo.cn/headimg_dl?dst_uin=${id}&spec=5`
-    const imgRes = await fetch(imgUrl)
-    const buffer = Buffer.from(await imgRes.arrayBuffer())
-    formData.append("images", new Blob([buffer]))
+    imgUrls = imgUrls.slice(0, Math.min(item.params_type.max_images, imgUrls.length))
+    for (let imgUrl of imgUrls) {
+      const imgRes = await fetch(imgUrl)
+      const buffer = Buffer.from(await imgRes.arrayBuffer())
+      formData.append("images", new Blob([buffer]))
+    }
   }
 
   if (item.params_type.min_texts != 0)
