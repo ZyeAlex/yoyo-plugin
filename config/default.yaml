@@ -29,6 +29,13 @@ signInclude: [] # 签到包含群聊
 signExclude: [] # 签到排除群聊
 
 
+# 进群审核 (仅Onebotv11适配器可用)
+auditInclude:
+  - group_id: 123456
+    level: -1
+    answer: ''
+auditExclude:
+  - user_id: 123456
 # 进群欢迎
 increaseInclude:
   - group_id: 123456
@@ -39,6 +46,9 @@ emoticon: false
 # 表情包服务器 (如果有自建服务器，请加上服务器地址)
 emoticonServer:
   - https://h.winterqkl.cn
+
+
+
 # AI
 baseURL: '' # 模型地址
 apiKey: '' # api-key

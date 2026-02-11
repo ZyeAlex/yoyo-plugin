@@ -110,7 +110,7 @@ const getWikiData = async (module) => {
             }
         });
     })
-    let objs = {}
+    let arr = []
     for (let id in ids) {
         const data = await new Promise((res, rej) => {
             client.getArticle(`模块:${module}/` + id, async function (err, data) {
@@ -124,15 +124,15 @@ const getWikiData = async (module) => {
             });
         }).catch((err) => err && logger.error('[yoyo-plugin][getWikiData]', err))
         if (data) {
-            objs[id] = data
+            arr.push(data)
         } else {
-            objs[id] = {
+            arr.push({
                 id,
                 name: ids[id]
-            }
+            })
         }
     }
-    return objs
+    return arr
 }
 
 

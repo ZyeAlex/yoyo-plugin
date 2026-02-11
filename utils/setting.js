@@ -119,7 +119,12 @@ class Setting {
   async getHeroData() {
     this.heroIds = {} // 内部使用 角色->ID映射
     try {
-      Object.assign(this.heros, await getWikiData('Hero'))
+      // 合并数据
+      const heros = await getWikiData('Hero')
+      heros.forEach(hero => {
+        if (!this.heros[hero.id]) this.heros[hero.id] = {}
+        Object.assign(this.heros[hero.id], hero)
+      })
       this.setData('data/hero/hero', this.heros)
     } catch (error) {
       logger.error(`[yoyo-plugin][getHeroData]${error}`)
@@ -172,7 +177,14 @@ class Setting {
   async getPetData() {
     try {
       let rank = {}
-      Object.assign(this.pets, await getWikiData('Kibo'))
+
+      // 合并数据
+      const pets = await getWikiData('Kibo')
+      pets.forEach(pet => {
+        if (!this.pets[pet.id]) this.pets[pet.id] = {}
+        Object.assign(this.pets[pet.id], pet)
+      })
+      
       Object.entries(this.pets).forEach(([petId, petData]) => {
         // 记录进化路线
         let nextPetId = petData?.rank?.evolutionAfterStart
@@ -415,7 +427,7 @@ function Subscribe() {
       if (callbacks.includes(callback)) return;
       callbacks.push(callback);
     },
-    
+
   };
 }
 export const subscribe = Subscribe()

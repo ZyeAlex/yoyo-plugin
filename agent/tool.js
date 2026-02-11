@@ -10,6 +10,8 @@ const { imgModel, model, multimodal, apiKey, baseURL } = YAML.parse(fs.readFileS
 let client
 
 export const tool_functions = {
+
+    // 游戏处理
     get_infos: async () => {
         return JSON.stringify({
             '角色': Array.from(Object.keys(setting.heroIds)),
@@ -30,6 +32,8 @@ export const tool_functions = {
                 )
         }
     },
+
+    // 图片处理
     analyze_image: async ({ image_urls, description = '请分析图片中的内容', text }, e) => {
         try {
             if (!client) client = new OpenAI({ baseURL, apiKey })
@@ -57,7 +61,6 @@ export const tool_functions = {
             return '当前模型不支持图片识别，需要配置多模态模型'
         }
     },
-    // 生成图片的核心函数
     generate_image: async ({ prompt, image, size, text }, e) => {
         if (!imgModel) {
             return '未配置图片生成模型'
@@ -77,7 +80,7 @@ export const tool_functions = {
         // response.data[0].url
 
         return `{"res":"图片已生成成功","img_url":"${response.data[0].url}"}`
-    }
+    },
 }
 
 export const tools = [
@@ -114,6 +117,9 @@ export const tools = [
             }
         }
     },
+
+
+
     {
         "type": "function",
         "function": {

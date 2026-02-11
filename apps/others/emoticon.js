@@ -52,12 +52,18 @@ async function accept(e) {
 
   const match = e.msg.match?.(new RegExp(`^(${Object.keys(dict).join("|")})`))?.[0]
   if (!match) return
+
+
+  const user_icon = (qq = e.user_id) => `https://q1.qlogo.cn/g?b=qq&s=160&nk=${qq}`
+
+
+
   const keyword = e.msg.split(" ")
   keyword[0] = keyword[0].replace(match, "")
   const id = keyword[0] || e.at || e.user_id
   const item = dict[match]
 
-  const pick = await e.group?.pickMember?.(id) || await e.bot?.pickFriend?.(id)
+  const pick = await e.group?.pickMember?.(id)
   const info = await pick?.getInfo?.() || pick?.info || pick
   const name = info?.card || info?.nickname
 
@@ -87,15 +93,15 @@ async function accept(e) {
     } else if (e.message.filter(m => m.type === 'at').length > 0) {
       // 艾特的用户的头像
       let ats = e.message.filter(m => m.type === 'at')
-      imgUrls = ats.map(at => at.qq).map(qq => `https://q1.qlogo.cn/g?b=qq&s=160&nk=${qq}`)
+      imgUrls = ats.map(at => at.qq).map(user_icon)
     }
     if (!imgUrls || imgUrls.length === 0) {
       // 如果都没有，用发送者的头像
-      imgUrls = [`https://q1.qlogo.cn/g?b=qq&s=160&nk=${e.user_id}`]
+      imgUrls = [user_icon()]
     }
-    if (imgUrls.length < item.params_type.min_images && imgUrls.indexOf(`https://q1.qlogo.cn/g?b=qq&s=0&nk=${e.user_id}`) === -1) {
+    if (imgUrls.length < item.params_type.min_images && imgUrls.indexOf(user_icon()) === -1) {
       // 如果数量不够，补上发送者头像，且放到最前面
-      let me = [`https://q1.qlogo.cn/g?b=qq&s=160&nk=${e.user_id}`]
+      let me = [user_icon()]
       imgUrls = me.concat(imgUrls)
     }
 
