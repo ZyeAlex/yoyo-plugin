@@ -46,7 +46,10 @@ async function update_plugin(e) {
 
   if (Update_Plugin.getPlugin(name)) {
     if (e.msg.includes('强制')) {
-      await execSync('git reset --hard origin/master', { cwd: setting.path })
+      execSync('git stash save "强制更新前暂存本地修改" --include-untracked', { cwd: setting.path, stdio: 'pipe' });
+      execSync('git fetch origin master', { cwd: setting.path, stdio: 'pipe' });
+      execSync('git reset --hard origin/master', { cwd: setting.path, stdio: 'pipe' });
+      execSync('git stash pop', { cwd: setting.path, stdio: 'pipe' });
     }
     await Update_Plugin.runUpdate(name)
     if (Update_Plugin.isUp) {
@@ -86,8 +89,8 @@ async function update_log(e) {
 async function clearErrorData(e) {
   let forward = []
   let userList = await e.group.getMemberList()
-  let userSignInfos = setting.getData('data/user/'+ e.group_id)
-  setting.setData( 'data/user/'+ e.group_id + '-backup', userSignInfos)  // 备份
+  let userSignInfos = setting.getData('data/user/' + e.group_id)
+  setting.setData('data/user/' + e.group_id + '-backup', userSignInfos)  // 备份
 
   if (userSignInfos) {
     let str = ''
@@ -135,7 +138,7 @@ async function clearErrorData(e) {
   }
 
 
-  setting.setData('data/user/'+ e.group_id, userSignInfos, )
+  setting.setData('data/user/' + e.group_id, userSignInfos,)
 
   forward.push('无效数据已全部清除完毕！')
 

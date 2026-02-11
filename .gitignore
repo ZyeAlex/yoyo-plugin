@@ -7,7 +7,9 @@ data/hero/id.yaml
 data/hero/nickname.yaml
 data/pet/id.yaml
 data/pet/pet.yaml
-data/db/
+
+data/db/slangs.json
+
 # 用户配置
 config/config.yaml
 # 用户上传资源
