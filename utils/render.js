@@ -1,5 +1,4 @@
 import setting from './setting.js'
-import Version from './version.js'
 import fs from 'fs'
 import lodash from 'lodash'
 import path from 'path'
@@ -9,10 +8,7 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
   if (!e.runtime) {
     console.log('未找到e.runtime，请升级至最新版Yunzai')
   }
-  let packageJson = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'));
-  const name = packageJson.name
-  const title = packageJson.title
-  const version = packageJson.version || Version.version
+  let { name, title, group, version } = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'));
 
   // 遍历 setting.path + '/resources/common' 下的html, 保存为 { name:'path/name.html' }
   let commonHtml = {}
@@ -32,7 +28,7 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
     bgImg = '/common/pet/background.png'
   }
   // copyright
-  let copyright = ` 蓝色星原旅谣 | ${title}  <span class="version">${version}</span> `
+  let copyright = `${title}  <span class="version">${version}</span> | Bot群：<span class="version">${group}</span>`
   if (cfg.origin) copyright += `| 数据源 <span class="version">${cfg.origin}</span> `
   return e.runtime.render('yoyo-plugin', p, renderData, {
     ...cfg,
@@ -68,6 +64,5 @@ export async function saveRender(e, p, url, renderData = {}, ...args) {
     for (const i of message_id) {
       await redis.set(`yoyo:original-picture:${i}`, url, { EX: 3600 * 3 })
     }
-
   }
 }

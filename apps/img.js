@@ -136,7 +136,7 @@ async function originalPic(e) {
                 // e.reply('已禁止获取原图...')
                 // return true
             }
-            e.reply(segment.image(imgPath), false, { recallMsg: 30 })
+            e.reply(segment.image(imgPath), false, { recallMsg: 60 })
             return
         }
     }

@@ -7,7 +7,6 @@ import plugin from '#plugin'
 
 let packageJson = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'));
 const name = packageJson.name || 'yoyo-plugin'
-const version = packageJson.version || Version.version
 
 export const Update = plugin({
   name: '[悠悠助手]更新',
