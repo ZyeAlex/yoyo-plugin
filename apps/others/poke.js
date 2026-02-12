@@ -39,22 +39,16 @@ export const Poke = plugin({
     name: '[悠悠助手]戳一戳',
     event: 'notice.group.poke',
     priority: 9999,
-    rule: [
-        {
-            /** 命令正则匹配 */
-            fnc: poke,
-            log: false
-        }
-    ]
+    // func: [accept]
 })
 
 
-async function poke(e) {
+async function accept(e) {
 
-    return
+    return true
 
     //忽略机器人戳
-    if (botIds.includes(e.operator_id)) return;
+    if (botIds.includes(e.operator_id)) return true;
 
     if (e.target_id == e.self_id) {
         let random_type = Math.random()

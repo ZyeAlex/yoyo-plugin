@@ -29,14 +29,16 @@ signInclude: [] # 签到包含群聊
 signExclude: [] # 签到排除群聊
 
 
-# 进群审核 (仅Onebotv11适配器可用)
+# 进群审核 (仅Onebotv11适配器可用) group_id：0 表示所有群默认行为
 auditInclude:
   - group_id: 123456
-    level: -1
-    answer: ''
-auditExclude:
-  - user_id: 123456
-# 进群欢迎
+    answer: 蓝色星原(:：)?(旅谣)?
+authLevel: 16 # 加群审核等级    低于该等级插件将不予审核，由管理员自行定夺(推荐32~48级)
+refuseLevel: 0 # 加群拒绝等级   低于该等级插件将自动拒绝 (用于过滤⭐️等级小号，推荐2~8级)
+excludeText: 
+  - 朋友推荐|进群交流|进群学习|交流学习
+  - 管理员|请同意|谢谢
+# 进群欢迎 group_id：0 表示所有群默认行为
 increaseInclude:
   - group_id: 123456
     text: 欢迎来到普罗米利亚！星临者！
