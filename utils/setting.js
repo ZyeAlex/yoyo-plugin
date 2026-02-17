@@ -247,7 +247,7 @@ class Setting {
    * 获取YAML数据
    * @param {*} filePath yaml文件地址
    */
-  getData(filePath) {
+  getData(filePath,) {
     filePath = path.join(this.path, filePath)
     if (!filePath.includes('.yaml')) {
       filePath += '.yaml'

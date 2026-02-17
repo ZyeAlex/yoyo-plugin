@@ -175,7 +175,7 @@ class Utils {
   /**
    * 获取用户权限
    * @param {*} e - 接收到的事件对象
-   * @param {"master"|"admin"|"owner"|"all"} permission - 用户所需的权限
+   * @param {"master"|"owner"|"admin"|"all"} permission - 用户所需的权限
    * @param {object} opts - 可选参数对象
    * @param {object} opts.groupObj - 群对象
    * @param {boolean} opts.isReply - 是否发送消息
@@ -185,10 +185,8 @@ class Utils {
    * checkPermission(e,'admin')  
    * 返回当前用户是否拥有admin权限
    */
-  checkPermission(e, permission = "all", {
-    groupObj = e.group || (e.bot ?? Bot)?.pickGroup?.(e.group_id),
-    isReply = true
-  } = {}) {
+  checkPermission(e, permission = "admin", isReply = true) {
+    let groupObj = e.group || (e.bot ?? Bot)?.pickGroup?.(e.group_id)
     if (!groupObj && permission != "master") throw new Error("未获取到群对象")
     let msg = true
     // 判断权限
@@ -204,10 +202,9 @@ class Utils {
     }
     if (isReply && msg !== true) {
       e.reply(msg, true)
-    }
-    if (msg !== true) {
       throw new Error(msg)
     }
+    return msg === true ? true : false
   }
 
   /**

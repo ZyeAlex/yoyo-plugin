@@ -9,7 +9,7 @@ import render from '#render'
 export const Emoticon = plugin({
   name: '[悠悠助手]表情包',
   event: 'message.group',
-  priority: 1145,
+  priority: 9999,
   rule: [
     {
       reg: "^#?表情包?开启$",

@@ -9,7 +9,7 @@ import render from '#render'
 export const Pig = plugin({
     name: '[悠悠助手]你是什么猪',
     event: 'message.group',
-    priority: 1145,
+    priority: 9999,
     rule: [
         {
             reg: "^#?(他|她|它|你|我|这|ta)?是?什么(猪|🐷){1,2}[?？]?$",

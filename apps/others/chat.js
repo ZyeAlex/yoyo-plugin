@@ -1,6 +1,6 @@
 import setting from '#setting'
 import plugin from '#plugin'
-import Agent from '../../agent/agent.js'
+import Agent from '../agent/agent.js'
 import utils from '#utils'
 
 

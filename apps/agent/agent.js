@@ -1,14 +1,9 @@
-import fs from 'fs'
-import YAML from 'yaml';
-import path from 'path'
+import setting from '#setting';
 import { slangsDB } from './db.js'
 import { tool_functions, tools } from './tool.js'
 import { systemPrompt } from './prompt/index.js'
 import { ChatOpenAI } from '@langchain/openai'
-
-import { AIMessage, SystemMessage, HumanMessage, ToolMessage } from 'langchain'
-// 加载yaml
-const { model, apiKey, baseURL, msgCacheLength } = YAML.parse(fs.readFileSync(path.join(import.meta.dirname, '../config/config.yaml'), 'utf8'));
+import { AIMessage, SystemMessage, HumanMessage } from 'langchain'
 
 
 class Agent {
@@ -23,10 +18,10 @@ class Agent {
     // 初始化大模型
     initModel() {
         this.model = new ChatOpenAI({
-            model,
-            apiKey,
+            model: setting.config.model,
+            apiKey: setting.config.apiKey,
             configuration: {
-                baseURL,
+                baseURL: setting.config.baseURL,
             }
         });
     }
@@ -86,10 +81,10 @@ class Agent {
      * @returns 
      */
     async handleMsgs(group_id) {
-        if (!msgCacheLength) {
+        if (!setting.config.msgCacheLength) {
             this.groupMsgs[group_id] = []
         } else {
-            this.groupMsgs[group_id] = this.groupMsgs[group_id].slice(-msgCacheLength);
+            this.groupMsgs[group_id] = this.groupMsgs[group_id].slice(-setting.config.msgCacheLength);
         }
     }
 
