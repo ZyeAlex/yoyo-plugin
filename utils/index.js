@@ -6,6 +6,98 @@ import common from '../../../lib/common/common.js'
  * 杂项
  */
 class Utils {
+  /** 制作转发消息
+    * @param e
+    * @param msg 消息体
+    * @param dec 描述
+    * @returns {Promise<boolean|*>}
+    */
+  async makeForwardMsg(e, msg = [], dec = '') {
+    const bot = e.bot || Bot
+    let nickname = bot.nickname
+    if (e.isGroup && bot.getGroupMemberInfo) try {
+      const info = await bot.getGroupMemberInfo(e.group_id, bot.uin)
+      nickname = info.card || info.nickname
+    } catch { }
+
+    let forwardMsg = []
+    msg.forEach(v => {
+      forwardMsg.push({
+        user_id: bot.uin || e.self_id,
+        nickname,
+        message: v,
+      })
+    })
+
+    /** 制作转发内容 */
+    if (e.group?.makeForwardMsg) {
+      forwardMsg = await e.group.makeForwardMsg(forwardMsg)
+    } else if (e.friend?.makeForwardMsg) {
+      forwardMsg = await e.friend.makeForwardMsg(forwardMsg)
+    } else {
+      forwardMsg = await Bot.makeForwardMsg(forwardMsg)
+    }
+    if (dec) {
+      /** 处理描述 */
+      if (typeof (forwardMsg.data) === 'object') {
+        let detail = forwardMsg.data?.meta?.detail
+        if (detail) {
+          detail.news = [{ text: dec }]
+        }
+      } else {
+        forwardMsg.data = forwardMsg.data
+          .replace(/\n/g, '')
+          .replace(/<title color="#777777" size="26">(.+?)<\/title>/g, '___')
+          .replace(/___+/, `<title color="#777777" size="26">${dec}</title>`)
+      }
+    }
+
+    return forwardMsg
+  }
+
+  /** 获取用户权限
+   * @param {*} e - 接收到的事件对象
+   * @param {"master"|"owner"|"admin"|"all"} permission - 用户所需的权限
+   * @param {boolean} isReply - 是否发送消息
+   * 
+   * @returns {boolean|string} - 是否具有权限
+   * @eg
+   * checkPermission(e,'admin')  
+   * 返回当前用户是否拥有admin权限
+   */
+  checkPermission(e, permission = "admin", isReply = true) {
+    let groupObj = e.group || (e.bot ?? Bot)?.pickGroup?.(e.group_id)
+    if (!groupObj && permission != "master") throw new Error("未获取到群对象")
+    let msg = true
+    // 判断权限
+    if (!e.isMaster) {
+      const memberObj = groupObj && groupObj.pickMember(e.user_id)
+      if (permission == "master") {
+        msg = "❎ 该命令仅限主人可用"
+      } else if (permission == "owner" && !memberObj.is_owner) {
+        msg = "❎ 该命令仅限群主可用"
+      } else if (permission == "admin" && !memberObj.is_admin && !memberObj.is_owner) {
+        msg = "❎ 该命令仅限管理可用"
+      }
+    }
+    if (isReply && msg !== true) {
+      e.reply(msg, true)
+      throw new Error(msg)
+    }
+    return msg === true ? true : false
+  }
+
+
+
+  async groupMemberInfo(group_id, user_id, no_cache = true) {
+    const { data } = await e.bot.sendApi("get_group_member_info", {
+      group_id,  // 群号（必须传）
+      user_id,   // 要查询的用户ID
+      no_cache   // 禁用缓存，获取最新数据
+    });
+    return data
+  }
+
   // 节流函数
   throttle(func, delay) {
     let lastCall = 0;
@@ -88,7 +180,7 @@ class Utils {
     // 转换为天数（1天 = 86400000毫秒）
     return Math.floor(diffMilliseconds / 86400000);
   }
-
+  // 判断a和b相差小时
   getDateDiffHours(time1, time2, absValue = true) {
     const date1 = new Date(time1);
     const date2 = new Date(time2);
@@ -120,93 +212,6 @@ class Utils {
       throw new Error(`处理图片失败: ${error.message}`);
     }
   }
-
-  /**
- *
- * 制作转发消息
- * @param e
- * @param msg 消息体
- * @param dec 描述
- * @returns {Promise<boolean|*>}
- */
-  async makeForwardMsg(e, msg = [], dec = '') {
-    const bot = e.bot || Bot
-    let nickname = bot.nickname
-    if (e.isGroup && bot.getGroupMemberInfo) try {
-      const info = await bot.getGroupMemberInfo(e.group_id, bot.uin)
-      nickname = info.card || info.nickname
-    } catch { }
-
-    let forwardMsg = []
-    msg.forEach(v => {
-      forwardMsg.push({
-        user_id: bot.uin || e.self_id,
-        nickname,
-        message: v,
-      })
-    })
-
-    /** 制作转发内容 */
-    if (e.group?.makeForwardMsg) {
-      forwardMsg = await e.group.makeForwardMsg(forwardMsg)
-    } else if (e.friend?.makeForwardMsg) {
-      forwardMsg = await e.friend.makeForwardMsg(forwardMsg)
-    } else {
-      forwardMsg = await Bot.makeForwardMsg(forwardMsg)
-    }
-    if (dec) {
-      /** 处理描述 */
-      if (typeof (forwardMsg.data) === 'object') {
-        let detail = forwardMsg.data?.meta?.detail
-        if (detail) {
-          detail.news = [{ text: dec }]
-        }
-      } else {
-        forwardMsg.data = forwardMsg.data
-          .replace(/\n/g, '')
-          .replace(/<title color="#777777" size="26">(.+?)<\/title>/g, '___')
-          .replace(/___+/, `<title color="#777777" size="26">${dec}</title>`)
-      }
-    }
-
-    return forwardMsg
-  }
-
-  /**
-   * 获取用户权限
-   * @param {*} e - 接收到的事件对象
-   * @param {"master"|"owner"|"admin"|"all"} permission - 用户所需的权限
-   * @param {object} opts - 可选参数对象
-   * @param {object} opts.groupObj - 群对象
-   * @param {boolean} opts.isReply - 是否发送消息
-   * @returns {boolean|string} - 是否具有权限
-   * 
-   * @eg
-   * checkPermission(e,'admin')  
-   * 返回当前用户是否拥有admin权限
-   */
-  checkPermission(e, permission = "admin", isReply = true) {
-    let groupObj = e.group || (e.bot ?? Bot)?.pickGroup?.(e.group_id)
-    if (!groupObj && permission != "master") throw new Error("未获取到群对象")
-    let msg = true
-    // 判断权限
-    if (!e.isMaster) {
-      const memberObj = groupObj && groupObj.pickMember(e.user_id)
-      if (permission == "master") {
-        msg = "❎ 该命令仅限主人可用"
-      } else if (permission == "owner" && !memberObj.is_owner) {
-        msg = "❎ 该命令仅限群主可用"
-      } else if (permission == "admin" && !memberObj.is_admin && !memberObj.is_owner) {
-        msg = "❎ 该命令仅限管理可用"
-      }
-    }
-    if (isReply && msg !== true) {
-      e.reply(msg, true)
-      throw new Error(msg)
-    }
-    return msg === true ? true : false
-  }
-
   /**
    * 在候选列表中查找与目标字符串最相似的项，并返回其对应的键（id）。
    *

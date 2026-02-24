@@ -36,9 +36,7 @@ export const Increase = plugin({
 })
 
 
-const auditInfo = {
-
-}
+const auditInfo = setting.getData('data/user/audit') || {}
 
 
 
@@ -119,19 +117,6 @@ async function increaseAccept(e) {
   let key = `[yoyo-plugin]new-comers-${e.group_id}`
   if (await redis.get(key)) return true
   redis.set(key, 'yoyo', { EX: setting.config.increaseCd })
-
-  let nickname
-  if (e.nickname) {
-    nickname = e.nickname
-  } else if (e.sender && e.sender.card) {
-    nickname = e.sender.card
-  } else {
-    // 从成员列表里获取该用户昵称
-    let memberMap = await e.group.getMemberMap()
-    nickname = (memberMap && memberMap.get(e.user_id)) ? memberMap.get(e.user_id).nickname : ''
-  }
-
-
   /** 回复 */
   await e.reply([
     segment.at(e.user_id),
