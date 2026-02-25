@@ -28,7 +28,7 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
     bgImg = '/common/pet/background.png'
   }
   // copyright
-  let copyright = `${title}  <span class="version">${version}</span> | Bot群：<span class="version">${group}</span>`
+  let copyright = `${title}  <span class="version">${version}</span> | 插件群：<span class="version">${group}</span>`
   if (cfg.origin) copyright += `| 数据源 <span class="version">${cfg.origin}</span> `
   return e.runtime.render('yoyo-plugin', p, renderData, {
     ...cfg,

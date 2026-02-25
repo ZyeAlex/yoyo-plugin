@@ -63,14 +63,14 @@ async function auditAccept(e) {
     const reg = new RegExp(text, 'gi')
     if (reg.test(answer)) {
       redis.set(key, 'yoyo', { EX: 180 }) // 风险账号连续申请入群不予处理
-      return await e.approve(false, '疑似风险账号(程序自动判定,如有误判,请在3分钟内重新申请)')
+      return await e.approve(false, '疑似风险账号(程序判定,如有误判,请在3分钟内重新申请)')
     }
   }
 
   // 匹配等级
   if (level >= 0 && level < setting.config.refuseLevel) {
     redis.set(key, 'yoyo', { EX: 180 }) // 低等级连续申请入群不予处理
-    return await e.approve(false, '等级过低(程序自动判定,如有需求,请在3分钟内重新申请并说明原因)')
+      return await e.approve(false, '等级过低(程序判定,如有需求,请在3分钟内重新申请并说明)')
   }
   // 不做处理
   if (!(level >= 0) || level < setting.config.authLevel) return true
