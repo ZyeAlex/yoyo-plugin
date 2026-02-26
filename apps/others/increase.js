@@ -41,7 +41,7 @@ const auditInfo = setting.getData('data/user/audit') || {}
 
 
 async function auditAccept(e) {
-  if (e.bot.adapter?.id !== "QQ" || typeof e.bot.sendApi !== "function" || e.user_id === e.bot.uin) return true
+  if (e.bot.adapter?.id !== "QQ" || typeof e.bot.sendApi !== "function" || e.user_id === e.self_id) return true
 
   const { data: { level } } = await e.bot.sendApi("get_stranger_info", { user_id: e.user_id });
   let question, answer
@@ -112,7 +112,7 @@ async function increaseAccept(e) {
   /** 定义入群欢迎内容 */
   let group_cfg = setting.config.increaseInclude?.find(({ group_id }) => group_id == e.group_id)
   if (!group_cfg) return true
-  if (e.user_id === e.bot.uin) return true
+  if (e.user_id === e.self_id) return true
   /** cd */
   let key = `[yoyo-plugin]new-comers-${e.group_id}`
   if (await redis.get(key)) return true

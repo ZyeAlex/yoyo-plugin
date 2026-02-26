@@ -60,8 +60,6 @@ async function accept(e) {
 
     if (!isAt) return
 
-
-
     // 调用大模型
     const messages = await agent.chat({
         group_name: e.group_name,

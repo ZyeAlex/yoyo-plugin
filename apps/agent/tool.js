@@ -1,11 +1,5 @@
-import { http } from '../utils/http.js'
-import setting, { subscribe } from '#setting'
-import YAML from 'yaml';
-import path from 'path'
-import fs from 'fs'
+import setting from '#setting'
 import { OpenAI } from 'openai'
-// 加载yaml
-const { imgModel, model, multimodal, apiKey, baseURL } = YAML.parse(fs.readFileSync(path.join(import.meta.dirname, '../config/config.yaml'), 'utf8'));
 
 let client
 
@@ -36,10 +30,10 @@ export const tool_functions = {
     // 图片处理
     analyze_image: async ({ image_urls, description = '请分析图片中的内容', text }, e) => {
         try {
-            if (!client) client = new OpenAI({ baseURL, apiKey })
+            if (!client) client = new OpenAI({ baseURL: setting.config.baseURL, apiKey: setting.config.apiKey })
             if (text) e.reply(text)
             let response = await client.responses.create({
-                model: multimodal || model,
+                model: setting.config.multimodal || setting.config.model,
                 input: [
                     {
                         role: 'user',
@@ -62,13 +56,13 @@ export const tool_functions = {
         }
     },
     generate_image: async ({ prompt, image, size, text }, e) => {
-        if (!imgModel) {
+        if (!setting.config.imgModel) {
             return '未配置图片生成模型'
         }
-        if (!client) client = new OpenAI({ baseURL, apiKey })
+        if (!client) client = new OpenAI({ baseURL: setting.config.baseURL, apiKey: setting.config.apiKey })
         if (text) e.reply(text)
         let response = await client.images.generate({
-            model: imgModel,
+            model: setting.config.imgModel,
             prompt,
             image,
             size,
