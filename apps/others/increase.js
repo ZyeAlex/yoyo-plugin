@@ -8,7 +8,7 @@ import utils from '#utils'
 export const Audit = plugin({
   name: '[悠悠助手]入群审核',
   event: 'request.group.add',
-  priority: 9999,
+  priority: 100,
   func: [auditAccept]
 })
 
@@ -29,15 +29,17 @@ export const AuditConfig = plugin({
 })
 
 export const Increase = plugin({
-  name: '[悠悠助手]进退群通知',
+  name: '[悠悠助手]进群通知',
   event: 'notice.group.increase',
-  priority: 9999,
+  priority: 100,
   func: [increaseAccept]
 })
-
-
-const auditInfo = setting.getData('data/user/audit') || {}
-
+export const Decrease = plugin({
+  name: '[悠悠助手]退群通知',
+  event: 'notice.group.decrease',
+  priority: 100,
+  func: [decreaseAccept]
+})
 
 
 async function auditAccept(e) {
@@ -53,7 +55,7 @@ async function auditAccept(e) {
   }
 
   // 连续申请不予处理
-  let key = `[yoyo-plugin]new-request-${e.group_id}-${e.user_id}`
+  let key = `[yoyo-plugin]audit-${e.group_id}-${e.user_id}`
   if (await redis.get(key)) return true
 
 
@@ -70,7 +72,7 @@ async function auditAccept(e) {
   // 匹配等级
   if (level >= 0 && level < setting.config.refuseLevel) {
     redis.set(key, 'yoyo', { EX: 180 }) // 低等级连续申请入群不予处理
-      return await e.approve(false, '等级过低(程序判定,如有需求,请在3分钟内重新申请并说明)')
+    return await e.approve(false, '等级过低(程序判定,如有需求,请在3分钟内重新申请并说明)')
   }
   // 不做处理
   if (!(level >= 0) || level < setting.config.authLevel) return true
@@ -88,23 +90,7 @@ async function auditAccept(e) {
     else return true
   }
 
-  // 入群后记录审核信息
-  if (!auditInfo[e.group_id]) auditInfo[e.group_id] = {}
-  auditInfo[e.group_id][e.user_id] = {
-    id: e.user_id,
-    name: e.nickname,
-    group_id: e.group_id,
-    question,
-    answer,
-    level,
-    time: new Date().getTime()
-  }
-  setting.setData('data/user/audit', auditInfo)
-
   await e.approve(true)
-
-
-
 }
 Object.defineProperty(auditAccept, 'name', { value: 'accept' })
 
@@ -120,11 +106,39 @@ async function increaseAccept(e) {
   /** 回复 */
   await e.reply([
     segment.at(e.user_id),
-    segment.image(`https://q1.qlogo.cn/g?b=qq&s=0&nk=${e.user_id}`),
+    segment.image(`https://q1.qlogo.cn/g?b=qq&s=160&nk=${e.user_id}`),
     group_cfg.text.replace(/(\\n)|(<br\/?>)/g, '\n')
   ])
 }
 Object.defineProperty(increaseAccept, 'name', { value: 'accept' })
+
+
+async function decreaseAccept(e) {
+
+  console.log(e);
+
+
+  const { data: { nickname } } = await e.bot.sendApi("get_stranger_info", { user_id: e.user_id });
+  let group_cfg = setting.config.increaseInclude?.find(({ group_id }) => group_id == e.group_id)
+  if (!group_cfg?.exit) return true
+  let reply = []
+  if (/\\i/.test(group_cfg.exit)) {
+    group_cfg.exit = group_cfg.exit.replace(/\\i/g, '')
+    reply.push(segment.image(`https://q1.qlogo.cn/g?b=qq&s=160&nk=${e.user_id}`))
+  }
+
+  if (e.operator_id == e.user_id) {
+    reply.push(group_cfg.exit.replace(/\\u/g, `${nickname}(${e.user_id})`))
+  } else {
+    reply.push(`${nickname}(${e.user_id})被管理员移出群聊`)
+  }
+  let key = `[yoyo-plugin]decrease-${e.group_id}`
+  if (await redis.get(key)) return true
+  redis.set(key, '1', { EX: 1000 })
+
+  await e.reply(reply)
+}
+Object.defineProperty(decreaseAccept, 'name', { value: 'accept' })
 
 
 async function wordsGet(e) {

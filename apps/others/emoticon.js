@@ -47,22 +47,16 @@ for (const v of Object.values(res)) {
   }
 }
 
+
+
 async function accept(e) {
   if (!e.msg || !setting.config.emoticon) return true
-
-  const match = e.msg.match?.(new RegExp(`^(${Object.keys(dict).join("|")})`))?.[0]
-  if (!match) return
-
-
+  const keyword = e.msg.split(" ")
+  if (!dict[keyword[0]]) return true
   const user_icon = (qq = e.user_id) => `https://q1.qlogo.cn/g?b=qq&s=160&nk=${qq}`
 
-
-
-  const keyword = e.msg.split(" ")
-  keyword[0] = keyword[0].replace(match, "")
-  const id = keyword[0] || e.at || e.user_id
-  const item = dict[match]
-
+  const item = dict[keyword[0]]
+  const id = e.at || e.user_id
   const pick = await e.group?.pickMember?.(id)
   const info = await pick?.getInfo?.() || pick?.info || pick
   const name = info?.card || info?.nickname

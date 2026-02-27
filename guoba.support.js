@@ -189,7 +189,7 @@ export function supportGuoba() {
     },
     {
       field: "config.signWithdrawal",
-      label: "是否自动撤回签到图片",
+      label: "自动撤回签到图",
       component: "Switch"
     },
     {
@@ -336,6 +336,12 @@ export function supportGuoba() {
             required: true,
             component: "Input",
             bottomHelpMessage: "「\\n」为换行"
+          },
+          {
+            field: "exit",
+            label: "退群通知",
+            component: "Input",
+            bottomHelpMessage: "「\\i」展示用户头像，「\\u」为用户名称"
           }
         ]
       }

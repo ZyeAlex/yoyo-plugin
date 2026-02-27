@@ -36,7 +36,7 @@ async function accept(e) {
     // 用户会话
     let usermsg = {
         user_id: e.user_id,
-        user_name: e.user_name,
+        user_name: e.sender?.nickname || e.sender?.card,
         message_id: e.message_id,
         message: await Promise.all(e.message.map(async item => {
             if (item.type == 'at' && item.qq == e.self_id) isAt = true
