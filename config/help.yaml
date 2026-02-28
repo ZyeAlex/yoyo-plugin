@@ -92,7 +92,22 @@ helpGroup:
     "icon": "Icon.png"
     "desc": "@悠悠和她互动"
 
-- "group": "管理功能"
+- "group": "群管理 (需要管理员权限)"
+  "auth": "admin"
+  "list":
+  - "title": "#查看审核词"
+    "icon": ""
+    "desc": "机器人审批群问题"
+  - "title": "#设置审核词+正则"
+    "icon": ""
+    "desc": "设置群审批条件"
+  - "title": "#踢|踢黑+@用户"
+    "icon": ""
+    "desc": "踢出群成员并撤回其近期发送所有消息"
+  - "title": "#禁|撤+@用户"
+    "icon": ""
+    "desc": "批量禁言/批量撤回某个用户消息"
+- "group": "插件管理"
   "auth": "master"
   "list":
   - "title": "#悠悠更新"

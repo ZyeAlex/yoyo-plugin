@@ -13,7 +13,7 @@ export const Audit = plugin({
 })
 
 export const AuditConfig = plugin({
-  name: '[悠悠助手]入群审核配置',
+  name: '[悠悠助手]群管理',
   event: 'message.group',
   priority: 9999,
   rule: [
@@ -22,9 +22,13 @@ export const AuditConfig = plugin({
       fnc: wordsGet
     },
     {
-      reg: "^#?(?:审核词设置|设置审核词) (.+)$",
+      reg: "^#?(?:审核词设置|设置审核词) ?(.+)$",
       fnc: wordsSet
     },
+    {
+      reg: "^#(踢黑?|解?除?禁言?|撤回?)+$",
+      fnc: manage
+    }
   ]
 })
 
@@ -42,8 +46,10 @@ export const Decrease = plugin({
 })
 
 
+/** 入群审核
+ */
 async function auditAccept(e) {
-  if (e.bot.adapter?.id !== "QQ" || typeof e.bot.sendApi !== "function" || e.user_id === e.self_id) return true
+  if (e.bot.adapter?.name !== "OneBotv11" || typeof e.bot.sendApi !== "function" || e.user_id === e.self_id) return true
 
   const { data: { level } } = await e.bot.sendApi("get_stranger_info", { user_id: e.user_id });
   let question, answer
@@ -94,6 +100,8 @@ async function auditAccept(e) {
 }
 Object.defineProperty(auditAccept, 'name', { value: 'accept' })
 
+/** 入群通知
+ */
 async function increaseAccept(e) {
   /** 定义入群欢迎内容 */
   let group_cfg = setting.config.increaseInclude?.find(({ group_id }) => group_id == e.group_id)
@@ -113,10 +121,10 @@ async function increaseAccept(e) {
 Object.defineProperty(increaseAccept, 'name', { value: 'accept' })
 
 
+/** 退群通知
+ */
 async function decreaseAccept(e) {
-
-  console.log(e);
-
+  if (e.bot.adapter?.name !== "OneBotv11" || typeof e.bot.sendApi !== "function") return true
 
   const { data: { nickname } } = await e.bot.sendApi("get_stranger_info", { user_id: e.user_id });
   let group_cfg = setting.config.increaseInclude?.find(({ group_id }) => group_id == e.group_id)
@@ -141,6 +149,9 @@ async function decreaseAccept(e) {
 Object.defineProperty(decreaseAccept, 'name', { value: 'accept' })
 
 
+/** 群审核配置
+ */
+// 审核词
 async function wordsGet(e) {
   // 检测管理员权限
   utils.checkPermission(e)
@@ -151,6 +162,8 @@ async function wordsGet(e) {
   e.reply(`当前群审核词为「${group_cfg.answer}」`)
 }
 async function wordsSet(e, reg) {
+  // 检测管理员权限
+  utils.checkPermission(e)
   const word = e.msg.match(reg)[1]
   if (!word) return true
   // 检测管理员权限
@@ -168,3 +181,92 @@ async function wordsSet(e, reg) {
   setting.setData('config/config', setting.config)
   e.reply(`当前群审核词已设置为「${group_cfg.answer}」`)
 }
+
+
+// 群管理
+async function manage(e) {
+  // 检测管理员权限
+  utils.checkPermission(e)
+  if (e.bot.adapter?.name !== "OneBotv11" || typeof e.bot.sendApi !== "function") return true
+  if (e.msg.includes('踢')) {
+    let kicks = kick(e)
+    await e.reply(`✅ 已将成员${kicks.map(at => at.name + '(' + at.qq + ')').join(',')}踢出群聊\n⏳ 即将自动撤回其近期消息`)
+    del(e)
+    return
+  }
+  if (e.msg.includes('撤')) {
+    del(e)
+  }
+  if (e.msg.includes('禁')) {
+    ban(e)
+  }
+}
+
+// 踢
+async function kick(e) {
+  // @的成员
+  let ats = e.message.filter(item => item.type == 'at')
+  if (!ats.length) {
+    e.reply('❌ 请@要踢出的成员')
+    return true
+  }
+  // 踢出成员
+  let kicks = [], err_kicks = []
+  for (let at of ats) {
+    try {
+      await e.bot.sendApi("set_group_kick", {
+        group_id: e.group_id,
+        user_id: at.qq,
+        reject_add_request: e.msg.includes('黑')
+      })
+      kicks.push(at)
+    } catch (error) {
+      err_kicks.push(at)
+    }
+  }
+
+  return kicks
+}
+// 撤
+async function del(e) {
+  // 回复的消息
+  let reply = e.message.find(item => item.type == 'reply')
+  if (reply) {
+    await e.bot.sendApi("delete_msg", { message_id: reply.id, self_id: e.self_id })
+    return
+  }
+  // @的成员
+  let ats = e.message.filter(item => item.type == 'at')
+  if (!ats.length) {
+    e.reply('❌ 请@要撤回消息的成员')
+    throw new Error()
+  }
+  const { data: { messages } } = await e.bot.sendApi("get_group_msg_history", { group_id: e.group_id, message_seq: 0, count: 200 })
+  const targetMsgs = messages.reverse().filter(msg => ats.find(at => at.qq == msg.user_id))
+  for (const { message_id } of targetMsgs) {
+    try {
+      await e.bot.sendApi("delete_msg", { message_id, self_id: e.self_id })
+      await utils.sleep(200)
+    } catch (err) {
+    }
+  }
+}
+// 禁
+async function ban(e) {
+  let release = e.msg.includes('解')
+  // @的成员
+  let ats = e.message.filter(item => item.type == 'at')
+  if (!ats.length) {
+    e.reply(release ? '❌ 请@要解禁的成员' : '❌ 请@要禁言的成员')
+    throw new Error()
+  }
+  for (let at of ats) {
+    await e.bot.sendApi("set_group_ban", {
+      group_id: e.group_id,  // 群ID（必填）
+      user_id: at.qq,        // 被禁言用户ID（必填）
+      duration: release ? 0 : 60 * 60,     // 禁言时长（秒）
+      comment: "违规发言"
+    });
+  }
+}
+

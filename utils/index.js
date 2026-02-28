@@ -89,14 +89,6 @@ class Utils {
 
 
 
-  async groupMemberInfo(group_id, user_id, no_cache = true) {
-    const { data } = await e.bot.sendApi("get_group_member_info", {
-      group_id,  // 群号（必须传）
-      user_id,   // 要查询的用户ID
-      no_cache   // 禁用缓存，获取最新数据
-    });
-    return data
-  }
 
   // 节流函数
   throttle(func, delay) {

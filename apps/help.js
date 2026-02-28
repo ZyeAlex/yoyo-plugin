@@ -1,7 +1,7 @@
 import render from '#render'
 import setting from '#setting'
 import plugin from '#plugin'
-
+import utils from '#utils'
 export const Help = plugin({
   name: '[悠悠助手]帮助',
   event: 'message',
@@ -16,9 +16,7 @@ export const Help = plugin({
 
 async function help(e) {
   let { helpGroup } = setting.getData('config/help')
-  helpGroup = helpGroup.filter(({ auth }) => {
-    return auth ? e.isMaster : true
-  })
+  helpGroup = helpGroup.filter(({ auth }) => utils.checkPermission(e, auth, false))
   return await render(e, 'help/index', {
     helpGroup
   })
