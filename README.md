@@ -25,7 +25,7 @@
 - 插件开发中... 招募美工、招募美工、招募美工...
 
 - 插件交流群：[👉🏻加群讨论](https://qm.qq.com/q/Mk3jyhIqSm)
-- 游戏交流群：[👉🏻加群讨论](https://qm.qq.com/q/WMgKNWIMcU)
+- 游戏交流群：[👉🏻加群讨论](https://qm.qq.com/q/by4LK6Meqs)
 
 - 提交代码：
 

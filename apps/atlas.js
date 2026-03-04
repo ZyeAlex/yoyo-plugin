@@ -128,7 +128,7 @@ async function heroInfo(e, reg) {
         config.push('voice')
     }
 
-    return heroAtlas(e, heroId, config)
+    await heroAtlas(e, heroId, config)
 }
 
 // 角色图鉴
@@ -161,7 +161,7 @@ async function petAtlas(e, petId) {
     pet.evolution = (setting.pets[petId].evolution || []).map(petId => {
         return setting.pets[petId]
     })
-    return await render(e, 'pet/atlas', pet, { origin: 'BWiki' })
+    await render(e, 'pet/atlas', pet, { origin: 'BWiki' })
 }
 /**
  * 装备

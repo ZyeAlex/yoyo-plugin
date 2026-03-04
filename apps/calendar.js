@@ -91,10 +91,10 @@ async function showCalendar(e) {
 
 
         // 渲染页面
-        return await render(e, 'calendar/index', getDurations(calendarData))
+         await render(e, 'calendar/index', getDurations(calendarData))
     } catch (error) {
         logger.error('[yoyo-plugin][活动日历渲染失败]', error)
-        return e.reply('活动日历渲染失败，请稍后重试')
+         e.reply('活动日历渲染失败，请稍后重试')
     }
 }
 

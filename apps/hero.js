@@ -31,7 +31,8 @@ function setNickname(e, reg) {
     let heroId = setting.getHeroId(heroName1 || heroName2)
     if (!heroId) return true
     if (nickname.length > 10) {
-        return e.reply('昵称长度不能超过10位！')
+        e.reply('昵称长度不能超过10位！')
+        return
     }
 
 
@@ -43,18 +44,20 @@ function setNickname(e, reg) {
     }
     const res = setting.setData('data/hero/nickname', setting.nicknames)
 
-    return e.reply(res ? '别名设置成功' : '别名设置失败')
+    e.reply(res ? '别名设置成功' : '别名设置失败')
 }
 
 function delNickname(e, reg) {
     let [_, heroName1, heroName2, nickname] = e.msg.match(reg)
     let heroId = setting.getHeroId(heroName1 || heroName2)
     if (!heroId) {
-        return e.reply('未找到此角色')
+        e.reply('未找到此角色')
+        return
     }
 
     if (!setting.nicknames[heroId]) {
-        return '该角色没有此别名'
+        e.reply('该角色没有此别名')
+        return 
     }
     if (setting.nicknames[heroId].includes(nickname)) {
         setting.nicknames[heroId].splice(setting.nicknames[heroId].indexOf(nickname), 1)

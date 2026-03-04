@@ -195,7 +195,7 @@ async function manage(e, reg) {
     let kickAll = e.msg.includes('全')
     let kicks = await kick(e, kickAll)
     if (!kicks.length) return true
-    await e.reply(`✅ 已将成员${kicks.map(at => at.name + '(' + at.qq + ')').join(',')}${kickAll ? '全局' : ''}踢出群聊\n⏳ 即将自动撤回其近期消息`)
+    await e.reply(`✅ 已将成员${kicks.map(at => at.name + '(' + at.qq + ')').join(',')}${kickAll ? '全局' : ''}踢出群聊${e.msg.includes('黑') ? '并拉黑' : ''}\n⏳ 即将自动撤回其近期消息`)
     await del(e)
     return
   }
@@ -216,10 +216,6 @@ async function kick(e, kickAll) {
     e.reply('❌ 请@要踢出的成员')
     throw new Error()
   }
-
-
-
-
 
   let kicks = []
   for (let at of ats) {
