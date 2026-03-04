@@ -11,27 +11,6 @@ export const Audit = plugin({
   priority: 100,
   func: [auditAccept]
 })
-
-export const AuditConfig = plugin({
-  name: '[悠悠助手]群管理',
-  event: 'message.group',
-  priority: 9999,
-  rule: [
-    {
-      reg: "^#?(查看)?审核词$",
-      fnc: wordsGet
-    },
-    {
-      reg: "^#?(?:审核词设置|设置审核词) ?(.+)$",
-      fnc: wordsSet
-    },
-    {
-      reg: "^#(踢黑?|解?除?禁言?|撤回?)+$",
-      fnc: manage
-    }
-  ]
-})
-
 export const Increase = plugin({
   name: '[悠悠助手]进群通知',
   event: 'notice.group.increase',
@@ -44,6 +23,29 @@ export const Decrease = plugin({
   priority: 100,
   func: [decreaseAccept]
 })
+
+
+
+export const AuditConfig = plugin({
+  name: '[悠悠助手]群管理',
+  event: 'message.group',
+  priority: 9990,
+  rule: [
+    {
+      reg: "^#(查看)?审核词$",
+      fnc: wordsGet
+    },
+    {
+      reg: "^#(?:审核词设置|设置审核词) ?(.+)$",
+      fnc: wordsSet
+    },
+    {
+      reg: "^#(?:全?局?踢黑?|解?除?禁言?([\\u4e00-\\u9fa5a-zA-Z0-9]{0,10})|撤回?)+$",
+      fnc: manage
+    }
+  ]
+})
+
 
 
 /** 入群审核
@@ -70,15 +72,15 @@ async function auditAccept(e) {
     if (!text) continue
     const reg = new RegExp(text, 'gi')
     if (reg.test(answer)) {
-      redis.set(key, 'yoyo', { EX: 180 }) // 风险账号连续申请入群不予处理
-      return await e.approve(false, '疑似风险账号(程序判定,如有误判,请在3分钟内重新申请)')
+      redis.set(key, 'yoyo', { EX: 300 }) // 风险账号连续申请入群不予处理
+      return await e.approve(false, '风险账号(程序判定,可在5分钟内重新申请)')
     }
   }
 
   // 匹配等级
   if (level >= 0 && level < setting.config.refuseLevel) {
-    redis.set(key, 'yoyo', { EX: 180 }) // 低等级连续申请入群不予处理
-    return await e.approve(false, '等级过低(程序判定,如有需求,请在3分钟内重新申请并说明)')
+    redis.set(key, 'yoyo', { EX: 300 }) // 低等级连续申请入群不予处理
+    return await e.approve(false, '等级过低(程序判定,可在5分钟内重新申请并说明)')
   }
   // 不做处理
   if (!(level >= 0) || level < setting.config.authLevel) return true
@@ -138,6 +140,7 @@ async function decreaseAccept(e) {
   if (e.operator_id == e.user_id) {
     reply.push(group_cfg.exit.replace(/\\u/g, `${nickname}(${e.user_id})`))
   } else {
+    if (await redis.set('[yoyo-plugin]kick-' + e.group_id + '-' + e.user_id)) return true  // 被机器人踢出的群员，不报通知
     reply.push(`${nickname}(${e.user_id})被管理员移出群聊`)
   }
   let key = `[yoyo-plugin]decrease-${e.group_id}`
@@ -184,49 +187,56 @@ async function wordsSet(e, reg) {
 
 
 // 群管理
-async function manage(e) {
+async function manage(e, reg) {
   // 检测管理员权限
   utils.checkPermission(e)
   if (e.bot.adapter?.name !== "OneBotv11" || typeof e.bot.sendApi !== "function") return true
   if (e.msg.includes('踢')) {
-    let kicks = kick(e)
-    await e.reply(`✅ 已将成员${kicks.map(at => at.name + '(' + at.qq + ')').join(',')}踢出群聊\n⏳ 即将自动撤回其近期消息`)
-    del(e)
+    let kickAll = e.msg.includes('全')
+    let kicks = await kick(e, kickAll)
+    if (!kicks.length) return true
+    await e.reply(`✅ 已将成员${kicks.map(at => at.name + '(' + at.qq + ')').join(',')}${kickAll ? '全局' : ''}踢出群聊\n⏳ 即将自动撤回其近期消息`)
+    await del(e)
     return
   }
   if (e.msg.includes('撤')) {
-    del(e)
+    await del(e)
   }
   if (e.msg.includes('禁')) {
-    ban(e)
+    await ban(e, reg)
   }
 }
 
-// 踢
-async function kick(e) {
-  // @的成员
-  let ats = e.message.filter(item => item.type == 'at')
+// 踢出成员（支持局部和全局）
+async function kick(e, kickAll) {
+  // 获取 @ 的成员
+  let ats = e.message.filter(item => item.type === 'at')
   if (!ats.length) {
     e.reply('❌ 请@要踢出的成员')
-    return true
-  }
-  // 踢出成员
-  let kicks = [], err_kicks = []
-  for (let at of ats) {
-    try {
-      await e.bot.sendApi("set_group_kick", {
-        group_id: e.group_id,
-        user_id: at.qq,
-        reject_add_request: e.msg.includes('黑')
-      })
-      kicks.push(at)
-    } catch (error) {
-      err_kicks.push(at)
-    }
+    throw new Error()
   }
 
+
+  let kicks = []
+  for (let at of ats) {
+    let group_ids = [e.group_id]
+    if (kickAll) group_ids = group_ids.concat(await e.bot.getGroupList())
+
+    for (let group_id of group_ids) {
+      try {
+        await e.bot.sendApi("set_group_kick", {
+          group_id,
+          user_id: at.qq,
+          reject_add_request: e.msg.includes('黑')
+        })
+        redis.set(`[yoyo-plugin]kick-${group_id}-${at.qq}`, 'yoyo', { EX: 10 })
+      } catch (error) { }
+    }
+    kicks.push(at)
+  }
   return kicks
 }
+
 // 撤
 async function del(e) {
   // 回复的消息
@@ -252,7 +262,9 @@ async function del(e) {
   }
 }
 // 禁
-async function ban(e) {
+async function ban(e, reg) {
+  const time = utils.durationToSeconds(e.msg.match(reg)[1] || 60 * 60)
+  if (!time) return true // 时间超出范围
   let release = e.msg.includes('解')
   // @的成员
   let ats = e.message.filter(item => item.type == 'at')
@@ -264,7 +276,7 @@ async function ban(e) {
     await e.bot.sendApi("set_group_ban", {
       group_id: e.group_id,  // 群ID（必填）
       user_id: at.qq,        // 被禁言用户ID（必填）
-      duration: release ? 0 : 60 * 60,     // 禁言时长（秒）
+      duration: release ? 0 : time,     // 禁言时长（秒）
       comment: "违规发言"
     });
   }

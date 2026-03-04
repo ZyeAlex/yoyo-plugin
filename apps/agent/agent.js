@@ -71,7 +71,6 @@ class Agent {
             // JSON解析失败，降级使用原始回复（黑话提取失败不影响主流程）
             finalReply = [[{ "type": "text", "text": content }]];
         }
-
         return finalReply;
     }
 
@@ -91,18 +90,12 @@ class Agent {
     // 核心聊天方法    messages:[ { user_id,user_name,at,content } ]
     async chat({ group_name, group_id, self_id, messages }, reply) {
         try {
-
             if (!this.groupMsgs[group_id]) this.groupMsgs[group_id] = []
-
             // 获取全局有效黑话，融入System Prompt
             const slangs = (await slangsDB.getSlangs()).values()
-
             // 拼接最终System Prompt（替换群名+群ID，加入黑话上下文）
             const systemMessage = new SystemMessage(systemPrompt({ group_name, group_id, self_id, slangs }))
-
             const userMessage = new HumanMessage(JSON.stringify(messages))
-
-
             // 单次调用模型
             let res = await this.model.invoke([systemMessage, ...this.groupMsgs[group_id], userMessage], {
                 // 传递转换后的工具列表（核心参数）
@@ -110,7 +103,6 @@ class Agent {
                 // 工具调用策略：auto（自动判断是否调用）、none（不调用）、{name: "工具名"}（强制调用指定工具）
                 tool_choice: "auto",
             })
-
             // 保存用户消息
             this.groupMsgs[group_id].push(userMessage)
             // 处理工具调用
@@ -123,7 +115,6 @@ class Agent {
             this.handleMsgs(group_id)
             // 5. 返回最终回复
             return content;
-
         } catch (error) {
             console.error('聊天处理失败：', error);
             return ['']

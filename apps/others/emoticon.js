@@ -6,10 +6,11 @@ import lodash from "lodash"
 import fs from "fs"
 import render from '#render'
 
-export const Emoticon = plugin({
+
+const option = {
   name: '[悠悠助手]表情包',
   event: 'message.group',
-  priority: 9999,
+  priority: 9980,
   rule: [
     {
       reg: "^#?表情包?开启$",
@@ -22,11 +23,9 @@ export const Emoticon = plugin({
     {
       reg: "^#?表情包?列表$",
       fnc: list
-    }
+    },
   ],
-  func: [accept]
-})
-
+}
 
 // 中文对照表
 let dict = {}
@@ -47,9 +46,23 @@ for (const v of Object.values(res)) {
   }
 }
 
+Object.keys(dict).forEach(key => {
+  let reg = `^#?${key}`
+  option.rule.push({
+    /** 命令正则匹配 */
+    reg,
+    log: false,
+    /** 执行方法 */
+    fnc: memes
+  })
+})
+
+export const Emoticon = plugin(option)
 
 
-async function accept(e) {
+
+
+async function memes(e) {
   if (!e.msg || !setting.config.emoticon) return true
   const keyword = e.msg.split(" ")
   if (!dict[keyword[0]]) return true

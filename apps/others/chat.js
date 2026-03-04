@@ -14,25 +14,18 @@ export const Chat = plugin({
 
 // 智能体
 let agent
-
 // 保存群组内历史聊天内容
 const groupUsrMsgs = {}
-
 async function accept(e) {
     //没有配置api-key
     if (!setting.config.apiKey) return true
     // 过滤群聊
     if (!(setting.config.aiInclude || []).includes(e.group_id)) return true
-
     if (!agent) {
         agent = new Agent()
     }
-
-
     if (!groupUsrMsgs[e.group_id]) groupUsrMsgs[e.group_id] = []
-
     let isAt = false
-
     // 用户会话
     let usermsg = {
         user_id: e.user_id,
@@ -48,18 +41,12 @@ async function accept(e) {
             return item
         }))
     }
-
-
-
     groupUsrMsgs[e.group_id].push(usermsg)
-
     // 截取对话长度
     if (groupUsrMsgs[e.group_id].length > setting.config.msgCacheLength) {
         groupUsrMsgs[e.group_id] = groupUsrMsgs[e.group_id].slice(-setting.config.msgCacheLength)
     }
-
     if (!isAt) return
-
     // 调用大模型
     const messages = await agent.chat({
         group_name: e.group_name,
@@ -67,13 +54,8 @@ async function accept(e) {
         self_id: e.self_id,
         messages: groupUsrMsgs[e.group_id]
     }, e)
-
-
-
     // 发送对话后，用户历史聊天内容将由大模型上下文保存，所以进行清空
     groupUsrMsgs[e.group_id] = []
-
-
     for (let message of messages) {
         if (!message) break
         message = message.map(item => {
@@ -82,11 +64,8 @@ async function accept(e) {
             }
             return item
         })
-
         await e.reply(message)
-
         await utils.sleep(Math.random() * 1000 + 1000)
-
     }
 
 }

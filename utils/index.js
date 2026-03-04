@@ -88,8 +88,6 @@ class Utils {
   }
 
 
-
-
   // 节流函数
   throttle(func, delay) {
     let lastCall = 0;
@@ -100,6 +98,83 @@ class Utils {
       return func.apply(this, args);
     };
   }
+
+
+  /** 将常见时长表达式转换为秒数
+    * 支持格式：1天、2小时、30分钟、45秒、1个月等
+    * @returns number|null
+    */
+durationToSeconds(str, maxSeconds = 30 * 24 * 60 * 60) {
+  // 1. 基础空值校验
+  if (str == null) return null;
+  let input = String(str).trim();
+  if (!input) return null;
+
+  // 2. 预处理：统一口语化表述
+  input = input
+    .replace(/个/g, '')               // 去掉“个” (1个月 → 1月)
+    .replace(/一刻钟?/g, '15分钟')    // 一刻/一刻钟 → 15分钟
+    .replace(/半/g, '0.5');           // 半 → 0.5 (半小时 → 0.5小时)
+
+  // 3. 中文数字转阿拉伯数字 (支持 零~九十九)
+  const chineseNumMap = {
+    '零': 0, '一': 1, '二': 2, '两': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9,
+    '十': 10, '十一': 11, '十二': 12, '十三': 13, '十四': 14, '十五': 15, '十六': 16, '十七': 17, '十八': 18, '十九': 19,
+    '二十': 20, '三十': 30, '四十': 40, '五十': 50, '六十': 60, '七十': 70, '八十': 80, '九十': 90
+  };
+
+  // 按长度降序排序，防止“二十”被误拆为“二”和“十”
+  Object.keys(chineseNumMap)
+    .sort((a, b) => b.length - a.length)
+    .forEach(key => {
+      input = input.replace(new RegExp(key, 'g'), chineseNumMap[key]);
+    });
+
+  // 4. 单位定义 (按优先级排序)
+  const units = [
+    { name: '月', seconds: 30 * 24 * 60 * 60 },
+    { name: '天', seconds: 24 * 60 * 60 },
+    { name: '小时', seconds: 60 * 60 },
+    { name: '分钟', seconds: 60 },
+    { name: '秒', seconds: 1 }
+  ];
+
+  // 5. 构建正则并匹配
+  const unitNames = units.map(u => u.name).join('|');
+  const regex = new RegExp(`(\\d+(?:\\.\\d+)?)(${unitNames})`, 'g');
+  
+  let totalSeconds = 0;
+  let foundValidMatch = false;
+  let match;
+
+  while ((match = regex.exec(input)) !== null) {
+    const value = parseFloat(match[1]);
+    const unitName = match[2];
+    const unit = units.find(u => u.name === unitName);
+
+    if (value > 0 && unit) {
+      totalSeconds += value * unit.seconds;
+      foundValidMatch = true;
+    }
+  }
+
+  // 6. 兜底逻辑：如果没找到单位，尝试当纯数字处理（默认单位：分）
+  if (!foundValidMatch) {
+    const pureNum = parseFloat(input);
+    if (!isNaN(pureNum) && pureNum > 0) {
+      totalSeconds = pureNum * 60;
+      foundValidMatch = true;
+    }
+  }
+
+  // 7. 最终边界校验
+  if (!foundValidMatch || totalSeconds <= 0 || totalSeconds > maxSeconds) {
+    return null;
+  }
+
+  // 8. 返回整数秒
+  return Math.floor(totalSeconds);
+}
   // 两段时间的差值
   formatTimeDiff(timestampDiff, t = 'm') {
     // 确保差值为正数
@@ -266,10 +341,6 @@ class Utils {
       return best.value
     }
   }
-
-
-
-
 }
 
 export default Object.assign(new Utils(), common)

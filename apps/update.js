@@ -25,7 +25,6 @@ export const Update = plugin({
     },
     {
       reg: `#更新日志$`,
-
       fnc: update_log,
       permission: 'master'
     },
