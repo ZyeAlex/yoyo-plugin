@@ -39,7 +39,7 @@ export const Poke = plugin({
     name: '[悠悠助手]戳一戳',
     event: 'notice.group.poke',
     priority: 9999,
-    // func: [accept]
+    func: [accept]
 })
 
 

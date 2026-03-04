@@ -97,12 +97,13 @@ class Agent {
             const systemMessage = new SystemMessage(systemPrompt({ group_name, group_id, self_id, slangs }))
             const userMessage = new HumanMessage(JSON.stringify(messages))
             // 单次调用模型
-            let res = await this.model.invoke([systemMessage, ...this.groupMsgs[group_id], userMessage], {
-                // 传递转换后的工具列表（核心参数）
-                tools: tools,
-                // 工具调用策略：auto（自动判断是否调用）、none（不调用）、{name: "工具名"}（强制调用指定工具）
-                tool_choice: "auto",
-            })
+            let res = await this.model.invoke(
+                [systemMessage, ...this.groupMsgs[group_id], userMessage],
+                {
+                    tools: tools,
+                    tool_choice: "auto",
+                }
+            )
             // 保存用户消息
             this.groupMsgs[group_id].push(userMessage)
             // 处理工具调用

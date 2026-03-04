@@ -10,7 +10,7 @@ import render from '#render'
 const option = {
   name: '[悠悠助手]表情包',
   event: 'message.group',
-  priority: 9980,
+  priority: 9999,
   rule: [
     {
       reg: "^#?表情包?开启$",
@@ -102,16 +102,11 @@ async function memes(e) {
       let ats = e.message.filter(m => m.type === 'at')
       imgUrls = ats.map(at => at.qq).map(user_icon)
     }
-    if (!imgUrls || imgUrls.length === 0) {
-      // 如果都没有，用发送者的头像
-      imgUrls = [user_icon()]
-    }
+    // 如果数量不够，补上发送者头像，且放到最前面
     if (imgUrls.length < item.params_type.min_images && imgUrls.indexOf(user_icon()) === -1) {
-      // 如果数量不够，补上发送者头像，且放到最前面
       let me = [user_icon()]
       imgUrls = me.concat(imgUrls)
     }
-
     imgUrls = imgUrls.slice(0, Math.min(item.params_type.max_images, imgUrls.length))
     for (let imgUrl of imgUrls) {
       const imgRes = await fetch(imgUrl)
@@ -138,7 +133,7 @@ async function memes(e) {
     return true
 
   const resultBuffer = Buffer.from(await res.arrayBuffer())
-  return e.reply(segment.image(resultBuffer))
+  e.reply(segment.image(resultBuffer))
 }
 
 

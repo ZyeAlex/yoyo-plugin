@@ -29,7 +29,7 @@ export const Decrease = plugin({
 export const AuditConfig = plugin({
   name: '[悠悠助手]群管理',
   event: 'message.group',
-  priority: 9990,
+  priority: 100,
   rule: [
     {
       reg: "^#(查看)?审核词$",
@@ -45,8 +45,6 @@ export const AuditConfig = plugin({
     }
   ]
 })
-
-
 
 /** 入群审核
  */
@@ -126,9 +124,11 @@ Object.defineProperty(increaseAccept, 'name', { value: 'accept' })
 /** 退群通知
  */
 async function decreaseAccept(e) {
-  if (e.bot.adapter?.name !== "OneBotv11" || typeof e.bot.sendApi !== "function") return true
 
-  const { data: { nickname } } = await e.bot.sendApi("get_stranger_info", { user_id: e.user_id });
+  const pick = await e.group?.pickMember?.(id)
+  const info = await pick?.getInfo?.() || pick?.info || pick
+  const nickname = info?.card || info?.nickname
+
   let group_cfg = setting.config.increaseInclude?.find(({ group_id }) => group_id == e.group_id)
   if (!group_cfg?.exit) return true
   let reply = []
@@ -211,10 +211,14 @@ async function manage(e, reg) {
 async function kick(e, kickAll) {
   // 获取 @ 的成员
   let ats = e.message.filter(item => item.type === 'at')
+
   if (!ats.length) {
     e.reply('❌ 请@要踢出的成员')
     throw new Error()
   }
+
+
+
 
 
   let kicks = []
@@ -263,7 +267,7 @@ async function del(e) {
 }
 // 禁
 async function ban(e, reg) {
-  const time = utils.durationToSeconds(e.msg.match(reg)[1] || 60 * 60)
+  const time = utils.durationToSeconds(e.msg.match(reg)[2] || 60 * 60)
   if (!time) return true // 时间超出范围
   let release = e.msg.includes('解')
   // @的成员
