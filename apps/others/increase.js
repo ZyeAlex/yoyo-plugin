@@ -40,7 +40,7 @@ export const AuditConfig = plugin({
       fnc: wordsSet
     },
     {
-      reg: "^#(?:全?局?踢黑?|解?除?禁言?([\\u4e00-\\u9fa5a-zA-Z0-9]{0,10})|撤回?)+$",
+      reg: "^#(?:全?局?踢黑? ?([0-9 ,，]*)|解?除?禁言?([\\u4e00-\\u9fa5a-zA-Z0-9]{0,10})|撤回?)+$",
       fnc: manage
     }
   ]
@@ -189,14 +189,13 @@ async function wordsSet(e, reg) {
 // 群管理
 async function manage(e, reg) {
   // 检测管理员权限
-  utils.checkPermission(e)
+  if (!utils.checkPermission(e, false)) return true
   if (e.bot.adapter?.name !== "OneBotv11" || typeof e.bot.sendApi !== "function") return true
   if (e.msg.includes('踢')) {
     let kickAll = e.msg.includes('全')
-    let kicks = await kick(e, kickAll)
+    let kicks = await kick(e, reg, kickAll)
     if (!kicks.length) return true
-    await e.reply(`✅ 已将成员${kicks.map(at => at.name + '(' + at.qq + ')').join(',')}${kickAll ? '全局' : ''}踢出群聊${e.msg.includes('黑') ? '并拉黑' : ''}\n⏳ 即将自动撤回其近期消息`)
-    await del(e)
+    await del(e, kicks)
     return
   }
   if (e.msg.includes('撤')) {
@@ -208,17 +207,21 @@ async function manage(e, reg) {
 }
 
 // 踢出成员（支持局部和全局）
-async function kick(e, kickAll) {
+async function kick(e, reg, kickAll) {
   // 获取 @ 的成员
-  let ats = e.message.filter(item => item.type === 'at')
+  let qqs = e.message.filter(item => item.type === 'at').map(({ qq }) => qq)
 
-  if (!ats.length) {
+  let qqstr = e.msg.match(reg)[1]
+  qqs = qqs.concat(qqstr.trim().split(/[ ,，]/g))
+
+
+  if (!qqs.length) {
     e.reply('❌ 请@要踢出的成员')
     throw new Error()
   }
 
   let kicks = []
-  for (let at of ats) {
+  for (let qq of qqs) {
     let group_ids = [e.group_id]
     if (kickAll) group_ids = group_ids.concat(await e.bot.getGroupList())
 
@@ -226,19 +229,19 @@ async function kick(e, kickAll) {
       try {
         await e.bot.sendApi("set_group_kick", {
           group_id,
-          user_id: at.qq,
+          user_id: qq,
           reject_add_request: e.msg.includes('黑')
         })
-        redis.set(`[yoyo-plugin]kick-${group_id}-${at.qq}`, 'yoyo', { EX: 10 })
+        redis.set(`[yoyo-plugin]kick-${group_id}-${qq}`, 'yoyo', { EX: 10 })
       } catch (error) { }
     }
-    kicks.push(at)
+    kicks.push(qq)
   }
   return kicks
 }
 
 // 撤
-async function del(e) {
+async function del(e, qqs = []) {
   // 回复的消息
   let reply = e.message.find(item => item.type == 'reply')
   if (reply) {
@@ -246,13 +249,13 @@ async function del(e) {
     return
   }
   // @的成员
-  let ats = e.message.filter(item => item.type == 'at')
-  if (!ats.length) {
+  qqs = qqs.concat(e.message.filter(item => item.type == 'at').map(({ qq }) => qq))
+  if (!qqs.length) {
     e.reply('❌ 请@要撤回消息的成员')
     throw new Error()
   }
   const { data: { messages } } = await e.bot.sendApi("get_group_msg_history", { group_id: e.group_id, message_seq: 0, count: 200 })
-  const targetMsgs = messages.reverse().filter(msg => ats.find(at => at.qq == msg.user_id))
+  const targetMsgs = messages.reverse().filter(msg => qqs.find(qq => qq == msg.user_id))
   for (const { message_id } of targetMsgs) {
     try {
       await e.bot.sendApi("delete_msg", { message_id, self_id: e.self_id })

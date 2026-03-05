@@ -111,9 +111,6 @@ export const tools = [
             }
         }
     },
-
-
-
     {
         "type": "function",
         "function": {
