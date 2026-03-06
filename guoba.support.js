@@ -185,6 +185,7 @@ export function supportGuoba() {
     {
       field: "config.sign",
       label: "开启签到",
+      bottomHelpMessage: "签到领取老婆",
       component: "Switch"
     },
     {
@@ -217,6 +218,7 @@ export function supportGuoba() {
     {
       field: "config.emoticon",
       label: "开启表情包",
+      bottomHelpMessage: "撅等互动表情包",
       component: "Switch"
     },
     {
@@ -228,7 +230,12 @@ export function supportGuoba() {
         allowAdd: true,
         allowDel: true,
       },
-    }
+    },
+    {
+      field: "config.bili",
+      label: "B站视频解析",
+      component: "Switch"
+    },
   ]
 
   const group = [

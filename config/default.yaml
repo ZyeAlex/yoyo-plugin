@@ -48,7 +48,8 @@ emoticon: false
 # 表情包服务器 (如果有自建服务器，请加上服务器地址)
 emoticonServer:
   - https://h.winterqkl.cn
-
+# B站视频解析
+bili: false
 
 
 # AI

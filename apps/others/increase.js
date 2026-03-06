@@ -125,7 +125,7 @@ Object.defineProperty(increaseAccept, 'name', { value: 'accept' })
  */
 async function decreaseAccept(e) {
 
-  const pick = await e.group?.pickMember?.(id)
+  const pick = await e.group?.pickMember?.(e.user_id)
   const info = await pick?.getInfo?.() || pick?.info || pick
   const nickname = info?.card || info?.nickname
 
