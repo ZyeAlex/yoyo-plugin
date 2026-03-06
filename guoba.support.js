@@ -232,9 +232,53 @@ export function supportGuoba() {
       },
     },
     {
+      field: 'config.emoticonInclude',
+      label: '表情包群白名单',
+      component: 'Select',
+      componentProps: {
+        allowAdd: true,
+        allowDel: true,
+        mode: 'multiple',
+        options: allGroup,
+      },
+    },
+    {
+      field: 'config.emoticonExclude',
+      label: '表情包群黑名单',
+      component: 'Select',
+      componentProps: {
+        allowAdd: true,
+        allowDel: true,
+        mode: 'multiple',
+        options: allGroup,
+      },
+    },
+    {
       field: "config.bili",
       label: "B站视频解析",
       component: "Switch"
+    },
+    {
+      field: 'config.biliInclude',
+      label: '视频解析群白名单',
+      component: 'Select',
+      componentProps: {
+        allowAdd: true,
+        allowDel: true,
+        mode: 'multiple',
+        options: allGroup,
+      },
+    },
+    {
+      field: 'config.biliExclude',
+      label: '视频解析群黑名单',
+      component: 'Select',
+      componentProps: {
+        allowAdd: true,
+        allowDel: true,
+        mode: 'multiple',
+        options: allGroup,
+      },
     },
   ]
 

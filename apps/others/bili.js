@@ -7,7 +7,7 @@ const regAV = /av\d+/
 
 export const Bili = plugin({
     name: '[悠悠助手]B站解析',
-    event: 'message',
+    event: 'message.group',
     priority: 9999,
     rule: [
         {
@@ -28,7 +28,13 @@ export const Bili = plugin({
 
 
 async function video(e) {
-    if (!setting.config.bili) return true
+    // 签到过滤
+    if (
+        !setting.config.bili ||
+        setting.config.biliInclude?.length && !setting.config.biliInclude.includes(e.group_id) ||
+        setting.config.biliExclude?.length && setting.config.biliExclude.includes(e.group_id) ||
+        !e.group_id) return true
+
     let bvid = ""
     if (e.msg.match(regAV)) {
         let table = 'fZodR9XQDSUm21yCkr6zBqiveYah8bt4xsWpHnJE7jL5VG3guMTKNPAwcF'

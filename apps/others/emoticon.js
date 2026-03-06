@@ -64,6 +64,15 @@ export const Emoticon = plugin(option)
 
 async function memes(e) {
   if (!e.msg || !setting.config.emoticon) return true
+
+  // 签到过滤
+  if (
+    !e.msg || !setting.config.emoticon ||
+    setting.config.emoticonInclude?.length && !setting.config.emoticonInclude.includes(e.group_id) ||
+    setting.config.emoticonExclude?.length && setting.config.emoticonExclude.includes(e.group_id) ||
+    !e.group_id) return true
+
+
   const keyword = e.msg.split(" ")
   if (!dict[keyword[0]]) return true
   const user_icon = (qq = e.user_id) => `https://q1.qlogo.cn/g?b=qq&s=160&nk=${qq}`
