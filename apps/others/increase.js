@@ -40,7 +40,7 @@ export const AuditConfig = plugin({
       fnc: wordsSet
     },
     {
-      reg: "^#(?:全?局?踢黑? ?([0-9 ,，]*)|解?除?禁言?([\\u4e00-\\u9fa5a-zA-Z0-9]{0,10})|撤回?)+$",
+      reg: "^#(?:全?局?踢黑? ?([0-9 ,，]*)|撤?回?解?除?禁言?撤?回?([\\u4e00-\\u9fa5a-zA-Z0-9]{0,10}))+$",
       fnc: manage
     }
   ]
@@ -140,13 +140,11 @@ async function decreaseAccept(e) {
   let group_cfg = setting.config.increaseInclude?.find(({ group_id }) => group_id == e.group_id)
   if (!group_cfg?.exit) return true
   let reply = []
-  if (/\\i/.test(group_cfg.exit)) {
-    group_cfg.exit = group_cfg.exit.replace(/\\i/g, '')
-    reply.push(segment.image(`https://q1.qlogo.cn/g?b=qq&s=160&nk=${e.user_id}`))
-  }
+
 
   if (e.operator_id == e.user_id) {
-    reply.push(group_cfg.exit.replace(/\\u/g, `${nickname}(${e.user_id})`))
+    if (/\\i/.test(group_cfg.exit)) reply.push(segment.image(`https://q1.qlogo.cn/g?b=qq&s=160&nk=${e.user_id}`))
+    reply.push(group_cfg.exit.replace(/\\i/g, '').replace(/\\u/g, `${nickname}(${e.user_id})`))
   } else {
     if (await redis.set('[yoyo-plugin]kick-' + e.group_id + '-' + e.user_id)) return true  // 被机器人踢出的群员，不报通知
     reply.push(`${nickname}(${e.user_id})被管理员移出群聊`)
@@ -202,7 +200,7 @@ async function manage(e, reg) {
   if (e.msg.includes('踢')) {
     let kickAll = e.msg.includes('全')
     let kicks = await kick(e, reg, kickAll)
-    if (!kicks.length) return true
+    if (!Object.keys(kicks).length) return true
     await del(e, kicks)
     return
   }
@@ -235,11 +233,11 @@ async function kick(e, reg, kickAll) {
     setting.setData('data/group/blacklist', blacklist)
   }
 
-  let kicks = []
-  for (let qq of qqs) {
-    let group_ids = [e.group_id]
-    if (kickAll) group_ids = group_ids.concat(await e.bot.getGroupList())
+  let group_ids = [e.group_id]
+  if (kickAll) group_ids = group_ids.concat(await e.bot.getGroupList())
 
+  let kicks = {}  //  被踢的群和成员   { 9701000:[123456,1234567] }
+  for (let qq of qqs) {
     for (let group_id of group_ids) {
       try {
         await e.bot.sendApi("set_group_kick", {
@@ -247,16 +245,18 @@ async function kick(e, reg, kickAll) {
           user_id: qq,
           reject_add_request: e.msg.includes('黑')
         })
+        // 保存被踢记录
+        if (!kicks[group_id]) kicks[group_id] = []
+        kicks[group_id].push(qq)
         redis.set(`[yoyo-plugin]kick-${group_id}-${qq}`, 'yoyo', { EX: 10 })
       } catch (error) { }
     }
-    kicks.push(qq)
   }
   return kicks
 }
 
-// 撤
-async function del(e, qqs = []) {
+// 撤  { 9701000:[123456,1234567] }
+async function del(e, groups = {}) {
   // 回复的消息
   let reply = e.message.find(item => item.type == 'reply')
   if (reply) {
@@ -264,20 +264,26 @@ async function del(e, qqs = []) {
     return
   }
   // @的成员
-  qqs = qqs.concat(e.message.filter(item => item.type == 'at').map(({ qq }) => qq))
-  if (!qqs.length) {
+  if (!Object.keys(groups).length) {
+    groups[e.group_id] = e.message.filter(item => item.type == 'at').map(({ qq }) => qq)
+  }
+  if (!Object.keys(groups).length) {
     e.reply('❌ 请@要撤回消息的成员')
     throw new Error()
   }
-  const { data: { messages } } = await e.bot.sendApi("get_group_msg_history", { group_id: e.group_id, message_seq: 0, count: 200 })
-  const targetMsgs = messages.reverse().filter(msg => qqs.find(qq => qq == msg.user_id))
-  for (const { message_id } of targetMsgs) {
-    try {
-      await e.bot.sendApi("delete_msg", { message_id, self_id: e.self_id })
-      await utils.sleep(200)
-    } catch (err) {
+
+  for (let [group_id, qqs] of Object.entries(groups)) {
+    const { data: { messages } } = await e.bot.sendApi("get_group_msg_history", { group_id, message_seq: 0, count: 200 })
+    const targetMsgs = messages.reverse().filter(msg => qqs.find(qq => qq == msg.user_id))
+    for (const { message_id } of targetMsgs) {
+      try {
+        await e.bot.sendApi("delete_msg", { message_id, self_id: e.self_id })
+        await utils.sleep(200)
+      } catch (err) {
+      }
     }
   }
+
 }
 // 禁
 async function ban(e, reg) {
