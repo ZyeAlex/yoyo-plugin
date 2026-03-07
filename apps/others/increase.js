@@ -40,7 +40,7 @@ export const AuditConfig = plugin({
       fnc: wordsSet
     },
     {
-      reg: "^#(?:全?局?踢黑? ?([0-9 ,，]*)|撤?回?解?除?禁言?撤?回?([\\u4e00-\\u9fa5a-zA-Z0-9]{0,10}))+$",
+      reg: "^#(?:全?局?踢黑? ?([0-9 ,，]*)|撤?回?解?除?禁言?撤?回?([\\u4e00-\\u9fa5a-zA-Z0-9]{0,10})|撤回?)+$",
       fnc: manage
     }
   ]
@@ -204,12 +204,13 @@ async function manage(e, reg) {
     await del(e, kicks)
     return
   }
-  if (e.msg.includes('撤')) {
-    await del(e)
-  }
   if (e.msg.includes('禁')) {
     await ban(e, reg)
   }
+  if (e.msg.includes('撤')) {
+    await del(e)
+  }
+
 }
 
 // 踢出成员（支持局部和全局）
@@ -287,7 +288,7 @@ async function del(e, groups = {}) {
 }
 // 禁
 async function ban(e, reg) {
-  const time = utils.durationToSeconds(e.msg.match(reg)[2] || 60 * 60)
+  const time = utils.durationToSeconds(e.msg.match(reg)[2] || 60)
   if (!time) return true // 时间超出范围
   let release = e.msg.includes('解')
   // @的成员
