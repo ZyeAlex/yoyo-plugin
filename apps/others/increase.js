@@ -51,6 +51,14 @@ export const AuditConfig = plugin({
 async function auditAccept(e) {
   if (e.bot.adapter?.name !== "OneBotv11" || typeof e.bot.sendApi !== "function" || e.user_id === e.self_id) return true
 
+  // 匹配黑名单成员 直接拒绝
+  let blacklist = setting.getData('data/group/blacklist') || []
+  if (blacklist.find(qq => qq == e.user_id)) {
+    await e.approve(false, '风险账号,禁止加群(程序自动判定)')
+    return
+  }
+
+
   const { data: { level } } = await e.bot.sendApi("get_stranger_info", { user_id: e.user_id });
   let question, answer
   if (e.comment.includes('答案')) {
@@ -218,6 +226,13 @@ async function kick(e, reg, kickAll) {
   if (!qqs.length) {
     e.reply('❌ 请@要踢出的成员')
     throw new Error()
+  }
+
+  // 记录黑名单
+  if (e.msg.includes('全') && e.msg.includes('黑')) {
+    let blacklist = setting.getData('data/group/blacklist') || []
+    blacklist = [...new Set(blacklist.concat(qqs).filter(qq => qq))]
+    setting.setData('data/group/blacklist', blacklist)
   }
 
   let kicks = []

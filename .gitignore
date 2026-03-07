@@ -7,7 +7,7 @@ data/hero/id.yaml
 data/hero/nickname.yaml
 data/pet/id.yaml
 data/pet/pet.yaml
-
+data/group/
 data/db/slangs.json
 
 # 用户配置
