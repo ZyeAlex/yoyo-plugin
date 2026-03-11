@@ -40,7 +40,7 @@ export const AuditConfig = plugin({
       fnc: wordsSet
     },
     {
-      reg: "^#(?:全?局?踢黑? ?([0-9 ,，]*)|撤?回?解?除?禁言?撤?回?([\\u4e00-\\u9fa5a-zA-Z0-9]{0,10})|撤回?)+$",
+      reg: "^#[全qQ]?局?(?:[踢tT][黑hH]? ?([0-9 ,，]*)|(?:解?除?[禁jJ]言?|[撤cC]回?)+([\\u4e00-\\u9fa5a-zA-Z0-9]{0,10}) ?([0-9 ,，]*))+$",
       fnc: manage
     }
   ]
@@ -50,13 +50,6 @@ export const AuditConfig = plugin({
  */
 async function auditAccept(e) {
   if (e.bot.adapter?.name !== "OneBotv11" || typeof e.bot.sendApi !== "function" || e.user_id === e.self_id) return true
-
-  // 匹配黑名单成员 直接拒绝
-  let blacklist = setting.getData('data/group/blacklist') || []
-  if (blacklist.find(qq => qq == e.user_id)) {
-    await e.approve(false, '风险账号,禁止加群(程序自动判定)')
-    return
-  }
 
 
   const { data: { level } } = await e.bot.sendApi("get_stranger_info", { user_id: e.user_id });
@@ -71,6 +64,9 @@ async function auditAccept(e) {
   // 连续申请不予处理
   let key = `[yoyo-plugin]audit-${e.group_id}-${e.user_id}`
   if (await redis.get(key)) return true
+
+  // 邀请加群不予处理
+  if (e.invitor_id) return true
 
 
   // 匹配人机 
@@ -194,87 +190,89 @@ async function wordsSet(e, reg) {
 
 // 群管理
 async function manage(e, reg) {
+  utils.checkPermission(e)
   // 检测管理员权限
-  if (!utils.checkPermission(e, false)) return true
   if (e.bot.adapter?.name !== "OneBotv11" || typeof e.bot.sendApi !== "function") return true
-  if (e.msg.includes('踢')) {
-    let kickAll = e.msg.includes('全')
-    let kicks = await kick(e, reg, kickAll)
-    if (!Object.keys(kicks).length) return true
-    await del(e, kicks)
+
+  // 获取被权限的成员
+  let qqs = e.message.filter(item => item.type === 'at').map(({ qq }) => qq)
+  let qstr = e.msg.match(reg)[1]
+  if (qstr) qqs = qqs.concat(qstr.trim().split(/[ ,，]/g))
+  qstr = e.msg.match(reg)[3]
+  if (qstr) qqs = qqs.concat(qstr.trim().split(/[ ,，]/g))
+
+  // 获取qq群
+  let groups = [e.group_id]
+  if (e.msg.includes('全')||e.msg.includes('q')||e.msg.includes('Q')) groups = await e.bot.getGroupList()
+
+  // 获取禁言时间
+  let time = utils.durationToSeconds(e.msg.match(reg)[2] || 60)
+
+  // 是否拉黑
+  let request = e.msg.includes('黑') || e.msg.includes('h') || e.msg.includes('H')
+
+  if (e.msg.includes('踢') || e.msg.includes('t') || e.msg.includes('T')) {
+    await kick(e, groups, qqs,request)
+    await del(e, groups, qqs)
     return
   }
-  if (e.msg.includes('禁')) {
-    await ban(e, reg)
+  if (e.msg.includes('禁') || e.msg.includes('j') || e.msg.includes('J')) {
+    await ban(e, groups, qqs, time)
   }
-  if (e.msg.includes('撤')) {
-    await del(e)
+  if (e.msg.includes('撤') || e.msg.includes('c') || e.msg.includes('C')) {
+    await del(e, groups, qqs)
   }
 
 }
 
-// 踢出成员（支持局部和全局）
-async function kick(e, reg, kickAll) {
-  // 获取 @ 的成员
-  let qqs = e.message.filter(item => item.type === 'at').map(({ qq }) => qq)
-
-  let qqstr = e.msg.match(reg)[1]
-  qqs = qqs.concat(qqstr.trim().split(/[ ,，]/g))
-
-
-  if (!qqs.length) {
-    e.reply('❌ 请@要踢出的成员')
-    throw new Error()
-  }
-
-  // 记录黑名单
-  if (e.msg.includes('全') && e.msg.includes('黑')) {
-    let blacklist = setting.getData('data/group/blacklist') || []
-    blacklist = [...new Set(blacklist.concat(qqs).filter(qq => qq))]
-    setting.setData('data/group/blacklist', blacklist)
-  }
-
-  let group_ids = [e.group_id]
-  if (kickAll) group_ids = group_ids.concat(await e.bot.getGroupList())
-
-  let kicks = {}  //  被踢的群和成员   { 9701000:[123456,1234567] }
-  for (let qq of qqs) {
-    for (let group_id of group_ids) {
+// 踢出成员
+async function kick(e, groups, qqs,reject_add_request) {
+  if (!qqs.length) return
+  // 遍历踢出
+  for (let user_id of qqs) {
+    for (let group_id of groups) {
       try {
         await e.bot.sendApi("set_group_kick", {
           group_id,
-          user_id: qq,
-          reject_add_request: e.msg.includes('黑')
+          user_id,
+          reject_add_request
         })
-        // 保存被踢记录
-        if (!kicks[group_id]) kicks[group_id] = []
-        kicks[group_id].push(qq)
-        redis.set(`[yoyo-plugin]kick-${group_id}-${qq}`, 'yoyo', { EX: 10 })
+        redis.set(`[yoyo-plugin]kick-${group_id}-${user_id}`, 'yoyo', { EX: 10 })
       } catch (error) { }
     }
   }
-  return kicks
+}
+// 禁
+async function ban(e, groups, qqs, time) {
+  if (!qqs.length || !time) return
+  let release = e.msg.includes('解')
+
+  for (let user_id of qqs) {
+    for (let group_id of groups) {
+      try {
+        await e.bot.sendApi("set_group_ban", {
+          group_id,  // 群ID（必填）
+          user_id,   // 被禁言用户ID（必填）
+          duration: release ? 0 : time, // 禁言时长（秒）
+          comment: "违规发言"
+        });
+      } catch (err) {
+      }
+    }
+  }
 }
 
-// 撤  { 9701000:[123456,1234567] }
-async function del(e, groups = {}) {
+// 撤  
+async function del(e, groups, qqs) {
   // 回复的消息
   let reply = e.message.find(item => item.type == 'reply')
   if (reply) {
     await e.bot.sendApi("delete_msg", { message_id: reply.id, self_id: e.self_id })
     return
-  }
-  // @的成员
-  if (!Object.keys(groups).length) {
-    groups[e.group_id] = e.message.filter(item => item.type == 'at').map(({ qq }) => qq)
-  }
-  if (!Object.keys(groups).length) {
-    e.reply('❌ 请@要撤回消息的成员')
-    throw new Error()
-  }
-
-  for (let [group_id, qqs] of Object.entries(groups)) {
-    const { data: { messages } } = await e.bot.sendApi("get_group_msg_history", { group_id, message_seq: 0, count: 200 })
+  } else if (!qqs.length) return
+  // 撤回消息
+  for (let group_id of groups) {
+    const { data: { messages } } = await e.bot.sendApi("get_group_msg_history", { group_id, message_seq: 0, count: 100 })
     const targetMsgs = messages.reverse().filter(msg => qqs.find(qq => qq == msg.user_id))
     for (const { message_id } of targetMsgs) {
       try {
@@ -285,25 +283,5 @@ async function del(e, groups = {}) {
     }
   }
 
-}
-// 禁
-async function ban(e, reg) {
-  const time = utils.durationToSeconds(e.msg.match(reg)[2] || 60)
-  if (!time) return true // 时间超出范围
-  let release = e.msg.includes('解')
-  // @的成员
-  let ats = e.message.filter(item => item.type == 'at')
-  if (!ats.length) {
-    e.reply(release ? '❌ 请@要解禁的成员' : '❌ 请@要禁言的成员')
-    throw new Error()
-  }
-  for (let at of ats) {
-    await e.bot.sendApi("set_group_ban", {
-      group_id: e.group_id,  // 群ID（必填）
-      user_id: at.qq,        // 被禁言用户ID（必填）
-      duration: release ? 0 : time,     // 禁言时长（秒）
-      comment: "违规发言"
-    });
-  }
 }
 

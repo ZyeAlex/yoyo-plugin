@@ -66,11 +66,11 @@ class Utils {
    * 返回当前用户是否拥有admin权限
    */
   checkPermission(e, permission = "admin", isReply = true) {
-    let groupObj = e.group || (e.bot ?? Bot)?.pickGroup?.(e.group_id)
-    if (!groupObj && permission != "master") throw new Error("未获取到群对象")
-    let msg = true
+    let msg, auth = false
     // 判断权限
     if (!e.isMaster) {
+      let groupObj = e.group || (e.bot ?? Bot)?.pickGroup?.(e.group_id)
+      if (!groupObj && permission != "master") throw new Error("未获取到群对象")
       const memberObj = groupObj && groupObj.pickMember(e.user_id)
       if (permission == "master") {
         msg = "❎ 该命令仅限主人可用"
@@ -78,13 +78,13 @@ class Utils {
         msg = "❎ 该命令仅限群主可用"
       } else if (permission == "admin" && !memberObj.is_admin && !memberObj.is_owner) {
         msg = "❎ 该命令仅限管理可用"
-      }
-    }
-    if (isReply && msg !== true) {
+      } else auth = true
+    } else auth = true
+    if (isReply && !auth) {
       e.reply(msg, true)
       throw new Error(msg)
     }
-    return msg === true ? true : false
+    return auth
   }
 
 
@@ -104,77 +104,77 @@ class Utils {
     * 支持格式：1天、2小时、30分钟、45秒、1个月等
     * @returns number|null
     */
-durationToSeconds(str, maxSeconds = 30 * 24 * 60 * 60) {
-  // 1. 基础空值校验
-  if (str == null) return null;
-  let input = String(str).trim();
-  if (!input) return null;
+  durationToSeconds(str, maxSeconds = 30 * 24 * 60 * 60) {
+    // 1. 基础空值校验
+    if (str == null) return null;
+    let input = String(str).trim();
+    if (!input) return null;
 
-  // 2. 预处理：统一口语化表述
-  input = input
-    .replace(/个/g, '')               // 去掉“个” (1个月 → 1月)
-    .replace(/一刻钟?/g, '15分钟')    // 一刻/一刻钟 → 15分钟
-    .replace(/半/g, '0.5');           // 半 → 0.5 (半小时 → 0.5小时)
+    // 2. 预处理：统一口语化表述
+    input = input
+      .replace(/个/g, '')               // 去掉“个” (1个月 → 1月)
+      .replace(/一刻钟?/g, '15分钟')    // 一刻/一刻钟 → 15分钟
+      .replace(/半/g, '0.5');           // 半 → 0.5 (半小时 → 0.5小时)
 
-  // 3. 中文数字转阿拉伯数字 (支持 零~九十九)
-  const chineseNumMap = {
-    '零': 0, '一': 1, '二': 2, '两': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9,
-    '十': 10, '十一': 11, '十二': 12, '十三': 13, '十四': 14, '十五': 15, '十六': 16, '十七': 17, '十八': 18, '十九': 19,
-    '二十': 20, '三十': 30, '四十': 40, '五十': 50, '六十': 60, '七十': 70, '八十': 80, '九十': 90
-  };
+    // 3. 中文数字转阿拉伯数字 (支持 零~九十九)
+    const chineseNumMap = {
+      '零': 0, '一': 1, '二': 2, '两': 2, '三': 3, '四': 4, '五': 5, '六': 6, '七': 7, '八': 8, '九': 9,
+      '十': 10, '十一': 11, '十二': 12, '十三': 13, '十四': 14, '十五': 15, '十六': 16, '十七': 17, '十八': 18, '十九': 19,
+      '二十': 20, '三十': 30, '四十': 40, '五十': 50, '六十': 60, '七十': 70, '八十': 80, '九十': 90
+    };
 
-  // 按长度降序排序，防止“二十”被误拆为“二”和“十”
-  Object.keys(chineseNumMap)
-    .sort((a, b) => b.length - a.length)
-    .forEach(key => {
-      input = input.replace(new RegExp(key, 'g'), chineseNumMap[key]);
-    });
+    // 按长度降序排序，防止“二十”被误拆为“二”和“十”
+    Object.keys(chineseNumMap)
+      .sort((a, b) => b.length - a.length)
+      .forEach(key => {
+        input = input.replace(new RegExp(key, 'g'), chineseNumMap[key]);
+      });
 
-  // 4. 单位定义 (按优先级排序)
-  const units = [
-    { name: '月', seconds: 30 * 24 * 60 * 60 },
-    { name: '天', seconds: 24 * 60 * 60 },
-    { name: '小时', seconds: 60 * 60 },
-    { name: '分钟', seconds: 60 },
-    { name: '秒', seconds: 1 }
-  ];
+    // 4. 单位定义 (按优先级排序)
+    const units = [
+      { name: '月', seconds: 30 * 24 * 60 * 60 },
+      { name: '天', seconds: 24 * 60 * 60 },
+      { name: '小时', seconds: 60 * 60 },
+      { name: '分钟', seconds: 60 },
+      { name: '秒', seconds: 1 }
+    ];
 
-  // 5. 构建正则并匹配
-  const unitNames = units.map(u => u.name).join('|');
-  const regex = new RegExp(`(\\d+(?:\\.\\d+)?)(${unitNames})`, 'g');
-  
-  let totalSeconds = 0;
-  let foundValidMatch = false;
-  let match;
+    // 5. 构建正则并匹配
+    const unitNames = units.map(u => u.name).join('|');
+    const regex = new RegExp(`(\\d+(?:\\.\\d+)?)(${unitNames})`, 'g');
 
-  while ((match = regex.exec(input)) !== null) {
-    const value = parseFloat(match[1]);
-    const unitName = match[2];
-    const unit = units.find(u => u.name === unitName);
+    let totalSeconds = 0;
+    let foundValidMatch = false;
+    let match;
 
-    if (value > 0 && unit) {
-      totalSeconds += value * unit.seconds;
-      foundValidMatch = true;
+    while ((match = regex.exec(input)) !== null) {
+      const value = parseFloat(match[1]);
+      const unitName = match[2];
+      const unit = units.find(u => u.name === unitName);
+
+      if (value > 0 && unit) {
+        totalSeconds += value * unit.seconds;
+        foundValidMatch = true;
+      }
     }
-  }
 
-  // 6. 兜底逻辑：如果没找到单位，尝试当纯数字处理（默认单位：分）
-  if (!foundValidMatch) {
-    const pureNum = parseFloat(input);
-    if (!isNaN(pureNum) && pureNum > 0) {
-      totalSeconds = pureNum * 60;
-      foundValidMatch = true;
+    // 6. 兜底逻辑：如果没找到单位，尝试当纯数字处理（默认单位：分）
+    if (!foundValidMatch) {
+      const pureNum = parseFloat(input);
+      if (!isNaN(pureNum) && pureNum > 0) {
+        totalSeconds = pureNum * 60;
+        foundValidMatch = true;
+      }
     }
-  }
 
-  // 7. 最终边界校验
-  if (!foundValidMatch || totalSeconds <= 0 || totalSeconds > maxSeconds) {
-    return null;
-  }
+    // 7. 最终边界校验
+    if (!foundValidMatch || totalSeconds <= 0 || totalSeconds > maxSeconds) {
+      return null;
+    }
 
-  // 8. 返回整数秒
-  return Math.floor(totalSeconds);
-}
+    // 8. 返回整数秒
+    return Math.floor(totalSeconds);
+  }
   // 两段时间的差值
   formatTimeDiff(timestampDiff, t = 'm') {
     // 确保差值为正数

@@ -16,8 +16,6 @@ export const Help = plugin({
 
 async function help(e) {
   let { helpGroup } = setting.getData('config/help')
-  helpGroup = helpGroup.filter(({ auth }) => utils.checkPermission(e, auth, false))
-  await render(e, 'help/index', {
-    helpGroup
-  })
+  helpGroup = helpGroup.filter(({ auth }) => auth ? utils.checkPermission(e, auth, false) : true)
+  await render(e, 'help/index', { helpGroup })
 }
