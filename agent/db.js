@@ -1,17 +1,9 @@
 // 安装：npm install lowdb
 import { Low } from 'lowdb'
 import { JSONFile } from 'lowdb/node'
-import fs from 'fs'
-import path from 'path'
-import game from '#game'
-import setting from '#setting'
 class Slangs {
     constructor() {
-        // recursive: true → 若父文件夹不存在则自动创建，且文件夹已存在时不会报错
-        if (!fs.existsSync(path.join(setting.path, 'data/db'))) {
-            fs.mkdirSync(path.join(setting.path, 'data/db'), { recursive: true })
-        }
-        const adapter = new JSONFile(path.join(setting.path, 'data/db/slangs.json'))
+        const adapter = new JSONFile('./slangs.json')
         this.db = new Low(adapter, {})
         this.db.read()
     }

@@ -20,11 +20,7 @@ export const Gacha = plugin({
 })
 
 
-async function login(e, reg) {
-    e.reply(reg)
-    e.reply('该功能暂未开发')
+async function login(e) {
 }
-async function scanLogin(e, reg) {
-    e.reply(reg)
-    e.reply('该功能暂未开发')
+async function scanLogin(e) {
 }

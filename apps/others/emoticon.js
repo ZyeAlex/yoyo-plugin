@@ -1,8 +1,6 @@
 import fetch, { Blob, FormData } from "node-fetch"
 import plugin from '#plugin'
 import setting from "#setting"
-import game from "#game"
-import path from "path"
 import lodash from "lodash"
 import fs from "fs"
 import render from '#render'
@@ -35,7 +33,7 @@ let arr = {
   img: [],  // 图片表情包
   text: []  // 文字表情包
 }
-const res = JSON.parse(fs.readFileSync(path.join(setting.path, '/data/db/emoticon.json')))
+const res = JSON.parse(fs.readFileSync('./emoticon.json'))
 for (const v of Object.values(res)) {
   if (v.params_type.min_images) {
     arr.img.push(v.keywords)

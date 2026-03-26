@@ -16,7 +16,6 @@ export const Gacha = plugin({
 })
 
 
-async function simulatedGacha(e, reg) {
-    // e.reply(reg)
+async function simulatedGacha(e) {
     return true
 }

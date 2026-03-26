@@ -56,13 +56,13 @@ export const Test = plugin({
     event: 'message',
     priority: 100,
     rule:[{
-            reg: `^${setting.rulePrefix}?测试$`,
+            reg: `^${setting.rulePrefix}?(测试)(123)$`,
             fnc: test
         }]
 })
 
-function test(e,reg){
-    logger.info(reg) // /^~?测试$/
+function test(e,text1,text2){
+    logger.info(text1,text2) // 测试 123
 }
 
 ```

@@ -40,8 +40,7 @@ const cacheHeroImgs = {}
 
 
 // 角色图片
-async function getHeroImg(e, reg) {
-    let [_, heroName, heroIndex] = e.msg.match(reg)
+async function getHeroImg(e, heroName, heroIndex) {
     // 查询是否有此角色
     let heroId = game.getHeroId(heroName)
     if (!heroId) return true
@@ -62,9 +61,7 @@ async function getHeroImg(e, reg) {
     e.reply(segment.image(img_url))
 }
 // 角色图片列表
-async function getHeroImgList(e, reg) {
-    // 从e.msg字符串里面匹配(\w)
-    let heroName = e.msg.match(reg)[1]
+async function getHeroImgList(e, heroName) {
     // 查询是否有此角色
     let heroId = game.getHeroId(heroName)
     if (!heroId) return true
@@ -84,9 +81,7 @@ async function getHeroImgList(e, reg) {
 
 
 // 删除角色图片
-async function delHeroImg(e, reg) {
-    // 从e.msg字符串里面匹配(\w)
-    let [_, heroName, select] = e.msg.match(reg)
+async function delHeroImg(e, heroName, select) {
     // 查询是否有此角色
     let heroId = game.getHeroId(heroName)
     if (!heroId) return ture
@@ -148,9 +143,7 @@ async function originalPic(e) {
 
 
 // 上传角色图片
-async function uploadHeroImg(e, reg) {
-    // 从e.msg字符串里面匹配(\w)
-    let heroName = e.msg.match(reg)[1]
+async function uploadHeroImg(e, heroName) {
     // 查询是否有此角色
     let heroId = game.getHeroId(heroName)
     if (!heroId) return true // 本插件不处理

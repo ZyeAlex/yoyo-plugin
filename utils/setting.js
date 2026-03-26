@@ -40,7 +40,7 @@ class Setting {
    * 获取YAML数据
    * @param {*} filePath yaml文件地址
    */
-  getData(filePath,) {
+  getData(filePath, defValue) {
     filePath = path.join(this.path, filePath)
     if (!filePath.includes('.yaml')) {
       filePath += '.yaml'
@@ -53,6 +53,7 @@ class Setting {
       return YAML.parse(fs.readFileSync(filePath, 'utf8'))
     } catch (error) {
       logger.error(`[${filename}] 读取失败 ${error}`)
+      return defValue
     }
   }
   // 写入对应模块数据文件

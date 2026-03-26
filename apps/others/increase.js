@@ -177,10 +177,9 @@ async function wordsGet(e) {
     ]
   )
 }
-async function wordsSet(e, reg) {
+async function wordsSet(e, sep, word) {
   // 检测管理员权限
   utils.checkPermission(e)
-  let [_, sep, word] = e.msg.match(reg)
   if (!word) return true
   word = word.trim().split(/[,， ]/g).join('|')
   // 检测管理员权限
@@ -220,18 +219,16 @@ async function wordsSet(e, reg) {
 
 
 // 群管理
-async function manage(e, reg) {
-  console.log(e);
-
+async function manage(e, m1, m2 = 60, m3) {
   utils.checkPermission(e)
   // 检测管理员权限
   if (e.bot.adapter?.name !== "OneBotv11" || typeof e.bot.sendApi !== "function") return true
 
   // 获取被权限的成员
   let qqs = e.message.filter(item => item.type === 'at').map(({ qq }) => qq)
-  let qstr = e.msg.match(reg)[1]
+  let qstr = m1
   if (qstr) qqs = qqs.concat(qstr.trim().split(/[ ,，]/g))
-  qstr = e.msg.match(reg)[3]
+  qstr = m3
   if (qstr) qqs = qqs.concat(qstr.trim().split(/[ ,，]/g))
 
   // 获取qq群
@@ -239,7 +236,7 @@ async function manage(e, reg) {
   if (e.msg.includes('全') || e.msg.includes('q') || e.msg.includes('Q')) groups = await e.bot.getGroupList()
 
   // 获取禁言时间
-  let time = utils.durationToSeconds(e.msg.match(reg)[2] || 60)
+  let time = utils.durationToSeconds(m2)
 
   // 是否拉黑
   let request = e.msg.includes('黑') || e.msg.includes('h') || e.msg.includes('H')

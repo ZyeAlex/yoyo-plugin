@@ -27,8 +27,7 @@ export default plugin({
     ]
 })
 
-function setNickname(e, reg) {
-    let [_, heroName1, heroName2, nickname] = e.msg.match(reg)
+function setNickname(e, heroName1, heroName2, nickname) {
     let heroId = game.getHeroId(heroName1 || heroName2)
     if (!heroId) return true
     if (nickname.length > 10) {
@@ -48,8 +47,7 @@ function setNickname(e, reg) {
     e.reply(res ? '别名设置成功' : '别名设置失败')
 }
 
-function delNickname(e, reg) {
-    let [_, heroName1, heroName2, nickname] = e.msg.match(reg)
+function delNickname(e, heroName1, heroName2, nickname) {
     let heroId = game.getHeroId(heroName1 || heroName2)
     if (!heroId) {
         e.reply('未找到此角色')
@@ -69,8 +67,7 @@ function delNickname(e, reg) {
     e.reply(res ? '删除别名成功' : '删除别名失败')
 }
 
-async function getNickname(e, reg) {
-    let [_, heroName] = e.msg.match(reg)
+async function getNickname(e, heroName) {
     let heroId = game.getHeroId(heroName)
     if (!heroId) return true
     let heroMsg = game.heros[heroId] || {}

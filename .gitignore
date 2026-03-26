@@ -1,21 +1,29 @@
 /node_modules/
-# 数据
-data/user/
-data/logs/
-data/hero/hero.yaml
-data/hero/id.yaml
-data/hero/nickname.yaml
-data/pet/id.yaml
-data/pet/pet.yaml
-data/group/
-data/db/slangs.json
 
 # 用户配置
 config/config.yaml
-# 用户上传资源
-resources/img/hero/
+
+# 上传资源
+resources/img/
 # 下载图标
 resources/UI/
+
+# 数据
+data/user/
+data/group/
+data/logs/
+data/game/hero/hero.yaml
+data/game/hero/id.yaml
+data/game/hero/nickname.yaml
+data/game/pet/id.yaml
+data/game/pet/pet.yaml
+
+# 缓存
+slangs.json
+
 # 日志
 .bat
 pnpm-lock.yaml
+
+
+

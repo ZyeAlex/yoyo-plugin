@@ -57,8 +57,7 @@ async function update_plugin(e) {
   }
   return true
 }
-async function migrate(e, reg) {
-  let originName = e.msg.match(reg)[1] || ''
+async function migrate(e, originName='') {
   let origin = (await execSync('git remote -v get-url origin', { cwd: setting.path })).toString().trim()
   if (/gitee/i.test(origin) && originName.toLowerCase() != 'gitee') {
     await execSync('git remote set-url origin https://github.com/ZyeAlex/yoyo-plugin', { cwd: setting.path })

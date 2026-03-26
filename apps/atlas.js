@@ -51,9 +51,7 @@ export const Atlas = plugin({
     ]
 })
 
-function atlas(e, reg) {
-    // 名称
-    let atlasName = e.msg.match(reg)[1]
+function atlas(e, atlasName) {
 
     if (atlasName == '角色') {
         return heroList(e)
@@ -108,8 +106,7 @@ async function heroList(e) {
     })
 }
 // 角色信息
-async function heroInfo(e, reg) {
-    let name = e.msg.match(reg)[1]
+async function heroInfo(e, name) {
     let heroId = game.getHeroId(name)
     if (!heroId) return true
     let config = []

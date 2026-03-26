@@ -18,15 +18,15 @@ class Game {
     /**
      * 角色数据
      */
-    this.nicknames = setting.getData('data/hero/default_nickname') || {} // 角色昵称  {101003:['唐悠悠']}
-    this.heros = setting.getData('data/hero/hero') || {} // 角色数据 { 101003:{ /* 角色数据 */ } }
+    this.nicknames = setting.getData('data/game/hero/default_nickname',{}) // 角色昵称  {101003:['唐悠悠']}
+    this.heros = setting.getData('data/game/hero/hero',{})  // 角色数据 { 101003:{ /* 角色数据 */ } }
     this.heroImgs = {} //角色图片 {101003:[]}
 
     /**
      * 奇波数据
      */
     this.petIds = {}
-    this.pets = setting.getData('data/pet/pet') || {}
+    this.pets = setting.getData('data/game/pet/pet',{}) 
     /**
      * 装备系统
      */
@@ -36,19 +36,19 @@ class Game {
     /**
      * 成就系统
      */
-    this.achievements = setting.getData('data/achievement/default') || []
+    this.achievements = setting.getData('data/game/achievement/default',[]) 
     /**
      * 食物系统
      */
-    this.foods = setting.getData('data/food/default') || []
+    this.foods = setting.getData('data/game/food/default',[]) 
     /**
      * 建造系统
      */
-    this.buildings = setting.getData('data/building/default') || []
+    this.buildings = setting.getData('data/game/building/default',[]) 
     /**
      * 任务道具
      */
-    this.taskItems = setting.getData('data/task-item/default') || []
+    this.taskItems = setting.getData('data/game/task-item/default',[]) 
 
     // 初始化数据
     this.initData()
@@ -97,7 +97,7 @@ class Game {
         if (!this.heros[hero.id]) this.heros[hero.id] = {}
         Object.assign(this.heros[hero.id], hero)
       })
-      setting.setData('data/hero/hero', this.heros)
+      setting.setData('data/game/hero/hero', this.heros)
     } catch (error) {
       logger.error(`[yoyo-plugin][getHeroData]${error}`)
     }
@@ -110,10 +110,10 @@ class Game {
     this.getHeroImgs()
 
     // 设置角色昵称
-    if (!fs.existsSync(path.join(setting.path, 'data/hero/nickname.yaml'))) {
-      fs.copyFileSync(path.join(setting.path, 'data/hero/default_nickname.yaml'), path.join(setting.path, 'data/hero/nickname.yaml'))
+    if (!fs.existsSync(path.join(setting.path, 'data/game/hero/nickname.yaml'))) {
+      fs.copyFileSync(path.join(setting.path, 'data/game/hero/default_nickname.yaml'), path.join(setting.path, 'data/hero/nickname.yaml'))
     } else {
-      const nicknames = setting.getData('data/hero/nickname')
+      const nicknames = setting.getData('data/game/hero/nickname')
       Object.entries(nicknames).forEach(([id, names]) => this.nicknames[id] = [... new Set([...(this.nicknames[id] || []), ...names])])
     }
   }
@@ -183,7 +183,7 @@ class Game {
         }
         petData.evolution = rankArr
       })
-      setting.setData('data/pet/pet', this.pets)
+      setting.setData('data/game/pet/pet', this.pets)
     } catch (error) {
       logger.error(`[yoyo-plugin][getPetData]${error}`)
     }

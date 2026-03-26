@@ -17,8 +17,7 @@ export const Guide = plugin({
     ]
 })
 
-async function guide(e, reg) {
-    const guideName = e.msg.match(reg)[1]
+async function guide(e, guideName) {
     if (!guideName) return true
     // 角色
     let heroId = game.getHeroId(guideName)
