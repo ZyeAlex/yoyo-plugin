@@ -1,0 +1,64 @@
+.hero-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.hero-list::after {
+    content: "";
+    flex: auto;
+    min-width: 100px;
+    /* 或指定宽度，如 width: 30% */
+}
+
+.hero-item {
+    box-sizing: border-box;
+    margin: 5px 6px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.hero-item .hero-img {
+    width: 115px;
+    height: 125px;
+    position: relative;
+}
+
+.hero-item .hero-img img {
+    width: 130px;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+
+.hero-item img.hero-career {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 35px;
+    border-radius: 10px;
+    padding: 1px;
+    background-color: gray;
+}
+
+.hero-rarity {
+    height: 0;
+    overflow: visible;
+}
+
+.hero-rarity img {
+    height: 20px;
+    margin-left: 50%;
+    transform: translate(-50%, -12px);
+}
+
+.hero-text {
+    width: 100%;
+    text-align: center;
+    color: #dadada;
+    font-size: 22px;
+}

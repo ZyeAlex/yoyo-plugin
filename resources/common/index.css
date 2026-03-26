@@ -1,0 +1,38 @@
+@import url(./font.css);
+@import url(./common.css);
+
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html,
+body {
+    font-family: text01, sans-serif;
+    transform-origin: 0 0;
+    font-size: 26px;
+    width: 830px;
+}
+
+.container {
+    width: 830px;
+    background-size: contain;
+    position: relative;
+}
+
+.copyright {
+    font-size: 14px;
+    text-align: center;
+    color: #fff;
+    position: relative;
+    text-shadow: 1px 1px 1px #000;
+    padding: 12px 0 16px 0;
+}
+
+.copyright .version {
+    color: #d3bc8e;
+    display: inline-block;
+    padding: 0 3px;
+}

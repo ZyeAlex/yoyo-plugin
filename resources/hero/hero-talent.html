@@ -1,0 +1,33 @@
+<style>
+    .hero-talent {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 12px 12px;
+    }
+
+    .hero-talent-img {
+        height: 100px
+    }
+
+    .hero-talent-name {
+        font-size: 28px;
+        margin-top: 12px;
+        color: #7a8290;
+    }
+
+    .hero-talent-desc {
+        font-size: 24px;
+        margin-top: 12px;
+        text-align: center;
+        color: #7f7f7f;
+    }
+</style>
+
+
+<div class="hero-talent">
+    <img class="hero-talent-img" src="{{pluResPath}}/UI/{{icon}}"
+        onerror="this.onerror=null; this.src='{{pluResPath}}/UI/tex_icon_item_equipmaterial15.png';">
+    <div class="hero-talent-name">{{name}}</div>
+    <div class="hero-talent-desc">{{@(desc.replace(/在星赐中赐予后，可获得以下提升：/g,'').replace(/\n/g,'<br />'))}}</div>
+</div>

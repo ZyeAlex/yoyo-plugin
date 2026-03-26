@@ -1,0 +1,57 @@
+<style>
+    .pet-skill {
+        margin-bottom: 24px;
+        font-size: 24px;
+        display: flex;
+        border-radius: 46px 24px 24px 24px;
+    }
+
+    .pet-skill>:last-child {
+        flex: 1;
+
+    }
+
+    .pet-skill .pet-skill-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        margin-right: 16px;
+    }
+
+    .pet-skill .pet-skill-title {
+        display: flex;
+        width: 100%;
+        align-items: flex-end;
+        padding-top: 12px;
+        padding-right: 24px;
+    }
+
+    .pet-skill .pet-skill-name {
+        /* flex: 1; */
+        /* text-align: right; */
+        font-size: 36px;
+        font-weight: bold;
+        padding-right: 12px;
+        line-height: 36px;
+    }
+    .pet-skill .pet-skill-desc {
+        margin-top: 12px;
+        margin-bottom: 24px;
+        font-size: 28px;
+        color: #7f7f7f;
+    }
+</style>
+
+<div class="pet-skill main-box">
+    <div>
+        <img class="pet-skill-img" src="{{pluResPath}}/UI/{{skill.icon}}" style="background-color:{{eleColor}};
+        box-shadow: 0 0 5px 3px {{eleColor}}">
+    </div>
+    <div>
+        <div class="pet-skill-title">
+            <div class="pet-skill-name"> {{skill.name}}</div>
+            <div>lv.5</div>
+        </div>
+        <div class="pet-skill-desc">{{@(skill.level[5]||skill.level[0])?.skillDescribe.replace(/\n/g, '<br/>').replace(/<color=(#\w+)>([^<]+)<\/color>/g, (_, color, text) => `<font color="${color}">${text}</font>`).replace(/\{(\d+)\}/g, (_, index) => (skill.skillLevel[9] || skill.skillLevel[0])?.value[index])}}</div>
+    </div>
+</div>

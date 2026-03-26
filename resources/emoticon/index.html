@@ -1,0 +1,29 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/emoticon/index.css" />
+{{/block}}
+
+{{block 'main'}}
+
+<div class="container">
+    <div class="head-box">
+        <div class="title">表情列表</div>
+    </div>
+    <div class="main">
+        {{each img item}}
+        <div class="item">
+            {{item.slice(0,2).join('/')}}
+        </div>
+        {{/each}}
+    </div>
+    <div class="main">
+        {{each text item}}
+        <div class="item">
+            {{item.slice(0,2).join('/')}}
+        </div>
+        {{/each}}
+    </div>
+</div>
+
+{{/block}}

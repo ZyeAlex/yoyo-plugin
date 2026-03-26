@@ -1,0 +1,35 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/achievement/list.css" />
+{{/block}}
+
+
+{{block 'main'}}
+
+<div class="head-box">
+    <div class="title">成就图鉴 <span class="label">共{{achievements.reduce((s,v)=>s+=v.achievement?.length||0,0)}}个成就</span>
+    </div>
+</div>
+<!-- <div class="nav-box">
+    <div class="item">发送 <mark>{{rulePrefix}}寒悠悠图鉴</mark> 查看角色图鉴 </div>
+    <div class="item">发送 <mark>{{rulePrefix}}寒悠悠图片列表</mark> 查看角色图片 </div>
+</div> -->
+<div class=" achievements-list">
+    {{each achievements group idx}}
+    <div class="achievements main-box">
+        <div class="achievement-title"> <img height="46px" src="{{pluResPath}}/UI/{{group.achiRes}}">{{group.achiName}}
+        </div>
+        <div class="achievement-list">
+            {{each group.achievement achi idx}}
+            <div class="achievement-item">
+                <div class="achievement-name">{{achi.achiName}}</div>
+                <div class="achievement-desc">{{achi.achiDesc}}</div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+    {{/each}}
+</div>
+
+{{/block}}
