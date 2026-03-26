@@ -33,10 +33,10 @@ function readFiles(dir) {
 }
 
 // 读取所有 js（包括子文件夹）
-const appFiles = readFiles('./plugins/yoyo-plugin/apps')
+const files = readFiles(process.cwd().replace(/\\/g, '/')+ '/plugins/yoyo-plugin/apps')
 
 let ret = []
-appFiles.forEach((file) => {
+files.forEach((file) => {
   ret.push(import(file))
 })
 
@@ -48,7 +48,6 @@ logger.info('\t插 件 群: https://qm.qq.com/q/Mk3jyhIqSm')
 logger.info('\t插件群号: 991709221')
 logger.info('🍀🍀🍀🍀🍀🍀🍀🍀🍀\tyoyo-plugin载入成功!\t🍀🍀🍀🍀🍀🍀🍀🍀🍀')
 
-const files = [...app, ...other]
 let apps = {}
 
 for (let i in files) {

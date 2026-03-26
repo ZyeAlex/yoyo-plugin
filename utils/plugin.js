@@ -8,7 +8,7 @@ function getPlugin(config) {
         let name = rule.fnc.name
         if (name == 'fnc') name = name + '_' + index
         rules.push({ ...rule, fnc: name })
-        const f = (e) => rule.fnc(e, ...e.msg.match(typeof reg == 'string' ? new RegExp(rule.reg) : rule.reg).slice(1))
+        const f = (e) => rule.fnc(e, ...(e.msg?.match(typeof reg == 'string' ? new RegExp(rule.reg) : rule.reg)?.slice(1) || []))
         Object.defineProperty(f, 'name', { value: name });
         funcs.push(f)
     })

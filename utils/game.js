@@ -111,7 +111,7 @@ class Game {
 
     // 设置角色昵称
     if (!fs.existsSync(path.join(setting.path, 'data/game/hero/nickname.yaml'))) {
-      fs.copyFileSync(path.join(setting.path, 'data/game/hero/default_nickname.yaml'), path.join(setting.path, 'data/hero/nickname.yaml'))
+      fs.copyFileSync(path.join(setting.path, 'data/game/hero/default_nickname.yaml'), path.join(setting.path, 'data/game/hero/nickname.yaml'))
     } else {
       const nicknames = setting.getData('data/game/hero/nickname')
       Object.entries(nicknames).forEach(([id, names]) => this.nicknames[id] = [... new Set([...(this.nicknames[id] || []), ...names])])

@@ -1,14 +1,18 @@
 import plugin from '#plugin'
 import user from '#user'
 
-export const Help = plugin({
+export const Account = plugin({
     name: '[悠悠助手]账号',
     event: 'message',
     priority: 100,
     rule: [
         {
-            reg: `^#(删?解?除?绑定?)账?号?U?u?I?i?D?d?[ +]?([0-9]{9,10})$`,
+            reg: `^#((?:删除?)|(?:解?绑定?))账?号?[Uu]?[Ii]?[Dd]?[Ss]?[ +]?([0-9]{1,10})$`,
             fnc: bind
+        },
+        {
+            reg: `^#查?看?[Uu][Ii][Dd][Ss]?$`,
+            fnc: uid
         }
     ]
 })
@@ -22,7 +26,7 @@ async function bind(e, op, uidOrIndex) {
     // 解绑账号
     if (op.includes('解') || op.includes('删')) {
         try {
-            info = await user.unbindAccount(e, uidOrIndex, qq, group)
+            info = await user.unbindAccount(info, group, qq, uidOrIndex)
         }
         catch (msg) {
             e.reply(msg)
@@ -33,7 +37,7 @@ async function bind(e, op, uidOrIndex) {
     // 绑定账号
     else {
         try {
-            info = await user.bindAccount(e, uidOrIndex, qq, group)
+            info = await user.bindAccount(info, group, qq, uidOrIndex)
         }
         catch (msg) {
             e.reply(msg)
@@ -44,9 +48,25 @@ async function bind(e, op, uidOrIndex) {
 
     // 展示账号信息
     e.reply(
-        `QQ: ${qq}`,
-        `\nUID: \n  ${info.uids.join('\n  ')}`,
+        [
+            `QQ: ${qq}`,
+            `\nUID: \n  ${info.uids.join('\n  ')}`,
+        ]
     )
 
 }
 
+
+// uid
+async function uid(e) {
+    let qq = e.user_id
+    let group = e.group_id
+    let info = user.getUserInfo(qq)
+    // 展示账号信息
+    e.reply(
+        [
+            `QQ: ${qq}`,
+            `\nUID: \n  ${info.uids.reduce((s, v, i) => info.active == i ? s + '\n >' + v : s + '\n  ' + v, '')}`,
+        ]
+    )
+}

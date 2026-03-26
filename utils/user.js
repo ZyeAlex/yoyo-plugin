@@ -15,13 +15,10 @@ class User {
   constructor() {
 
   }
-  async getUserInfo(qq) {
-    return setting.getData('user/' + qq + '/info', {})
+  getUserInfo(qq) {
+    return setting.getData('data/user/' + qq + '/info', {})
   }
-  async bindAccount(uid, qq, group) {
-    // 读取信息
-    let info = this.getUserInfo(qq)
-
+  async bindAccount(info, group, qq, uid) {
     // 绑定uid
     info.uids = info.uids || []
     let length = info.uids.length
@@ -30,22 +27,39 @@ class User {
       info.active = length  // 设置当前激活的uid
     }
     // 保存信息
-    setting.setData('user/' + qq + '/info', info)
-
+    setting.setData('data/user/' + qq + '/info', info)
+    return info
   }
-  async unbindAccount(uidOrIndex, qq, group) {
-    // 读取信息
-    let info = this.getUserInfo(qq)
+  async unbindAccount(info, group, qq, uidOrIndex) {
 
     // 删除uid
     info.uids = info.uids || []
-    let index = info.uids.indexOf(uidOrIndex)
-    if (index !== -1) {
-      arr.splice(index, 1)
+    let index = uidOrIndex
+    // 将uid转换为索引
+    if (uidOrIndex.length >= 8) {
+      index = info.uids.indexOf(uidOrIndex)
+    }
+    // 删除对应索引
+    if (index > -1 && index < info.uids.length) {
+      info.uids.splice(index, 1)
+      if (info.active >= index) {
+        info.active--
+        info.active < 0 && delete info.active
+      }
+    }
+    // 未匹配到索引
+    else {
+      e.reply(
+        [
+          '未查到对应索引或者uid'
+        ]
+      )
+      return
     }
 
     // 保存信息
-    setting.setData('user/' + qq + '/info', info)
+    setting.setData('data/user/' + qq + '/info', info)
+    return info
   }
 
 

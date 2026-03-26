@@ -1,9 +1,11 @@
 // 安装：npm install lowdb
 import { Low } from 'lowdb'
 import { JSONFile } from 'lowdb/node'
+import setting from '#setting'
+
 class Slangs {
     constructor() {
-        const adapter = new JSONFile('./slangs.json')
+        const adapter = new JSONFile(setting.path + '/agent/slangs.json')
         this.db = new Low(adapter, {})
         this.db.read()
     }

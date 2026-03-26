@@ -33,7 +33,7 @@ let arr = {
   img: [],  // 图片表情包
   text: []  // 文字表情包
 }
-const res = JSON.parse(fs.readFileSync('./emoticon.json'))
+const res = JSON.parse(fs.readFileSync(setting.path +'/apps/others/emoticon.json'))
 for (const v of Object.values(res)) {
   if (v.params_type.min_images) {
     arr.img.push(v.keywords)

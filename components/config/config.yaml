@@ -1,0 +1,102 @@
+rulePrefix:
+  - "~"
+  - ～
+  - "#?蓝色星原"
+  - "#?蓝原"
+imgPath:
+  - plugins/yoyo-image
+imgUpAuth: all
+imgDelAuth: all
+imgMaxSize: 10
+iconSource:
+  - wiki
+  - https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/
+sign: true
+signWithdrawal: false
+signInclude:
+  - 959911611
+  - 9701000
+  - 991709221
+signExclude: []
+emoticon: true
+emoticonServer:
+  - https://h.winterqkl.cn
+emoticonInclude: []
+emoticonExclude:
+  - 375077195
+bili: true
+biliInclude:
+  - 822922789
+  - 971395999
+  - 959911611
+  - 799948313
+  - 991709221
+  - 981585515
+  - 23385114
+  - 101303690
+  - 81138585
+  - 51408855
+  - 9701000
+biliExclude: []
+baseURL: https://ark.cn-beijing.volces.com/api/v3
+apiKey: f8760202-562c-4ba7-a049-61a48c5354d7
+model: doubao-seed-2-0-pro-260215
+imgModel: doubao-seedream-4-5-251128
+msgCacheLength: 10
+MaxUsrMsgCount: 10
+aiInclude:
+  - 991709221
+  - 882552331
+  - 375077195
+  - 9701000
+  - 23385114
+  - 959911611
+  - 966870964
+  - 733369754
+isAt: true
+auditInclude:
+  - group_id: 765739971
+    answer: 南宫羽|伊德海莉
+  - group_id: 51408855
+    answer: 不死途|风堇|芭芭拉|拉完了|牢不死
+authLevel: 32
+refuseLevel: 10
+excludeText:
+  - 朋友推荐|朋友邀请
+  - 进群学习|交流学习
+  - 通过一下|批准一下
+increaseInclude:
+  - group_id: 981585515
+    text: 欢迎来到海特洛，鉴定师！\n其他二游交流： \npd.qq.com/s/b9ptnagpr?b=2
+    exit: \i\u离开了我们，他似乎并不喜欢这里~
+  - group_id: 51408855
+    text: 欢迎来到二相乐园，开拓者！\n\n原神萌新群~(∠・ω<)⌒★\nqm.qq.com/q/zD3masWhoY\n鸣潮萌新群~(∠・ω<)⌒★\nqm.qq.com/q/Jhr7PdqsUA
+    exit: \i\u觉得群内变态太多，决定溜了~
+  - group_id: 81138585
+    text: 欢迎来到原神小群，旅行者~\n\n崩铁萌新群~(∠・ω<)⌒★\nqm.qq.com/q/pv27f2YKnm\n鸣潮萌新群~(∠・ω<)⌒★\nqm.qq.com/q/Jhr7PdqsUA
+    exit: \i\u觉得群内变态太多了，决定溜了~
+  - group_id: 9701000
+    text: 欢迎来到本部！\n游戏交流请加群：\nqm.qq.com/q/InyGadPwkI
+    exit: \i\u离开了我们，他似乎并不喜欢这里~
+  - group_id: 882552331
+    text: 欢迎来到普罗米利亚大陆，星临者！\n其他二游交流： \npd.qq.com/s/b9ptnagpr?b=2
+    exit: \i\u离开了我们，他似乎并不喜欢这里~
+  - group_id: 959911611
+    text: 欢迎来到普罗米利亚大陆，星临者！\n其他二游交流： \npd.qq.com/s/b9ptnagpr?b=2
+    exit: \i\u离开了我们，他似乎并不喜欢这里~
+  - group_id: 375077195
+    text: 欢迎来到港区，指挥官！\n其他二游交流： \npd.qq.com/s/b9ptnagpr?b=2
+    exit: \i\u离开了港区，他似乎并不喜欢这里~
+  - group_id: 101303690
+    text: 欢迎来到白银之城 ，侦探⌯>ᴗ o⌯\n其他二游交流： \npd.qq.com/s/b9ptnagpr?b=2
+    exit: \i\u离开了我们，他似乎并不喜欢这里~
+  - group_id: 23385114
+    text: 欢迎来到Loli社！
+    exit: \i\u离开了我们，他还是更喜欢大雷~
+  - group_id: 971395999
+    text: 欢迎漂泊者！\n群内有[岸宝][小维]机器人~\n其他二游交流： \npd.qq.com/s/b9ptnagpr?b=2
+    exit: \i\u离开了我们，他似乎并不喜欢这里~
+increaseCd: 10
+characterImgPath: []
+heroGuidePath: []
+multimodal: ""

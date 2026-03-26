@@ -49,7 +49,7 @@ class Setting {
     let filename = path.basename(filePath)
     try {
       if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true })
-      if (!fs.existsSync(filePath)) return
+      if (!fs.existsSync(filePath)) return defValue
       return YAML.parse(fs.readFileSync(filePath, 'utf8'))
     } catch (error) {
       logger.error(`[${filename}] 读取失败 ${error}`)
