@@ -29,7 +29,7 @@ async function sign(e) {
         setting.config.signInclude?.length && !setting.config.signInclude.includes(e.group_id) ||
         setting.config.signExclude?.length && setting.config.signExclude.includes(e.group_id) ||
         !e.group_id) return true
-    let userSignInfo = game.getUserData(e.group_id, e.user_id)
+    let userSignInfo = getUserData(e.group_id, e.user_id)
     // 今日是否签到
     let hasSign = false
     // 今日日期
@@ -80,7 +80,7 @@ async function sign(e) {
         userSignInfo.history[game.heros[userSignInfo.heroId].name] = (userSignInfo.history[game.heros[userSignInfo.heroId].name] || 0) + 1
     }
     // 保存签到数据
-    game.saveUserData(e.group_id, e.user_id, userSignInfo)
+    saveUserData(e.group_id, e.user_id, userSignInfo)
     // 发送签到数据
     let signData = {
         hasSign,
@@ -143,4 +143,25 @@ async function updateSign(e) {
         day: Object.values(userSignInfo.history).reduce((a, b) => a + b),
     }
     await saveRender(e, 'sign/index', signData.heroImg, signData, false, { recallMsg: setting.config.signWithdrawal ? 100 : 0 })
+}
+
+
+
+// 获取用户数据列表
+let userData = {}
+const getUserData = (group_id, user_id) => {
+    if (!userData[group_id]) {
+        userData[group_id] = setting.getData('/data/group/' + group_id + '/other') || {}
+    }
+    let userData = userData[group_id][user_id] || { history: {} }
+    // 防止错误数据
+    if (!userData.history) {
+        userData.history = {}
+    }
+    return userData
+}
+// 保存用户数据
+const saveUserData = (group_id, user_id, userSignList) => {
+    userData[group_id][user_id] = userSignList
+    setting.setData('/data/group/' + group_id + '/other', userData[group_id],)
 }

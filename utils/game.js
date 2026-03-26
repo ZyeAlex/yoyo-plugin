@@ -236,28 +236,6 @@ class Game {
     }
   }
 
-  // 获取用户数据列表
-  getUserData(group_id, user_id) {
-    if (!this.userData) {
-      this.userData = {}
-    }
-    if (!this.userData[group_id]) {
-      this.userData[group_id] = setting.getData('/data/user/' + group_id) || {}
-    }
-    let userData = this.userData[group_id][user_id] || { history: {} }
-    // 防止错误数据
-    if (!userData.history) {
-      userData.history = {}
-    }
-    return userData
-  }
-  // 保存用户数据
-  saveUserData(group_id, user_id, userSignList) {
-    this.userData[group_id][user_id] = userSignList
-    setting.setData('data/user/' + group_id, this.userData[group_id],)
-  }
-
-
   /**
    * 操作resource
    */
