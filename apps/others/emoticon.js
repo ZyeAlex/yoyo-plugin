@@ -9,14 +9,14 @@ import render from '#render'
 const option = {
   name: '[悠悠助手]表情包',
   event: 'message.group',
-  priority: 9999,
+  priority: 9998,
   rule: [
     {
-      reg: "^#?表情包?开启$",
+      reg: "^#?全?局?(表情包?开启|开启表情包?)$",
       fnc: open
     },
     {
-      reg: "^#?表情包?关闭$",
+      reg: "^#?全?局?(表情包?关闭|关闭表情包?)$",
       fnc: close
     },
     {
@@ -33,7 +33,8 @@ let arr = {
   img: [],  // 图片表情包
   text: []  // 文字表情包
 }
-const res = JSON.parse(fs.readFileSync(setting.path +'/apps/others/emoticon.json'))
+
+const res = JSON.parse(fs.readFileSync(setting.path + '/apps/others/emoticon.json'))
 for (const v of Object.values(res)) {
   if (v.params_type.min_images) {
     arr.img.push(v.keywords)
@@ -50,20 +51,21 @@ Object.keys(dict).forEach(key => {
   option.rule.push({
     /** 命令正则匹配 */
     reg,
-    log: false,
+    // log: false,
     /** 执行方法 */
     fnc: memes
   })
 })
 
+let url = setting.config.emoticonServer[setting.config.emoticonServer.length - 1]
+
 export const Emoticon = plugin(option)
 
-
+// 服务器
 
 
 async function memes(e) {
   if (!e.msg || !setting.config.emoticon) return true
-
   // 签到过滤
   if (
     !e.msg || !setting.config.emoticon ||
@@ -135,7 +137,7 @@ async function memes(e) {
   if (args)
     formData.set("args", args)
 
-  const res = await fetch(new URL(`memes/${item.key}/`, setting.config.emoticonServer[0]), { method: "POST", body: formData })
+  const res = await fetch(new URL(`memes/${item.key}/`, url), { method: "POST", body: formData })
 
   if (res.status > 299)
     return true
@@ -213,7 +215,21 @@ function open(e) {
     e.reply('仅管理员可以设置！')
     return true
   }
-  setting.config.emoticon = true
+  // 全局开启
+  if (e.message.includes('全局')) {
+    setting.config.emoticon = true
+  }
+  // 单独开启
+  else {
+    // 添加进白名单
+    if (setting.config.emoticonInclude?.length) {
+      setting.config.emoticonInclude.push(e.group_id)
+    }
+    // 从黑名单移出
+    if (setting.config.emoticonExclude?.includes(e.group_id)) {
+      setting.config.emoticonExclude.splice(setting.config.emoticonExclude.indexOf(e.group_id), 1)
+    }
+  }
   setting.setData('config/config', setting.config)
   return e.reply("表情功能已开启")
 }
@@ -223,9 +239,26 @@ function close(e) {
     e.reply('仅管理员可以设置！')
     return true
   }
-  setting.config.emoticon = false
+  // 全局关闭
+  if (e.message.includes('全局')) {
+    setting.config.emoticon = false
+  }
+  // 单独开启
+  else {
+    // 从白名单移出
+    if (setting.config.emoticonInclude?.length) {
+      let index = setting.config.emoticonInclude.indexOf(e.group_id)
+      if (index > -1) {
+        setting.config.emoticonInclude.splice(index, 1)
+      }
+    }
+    // 添加进黑名单
+    if (!setting.config.emoticonExclude?.includes(e.group_id)) {
+      setting.config.emoticonExclude.push(e.group_id)
+    }
+  }
   setting.setData('config/config', setting.config)
-  return e.reply("表情功能已关闭")
+  e.reply("表情功能已关闭")
 }
 
 async function list(e) {

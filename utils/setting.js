@@ -22,7 +22,7 @@ class Setting {
   // 配置文件
   initConfig() {
     if (!fs.existsSync(path.join(this.path, 'config/config.yaml'))) {
-      fs.copyFileSync(path.join(this.path, 'config/default.yaml'), 'config/config.yaml')
+      fs.copyFileSync(path.join(this.path, 'config/default.yaml'), path.join(this.path, 'config/config.yaml'))
     }
     let defConfig = this.getData('config/default')
     let config = this.getData('config/config') || {}
