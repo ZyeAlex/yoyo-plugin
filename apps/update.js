@@ -87,8 +87,8 @@ async function update_log(e) {
 async function clearErrorData(e) {
   let forward = []
   let userList = await e.group.getMemberList()
-  let userSignInfos = setting.getData('data/user/' + e.group_id)
-  setting.setData('data/user/' + e.group_id + '-backup', userSignInfos)  // 备份
+  let userSignInfos = setting.getData('data/group/' + e.group_id + '/others')
+  setting.setData('data/group/' + e.group_id + '/others-b', userSignInfos)  // 备份
 
   if (userSignInfos) {
     let str = ''
@@ -136,7 +136,7 @@ async function clearErrorData(e) {
   }
 
 
-  setting.setData('data/user/' + e.group_id, userSignInfos,)
+  setting.setData('data/group/' + e.group_id + '/others', userSignInfos)
 
   forward.push('无效数据已全部清除完毕！')
 

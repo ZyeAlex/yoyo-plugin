@@ -24,7 +24,7 @@ const parseLua = async (lua, key) => {
             case 'NumericLiteral':
                 return expr.value;
             case 'StringLiteral':
-                return JSON.parse(expr.raw) || expr.value;  
+                return JSON.parse(expr.raw) || expr.value;
             case 'BooleanLiteral':
                 return expr.value;
             case 'NilLiteral':

@@ -80,7 +80,17 @@ class Game {
       // 合并数据
       const heros = await getWikiData('Hero')
       heros?.forEach(hero => {
-        if (!this.heros[hero.id]) this.heros[hero.id] = {}
+        // 对女主进行重命名
+        if (hero.id == '199001') {
+          hero.name = '星临者'
+        }
+        // 对男主进行过滤
+        if (hero.id == '199002') {
+          return
+        }
+
+        // 保存角色数据
+        if (!this.heros[hero.id]) this.heros[hero.id] = hero 
         Object.assign(this.heros[hero.id], hero)
       })
       setting.setData('data/game/hero', this.heros)
