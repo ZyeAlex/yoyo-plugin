@@ -1,6 +1,5 @@
 import plugin from '#plugin'
 import setting from '#setting'
-import game from '#game'
 
 const regB23 = /(b23\.tv|bili2233.cn)\\?\/\w{7}/
 const regBV = /BV1\w{9}/

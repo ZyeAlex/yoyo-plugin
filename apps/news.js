@@ -1,6 +1,5 @@
 import game from '#game'
 import utils from '#utils'
-import path from 'path'
 import plugin from '#plugin'
 import { shortUrl } from '../api/bilibili.js'
 

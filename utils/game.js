@@ -9,8 +9,6 @@ import { promisify } from 'util'
 import { pipeline } from 'stream'
 import setting from './setting.js'
 import { getWikiData } from '../api/wiki/data.js'
-import { getNotice } from '../api/wiki/page.js'
-import utils from '#utils'
 import initUI from './UI.js'
 
 class Game {
@@ -18,15 +16,15 @@ class Game {
     /**
      * 角色数据
      */
-    this.nicknames = setting.getData('data/game/hero/default_nickname',{}) // 角色昵称  {101003:['唐悠悠']}
-    this.heros = setting.getData('data/game/hero/hero',{})  // 角色数据 { 101003:{ /* 角色数据 */ } }
+    this.nicknames = setting.getData('data/game/default/nickname', {}) // 角色昵称  {101003:['唐悠悠']}
+    this.heros = setting.getData('data/game/hero', {})  // 角色数据 { 101003:{ /* 角色数据 */ } }
     this.heroImgs = {} //角色图片 {101003:[]}
 
     /**
      * 奇波数据
      */
     this.petIds = {}
-    this.pets = setting.getData('data/game/pet/pet',{}) 
+    this.pets = setting.getData('data/game/pet', {})
     /**
      * 装备系统
      */
@@ -36,19 +34,19 @@ class Game {
     /**
      * 成就系统
      */
-    this.achievements = setting.getData('data/game/achievement/default',[]) 
+    this.achievements = setting.getData('data/game/default/achievement', [])
     /**
      * 食物系统
      */
-    this.foods = setting.getData('data/game/food/default',[]) 
+    this.foods = setting.getData('data/game/default/food', [])
     /**
      * 建造系统
      */
-    this.buildings = setting.getData('data/game/building/default',[]) 
+    this.buildings = setting.getData('data/game/default/building', [])
     /**
      * 任务道具
      */
-    this.taskItems = setting.getData('data/game/task-item/default',[]) 
+    this.taskItems = setting.getData('data/game/default/task-item', [])
 
     // 初始化数据
     this.initData()
@@ -56,17 +54,8 @@ class Game {
   }
   /** 初始化数据 */
   async initData() {
-    // 初始化logs
-    if (!fs.existsSync(path.join(setting.path, '/data/logs'))) {
-      fs.mkdirSync(path.join(setting.path, '/data/logs'), { recursive: true })
-    }
-    // 初始化UI icon
-    if (!fs.existsSync(path.join(setting.path, '/resources/UI'))) {
-      fs.mkdirSync(path.join(setting.path, '/resources/UI'), { recursive: true })
-    }
     // 初始化UI函数
     this.getUI = initUI.call(this)
-
     // 获取角色
     this.getHeroData().then(() => this.getUI(this.heros))
     // 获取奇波
@@ -81,9 +70,6 @@ class Game {
     this.getUI(this.buildings)
     // 获取任务道具
     this.getUI(this.taskItems)
-    // 获取公告
-    // todo  获取公告  测试
-    this.notices = await getNotice()
   }
   /**
    * 从网络获取配置数据
@@ -93,11 +79,11 @@ class Game {
     try {
       // 合并数据
       const heros = await getWikiData('Hero')
-      heros.forEach(hero => {
+      heros?.forEach(hero => {
         if (!this.heros[hero.id]) this.heros[hero.id] = {}
         Object.assign(this.heros[hero.id], hero)
       })
-      setting.setData('data/game/hero/hero', this.heros)
+      setting.setData('data/game/hero', this.heros)
     } catch (error) {
       logger.error(`[yoyo-plugin][getHeroData]${error}`)
     }
@@ -110,10 +96,10 @@ class Game {
     this.getHeroImgs()
 
     // 设置角色昵称
-    if (!fs.existsSync(path.join(setting.path, 'data/game/hero/nickname.yaml'))) {
-      fs.copyFileSync(path.join(setting.path, 'data/game/hero/default_nickname.yaml'), path.join(setting.path, 'data/game/hero/nickname.yaml'))
+    if (!fs.existsSync(path.join(setting.path, 'data/game/nickname.yaml'))) {
+      fs.copyFileSync(path.join(setting.path, 'data/game/default/nickname.yaml'), path.join(setting.path, 'data/game/nickname.yaml'))
     } else {
-      const nicknames = setting.getData('data/game/hero/nickname')
+      const nicknames = setting.getData('data/game/nickname')
       Object.entries(nicknames).forEach(([id, names]) => this.nicknames[id] = [... new Set([...(this.nicknames[id] || []), ...names])])
     }
   }
@@ -138,7 +124,10 @@ class Game {
         if (!dir.startsWith('.') && fs.statSync(path.join(heroImgPath, dir)).isDirectory()) {
           let heroId = this.getHeroId(dir)
           if (heroId) {
-            let heroImgs = [...new Set([...(this.heroImgs[heroId] || []), ...fs.readdirSync(path.join(heroImgPath, dir)).map(fileName => path.join(heroImgPath, dir, fileName))])]
+            let heroImgs = [
+              ...new Set([...(this.heroImgs[heroId] || []),
+              ...fs.readdirSync(path.join(heroImgPath, dir)).map(fileName => path.join(heroImgPath, dir, fileName))])
+            ]
             this.heroImgs[heroId] = heroImgs
           }
         }
@@ -156,7 +145,7 @@ class Game {
         if (!this.pets[pet.id]) this.pets[pet.id] = {}
         Object.assign(this.pets[pet.id], pet)
       })
-      
+
       Object.entries(this.pets).forEach(([petId, petData]) => {
         // 记录进化路线
         let nextPetId = petData?.rank?.evolutionAfterStart
@@ -183,7 +172,7 @@ class Game {
         }
         petData.evolution = rankArr
       })
-      setting.setData('data/game/pet/pet', this.pets)
+      setting.setData('data/game/pet', this.pets)
     } catch (error) {
       logger.error(`[yoyo-plugin][getPetData]${error}`)
     }
@@ -214,7 +203,7 @@ class Game {
     }
   }
   // 查询是否有此角色，有则返回角色ID
-  getHeroId(name, blur = true) {
+  getHeroId(name) {
     // name为 heroId
     if (name in this.heros) {
       return name
@@ -230,9 +219,6 @@ class Game {
           return heroId
         }
       }
-    }
-    if (blur) {
-      return utils.findBestMatch(name, this.heros)
     }
   }
 

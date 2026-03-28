@@ -12,7 +12,6 @@ class Setting {
     this.yunzaiPath = process.cwd().replace(/\\/g, '/')
     // 本插件地址
     this.path = this.yunzaiPath + '/plugins/yoyo-plugin'
-
     // 初始化config
     this.config = this.initConfig()
     // 匹配前缀
@@ -22,7 +21,7 @@ class Setting {
   // 配置文件
   initConfig() {
     if (!fs.existsSync(path.join(this.path, 'config/config.yaml'))) {
-      fs.copyFileSync(path.join(this.path, 'config/default.yaml'), 'config/config.yaml')
+      fs.copyFileSync(path.join(this.path, 'config/default.yaml'), path.join(this.path, 'config/config.yaml'))
     }
     let defConfig = this.getData('config/default')
     let config = this.getData('config/config') || {}
@@ -40,8 +39,9 @@ class Setting {
    * 获取YAML数据
    * @param {*} filePath yaml文件地址
    */
-  getData(filePath, defValue) {
-    filePath = path.join(this.path, filePath)
+  getData(filePath, defValue, root = 'yoyo') {
+    root = root == 'yoyo' ? this.path : root == 'yunzai' ? this.yunzaiPath : root
+    filePath = path.join(root, filePath)
     if (!filePath.includes('.yaml')) {
       filePath += '.yaml'
     }
@@ -57,8 +57,9 @@ class Setting {
     }
   }
   // 写入对应模块数据文件
-  setData(filePath, data) {
-    filePath = path.join(this.path, filePath)
+  setData(filePath, data, root = 'yoyo') {
+    root = root == 'yoyo' ? this.path : root == 'yunzai' ? this.yunzaiPath : root
+    filePath = path.join(root, filePath)
     if (!filePath.includes('.yaml')) {
       filePath += '.yaml'
     }

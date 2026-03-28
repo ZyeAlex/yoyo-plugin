@@ -148,12 +148,12 @@ async function updateSign(e) {
 
 
 // 获取用户数据列表
-let userData = {}
+let groupData = {}
 const getUserData = (group_id, user_id) => {
-    if (!userData[group_id]) {
-        userData[group_id] = setting.getData('/data/group/' + group_id + '/other') || {}
+    if (!groupData[group_id]) {
+        groupData[group_id] = setting.getData('/data/group/' + group_id + '/others') || {}
     }
-    let userData = userData[group_id][user_id] || { history: {} }
+    let userData = groupData[group_id][user_id] || { history: {} }
     // 防止错误数据
     if (!userData.history) {
         userData.history = {}
@@ -162,6 +162,6 @@ const getUserData = (group_id, user_id) => {
 }
 // 保存用户数据
 const saveUserData = (group_id, user_id, userSignList) => {
-    userData[group_id][user_id] = userSignList
-    setting.setData('/data/group/' + group_id + '/other', userData[group_id],)
+    groupData[group_id][user_id] = userSignList
+    setting.setData('/data/group/' + group_id + '/others', groupData[group_id],)
 }

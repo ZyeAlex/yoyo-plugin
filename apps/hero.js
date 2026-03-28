@@ -2,7 +2,6 @@ import setting from '#setting'
 import game from '#game'
 import plugin from '#plugin'
 import render from '#render'
-import lodash from 'lodash'
 
 export default plugin({
     name: '[悠悠助手]角色',
