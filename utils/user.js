@@ -18,7 +18,10 @@ class User {
   getUserInfo(qq) {
     return setting.getData('data/user/' + qq + '/info', {})
   }
-  async bindAccount(info, group, qq, uid) {
+
+  async bindAccount(group, qq, uid) {
+    // 获取用户信息
+    let info = this.getUserInfo(qq)
     // 绑定uid
     info.uids = info.uids || []
     let length = info.uids.length
@@ -30,8 +33,9 @@ class User {
     setting.setData('data/user/' + qq + '/info', info)
     return info
   }
-  async unbindAccount(info, group, qq, uidOrIndex) {
-
+  async unbindAccount(group, qq, uidOrIndex) {
+    // 获取用户信息
+    let info = this.getUserInfo(qq)
     // 删除uid
     info.uids = info.uids || []
     let index = uidOrIndex
@@ -51,7 +55,7 @@ class User {
     else {
       e.reply(
         [
-          '未查到对应索引或者uid'
+          '未查到对应索引或uid'
         ]
       )
       return
@@ -61,9 +65,26 @@ class User {
     setting.setData('data/user/' + qq + '/info', info)
     return info
   }
-
-
-
+  async changeAccount(qq, uidOrIndex) {
+    // 获取用户信息
+    let info = this.getUserInfo(qq)
+    // 将uid转换为索引
+    if (uidOrIndex.length >= 8) {
+      index = info.uids.indexOf(uidOrIndex)
+    }
+    if (index > -1 && index < info.uids.length) {
+      info.active = index
+    }
+    else {
+      e.reply(
+        [
+          '错误的索引或uid'
+        ]
+      )
+      return
+    }
+    return info
+  }
 }
 
 export default new User()

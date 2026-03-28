@@ -11,7 +11,7 @@ export const Account = plugin({
             fnc: bind
         },
         {
-            reg: `^#查?看?[Uu][Ii][Dd][Ss]?$`,
+            reg: `^#切?换?查?看?[Uu][Ii][Dd][Ss]?([0-9]{0,10})$`,
             fnc: uid
         }
     ]
@@ -21,12 +21,11 @@ async function bind(e, op, uidOrIndex) {
 
     let qq = e.user_id
     let group = e.group_id
-    let info = user.getUserInfo(qq)
-
+    let info
     // 解绑账号
     if (op.includes('解') || op.includes('删')) {
         try {
-            info = await user.unbindAccount(info, group, qq, uidOrIndex)
+            info = await user.unbindAccount(group, qq, uidOrIndex)
         }
         catch (msg) {
             e.reply(msg)
@@ -37,7 +36,7 @@ async function bind(e, op, uidOrIndex) {
     // 绑定账号
     else {
         try {
-            info = await user.bindAccount(info, group, qq, uidOrIndex)
+            info = await user.bindAccount(group, qq, uidOrIndex)
         }
         catch (msg) {
             e.reply(msg)
@@ -57,11 +56,14 @@ async function bind(e, op, uidOrIndex) {
 }
 
 
-// uid
-async function uid(e) {
+// 查看账号
+async function uid(e, uidOrIndex) {
     let qq = e.user_id
-    let group = e.group_id
     let info = user.getUserInfo(qq)
+    if (uidOrIndex) {
+        info = await user.changeAccount(qq, uidOrIndex)
+    }
+
     // 展示账号信息
     e.reply(
         [

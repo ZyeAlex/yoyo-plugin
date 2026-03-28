@@ -25,6 +25,7 @@ async function guide(e, guideName) {
         return heroGuide(e, heroId)
     }
     // 其他攻略
+    return true
 }
 
 // 角色攻略

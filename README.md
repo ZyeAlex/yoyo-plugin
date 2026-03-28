@@ -33,70 +33,6 @@
 
 - [开发文档](./插件开发API说明.md)
 
-### 插件支持说明
-<!-- 合并 -->
-<details>
-<summary>三方图片库开发支持</summary>
-
-- 三方图库支持
-
-    - 加载图片库
-
-        ```js
-        // main.js
-        import { img } from '../yoyo-plugin/interface.js'
-        let path = 'plugins/yoyo-image' // 要添加的仓库地址，从Bot根路径开始
-        img(path)
-        ```
-    - 图片库格式
-
-      > 图片以「角色名」或「角色ID」命名文件夹，命名需符合官方角色名规范，否则无法读取，推荐使用 「角色ID」来命名避免匹配错误
-
-    - 图片格式
-
-      > 图片无明确长宽要求，图片会默认居中裁切，人物位置居中即可。
-
-
-- 三方立绘图支持
-
-    - 加载立绘库
-
-        ```js
-        // main.js
-        import { characterImg } from '../yoyo-plugin/interface.js'
-        let path = 'resources/lsxy/character-img' // 要添加的仓库地址，从Bot根路径开始
-        characterImg(path)
-        ```
-    - 立绘库格式
-
-      > 图片以「角色名」或「角色ID」命名文件夹，命名需符合官方角色名规范，否则无法读取，推荐使用 「角色ID」来命名避免匹配错误
-
-    - 立绘图格式
-
-      > 立绘图为透明背景、角色居中图片（参考官方立绘）
-
-- 三方攻略库支持
-
-    - 加载攻略库
-
-        ```js
-        // main.js
-        import { guide } from '../yoyo-plugin/interface.js'
-        let path = 'resources/lsxy/guide' // 要添加的仓库地址，从Bot根路径开始
-        characterImg(path,'hero')
-        ```
-    - 攻略库格式
-
-      > 攻略图以「角色名」或「角色ID」命名文件夹，命名需符合官方角色名规范，否则无法读取，推荐使用 「角色ID」来命名避免匹配错误
-
-    - 攻略图格式
-
-      > .png /.jpg /.gif /.webp /.bmp /.svg
-
-
-</details> 
-
-
 ## 插件功能
 
 `yoyo-plugin`为查询「蓝色星原：旅谣」信息的插件，包括角色面板、角色图鉴、角色图片等一系列功能
@@ -106,20 +42,15 @@
 - Wiki相关
   - ✅ `角色、奇波等图鉴` 
 - 角色相关
-  - ⬜️ `{角色}攻略`
   - ✅ `{角色}图片`
-- 账号相关（需要等游戏上线）
-  - ⬜️ `绑定UID`
-  - ⬜️ `扫码登陆`
-  - ⬜️ `面板查询`
+- 账号相关
+  - ⬜️ `绑定UID（开发中）`
 - 娱乐相关
   - ✅ `签到`
   - ✅ `你是什么猪`
   - ✅ `meme表情包`
   - ✅ `进群欢迎`
-- 悠悠Agent
-  - ✅ 开发中
-
+- 悠悠Agent（开发中）
 
 > 具体功能可在安装插件后 通过 `悠悠帮助` 查看详细指令
 
@@ -131,11 +62,15 @@
 
 1. 确保已部署 Yunzai Bot，如果未安装，推荐使用 [LLBot]( https://luckylillia.com/guide/getting-started ) + [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai) 的机器人部署方案
 
-2. 推荐使用git进行安装，方便后续升级，在Yunzai根目录内打开终端执行以下命令（不推荐clone GitHub仓库，该仓库为开发分支）
-  - gitee
+2. 推荐使用git进行安装，在Yunzai根目录内打开终端执行以下命令
+  - gitee （<font color="green">推荐使用</font>）
 
     ```shell
     git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-plugin.git ./plugins/yoyo-plugin
+    ```
+  - github（<font color="red">不推荐，不稳定版本</font>）
+    ```shell
+    git clone --depth=1 https://github.com/ZyeAlex/yoyo-plugin.git ./plugins/yoyo-plugin
     ```
 3. 安装环境
     ```shell

@@ -1,6 +1,5 @@
 import game from '#game'
 import render from '#render'
-import lodash from 'lodash'
 import plugin from '#plugin'
 // type   skill voice
 export const Atlas = plugin({

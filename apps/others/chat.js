@@ -1,5 +1,4 @@
 import setting from '#setting'
-import game from '#game'
 import plugin from '#plugin'
 import Agent from '../../agent/agent.js'
 import utils from '#utils'
