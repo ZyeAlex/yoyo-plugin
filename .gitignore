@@ -1,0 +1,25 @@
+/node_modules/
+
+# 用户配置
+config/config.yaml
+
+# 上传资源
+resources/img/
+# 下载图标
+resources/UI/
+
+# 数据
+data/user/
+data/group/
+data/logs/
+data/game/*.yaml
+
+# 缓存
+slangs.json
+
+# 日志
+.bat
+pnpm-lock.yaml
+
+
+

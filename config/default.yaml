@@ -1,0 +1,74 @@
+# 指令前缀 若和别的游戏冲突，更换其他前缀即可
+rulePrefix:
+- "~"
+- "～"
+- "#?蓝原"
+- "#?蓝色星原"
+
+# 角色图片
+imgMaxSize: 10 #上传图片大小限制 MB
+imgPath:
+#角色图片库的路径 从Bot根目录开始，如 'plugins/yoyo-image/' ，路径下须是以角色命名的文件夹
+- plugins/yoyo-image
+# todo
+characterImgPath: [] #立绘图 无背景图片 
+# todo
+heroGuidePath: [] #角色攻略图
+imgUpAuth: all # 图片上传权限 "master"|"admin"|"owner"|"all"
+imgDelAuth: all # 图片删除权限 "master"|"admin"|"owner"|"all"
+# 资源配置  
+# 图标载入地址，  git 从 https://gitee.com/yoyo-plugin/yoyo-icon 载入   wiki  从bwiki载入
+iconSource:
+- wiki
+- https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/
+
+# 签到
+sign: true # 开启签到
+signWithdrawal: false # 签到撤回
+signInclude: [] # 签到包含群聊
+signExclude: [] # 签到排除群聊
+
+
+# 表情包
+emoticon: false
+# 表情包服务器 (如果有自建服务器，请加上服务器地址)
+emoticonServer:
+  - https://h.winterqkl.cn
+emoticonInclude: []
+emoticonExclude: []
+
+
+# B站视频解析
+bili: false
+biliInclude: []
+biliExclude: []
+
+# 进群审核 (仅Onebotv11适配器可用) group_id：0 表示所有群默认行为
+auditInclude:
+  - group_id: 123456
+    answer: 蓝色星原
+authLevel: 16 # 加群审核等级    低于该等级插件将不予审核，由管理员自行定夺(推荐32~48级)
+refuseLevel: 0 # 加群拒绝等级   低于该等级插件将自动拒绝 (用于过滤⭐️等级小号，推荐2~8级)
+excludeText:
+  - 朋友推荐|朋友邀请
+  - 进群学习|交流学习
+  - 通过一下|批准一下
+# 进群欢迎 group_id：0 表示所有群默认行为
+increaseInclude:
+  - group_id: 123456
+    text: 欢迎来到普罗米利亚！星临者！
+increaseCd: 10 # 秒
+
+
+
+
+# AI
+baseURL: '' # 模型地址
+apiKey: '' # api-key
+model: '' # 模型名称
+multimodal: '' # 多模态模型
+imgModel: '' # 图片生成模型名称
+msgCacheLength: 10 # 群组内历史聊天内容长度
+MaxUsrMsgCount: 10 # 上下文对话保存数量
+aiInclude: [] # AI触发的群聊
+isAt: true  # 需要@触发

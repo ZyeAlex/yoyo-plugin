@@ -1,0 +1,22 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/pig/index.css" />
+{{/block}}
+
+{{block 'main'}}
+
+<div class="content">
+    <div class="title">猪猪检测器</div>
+    <div class="nav">
+        检测出
+        <img class="userimg" src="{{userimg}}" />
+        <span class="username">{{username}}</span>
+        的猪猪成分为
+    </div>
+    <img class="img" src="{{pluResPath}}/pig/{{pig.id}}.png" alt="">
+    <div class="name">{{pig.name}}</div>
+    <div class="description">{{pig.description}}</div>
+</div>
+
+{{/block}}

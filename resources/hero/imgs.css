@@ -1,0 +1,42 @@
+.hero-imgs {
+    display: flex;
+    flex-wrap: wrap;
+    padding-bottom: 24px;
+}
+
+.hero-img {
+    margin: 10px 0 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+
+
+.hero-img img {
+    height: 180px;
+    /* 固定高度 */
+    max-width: 200px;
+    min-width: 100px;
+    /* 最大宽度限制 */
+    object-fit: cover;
+    /* 裁切超出部分 */
+    object-position: center;
+    /* 裁切时保持居中 */
+    /* 从上到下逐渐透明 */
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, black 80%, transparent 100%);
+}
+
+.hero-text {
+    width: 100%;
+    text-align: center;
+    color: black;
+    font-family: title02;
+    padding: 0 0 3px 0;
+    margin-top: -20px;
+    color: white;
+}

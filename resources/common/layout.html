@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>yoyo-plugin</title>
+    <link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/index.css" />
+    {{block 'css'}}{{/block}}
+</head>
+
+<body>
+    <div class="container">
+        <div class="background" style="background-image: url({{pluResPath}}/{{bgImg}})"></div>
+        {{block 'main'}}{{/block}}
+        <div class="copyright">{{@sys.copyright}}</div>
+    </div>
+</body>
+
+</html>

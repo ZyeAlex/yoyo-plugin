@@ -1,0 +1,54 @@
+{
+  "version": "0.7.0-beta.1",
+  "name": "yoyo-plugin",
+  "title": "蓝色星原旅谣插件",
+  "group": "9701000",
+  "pluginGroup":"991709221",
+  "author": "@子叶Alex",
+  "authorLink":"https://gitee.com/yoyo-plugin",
+  "link":"https://gitee.com/yoyo-plugin/yoyo-plugin",
+  "description": "云崽QQ机器人的《蓝色星原：旅谣》插件",
+  "main": "main.js",
+  "type": "module",
+  "imports": {
+    "#utils": "./utils/index.js",
+    "#setting": "./utils/setting.js",
+    "#game": "./utils/game.js",
+    "#user": "./utils/user.js",
+    "#plugin": "./utils/plugin.js",
+    "#render": "./utils/render.js"
+  },
+  "keywords": [
+    "Yunzai-Bot",
+    "yoyo-plugin",
+    "yoyo-plugin",
+    "悠悠助手",
+    "寒悠悠小助手"
+  ],
+  "scripts": {},
+  "dependencies": {
+    "@lancedb/lancedb": "^0.22.3",
+    "@langchain/core": "^1.1.11",
+    "@langchain/openai": "^1.2.0",
+    "apache-arrow": "^21.0.0",
+    "axios": "1.3.4",
+    "fake-useragent": "^1.0.1",
+    "langchain": "^1.2.3",
+    "lowdb": "^7.0.1",
+    "luaparse": "^0.3.1",
+    "md5": "^2.3.0",
+    "nodemw": "^0.24.1",
+    "openai": "^6.16.0",
+    "sharp": "^0.34.2",
+    "yaml": "^2.8.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZyeAlex/yoyo-plugin.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ZyeAlex/yoyo-plugin/issues"
+  },
+  "homepage": "https://github.com/ZyeAlex/yoyo-plugin#readme"
+}
