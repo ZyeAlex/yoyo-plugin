@@ -8,11 +8,18 @@ import MD5 from 'md5'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
 import setting from './setting.js'
-import { getWikiData } from '../api/wiki/data.js'
+import { getWikiData, getWikiModuleData } from '../api/wiki/data.js'
 import initUI from './UI.js'
 
 class Game {
   constructor() {
+    /**
+     * 基础数据
+     */
+    this.element = setting.getData('data/game/element', {})
+    this.groups = setting.getData('data/game/groups', {})
+    this.profession = setting.getData('data/game/profession', {})
+
     /**
      * 角色数据
      */
@@ -29,73 +36,81 @@ class Game {
      * 装备系统
      */
     this.sets = {}//套装效果
-    this.accessories = {}//装备列表
-
-    /**
-     * 成就系统
-     */
-    this.achievements = setting.getData('data/game/default/achievement', [])
-    /**
-     * 食物系统
-     */
-    this.foods = setting.getData('data/game/default/food', [])
-    /**
-     * 建造系统
-     */
-    this.buildings = setting.getData('data/game/default/building', [])
-    /**
-     * 任务道具
-     */
-    this.taskItems = setting.getData('data/game/default/task-item', [])
+    this.accessories = setting.getData('data/game/accessory', []) //装备列表
 
     // 初始化数据
-    this.initData()
-
+    this.getData(true)
   }
   /** 初始化数据 */
-  async initData() {
+  async getData(isInit = false, type) {
     // 初始化UI函数
     this.getUI = initUI.call(this)
-    // 获取角色
-    this.getHeroData().then(() => this.getUI(this.heros))
-    // 获取奇波
-    this.getPetData().then(() => this.getUI(this.pets))
-    // 获取成就
-    this.getUI(this.achievements)
-    // 获取装备
-    this.getAccessoryData().then(() => this.getUI(this.accessories))
-    // 获取食物
-    this.getUI(this.foods)
-    // 获取建造
-    this.getUI(this.buildings)
-    // 获取任务道具
-    this.getUI(this.taskItems)
+    let types = {
+      'Base': this.getBaseData, // 获取基础数据
+      'Hero': this.getHeroData,// 获取角色数据
+      'Kibo': this.getPetData, // 获取奇波数据
+      'Accessory': this.getAccessoryData // 获取装备数据
+    }
+    if (!type) {
+      for (let fn of Object.values(types)) {
+        await fn.call(this, isInit).then(this.getUI)
+      }
+    }
+    else if (types[type]) {
+      await types[type].call(this, isInit).then(this.getUI)
+    } else {
+      throw new Error()
+    }
   }
   /**
    * 从网络获取配置数据
    */
-  async getHeroData() {
-    this.heroIds = {} // 内部使用 角色->ID映射
-    try {
-      // 合并数据
-      const heros = await getWikiData('Hero')
-      heros?.forEach(hero => {
-        // 对女主进行重命名
-        if (hero.id == '199001') {
-          hero.name = '星临者'
-        }
-        // 对男主进行过滤
-        if (hero.id == '199002') {
-          return
-        }
+  async getBaseData(isInit) {
+    // 属性
+    if (!isInit || !this.element.length) {
+      let element = await getWikiData('模块:Icon/element').catch(error => [])
+      if (element.length) this.element = element
+      setting.setData('data/game/element', this.element)
+    }
+    // 势力
+    if (!isInit || !this.groups.length) {
+      let groups = await getWikiData('模块:Icon/groups').catch(error => [])
+      if (groups.length) this.groups = groups
+      setting.setData('data/game/groups', this.groups)
+    }
+    // 职业
+    if (!isInit || !this.profession.length) {
+      let profession = await getWikiData('模块:Icon/profession').catch(error => [])
+      if (profession.length) this.profession = profession
+      setting.setData('data/game/profession', this.profession)
+    }
 
-        // 保存角色数据
-        if (!this.heros[hero.id]) this.heros[hero.id] = hero 
-        Object.assign(this.heros[hero.id], hero)
-      })
-      setting.setData('data/game/hero', this.heros)
-    } catch (error) {
-      logger.error(`[yoyo-plugin][getHeroData]${error}`)
+    return [...this.element, ...this.groups, ...this.profession]
+  }
+  async getHeroData(isInit) {
+    this.heroIds = {} // 内部使用 角色->ID映射
+    if (!isInit || !Object.keys(this.heros).length) {
+      try {
+        // 合并数据
+        const heros = await getWikiModuleData('Hero')
+        heros?.forEach(hero => {
+          // 对女主进行重命名
+          if (hero.id == '199001') {
+            hero.name = '星临者'
+          }
+          // 对男主进行过滤
+          if (hero.id == '199002') {
+            return
+          }
+
+          // 保存角色数据
+          if (!this.heros[hero.id]) this.heros[hero.id] = hero
+          Object.assign(this.heros[hero.id], hero)
+        })
+        setting.setData('data/game/hero', this.heros)
+      } catch (error) {
+        logger.error(`[yoyo-plugin][getHeroData]${error}`)
+      }
     }
     this.heroIds = Object.entries(this.heros).reduce((heroIds, [heroId, { name }]) => {
       heroIds[name] = heroId
@@ -112,6 +127,7 @@ class Game {
       const nicknames = setting.getData('data/game/nickname')
       Object.entries(nicknames).forEach(([id, names]) => this.nicknames[id] = [... new Set([...(this.nicknames[id] || []), ...names])])
     }
+    return this.heros
   }
   async getHeroImgs() {
     // 清空图片
@@ -145,72 +161,87 @@ class Game {
 
     })
   }
-  async getPetData() {
-    try {
-      let rank = {}
+  async getPetData(isInit) {
+    if (!isInit || !Object.keys(this.pets).length) {
+      try {
+        let rank = {}
+        // 合并数据
+        const pets = await getWikiModuleData('Kibo')
+        pets.forEach(pet => {
+          if (!this.pets[pet.id]) this.pets[pet.id] = {}
+          Object.assign(this.pets[pet.id], pet)
+        })
 
-      // 合并数据
-      const pets = await getWikiData('Kibo')
-      pets.forEach(pet => {
-        if (!this.pets[pet.id]) this.pets[pet.id] = {}
-        Object.assign(this.pets[pet.id], pet)
-      })
+        Object.entries(this.pets).forEach(([petId, petData]) => {
+          // 记录进化路线
+          let nextPetId = petData?.rank?.evolutionAfterStart
+          let rankArr = rank[petId] || rank[nextPetId] || []
+          rank[petId] = rankArr
+          if (nextPetId) {
+            rank[nextPetId] = rankArr
 
-      Object.entries(this.pets).forEach(([petId, petData]) => {
-        // 记录进化路线
-        let nextPetId = petData?.rank?.evolutionAfterStart
-        let rankArr = rank[petId] || rank[nextPetId] || []
-        rank[petId] = rankArr
-        if (nextPetId) {
-          rank[nextPetId] = rankArr
+            // 当前节点是否存在
+            let index = rankArr.findIndex(item => item == petId)
+            let nextIndex = rankArr.findIndex(item => item == nextPetId)
+            if (index > -1 && nextIndex > -1) {
+              return
+            }
+            if (index > -1) {
+              rankArr.splice(index + 1, 0, nextPetId)
+            } else if (nextIndex > -1) {
+              rankArr.splice(nextIndex, 0, petId)
+            } else {
+              rankArr.unshift(nextPetId)
+              rankArr.unshift(petId)
+            }
 
-          // 当前节点是否存在
-          let index = rankArr.findIndex(item => item == petId)
-          let nextIndex = rankArr.findIndex(item => item == nextPetId)
-          if (index > -1 && nextIndex > -1) {
-            return
           }
-          if (index > -1) {
-            rankArr.splice(index + 1, 0, nextPetId)
-          } else if (nextIndex > -1) {
-            rankArr.splice(nextIndex, 0, petId)
-          } else {
-            rankArr.unshift(nextPetId)
-            rankArr.unshift(petId)
-          }
-
-        }
-        petData.evolution = rankArr
-      })
-      setting.setData('data/game/pet', this.pets)
-    } catch (error) {
-      logger.error(`[yoyo-plugin][getPetData]${error}`)
+          petData.evolution = rankArr
+        })
+        setting.setData('data/game/pet', this.pets)
+      } catch (error) {
+        logger.error(`[yoyo-plugin][getPetData]${error}`)
+      }
     }
     this.petIds = Object.entries(this.pets).reduce((petIds, [petId, { name }]) => {
       petIds[name] = petId
       return petIds
     }, {})
+    return this.pets
   }
-  async getAccessoryData() {
-    try {
-      let accessories = await getWikiData('Accessory')
-      Object.values(accessories).forEach(item => (typeof item.texture == 'string') && (item.texture = item.texture.split(',')))// 兼容
-      Object.assign(this.accessories, accessories)
-      Object.entries(this.accessories).forEach(([accessoryId, { rarity, setId }]) => {
-        if (setId?.id) {
-          if (!this.sets[setId.id]) {
-            this.sets[setId.id] = {
-              rarity,
-              ...setId,
-              accessories: []
-            }
+  async getAccessoryData(isInit) {
+    if (!isInit || !this.accessories.length) {
+      try {
+        let accessories = await getWikiModuleData('Accessory')
+        accessories.forEach(accessory => {
+          if (typeof accessory.texture == 'string') {
+            accessory.texture = accessory.texture.split(',')
           }
-          this.sets[setId.id].accessories.push(accessoryId)
-        }
-      })
-    } catch (error) {
-      logger.error(`[yoyo-plugin][getAccessoryData]${error}`)
+        })
+        if (accessories.length) this.accessories = accessories
+      } catch (error) {
+        logger.error(`[yoyo-plugin][getAccessoryData]${error}`)
+      }
     }
+    this.accessories.forEach(({ id, rarity, setId }) => {
+      if (setId?.id) {
+        if (!this.sets[setId.id]) {
+          this.sets[setId.id] = {
+            rarity,
+            ...setId,
+            accessories: []
+          }
+        }
+        this.sets[setId.id].accessories.push(id)
+      }
+    })
+    Object.values(this.sets).forEach((set) => {
+      set.accessories = set.accessories.map(id => this.accessories.find(accessory => accessory.id == id)
+      ).sort((a, b) => a.type - b.type)
+    })
+
+    setting.setData('data/game/accessory', this.accessories)
+    return this.accessories
   }
   // 查询是否有此角色，有则返回角色ID
   getHeroId(name) {
@@ -231,7 +262,6 @@ class Game {
       }
     }
   }
-
   /**
    * 操作resource
    */

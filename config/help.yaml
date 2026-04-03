@@ -14,18 +14,6 @@ helpGroup:
   - "title": "#装备图鉴"
     "desc": "查看所有装备"
     "icon": "tex_icon_equipment_large_suit1_8.png"
-  - "title": "#建造图鉴"
-    "desc": "查看所有建造物"
-    "icon": "tex_icon_homescience_loggingstump.png"
-  - "title": "#成就图鉴"
-    "desc": "查看所有成就"
-    "icon": "tex_icon_item_temporary03.png"
-  - "title": "#任务道具图鉴"
-    "desc": "查看所有任务道具"
-    "icon": "tex_icon_taskitem_present01.png"
-  - "title": "#料理图鉴"
-    "desc": "查看所有食物"
-    "icon": "tex_icon_item_meat04.png"
 
 - "group": "角色"
   "list":

@@ -1,14 +1,14 @@
-import bot from 'nodemw'
+import wikiAPI from 'nodemw'
 import luaparse from 'luaparse'
 
 // wiki 链接
-const client = new bot({
+const client = new wikiAPI({
     protocol: "https",
     server: "wiki.biligame.com",
     path: "/ap",
     debug: false,
+    userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
 });
-
 
 /**
  * 将Lua解析为Lua AST
@@ -97,39 +97,39 @@ const parseLua = async (lua, key) => {
  * @param {*} module 要提取的模块名称 https://wiki.biligame.com/ap/模块:【模块名称】/
  * @returns 
  */
-const getWikiData = async (module) => {
-    const ids = await new Promise(res => {
-        client.getArticle(`模块:${module}/id`, async function (err, data) {
+const getWikiData = async (path) => {
+    const data = await new Promise((res, rej) => {
+        client.getArticle(path, async function (error, data) {
             // error handling
+            if (error) return rej(error)
             try {
-                if (err) throw new Error(err)
                 res(await parseLua(data, 'data'))
             } catch (error) {
-                logger.error('[yoyo-plugin][getWikiData] ', error)
-                return res({});
+                rej(error)
             }
         });
     })
-    let arr = []
+    return data
+}
+const getWikiModuleData = async (module) => {
+    let ids = [], arr = []
+    try {
+        ids = await getWikiData(`模块:${module}/id`)
+    } catch (error) {
+        logger.error('[yoyo-plugin][getWikiModuleData] ', error)
+        ids = []
+    }
     for (let id in ids) {
-        const data = await new Promise((res, rej) => {
-            client.getArticle(`模块:${module}/` + id, async function (err, data) {
-                // error handling
-                if (err) return rej()
-                try {
-                    res(await parseLua(data, 'data'))
-                } catch (error) {
-                    rej()
-                }
-            });
-        }).catch((err) => err && logger.error('[yoyo-plugin][getWikiData]', err))
+        let data
+        try {
+            data = await getWikiData(`模块:${module}/` + id)
+        } catch (error) {
+            logger.error('[yoyo-plugin][getWikiModuleData]', error)
+        }
         if (data) {
             arr.push(data)
         } else {
-            arr.push({
-                id,
-                name: ids[id]
-            })
+            arr.push({ id, name: ids[id] })
         }
     }
     return arr
@@ -140,8 +140,11 @@ const getWikiData = async (module) => {
 
 
 
+
+
 export {
-    getWikiData
+    getWikiData,
+    getWikiModuleData
 }
 
 

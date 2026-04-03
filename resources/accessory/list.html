@@ -16,7 +16,7 @@
 <div class="main-box accessory-list">
     {{each accessories accessory idx}}
     <div class="accessory-item rarity-{{accessory.rarity||0}}">
-        <img class="accessory-img img" src="{{pluResPath}}/UI/{{accessory.texture[2]}}" />
+        <img class="accessory-img img" src="{{pluResPath}}/UI/{{accessory.texture?.[2]}}" />
         <div class="rarity">
             <img src="{{pluResPath}}/common/rarity/rarity-{{accessory.rarity||0}}.png">
         </div>

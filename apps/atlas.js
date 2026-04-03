@@ -8,7 +8,11 @@ export const Atlas = plugin({
     priority: 100,
     rule: [
         {
-            reg: `^#?(.{1,10}?)(图鉴|卡片|card|Card)$`,
+            reg: `^#?更新(.{0,4})(图鉴|数据|图鉴数据)$`,
+            fnc: updateAtlas
+        },
+        {
+            reg: `^#?(?!更新)(.{1,10}?)(图鉴|卡片|card|Card)$`,
             fnc: atlas
         },
         {
@@ -31,27 +35,10 @@ export const Atlas = plugin({
             reg: `^#?(装备列表|全部装备)$`,
             fnc: accessoryList
         },
-        {
-            reg: `^#?(成就列表|全部成就)$`,
-            fnc: achievementList
-        },
-        {
-            reg: `^#?(建造列表|全部建造)$`,
-            fnc: buildingList
-        },
-        {
-            reg: `^#?((任务?)道具列表|全部(任务?)道具)$`,
-            fnc: taskItemList
-        },
-        {
-            reg: `^#?(料理|食物|食品)列表|全部(料理|食物|食品)$`,
-            fnc: foodList
-        }
     ]
 })
 
 function atlas(e, atlasName) {
-
     if (atlasName == '角色') {
         return heroList(e)
     }
@@ -63,18 +50,6 @@ function atlas(e, atlasName) {
     }
     if (atlasName == '装备') {
         return accessoryList(e)
-    }
-    if (atlasName == '成就') {
-        return achievementList(e)
-    }
-    if (atlasName == '建造') {
-        return buildingList(e)
-    }
-    if (atlasName == '道具' || atlasName == '任务道具') {
-        return taskItemList(e)
-    }
-    if (atlasName == '食品' || atlasName == '食物' || atlasName == '料理') {
-        return foodList(e)
     }
     let heroId = game.getHeroId(atlasName, false)
     // 角色
@@ -164,12 +139,7 @@ async function petAtlas(e, petId) {
  */
 async function setList(e) {
     await render(e, 'accessory/set-list', {
-        sets: Object.values(game.sets).map(set => {
-            return {
-                ...set,
-                accessories: set.accessories.map(id => game.accessories[id]).sort((a, b) => a.type - b.type)
-            }
-        })
+        sets: Object.values(game.sets)
     })
 }
 //   装备图鉴
@@ -178,40 +148,16 @@ async function accessoryList(e) {
         accessories: Object.values(game.accessories).filter(({ name }) => name != '暂未开放').sort((a, b) => b.rarity - a.rarity)
     })
 }
-/**
- * 成就
- */
-// 装备图鉴
-async function achievementList(e) {
-    await render(e, 'achievement/list', {
-        num: game.achievements.reduce((num, { achievement }) => num += achievement.length, 0),
-        achievements: game.achievements
-    })
-}
-/**
- * 食物
- */
-// 食品列表
-async function foodList(e) {
-    await render(e, 'food/list', {
-        foods: game.foods
-    })
-}
-/**
- * 建造
- */
-//   建造列表
-async function buildingList(e) {
-    await render(e, 'building/list', {
-        buildings: game.buildings.filter(building => building?.building?.[0]?.buildingPixelIcon)
-    })
-}
-/**
- * 任务道具
- */
-//   任务道具
-async function taskItemList(e) {
-    await render(e, 'task-item/list', {
-        taskItems: game.taskItems.filter(item => item.name)
-    })
+
+async function updateAtlas(e, type) {
+    try {
+        e.reply('即将为你更新图鉴数据~')
+        if (!type) await game.getData()
+        else if (type == '角色') await game.getData(false, 'Hero')
+        else if (type == '奇波') await game.getData(false, 'Kibo')
+        else if (type == '装备') await game.getData(false, 'Accessory')
+        e.reply((type || '') + '图鉴数据已更新完毕！')
+    } catch (error) {
+
+    }
 }
