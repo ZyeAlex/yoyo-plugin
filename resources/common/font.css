@@ -6,11 +6,6 @@
 }
 
 @font-face {
-  font-family: "text-pixel";
-  src: url("./font/text-pixel.ttf") format("truetype");
-}
-
-@font-face {
   font-family: "number01";
   src: url("./font/number01.ttf") format("truetype");
 }

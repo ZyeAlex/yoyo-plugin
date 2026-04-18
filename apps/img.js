@@ -90,7 +90,7 @@ async function delHeroImg(e, heroName, select) {
     }
     if (!select) return
     // 权限检测
-    utils.checkPermission(e, setting.config.imgDelAuth)
+    await utils.checkPermission(e, setting.config.imgDelAuth)
     select = select.trim().split(/[,， ]/).sort((a, b) => b - a)
     let imgFiles = select.map(index => cacheHeroImgs[heroId][index - 1])
     const res = game.delHeroImg(heroId, imgFiles)
@@ -148,7 +148,7 @@ async function uploadHeroImg(e, heroName) {
     let heroId = game.getHeroId(heroName)
     if (!heroId) return true // 本插件不处理
     // 权限检测
-    utils.checkPermission(e, setting.config.imgUpAuth)
+    await utils.checkPermission(e, setting.config.imgUpAuth)
     let imgs = []
     for (let val of e.message) {
         logger.info(val)

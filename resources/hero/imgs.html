@@ -5,13 +5,13 @@
 
 {{block 'main'}}
 
-<div class="head-box">{{heroName}}图片列表 <span class="label">共{{heroImgs.length}}张</span> </div>
-<div class="nav-box">
+<div class="head">{{heroName}}图片列表 <span class="label">共{{heroImgs.length}}张</span> </div>
+<div class="nav">
     <div class="label item">发送 <mark>{{rulePrefix}}{{heroName}}图片1</mark> 获取一张角色图片</div>
     <div class="label item">发送 <mark>{{rulePrefix}}上传{{heroName}}图片(引用图片)</mark> 上传图片(支持批量上传) </div>
     <div class="label item">发送 <mark>{{rulePrefix}}删除{{heroName}}图片1</mark> 删除对应编号图片 </div>
 </div>
-<div class="main-box hero-imgs">
+<div class="main hero-imgs">
     {{each heroImgs heroImg idx}}
     <div class="hero-img" style="background-color: {{color}}bf;border: 1px solid {{color}};">
         <img src="{{heroImg}}" alt="图片加载失败" />

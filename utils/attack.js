@@ -31,7 +31,7 @@ class Attack {
      */
 
     // 基础伤害计算
-    baseDamage() {
+    normalDamage() {
         let product = [
             this.defense,
             this.damageReduction,
@@ -43,8 +43,8 @@ class Attack {
         ].reduce((p, fn) => p * fn.call(this), 1)
 
         return [
-            this.criticalDamage() * product,
-            this.criticalDamage(false) * product,
+            this.criticalDamage() * product,    // 期望伤害
+            this.criticalDamage(false) * product,   // 暴击伤害
         ]
 
     }
@@ -58,7 +58,10 @@ class Attack {
      * 乘区伤害
      * 
      */
-
+    // 基础攻击
+    baseDamage() {
+        return 1
+    }
     // 暴击伤害 是否期望伤害
     criticalDamage(expectation = true) {
         let { criticalRate, criticalDamage } = this.hero
@@ -73,16 +76,12 @@ class Attack {
     defense() {
         let { level: heroLevel, fixedPenetration, percentPenetration } = this.hero
         let { level: monsterLevel, baseDefense } = this.monster
-
         // 进攻方等级系数 = 5 * (进攻方等级 + 100) 
         let attackLevelCoefficient = 5 * (heroLevel + 100)
-
         // 怪物方总防御 = 基础防御 * (0.05+0.0005*怪物方等级)
         let monsterDefense = baseDefense * (0.05 + 0.0005 * monsterLevel)
-
         // 防守方总有效防御 = (防守方总防御 - 进攻方固定值防御穿透) * (1 - 进攻方百分比防御穿透)
         let monsterEffectiveDefense = (monsterDefense - fixedPenetration) * (1 - percentPenetration)
-
         // 防御减伤区 = (进攻方等级系数) / (进攻方等级系数 + 防守方总有效防御)
         return attackLevelCoefficient / (attackLevelCoefficient + monsterEffectiveDefense)
     }
@@ -90,22 +89,17 @@ class Attack {
     damageReduction() {
         let { damageIncrease } = this.hero
         let { damageReduction, vulnerable } = this.monster
-
         // 通用增减伤区 = 进攻方通用伤害增幅 - 防守方通用受伤减免
         // 若存在易伤特性，易伤等效于通用增减伤，会和不特定属性的全增伤加算
         // 所以实际上易伤等于负的减伤
-
         return 1 + damageIncrease + vulnerable - damageReduction
     }
     // 物魔伤害区
     demonDamage() {
-
         let { 物理or魔法, physicalIncrease, magicIncrease } = this.hero
-
         let { physicalReduction, magicReduction } = this.monster
         // 物理伤害对应物理伤害增幅和物理受伤减免，魔法伤害对应魔法伤害增幅和魔法受伤减免
         // 物魔伤害区 = 进攻方对应伤害增幅 - 防守方对应受伤减免
-
         if (物理or魔法 == '物理') {
             return 1 + physicalIncrease - physicalReduction
         } else {
@@ -147,3 +141,5 @@ class Attack {
     }
 
 }
+
+export default Attack

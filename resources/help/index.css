@@ -3,70 +3,65 @@
   background-size: 100% auto;
 }
 
-.main-box {
+.main {
   padding: 0;
 }
 
-.help-group {
-  background-color: #333;
-  color: #ebebeb;
-  text-align: center;
-  padding: 6px;
+/* 功能组样式 */
+.function-group {
+  margin-bottom: 35px;
 }
 
-.help-table {}
+.group-header {
+  background: #2a2a2a;
+  padding: 6px 12px;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
 
+.group-title {
+  font-size: 24px;
+  font-weight: bold;
+  letter-spacing: 5px;
+}
 
-.help-table .tr {
+/* 三列网格布局 */
+.group-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  /* 模拟细线边框感 */
+}
+
+.item {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 12px;
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
 }
 
-.help-table .tr .td {
-  width: 33%;
-  position: relative;
-  margin: 1px;
+.item-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.help-table .td:nth-child(odd) {
-  background-color: #dadada;
-
+.item-icon img {
+  max-width: 100%;
+  max-height: 100%;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
 }
 
-.help-table .td:nth-child(even) {
-  background-color: #ededed;
-}
-
-
-.help-icon {
-  margin: 5px;
-  width: 55px;
-  height: 55px;
-  background-size: contain;
-  background-position: center center;
-  background-repeat: no-repeat;
-  display: block;
-  position: absolute;
-  border-radius: 5px;
-  left: 0px;
-  top: 0px;
-}
-
-.help-title {
-  display: block;
-  color: #333;
-  text-shadow: 0 0 1px #000;
+.item-cmd {
   font-size: 22px;
-  margin-left: 60px;
-  padding: 6px;
-  font-family: text01;
+  font-weight: bold;
+  margin-bottom: 4px;
 }
 
-.help-desc {
-  display: block;
-  color: #6c6c6c;
-  font-size: 14px;
-  margin-left: 60px;
-  padding: 0 0 12px 6px;
-  font-family: number01;
+.item-desc {
+  font-size: 11px;
+  color: #999;
 }

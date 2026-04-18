@@ -1,5 +1,5 @@
 {
-  "version": "0.7.0-beta.1",
+  "version": "0.8.0-beta.1",
   "name": "yoyo-plugin",
   "title": "蓝色星原旅谣插件",
   "group": "9701000",
@@ -19,11 +19,10 @@
     "#render": "./utils/render.js"
   },
   "keywords": [
-    "Yunzai-Bot",
-    "yoyo-plugin",
-    "yoyo-plugin",
+    "蓝色星原旅谣",
     "悠悠助手",
-    "寒悠悠小助手"
+    "yoyo-plugin",
+    "Yunzai"
   ],
   "scripts": {},
   "dependencies": {

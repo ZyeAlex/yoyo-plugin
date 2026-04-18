@@ -1,30 +1,4 @@
-.container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
 
-.background {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    background-position: center;
-    background-size: cover;
-    /* 或 'contain'，根据你的需求调整 */
-    background-repeat: no-repeat;
-    filter: blur(10px);
-    /* 调整模糊程度 */
-    opacity: 0.3;
-    /* 调整半透明程度 */
-    z-index: -1;
-    /* 确保伪元素位于内容之下 */
-    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 85%, rgba(0, 0, 0, 0.8) 100%);
-    mask-image: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.6) 85%, rgba(0, 0, 0, 0.8) 100%);
-}
 
 .sign-img {
     width: 830px;
@@ -122,4 +96,8 @@
 
 .sign-interrupt {
     margin-top: 10px;
+}
+
+.background{
+    opacity: 0;
 }

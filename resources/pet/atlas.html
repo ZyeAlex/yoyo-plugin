@@ -8,8 +8,7 @@
 
 <div class="pet-atlas">
     <div class="pet-img">
-        <% include(pluginPath+'/resources/pet/pet-illustration.html',{size,pluginPath,pluResPath,element,kiboBoxCardIcon})
-            %>
+    <% include(pluginPath+'/resources/pet/pet-illustration.html',{size,pluginPath,pluResPath,element,kiboBoxCardIcon}) %>
     </div>
     <div class="pet-info">
         <div class="pet-name"> {{name}} </div>
@@ -44,32 +43,36 @@
         </div>
     </div>
 </div>
+
 <!-- Q技能 -->
 {{each signatureSkillList skill}}
 <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
-    {{/each}}
-    <!-- 普攻 -->
-    {{each skillList skill}}
-    <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+{{/each}}
+
+<!-- 普攻 -->
+{{each skillList skill}}
+<% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+{{/each}}
+
+<!-- 合击技能 -->
+{{each breakSkillList skill}}
+<% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
+{{/each}}
+
+<!-- 进化路线 -->
+{{if evolution?.length}}
+<div class="main ">
+    <div class="evolution-title">{{rank?.evolutionName}}</div>
+    <div class="evolution">
+        {{each evolution pet}}
+        <div class="evolution-item">
+            <img height="120" class="evolution-pet-img" src="{{pluResPath}}/UI/{{pet.petIcon}}" alt="">
+            <div class="evolution-pet-stage">{{pet.petStage?.name}}</div>
+            <div class="evolution-pet-name">{{pet.name}}</div>
+        </div>
+        <div>→</div>
         {{/each}}
-        <!-- 合击技能 -->
-        {{each breakSkillList skill}}
-        <% include(pluginPath+'/resources/pet/pet-skill.html',{pluResPath,skill,eleColor:element[0].elementColor}) %>
-            {{/each}}
-            <!-- 进化路线 -->
-            {{if evolution?.length}}
-            <div class="main-box ">
-                <div class="evolution-title">{{rank?.evolutionName}}</div>
-                <div class="evolution">
-                    {{each evolution pet}}
-                    <div class="evolution-item">
-                        <img height="120" class="evolution-pet-img" src="{{pluResPath}}/UI/{{pet.petIcon}}" alt="">
-                        <div class="evolution-pet-stage">{{pet.petStage?.name}}</div>
-                        <div class="evolution-pet-name">{{pet.name}}</div>
-                    </div>
-                    <div>→</div>
-                    {{/each}}
-                </div>
-            </div>
-            {{/if}}
-            {{/block}}
+    </div>
+</div>
+{{/if}}
+{{/block}}

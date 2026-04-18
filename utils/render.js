@@ -30,7 +30,8 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
   }
   // copyright
   let copyright = `${title} <span class="version">${version}</span> | 插件群 <span class="version">${pluginGroup}</span>`
-  if (cfg.origin) copyright += `| 数据源 <span class="version">${cfg.origin}</span> `
+  // if (cfg.origin) copyright += `| 数据源 <span class="version">${cfg.origin}</span> `
+  copyright += `| 急需<span class="version">UI</span>!!! `
   return e.runtime.render('yoyo-plugin', p, renderData, {
     ...cfg,
     beforeRender({ data }) {
@@ -44,6 +45,7 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
         sys: { name, title, copyright },
         Math,
         JSON,
+        style,
         quality: 100
       }
     }
@@ -66,4 +68,14 @@ export async function saveRender(e, p, url, renderData = {}, ...args) {
       await redis.set(`yoyo:original-picture:${i}`, url, { EX: 3600 * 3 })
     }
   }
+}
+
+
+
+const style = (style = {}) => {
+  let styleStr = ''
+  for (let [key, value] of Object.entries(style || {})) {
+    styleStr += `${key}:${value};`
+  }
+  return styleStr
 }

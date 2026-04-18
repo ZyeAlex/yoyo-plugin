@@ -49,12 +49,14 @@ helpGroup:
     "desc": "查看原图"
   - "title": "#寒悠悠设置别名XXX"
     "icon": "tex_herofavor_dec_upgradefx4.png"
-    "font-size": "18px"
+    "style":
+      "font-size": "16px"
     "desc": "给角色取昵称(可以触发指令)"
   - "title": "#寒悠悠删除别名XXX"
     "icon": "tex_herofavor_dec_upgradefx5.png"
     "desc": "删除角色昵称"
-    "font-size": "18px"
+    "style":
+      "font-size": "16px"
 
 - "group": "工具"
   "list":
@@ -89,12 +91,18 @@ helpGroup:
   - "title": "#设置审核词+审核词"
     "icon": ""
     "desc": "设置群审批条件(多个词用,隔开)"
+    "style":
+      "font-size": "16px"
   - "title": "#新增审核词+审核词"
     "icon": ""
     "desc": "新增群审批条件(多个词用,隔开)"
+    "style":
+      "font-size": "16px"
   - "title": "#删除审核词+审核词"
     "icon": ""
     "desc": "删除群审批条件(多个词用,隔开)"
+    "style":
+      "font-size": "16px"
   - "title": "#踢|踢黑+@用户"
     "icon": ""
     "desc": "踢出群成员并撤回其近期发送所有消息"

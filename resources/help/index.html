@@ -5,29 +5,40 @@
 
 {{block 'main'}}
 <div class="container">
-  <div class="head-box">
-    <div class="title">{{sys.title}}</div>
-    <div class="label">{{sys.name}}</div>
-  </div>
+
+  <header class="head">
+    <h1 class="title">{{sys.title}}</h1>
+    <p class="sub">{{sys.name}}</p>
+  </header>
+
   {{each helpGroup group}}
   {{set len = group?.list?.length || 0 }}
-  <div class="main-box">
-    <div class="help-group">{{group.group}}</div>
-    {{if len > 0}}
-    <div class="help-table">
-      <div class="tr">
+  <section class="main">
+
+    <div class="function-group">
+      <div class="group-header">
+        <span class="group-title">{{group.group}}</span>
+      </div>
+      <div class="group-grid">
         {{each group.list help}}
-        <div class="td">
-          <div class="help-icon" style="background-image: url({{pluResPath}}/UI/{{help.icon}})"></div>
-          <div class="help-title" style="font-size:{{help['font-size']||'22px'}}">{{help.title.replace(/\#/g, rulePrefix)}}</div>
-          <div class="help-desc">{{help.desc}}</div>
+        <div class="item">
+          <div class="item-icon">
+            <img src="{{pluResPath}}/UI/{{help.icon}}">
+          </div>
+          <div class="item-text">
+            <div class="item-cmd" style="{{style(help.style)}}">
+              {{help.title.replace(/\#/g,rulePrefix)}}
+            </div>
+            <div class="item-desc">{{help.desc}}</div>
+          </div>
         </div>
         {{/each}}
       </div>
     </div>
-    {{/if}}
-  </div>
+
+  </section>
   {{/each}}
-  <div class="copyright">{{@sys.copyright}}</div>
+
+  <footer class="copyright">{{@sys.copyright}}</footer>
 </div>
 {{/block}}

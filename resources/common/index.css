@@ -1,38 +1,217 @@
 @import url(./font.css);
-@import url(./common.css);
 
 
 * {
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 html,
 body {
-    font-family: text01, sans-serif;
-    transform-origin: 0 0;
-    font-size: 26px;
-    width: 830px;
+  font-family: text01, sans-serif;
+  transform-origin: 0 0;
+  font-size: 26px;
+  width: 830px;
+  position: relative;
+  overflow: hidden;
 }
 
-.container {
-    width: 830px;
-    background-size: contain;
-    position: relative;
+/* 背景样式 */
+.background {
+  position: absolute;
+  left: -10px;
+  top: -10px;
+  bottom: -10px;
+  right:-10px;
+  background-position: center;
+  background-size: 100% auto;
+  background-repeat: repeat-y;
+  filter: blur(5px);
+  z-index: -1;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7)  0%, rgba(0, 0, 0, 0.5) 85%, rgba(0, 0, 0, 1) 100%);
 }
+
+/* 标题 */
+.head {
+  padding: 30px 20px 10px;
+  position: relative;
+  color: #fff;
+  font-size: 48px;
+  text-shadow: 0 0 1px #946969, 1px 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.head .title {
+  font-size: 48px;
+  font-family: title01;
+}
+
+.head .sub {
+  font-size: 24px;
+  font-family: title02;
+}
+
+
+
+
+
+/* 列表样式 */
+.nav {
+  position: relative;
+  padding: 12px;
+  margin: 5px 20px 10px;
+}
+
+.nav .item {
+  position: relative;
+  padding-left: 1.5em;
+  margin: 8px 0;
+  font-size: 24px;
+}
+
+.nav .item::before {
+  content: "🍀 ";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.2em;
+  margin-right: 0.5em;
+}
+
+
+/* 主體 */
+.main {
+  padding: 12px;
+  margin: 5px 20px 10px;
+  overflow: hidden;
+}
+
+
 
 .copyright {
-    font-size: 14px;
-    text-align: center;
-    color: #fff;
-    position: relative;
-    text-shadow: 1px 1px 1px #000;
-    padding: 12px 0 16px 0;
+  font-size: 14px;
+  text-align: center;
+  color: #fff;
+  position: relative;
+  text-shadow: 1px 1px 1px #000;
+  padding: 12px 0 16px 0;
+}
+
+.copyright::before {
+  content: '.';
+  color: transparent;
+  text-shadow: none;
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #555, transparent);
+  margin-bottom: 15px;
 }
 
 .copyright .version {
-    color: #d3bc8e;
-    display: inline-block;
-    padding: 0 3px;
+  color: #d3bc8e;
+  display: inline-block;
+  padding: 0 3px;
+}
+
+
+
+/* mark样式 */
+mark {
+  background-color: #2F2F2F;
+  /* 灰黑色背景 */
+  color: #D4AF37;
+  /* 烫金色文本（接近金色） */
+  border-radius: 8px;
+  /* 圆角 */
+  padding: 1px 5px 3px 4px;
+  /* 可选：增加内边距使文本不贴边 */
+}
+
+
+
+
+/* 稀有度 */
+.rarity-0 {
+  box-shadow: 0px 0px 0 1px #869ba8;
+  background-image: linear-gradient(to bottom,
+      rgba(134, 155, 168, 0.3) 0%,
+      rgba(134, 155, 168, 0.1) 75%,
+      rgba(134, 155, 168, 0.2) 100%);
+}
+
+.rarity-0 .text {
+  padding: 5px 0 3px 0;
+  border-top: 3px solid 869ba8;
+  background-image: linear-gradient(to bottom, #51575a, #52575b, #4a5054, #4a5054);
+}
+
+.rarity-1 {
+  box-shadow: 0px 0px 0 1px #2acf80;
+  background-image: linear-gradient(to bottom,
+      rgba(42, 207, 128, 0.3) 0%,
+      rgba(42, 207, 128, 0.1) 75%,
+      rgba(42, 207, 128, 0.2) 100%);
+}
+
+.rarity-1 .text {
+  padding: 5px 0 3px 0;
+  border-top: 3px solid #2acf80;
+  background-image: linear-gradient(to bottom, #51575a, #52575b, #4a5054, #4a5054);
+}
+
+.rarity-2 {
+  box-shadow: 0px 0px 0 1px #33aaff;
+  background-image: linear-gradient(to bottom,
+      rgba(51, 170, 255, 0.3) 0%,
+      rgba(51, 170, 255, 0.1) 75%,
+      rgba(51, 170, 255, 0.2) 100%);
+}
+
+.rarity-2 .text {
+  padding: 5px 0 3px 0;
+  border-top: 3px solid #33aaff;
+  background-image: linear-gradient(to bottom, #51575a, #52575b, #4a5054, #4a5054);
+}
+
+.rarity-3 {
+  box-shadow: 0px 0px 0 1px #945aff;
+  background-image: linear-gradient(to bottom,
+      rgba(148, 90, 255, 0.3) 0%,
+      rgba(148, 90, 255, 0.1) 75%,
+      rgba(148, 90, 255, 0.2) 100%);
+}
+
+.rarity-3 .text {
+  padding: 5px 0 3px 0;
+  border-top: 3px solid #945aff;
+  background-image: linear-gradient(to bottom, #2d1b4d, #2d1b4d, #190f2b, #050309);
+}
+
+
+.rarity-4 {
+  box-shadow: 0px 0px 0 1px #ecc566;
+  background-image: linear-gradient(to bottom,
+      rgba(236, 197, 102, 0.3) 0%,
+      rgba(236, 197, 102, 0.1) 75%,
+      rgba(236, 197, 102, 0.2) 100%)
+}
+
+
+.rarity-4 .text {
+  padding: 5px 0 3px 0;
+  border-top: 3px solid #ecc566;
+  background-image: linear-gradient(to bottom, #473b1f, #473b1f, #2b2413, #080704);
+}
+
+.rarity {
+  height: 0;
+  overflow: visible;
+}
+
+.rarity img {
+  height: 20px;
+  margin-left: 50%;
+  transform: translate(-50%, -12px);
 }

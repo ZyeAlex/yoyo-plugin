@@ -1,0 +1,338 @@
+{
+    "time": 1776418748,
+    "self_id": 2575547802,
+    "post_type": "meta_event",
+    "meta_event_type": "lifecycle",
+    "sub_type": "connect",
+    "raw": "{\"time\":1776418748,\"self_id\":2575547802,\"post_type\":\"meta_event\",\"meta_event_type\":\"lifecycle\",\"sub_type\":\"connect\"}",
+    "bot": {
+        "adapter": {
+            "id": "QQ",
+            "name": "OneBotv11",
+            "path": "OneBotv11",
+            "echo": {},
+            "timeout": 60000
+        },
+        "ws": {
+            "_events": {
+                "close": [
+                    null,
+                    null
+                ],
+                "message": [
+                    null,
+                    null
+                ]
+            },
+            "_eventsCount": 3,
+            "_binaryType": "nodebuffer",
+            "_closeCode": 1006,
+            "_closeFrameReceived": false,
+            "_closeFrameSent": false,
+            "_closeMessage": {
+                "type": "Buffer",
+                "data": []
+            },
+            "_closeTimer": null,
+            "_errorEmitted": false,
+            "_extensions": {},
+            "_paused": false,
+            "_protocol": "",
+            "_readyState": 1,
+            "_receiver": {
+                "_events": {},
+                "_writableState": {
+                    "highWaterMark": 16384,
+                    "length": 0,
+                    "corked": 0,
+                    "writelen": 0,
+                    "bufferedIndex": 0,
+                    "pendingcb": 0
+                },
+                "_allowSynchronousEvents": true,
+                "_binaryType": "nodebuffer",
+                "_extensions": {},
+                "_isServer": true,
+                "_maxPayload": 104857600,
+                "_skipUTF8Validation": false,
+                "_bufferedBytes": 0,
+                "_buffers": [],
+                "_compressed": false,
+                "_payloadLength": 433,
+                "_mask": {
+                    "type": "Buffer",
+                    "data": [
+                        51,
+                        85,
+                        247,
+                        233
+                    ]
+                },
+                "_fragmented": 0,
+                "_masked": true,
+                "_fin": true,
+                "_opcode": 1,
+                "_totalPayloadLength": 0,
+                "_messageLength": 0,
+                "_fragments": [],
+                "_errored": false,
+                "_loop": false,
+                "_state": 0,
+                "_eventsCount": 6
+            },
+            "_sender": {
+                "_extensions": {},
+                "_socket": {
+                    "connecting": false,
+                    "_hadError": false,
+                    "_parent": null,
+                    "_host": null,
+                    "_closeAfterHandlingError": false,
+                    "_events": {
+                        "end": [
+                            null,
+                            null
+                        ]
+                    },
+                    "_readableState": {
+                        "highWaterMark": 16384,
+                        "buffer": [],
+                        "bufferIndex": 0,
+                        "length": 0,
+                        "pipes": [],
+                        "awaitDrainWriters": null
+                    },
+                    "_writableState": {
+                        "highWaterMark": 16384,
+                        "length": 0,
+                        "corked": 0,
+                        "writelen": 0,
+                        "bufferedIndex": 0,
+                        "pendingcb": 0
+                    },
+                    "allowHalfOpen": true,
+                    "_eventsCount": 4,
+                    "_sockname": null,
+                    "_pendingData": null,
+                    "_pendingEncoding": "",
+                    "server": {
+                        "requestTimeout": 300000,
+                        "headersTimeout": 60000,
+                        "keepAliveTimeout": 5000,
+                        "connectionsCheckingInterval": 30000,
+                        "requireHostHeader": true,
+                        "rejectNonStandardBodyWrites": false,
+                        "_events": {},
+                        "_eventsCount": 5,
+                        "_connections": 1,
+                        "_handle": {
+                            "reading": false
+                        },
+                        "_usingWorkers": false,
+                        "_workers": [],
+                        "_unref": false,
+                        "_listeningId": 2,
+                        "allowHalfOpen": true,
+                        "pauseOnConnect": false,
+                        "noDelay": true,
+                        "keepAlive": false,
+                        "keepAliveInitialDelay": 0,
+                        "highWaterMark": 16384,
+                        "httpAllowHalfOpen": false,
+                        "timeout": 0,
+                        "maxHeadersCount": null,
+                        "maxRequestsPerSocket": 0,
+                        "_connectionKey": "6::::2536"
+                    },
+                    "_server": {
+                        "requestTimeout": 300000,
+                        "headersTimeout": 60000,
+                        "keepAliveTimeout": 5000,
+                        "connectionsCheckingInterval": 30000,
+                        "requireHostHeader": true,
+                        "rejectNonStandardBodyWrites": false,
+                        "_events": {},
+                        "_eventsCount": 5,
+                        "_connections": 1,
+                        "_handle": {
+                            "reading": false
+                        },
+                        "_usingWorkers": false,
+                        "_workers": [],
+                        "_unref": false,
+                        "_listeningId": 2,
+                        "allowHalfOpen": true,
+                        "pauseOnConnect": false,
+                        "noDelay": true,
+                        "keepAlive": false,
+                        "keepAliveInitialDelay": 0,
+                        "highWaterMark": 16384,
+                        "httpAllowHalfOpen": false,
+                        "timeout": 0,
+                        "maxHeadersCount": null,
+                        "maxRequestsPerSocket": 0,
+                        "_connectionKey": "6::::2536"
+                    },
+                    "parser": null,
+                    "_paused": false,
+                    "_peername": {
+                        "address": "::ffff:127.0.0.1",
+                        "family": "IPv6",
+                        "port": 56414
+                    },
+                    "timeout": 0
+                },
+                "_firstFragment": true,
+                "_compress": false,
+                "_bufferedBytes": 0,
+                "_queue": [],
+                "_state": 0
+            },
+            "_socket": {
+                "connecting": false,
+                "_hadError": false,
+                "_parent": null,
+                "_host": null,
+                "_closeAfterHandlingError": false,
+                "_events": {
+                    "end": [
+                        null,
+                        null
+                    ]
+                },
+                "_readableState": {
+                    "highWaterMark": 16384,
+                    "buffer": [],
+                    "bufferIndex": 0,
+                    "length": 0,
+                    "pipes": [],
+                    "awaitDrainWriters": null
+                },
+                "_writableState": {
+                    "highWaterMark": 16384,
+                    "length": 0,
+                    "corked": 0,
+                    "writelen": 0,
+                    "bufferedIndex": 0,
+                    "pendingcb": 0
+                },
+                "allowHalfOpen": true,
+                "_eventsCount": 4,
+                "_sockname": null,
+                "_pendingData": null,
+                "_pendingEncoding": "",
+                "server": {
+                    "requestTimeout": 300000,
+                    "headersTimeout": 60000,
+                    "keepAliveTimeout": 5000,
+                    "connectionsCheckingInterval": 30000,
+                    "requireHostHeader": true,
+                    "rejectNonStandardBodyWrites": false,
+                    "_events": {},
+                    "_eventsCount": 5,
+                    "_connections": 1,
+                    "_handle": {
+                        "reading": false
+                    },
+                    "_usingWorkers": false,
+                    "_workers": [],
+                    "_unref": false,
+                    "_listeningId": 2,
+                    "allowHalfOpen": true,
+                    "pauseOnConnect": false,
+                    "noDelay": true,
+                    "keepAlive": false,
+                    "keepAliveInitialDelay": 0,
+                    "highWaterMark": 16384,
+                    "httpAllowHalfOpen": false,
+                    "timeout": 0,
+                    "maxHeadersCount": null,
+                    "maxRequestsPerSocket": 0,
+                    "_connectionKey": "6::::2536"
+                },
+                "_server": {
+                    "requestTimeout": 300000,
+                    "headersTimeout": 60000,
+                    "keepAliveTimeout": 5000,
+                    "connectionsCheckingInterval": 30000,
+                    "requireHostHeader": true,
+                    "rejectNonStandardBodyWrites": false,
+                    "_events": {},
+                    "_eventsCount": 5,
+                    "_connections": 1,
+                    "_handle": {
+                        "reading": false
+                    },
+                    "_usingWorkers": false,
+                    "_workers": [],
+                    "_unref": false,
+                    "_listeningId": 2,
+                    "allowHalfOpen": true,
+                    "pauseOnConnect": false,
+                    "noDelay": true,
+                    "keepAlive": false,
+                    "keepAliveInitialDelay": 0,
+                    "highWaterMark": 16384,
+                    "httpAllowHalfOpen": false,
+                    "timeout": 0,
+                    "maxHeadersCount": null,
+                    "maxRequestsPerSocket": 0,
+                    "_connectionKey": "6::::2536"
+                },
+                "parser": null,
+                "_paused": false,
+                "_peername": {
+                    "address": "::ffff:127.0.0.1",
+                    "family": "IPv6",
+                    "port": 56414
+                },
+                "timeout": 0
+            },
+            "_autoPong": true,
+            "_closeTimeout": 30000,
+            "_isServer": true
+        },
+        "stat": {
+            "start_time": 1776418748,
+            "stat": {}
+        },
+        "model": "TRSS Yunzai ",
+        "info": {
+            "user_id": 2575547802,
+            "nickname": "悠悠Bot"
+        },
+        "uin": 2575547802,
+        "nickname": "悠悠Bot",
+        "avatar": "https://q.qlogo.cn/g?b=qq&s=0&nk=2575547802",
+        "fl": {},
+        "gl": {},
+        "gml": {},
+        "request_list": [],
+        "cookies": {
+            "qun.qq.com": "pt2gguin=o2575547802; uin=o2575547802; skey=@6MaPsXW4p; pt_recent_uins=511bf7e8b826dc33f2e3cb6a7053b0deeb18318db4d449cbeb5724fc93d2fb7ccd47324e3c25af863c4a39f3640ac7b3c4279f4973154022; RK=UYquW9Vw2v; ptnick_2575547802=e682a0e682a0426f74; ptcz=5358c910250d02b9240a79d6fd3767a094276ee8b1867b2622d37528420882c5; p_uin=o2575547802; pt4_token=qNFi2MNclDeRXY5IGFUiVu-PNST6BSH3xmiMU6QVX6U_; p_skey=Z6mdbiI8VJXggFSj3Yt-uJtTxShQTsSyaaCGW5BQkjo_; tgw_l7_route=793cf3038381226b402e801f5baeefd8",
+            "aq.qq.com": "uin=o2575547802; skey=@6MaPsXW4p; pt2gguin=o2575547802; pt_recent_uins=ad7b7ad0109cf2b97b6a3359d06607eef4896ae39310682a0563f53ed378aff303a8d1f1246c5105aedebe54f0884c408cd740b77ca3bbb5; RK=UYquW9Vw2v; ptnick_2575547802=e682a0e682a0426f74; ptcz=1862bf6d0382a4d5b9014824ea852400cba73a71d0aeba7319a9b1675a609ba3",
+            "connect.qq.com": "pt2gguin=o2575547802; uin=o2575547802; skey=@6MaPsXW4p; pt_recent_uins=27f48befdb190e5075dc68743afa327f7870dae7a764d3120444a008223ff787a8d18a11dc10b7603245ee384a746f095afe8cb09d608cfb; RK=UYquW9Vw2v; ptnick_2575547802=e682a0e682a0426f74; ptcz=2f1531354e0afdda1c6a08b6100da9ebe4ad042243305eb474695bc58abd1b38; p_uin=o2575547802; pt4_token=xZ6U3pFu9Pu70RP0eyezLIN2lfynT1J0uB2AuODg4BM_; p_skey=UNF3noR5iq1OKd0v3v11Xqg0mdmv4jvdMspMRlAjiEw_; tgw_l7_route=af4f57c64eba828d343ad2c626ce1f8c",
+            "docs.qq.com": "tgw_l7_route=fee6126722be89d97bb06c02f4de9967; fingerprint=2b616bb9407c414caad7dfc4f1e8311a36; TOK=f2e9c1ecd5b83310; p_skey=mT3-CAhbBztmCPnQlz*FyQABhlHIRNyybYD8914NaGk_",
+            "game.qq.com": "uin=o2575547802; skey=@6MaPsXW4p; pt2gguin=o2575547802; pt_recent_uins=b2bcdaa1f3d39cdd68769769888d94ef061100f86523629fe81b628105a7ab2fc4682147e62a22b57eb8d30f656ef85d1e5c0202c9782fc2; RK=UYquW9Vw2v; ptnick_2575547802=e682a0e682a0426f74; ptcz=7ebd5727ca337b7fe77359520f98693435394062d355067e0379e484752c50c9",
+            "gamecenter.qq.com": "uin=o2575547802; skey=@6MaPsXW4p; pt2gguin=o2575547802; pt_recent_uins=fc062be2318464173e383fd959c096d4491c2bca3dd647a8e2e1aea60afa22427cb9079c7e80664417ad42713e872305c6a00a073c5945b8; RK=UYquW9Vw2v; ptnick_2575547802=e682a0e682a0426f74; ptcz=ef2202201cb9c311b3407a69cd99d9e975a1cf44fb7a7be6e1e192c90ca6d3b8; p_skey=wITKYcnv0WimjStUNrj0jzTZbmRmpwT8fmkkvtwGaMg_",
+            "haoma.qq.com": "uin=o2575547802; skey=@6MaPsXW4p; pt2gguin=o2575547802; pt_recent_uins=d8b86d33b8f1a15e328a676e68043251d7170e12329a01d3a655ffdf165939459d16e7410c61c64d5c3f585ffcba3ea4e9a5281dca465f03; RK=UYquW9Vw2v; ptnick_2575547802=e682a0e682a0426f74; ptcz=c494ac1b62dfd93a70448eb976e1851db8ac30b4c10ca8008c55520be5490242",
+            "id.qq.com": "pt2gguin=o2575547802; uin=o2575547802; skey=@6MaPsXW4p; pt_recent_uins=a3f47d171ee37bba9851886a5595053082c6ff92f734991f44d6f7858669fb5bac55ffbb23efbf517c29818fff6a8b22b114971d365b72e0; RK=UYquW9Vw2v; ptnick_2575547802=e682a0e682a0426f74; ptcz=ab786c3c82f00ffa7bf7818412cb9b5963689a18a792cd77c7a79bd98919caab; p_uin=o2575547802; pt4_token=AZ5s-Skikr0QhlQcHyy0Gw1*DUlK8EGDYfQBK5ry9tE_; p_skey=tkFNTLR5lA-wcwO93lF6ZwL*z*O5BcS9OJ2UFiMEV9U_",
+            "kg.qq.com": "pt2gguin=o2575547802; uin=o2575547802; skey=@6MaPsXW4p; pt_recent_uins=85dfdb504c142ddb647d10fd74435c3f6451bf776727fa18598f55d318ebd54e0d7d4d340f15448cb7ad61f20ed4121cd31d4cc33dd50d23; RK=UYquW9Vw2v; ptnick_2575547802=e682a0e682a0426f74; ptcz=3b03d6b36aa4d09945cc52af1bf89c7cd341ff5933aa9b87051ec8356d82b59d; p_uin=o2575547802; pt4_token=8U7xmtgCRzwgxL*VJlVknzpH1NbTikvhxIrfIHG*yLQ_; p_skey=4qDMFLFHE3mThXWWEk5G2KgugSFRAv2bAQnpE3bIDWo_",
+            "mail.qq.com": "pt2gguin=o2575547802; uin=o2575547802; skey=@6MaPsXW4p; pt_recent_uins=a06ffed015ff6d0eb06749a5e3e38d5205a79a345f07e722528d9691d8b58b8d78c0f61d88aea3cde0cf3ae8c5349d246e6f7cde30d5845c; RK=UYquW9Vw2v; ptnick_2575547802=e682a0e682a0426f74; ptcz=059cdb7a342ae1f328d663f66c53ef1621b6cbd0e1fee4e27a1f579521c116da; p_uin=o2575547802; pt4_token=xu3g-U3JS-YArJ2JB9aGXWHUGiFtbWtvSWTg86oabZc_; p_skey=rHO*GQe8WVM2IJ4zYd6Mkrgpl5uSoU2WO6VyEXno-c4_"
+        },
+        "guild_info": null,
+        "version": {
+            "app_name": "LLOneBot",
+            "protocol_version": "v11",
+            "app_version": "7.7.1",
+            "id": "QQ",
+            "name": "OneBotv11",
+            "version": "LLOneBot v7.7.1"
+        }
+    },
+    "group_id": 966870964,
+    "user_id": 2575547802,
+    "is_friend": false,
+    "is_owner": false,
+    "is_admin": false
+}

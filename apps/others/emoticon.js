@@ -47,7 +47,7 @@ for (const v of Object.values(res)) {
 }
 
 Object.keys(dict).forEach(key => {
-  let reg = `^#?${key}`
+  let reg = `^#?${key}( .+)*`
   option.rule.push({
     /** 命令正则匹配 */
     reg,

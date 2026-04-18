@@ -33,7 +33,7 @@ function readFiles(dir) {
 }
 
 // 读取所有 js（包括子文件夹）
-const files = readFiles(process.cwd().replace(/\\/g, '/')+ '/plugins/yoyo-plugin/apps')
+const files = readFiles(process.cwd().replace(/\\/g, '/') + '/plugins/yoyo-plugin/apps')
 
 let ret = []
 files.forEach((file) => {

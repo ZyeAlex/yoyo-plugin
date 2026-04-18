@@ -16,6 +16,13 @@ export const Help = plugin({
 
 async function help(e) {
   let { helpGroup } = setting.getData('config/help')
-  helpGroup = helpGroup.filter(({ auth }) => auth ? utils.checkPermission(e, auth, false) : true)
+  // 先异步拿到所有判断结果
+  const results = await Promise.all(
+    helpGroup.map(item =>
+      item.auth ? utils.checkPermission(e, item.auth, 'all', false) : true
+    )
+  );
+  // 再过滤
+  helpGroup = helpGroup.filter((_, i) => results[i]);
   await render(e, 'help/index', { helpGroup })
 }

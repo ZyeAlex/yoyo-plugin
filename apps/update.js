@@ -5,7 +5,6 @@ import game from '#game'
 import utils from '#utils'
 import fs from 'fs'
 import plugin from '#plugin'
-
 let packageJson = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'));
 const name = packageJson.name || 'yoyo-plugin'
 
@@ -33,10 +32,9 @@ export const Update = plugin({
       reg: `#?(删除|清除|清空|重置|清理)(错误|无效|脏)数据$`,
       fnc: clearErrorData,
       permission: 'master'
-    },
+    }
   ]
 })
-
 
 async function update_plugin(e) {
   let Update_Plugin = new update()

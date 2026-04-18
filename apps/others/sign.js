@@ -33,7 +33,7 @@ async function sign(e) {
     // 今日是否签到
     let hasSign = false
     // 今日日期
-    let today = utils.formatDate(new Date(), 'YYYY-MM-DD')
+    let today = utils.getDate(new Date(), 'YYYY-MM-DD')
 
     if (userSignInfo.date == today) {
         hasSign = true
@@ -106,7 +106,7 @@ async function updateSign(e) {
     // 用户签到数据
     let userSignInfo = game.getUserData(e.group_id, e.user_id)
     // 今日日期
-    let today = utils.formatDate(new Date(), 'YYYY-MM-DD')
+    let today = utils.getDate(new Date(), 'YYYY-MM-DD')
     if (userSignInfo.date == today) {
         if (userSignInfo.xinghong < 160) {
             e.reply('你的星虹数量不足，无法更换今日老婆~')

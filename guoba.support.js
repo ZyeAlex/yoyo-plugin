@@ -1,6 +1,5 @@
 import lodash from 'lodash'
 import setting from "#setting"
-import game from "#game"
 import path from 'path'
 import fs from 'fs'
 /**

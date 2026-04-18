@@ -23,10 +23,7 @@ class Utils {
   async makeForwardMsg(e, msg = [], dec = '') {
     const bot = e.bot || Bot
     let nickname = bot.nickname
-    if (e.isGroup && bot.getGroupMemberInfo) try {
-      const info = await bot.getGroupMemberInfo(e.group_id, bot.uin)
-      nickname = info.card || info.nickname
-    } catch { }
+
 
     let forwardMsg = []
     msg.forEach(v => {
@@ -66,6 +63,7 @@ class Utils {
   /** 获取用户权限
    * @param {*} e - 接收到的事件对象
    * @param {"master"|"owner"|"admin"|"all"} permission - 用户所需的权限
+   * @param {"owner"|"admin"|"all"} role - 机器人的权限
    * @param {boolean} isReply - 是否发送消息
    * 
    * @returns {boolean|string} - 是否具有权限
@@ -73,9 +71,28 @@ class Utils {
    * checkPermission(e,'admin')  
    * 返回当前用户是否拥有admin权限
    */
-  checkPermission(e, permission = "admin", isReply = true) {
-    console.log('sender', e.sender);
-    let msg, auth = false
+  async checkPermission(e, permission = "admin", role = "all", isReply = true) {
+    if (e.bot.adapter?.name !== "OneBotv11" || typeof e.bot.sendApi !== "function") {
+      if (isReply) {
+        e.reply('❎ Bot未运行在OneBotv11环境', true)
+        throw new Error(msg)
+      }
+      return false
+    }
+    let groupObj = e.bot.pickGroup(e.group_id)
+    let memberInfo = await e.bot.sendApi("get_group_member_info", {
+      group_id: e.group_id,
+      user_id: e.self_id,
+      no_cache: true // 强制不走缓存，实时拉取
+    });
+
+    if (!groupObj && permission != "master") return true
+    let msg
+    if (role == "owner" && role != memberInfo.data.role) {
+      msg = "❎ Bot权限不足，需要群主权限"
+    } else if (role == "admin" && role != memberInfo.data.role && memberInfo.data.role != 'owner') {
+      msg = "❎ Bot权限不足，需要管理员权限"
+    }
     // 判断权限
     if (!e.isMaster) {
       if (permission == "master") {
@@ -84,14 +101,15 @@ class Utils {
         msg = "❎ 该命令仅限群主可用"
       } else if (permission == "admin" && e.sender.role != 'admin' && e.sender.role != 'owner') {
         msg = "❎ 该命令仅限管理可用"
-      } else auth = true
-    } else auth = true
-    if (isReply && !auth) {
+      }
+    }
+    if (isReply && msg) {
       e.reply(msg, true)
       throw new Error(msg)
     }
-    return auth
+    return !msg
   }
+
 
 
   // 节流函数
@@ -199,13 +217,11 @@ class Utils {
     return parts.join('');
   }
   // 时间格式化 YYYY-MM-DD hh:mm:ss
-  formatDate(date, formatStr) {
+  getDate(date, formatStr = 'YYYY-MM-DD hh:mm:ss') {
     if (!date) date = new Date()
     if (typeof date == 'string' || typeof date == 'number') {
       date = new Date(date)
     }
-    if (!formatStr) return new Date(date)
-    if (formatStr === 'x') return new Date(date).getTime()
     let ret
     let d = {
       year: date.getFullYear().toString(),
