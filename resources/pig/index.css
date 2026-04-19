@@ -1,50 +1,73 @@
 .content {
-    width: 830px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
+  width: 830px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 20px 32px;
 }
 
-.title {
-    margin-top: 30px;
-    font-size: 150px;
-    color: white;
-    font-family: title02;
-    text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
-
+.content .title {
+  margin-top: 16px;
+  font-size: 72px;
+  color: var(--yo-text);
+  font-family: title02, "PingFang SC", sans-serif;
+  font-weight: 800;
+  text-shadow: var(--yo-head-shadow);
+  letter-spacing: 0.08em;
 }
 
-.nav {
-    font-size: 40px;
-    font-family: text01;
-    padding: 0 0 0 12px;
-    text-align: center;
+.content .nav {
+  font-size: 30px;
+  font-family: text01, "PingFang SC", sans-serif;
+  padding: 12px 20px;
+  text-align: center;
+  line-height: 1.55;
+  max-width: 92%;
 }
 
 .userimg {
-    width: 50px;
-    height: 50px;
-    border-radius: 15px;
-    transform: translateY(10px);
-
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  transform: translateY(12px);
+  border: 2px solid var(--yo-border);
+  box-shadow: var(--yo-shadow);
 }
 
 .username {
-    font-family: title01;
+  font-family: title01, "PingFang SC", sans-serif;
+  font-weight: 700;
+  color: var(--yo-accent);
 }
 
 .img {
-    width: 700px;
+  width: min(700px, 92%);
+  margin: 12px 0;
+  filter: drop-shadow(0 8px 24px rgba(15, 23, 42, 0.12));
 }
 
 .name {
-    font-size: 120px;
-    font-family: title01;
+  font-size: 64px;
+  font-family: title01, "PingFang SC", sans-serif;
+  font-weight: 800;
+  color: var(--yo-text);
+  text-align: center;
+  line-height: 1.15;
+  margin-top: 8px;
 }
 
 .description {
-    font-size: 60px;
-    font-family: text01;
+  font-size: 28px;
+  font-family: text01, "PingFang SC", sans-serif;
+  color: var(--yo-text-secondary);
+  text-align: center;
+  max-width: 90%;
+  line-height: 1.55;
+  margin-top: 12px;
+  padding: 16px 20px;
+  background: var(--yo-surface-glass);
+  border-radius: var(--yo-radius);
+  border: 1px solid var(--yo-border);
+  box-shadow: var(--yo-shadow);
 }

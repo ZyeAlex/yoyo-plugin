@@ -1,93 +1,187 @@
 .hero-atlas {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    overflow: hidden;
-    font-size: 32px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  font-size: 28px;
+  color: var(--yo-text-secondary);
+}
+
+.hero-atlas > div:first-child {
+  padding: 8px 12px 0;
 }
 
 .hero-img {
-    width: 450px;
-    min-width: 450px;
+  width: 450px;
+  min-width: 450px;
+  border-radius: var(--yo-radius-sm);
+  overflow: hidden;
+  box-shadow: var(--yo-shadow);
 }
 
-/**
-* 基础区域
-*/
-
 .hero-base {
-    flex: 1;
-    margin: 12px;
-    margin-left: 0;
-    flex: 1;
-    text-align: center;
-    font-size: 36px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-    min-height: 350px;
+  flex: 1;
+  margin: 12px;
+  margin-left: 0;
+  text-align: center;
+  font-size: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 350px;
 }
 
 .hero-base .hero-name {
-    font-size: 72px;
-    font-family: title02;
-    margin-top: -72px;
-    margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    position: relative;
-    font-family: "title01";
+  font-size: 56px;
+  font-family: title01, "PingFang SC", sans-serif;
+  margin-top: -56px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  color: var(--yo-text);
+  font-weight: 800;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
 }
 
-
 .hero-base .hero-group-img {
-    height: 150px;
+  height: 140px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(15, 23, 42, 0.12));
 }
 
 .hero-base .hero-rarity-img {
-    position: absolute;
-    right: -12px;
-    bottom: -24px;
-}
-
-.hero-base .hero-weapon {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
+  position: absolute;
+  right: -8px;
+  bottom: -20px;
 }
 
 .hero-base .hero-career {
-    width: 60px;
-    margin-left: -72px;
-    margin-right: 12px;
-    padding: 3px;
-    border-radius: 50%;
-    box-sizing: border-box;
+  width: 56px;
+  margin-left: -64px;
+  margin-right: 10px;
+  padding: 4px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  border: 2px solid #fff;
+  box-shadow: var(--yo-shadow);
 }
 
 .hero-base .hero-tag {
-    font-size: 28px;
-    display: inline-block;
-    padding: 3px 7px;
-    margin: 6px 3px 0 3px;
-    border-radius: 20px;
-    color: white;
+  font-size: 24px;
+  display: inline-block;
+  padding: 4px 12px;
+  margin: 6px 4px 0;
+  border-radius: 999px;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: var(--yo-shadow);
 }
 
+.hero-nickname {
+  font-size: 28px;
+  line-height: 1.55;
+  color: var(--yo-text-secondary);
+  font-weight: 500;
+}
+
+.hero-words {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hero-word {
+  background: var(--yo-surface);
+  border-radius: var(--yo-radius-sm);
+  padding: 14px 16px;
+  border: 1px solid var(--yo-border);
+  box-shadow: var(--yo-shadow);
+}
+
+.hero-word > div:first-child {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--yo-accent);
+  margin-bottom: 8px;
+}
+
+.hero-word > div:last-child {
+  font-size: 26px;
+  line-height: 1.55;
+  color: var(--yo-text-secondary);
+}
+
+.hero-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hero-skill {
+  margin-bottom: 8px;
+  background: var(--yo-surface);
+  border-radius: var(--yo-radius-sm);
+  padding: 14px 16px;
+  border: 1px solid var(--yo-border);
+  box-shadow: var(--yo-shadow);
+}
+
+.hero-skill-title {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.hero-skill .hero-skill-title > div:last-child {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--yo-text-muted);
+  margin-left: auto;
+}
+
+.hero-skill-name {
+  font-size: 36px;
+  padding: 0 8px;
+  font-weight: 800;
+}
+
+.hero-skill-title + div {
+  font-size: 26px;
+  line-height: 1.55;
+  color: var(--yo-text-secondary);
+  padding-top: 10px;
+}
+
+.hero-skill-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid var(--yo-border);
+}
 
 .hero-talent-level {
-    font-size: 46px;
-    font-weight: bold;
-    margin: 24px;
-    text-align: center;
-    background-image: linear-gradient(to right, rgba(37, 43, 44, 0.8), rgba(75, 68, 60, 0.7));
-    color: white;
-    border-radius: 25px;
+  font-size: 34px;
+  font-weight: 800;
+  margin: 18px 14px 14px;
+  text-align: center;
+  background: linear-gradient(90deg, #dbeafe 0%, #e0e7ff 100%);
+  color: var(--yo-text);
+  border-radius: var(--yo-radius);
+  padding: 12px 16px;
+  border: 1px solid var(--yo-border);
+  box-shadow: var(--yo-shadow);
 }
 
 .hero-talent-item {
-    display: flex;
-    flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
 }

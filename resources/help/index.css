@@ -1,67 +1,128 @@
-.container {
-  background: url("../common/theme/main.png") top left no-repeat;
-  background-size: 100% auto;
-}
-
 .main {
   padding: 0;
+  margin: 8px 16px 14px;
+  border: none;
+  box-shadow: none;
+  overflow: visible;
 }
 
-/* 功能组样式 */
 .function-group {
-  margin-bottom: 35px;
+  margin-bottom: 22px;
 }
 
+/* 分组标题与下方表格连成一块（上一版「连在一起」布局） */
 .group-header {
-  background: #2a2a2a;
-  padding: 6px 12px;
-  margin-bottom: 10px;
-  color: #ffffff;
+  background: linear-gradient(90deg, #4a667a 0%, #5a768c 42%, #6a869e 100%);
+  padding: 12px 18px;
+  margin-bottom: 0;
+  color: #f8fafc;
+  border-radius: var(--yo-radius-sm) var(--yo-radius-sm) 0 0;
+  border: 1px solid rgba(71, 85, 105, 0.4);
+  border-bottom: none;
+  box-shadow: none;
 }
 
 .group-title {
-  font-size: 24px;
-  font-weight: bold;
-  letter-spacing: 5px;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
 }
 
-/* 三列网格布局 */
 .group-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  /* 模拟细线边框感 */
+  /* minmax(0,1fr)：轨道可被压到比「整行不换行文字」更窄，内部才会出现省略号 */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  border-radius: 0 0 var(--yo-radius-sm) var(--yo-radius-sm);
+  overflow: hidden;
+  border: 1px solid rgba(100, 116, 139, 0.28);
+  border-top: none;
+  background: rgba(30, 41, 59, 0.06);
+  backdrop-filter: blur(8px);
 }
 
 .item {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 12px;
+  min-width: 0;
+  overflow: hidden;
+  background: rgba(248, 250, 252, 0.42);
+  padding: 10px 12px;
+  min-height: 100px;
   display: flex;
   align-items: center;
+  border-radius: 0;
+  border: none;
+  border-right: 1px solid rgba(100, 116, 139, 0.22);
+  border-bottom: 1px solid rgba(100, 116, 139, 0.22);
+  box-shadow: none;
+  backdrop-filter: blur(6px);
+}
+
+.item:nth-child(3n) {
+  border-right: none;
 }
 
 .item-icon {
-  width: 40px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   margin-right: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .item-icon img {
   max-width: 100%;
   max-height: 100%;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+  filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.12));
 }
 
+.item-text {
+  flex: 1 1 0%;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* 指令标题：单行省略号（flex 子项须 min-width:0 + 定宽边界） */
 .item-cmd {
-  font-size: 22px;
-  font-weight: bold;
-  margin-bottom: 4px;
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  font-size: 26px;
+  font-weight: 800;
+  margin: 0;
+  color: #0f172a;
+  line-height: 1.28;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 1.28em;
 }
 
+/* 说明：更小、更灰；不加顶线，与标题仅留间距 */
 .item-desc {
-  font-size: 11px;
-  color: #999;
+  min-width: 0;
+  width: 100%;
+  margin-top: 6px;
+  padding: 0;
+  border: none;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.45;
+  color: #64748b;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.head h1 {
+  margin: 0;
+  font-weight: inherit;
 }

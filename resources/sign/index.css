@@ -1,103 +1,122 @@
-
+.background {
+  opacity: 0!important;
+}
 
 .sign-img {
-    width: 830px;
-    min-height: 830px;
-    max-height: 1500px;
-    /* 最大宽度限制 */
-    object-fit: cover;
-    /* 裁切超出部分 */
-    object-position: center 0%;
-    /* 从上向下透明渐变 */
-    -webkit-mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.9) 85%, transparent 100%);
-    mask-image: linear-gradient(to bottom, black 0%, rgba(0, 0, 0, 0.9) 85%, transparent 100%);
-    margin-bottom: -5%;
-    z-index: 0;
-    position: relative;
+  width: 830px;
+  min-height: 830px;
+  max-height: 1500px;
+  object-fit: cover;
+  object-position: center 0%;
+  -webkit-mask-image: linear-gradient(to bottom,
+      black 0%,
+      rgba(0, 0, 0, 0.92) 82%,
+      transparent 100%);
+  mask-image: linear-gradient(to bottom,
+      black 0%,
+      rgba(0, 0, 0, 0.92) 82%,
+      transparent 100%);
+  margin-bottom: -5%;
+  z-index: 0;
+  position: relative;
 }
 
 .sign-rank {
-    position: relative;
-    z-index: 1;
-    font-size: 36px;
-    font-family: "title02";
-    opacity: 1;
-    margin-top: 14px;
-    display: flex;
-    justify-content: center;
-    /* 白色描边 */
-    text-shadow: 0 0 1px #fff, 1px 1px 3px rgba(255, 255, 255, 0.9);
+  position: relative;
+  z-index: 1;
+  font-size: 34px;
+  font-family: title02, "PingFang SC", sans-serif;
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0 20px;
+  text-align: center;
+  color: var(--yo-text);
+  text-shadow:
+    0 0 2px #fff,
+    0 0 12px rgba(255, 255, 255, 0.95),
+    0 1px 2px rgba(255, 255, 255, 0.8);
+  font-weight: 700;
+  line-height: 1.45;
 }
 
 .sign-xinghong {
-    overflow: visible;
-    white-space: nowrap;
-    padding-left: 10px;
-    font-size: 18px;
-    text-align: left;
+  overflow: visible;
+  white-space: normal;
+  padding: 10px 0 0 12px;
+  font-size: 24px;
+  text-align: left;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
-
-
-
 .sign-text {
-    text-align: center;
-    font-size: 36px;
-    font-family: "title02";
-    color: rgba(0, 0, 0, 0.9);
-    /* 白色描边 */
-    text-shadow: 0 0 1px #fff, 1px 1px 3px rgba(255, 255, 255, 0.9);
+  text-align: center;
+  font-size: 32px;
+  font-family: title02, "PingFang SC", sans-serif;
+  color: var(--yo-text);
+  padding: 8px 20px 16px;
+  text-shadow:
+    0 0 2px #fff,
+    0 0 10px rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .sign-user-img {
-    width: 50px;
-    height: 50px;
-
-    border-radius: 50%;
-    transform: translate(0, 10px);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  transform: translate(0, 12px);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
 }
 
 .sign-name {
-    opacity: 1;
-    font-family: 黑体;
-    font-weight: bold;
-    font-size: 38px;
-    /* 斜体 */
-    font-style: italic;
+  font-family: title01, "PingFang SC", sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  font-style: italic;
 }
 
 .sign-hero {
-    opacity: 1;
-    font-size: 65px;
-    font-family: "title01";
-    color: rgba(0, 0, 0);
+  font-size: 58px;
+  font-family: title01, "PingFang SC", sans-serif;
+  color: var(--yo-text);
+  font-weight: 800;
 }
 
+.sign-text>div:last-child {
+  margin-top: 6px;
+}
 
-
-
-
-.sign-history-title {
-    font-size: 24px;
-    /* text-align: center; */
+.main .sign-history-title {
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--yo-text-secondary);
+  text-align: center;
+  padding: 0 12px;
+  line-height: 1.45;
 }
 
 .sign-history {
-    margin: 10px 10px 10px 30px;
-    color: grey;
-    font-size: 24px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    /* 文本不换行 */
-    white-space: nowrap;
+  margin: 14px 16px 20px;
+  color: var(--yo-text-muted);
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  white-space: normal;
+  line-height: 1.55;
+  text-align: center;
 }
 
 .sign-interrupt {
-    margin-top: 10px;
+  margin-top: 12px;
 }
 
-.background{
-    opacity: 0;
+.background {
+  opacity: 0.55;
 }

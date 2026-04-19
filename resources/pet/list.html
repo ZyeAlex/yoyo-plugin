@@ -6,7 +6,9 @@
 
 {{block 'main'}}
 
-<div class="head">奇波图鉴 <span class="label">共{{length}}个</span> </div>
+<div class="head">
+    <div class="title">奇波图鉴 <span class="label">共{{length}}个</span></div>
+</div>
 <div class="nav">
     <div class="label item">发送 <mark>{{rulePrefix}}菜鸡图鉴</mark> 查看奇波图鉴 </div>
 </div>
@@ -15,10 +17,7 @@
         {{each pets pet}}
         <div class="pet-item"
             style="background-color: {{pet?.element?.[0]?.elementColor||'#ffffff'}}88;border: 1px solid {{pet?.element?.[0]?.elementColor||'#000000'}};">
-            <img height="114" width="114" src="{{pluResPath}}/UI/{{pet.petIcon}}" alt="图片加载失败" />
-            <div>
-
-            </div>
+            <img src="{{pluResPath}}/UI/{{pet.petIcon}}" alt="图片加载失败" />
             <div class="pet-text">
                 <div class="pet-name">{{pet.name}}</div>
             </div>

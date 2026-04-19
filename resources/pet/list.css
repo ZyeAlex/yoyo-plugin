@@ -1,75 +1,94 @@
 .item-title {
-    padding: 10px 20px;
-    background-color: hwb(208 94% 0% / 0.75);
-    /* 背景色 */
-    border-radius: 8px;
-    /* 圆角 */
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    position: relative;
-    margin: 12px 10px 0 10px;
+  padding: 12px 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(239, 246, 255, 0.82) 0%,
+    rgba(248, 250, 252, 0.55) 100%
+  );
+  border-radius: var(--yo-radius-sm);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--yo-text);
+  position: relative;
+  margin: 12px 10px 0 10px;
+  border: 1px solid var(--yo-panel-border, var(--yo-border));
+  box-shadow: var(--yo-shadow);
 }
 
 .item-title span {
-    font-size: 14px;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--yo-text-muted);
 }
 
 .item-title::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    /* 垂直居中 */
-    height: 80%;
-    /* 竖线高度，相对于背景色块 */
-    width: 4px;
-    background-color: #1890ff;
-    /* 竖线颜色 */
-    border-radius: 2px;
-    /* 竖线圆角 */
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 70%;
+  width: 4px;
+  background: linear-gradient(180deg, var(--yo-accent), #60a5fa);
+  border-radius: 2px;
 }
 
-
-
+/* 每行 6 个，与 .main 内边距对齐铺满 */
 .pet-list {
-    display: flex;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  margin-bottom: 4px;
 }
 
 .pet-item {
-    margin: 10px 0 0 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-radius: 12px;
-    overflow: hidden;
-    position: relative;
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border-radius: var(--yo-radius-sm);
+  overflow: hidden;
+  position: relative;
+  box-shadow: var(--yo-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.65);
 }
 
-.pet-item img {
-    object-fit: cover;
-    object-position: 50%;
+.pet-item > img:first-of-type {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  max-height: none;
+  object-fit: cover;
+  object-position: 50%;
+  display: block;
 }
-
 
 .pet-text {
-    width: 100%;
-    text-align: center;
-    color: white;
-    text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
-    font-family: title02;
-    padding: 1px 0;
+  width: 100%;
+  text-align: center;
+  color: var(--yo-text);
+  font-weight: 700;
+  font-family: title02, "PingFang SC", sans-serif;
+  padding: 8px 4px 10px;
+  background: rgba(248, 250, 252, 0.72);
+  text-shadow: none;
 }
 
-.pet-tag{
-    position: absolute;
-    right: 0;
-    top: 0;
-    display: flex;
-    flex-direction: column;
-    border-radius: 12px;
-    background-color: rgba(255, 255, 255, 0.8);
+.pet-text .pet-name {
+  font-size: 22px;
+  line-height: 1.25;
+  word-break: break-all;
+}
+
+.pet-tag {
+  position: absolute;
+  right: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: 0 0 0 12px;
+  background-color: rgba(248, 250, 252, 0.85);
+  box-shadow: -1px 1px 6px rgba(15, 23, 42, 0.1);
 }

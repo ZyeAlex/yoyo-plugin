@@ -1,44 +1,40 @@
+{{extend layout}}
+
 {{block 'css'}}
-<link rel="stylesheet" type="text/css" href="{{pluResPath}}/common/index.css" />
 <link rel="stylesheet" type="text/css" href="{{pluResPath}}/help/index.css" />
 {{/block}}
 
 {{block 'main'}}
-<div class="container">
 
-  <header class="head">
-    <h1 class="title">{{sys.title}}</h1>
-    <p class="sub">{{sys.name}}</p>
-  </header>
+<header class="head">
+  <h1 class="title">{{sys.title}}</h1>
+  <p class="sub">{{sys.name}}</p>
+</header>
 
+<section class="main">
   {{each helpGroup group}}
   {{set len = group?.list?.length || 0 }}
-  <section class="main">
-
-    <div class="function-group">
-      <div class="group-header">
-        <span class="group-title">{{group.group}}</span>
-      </div>
-      <div class="group-grid">
-        {{each group.list help}}
-        <div class="item">
-          <div class="item-icon">
-            <img src="{{pluResPath}}/UI/{{help.icon}}">
-          </div>
-          <div class="item-text">
-            <div class="item-cmd" style="{{style(help.style)}}">
-              {{help.title.replace(/\#/g,rulePrefix)}}
-            </div>
-            <div class="item-desc">{{help.desc}}</div>
-          </div>
-        </div>
-        {{/each}}
-      </div>
+  <div class="function-group">
+    <div class="group-header">
+      <span class="group-title">{{group.group}}</span>
     </div>
-
-  </section>
+    <div class="group-grid">
+      {{each group.list help}}
+      <div class="item">
+        <div class="item-icon">
+          <img src="{{pluResPath}}/UI/{{help.icon}}">
+        </div>
+        <div class="item-text">
+          <div class="item-cmd" style="{{style(help.style)}}">
+            {{help.title.replace(/\#/g,rulePrefix)}}
+          </div>
+          <div class="item-desc">{{help.desc}}</div>
+        </div>
+      </div>
+      {{/each}}
+    </div>
+  </div>
   {{/each}}
+</section>
 
-  <footer class="copyright">{{@sys.copyright}}</footer>
-</div>
 {{/block}}

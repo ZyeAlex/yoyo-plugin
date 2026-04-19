@@ -1,44 +1,54 @@
 <style>
     .pet-skill {
-        margin-bottom: 24px;
-        font-size: 24px;
+        margin-bottom: 12px;
+        font-size: 26px;
         display: flex;
-        border-radius: 46px 24px 24px 24px;
+        align-items: flex-start;
     }
 
     .pet-skill>:last-child {
         flex: 1;
-
+        min-width: 0;
     }
 
     .pet-skill .pet-skill-img {
-        width: 80px;
-        height: 80px;
+        width: 84px;
+        height: 84px;
         border-radius: 50%;
         margin-right: 16px;
+        flex-shrink: 0;
     }
 
     .pet-skill .pet-skill-title {
         display: flex;
         width: 100%;
         align-items: flex-end;
-        padding-top: 12px;
-        padding-right: 24px;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding-top: 8px;
+        padding-right: 12px;
     }
 
     .pet-skill .pet-skill-name {
-        /* flex: 1; */
-        /* text-align: right; */
-        font-size: 36px;
-        font-weight: bold;
-        padding-right: 12px;
-        line-height: 36px;
+        font-size: 34px;
+        font-weight: 800;
+        padding-right: 8px;
+        line-height: 1.15;
+        color: var(--yo-text);
     }
+
+    .pet-skill .pet-skill-title > div:last-child {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--yo-text-muted);
+    }
+
     .pet-skill .pet-skill-desc {
-        margin-top: 12px;
-        margin-bottom: 24px;
-        font-size: 28px;
-        color: #7f7f7f;
+        margin-top: 10px;
+        margin-bottom: 6px;
+        font-size: 26px;
+        color: var(--yo-text-secondary);
+        line-height: 1.5;
     }
 </style>
 

@@ -1,183 +1,211 @@
 .pet-atlas {
-    display: flex;
+  display: flex;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, transparent 40%);
 }
-
 
 .pet-img {
-    width: 400px;
-    height: 500px;
-    position: relative;
+  width: 400px;
+  height: 500px;
+  position: relative;
 }
 
-.pet-img>div {
-    transform: scale(calc(500 / 700)) translateX(-100px);
-    transform-origin: 0% 0%;
+.pet-img > div {
+  transform: scale(calc(500 / 700)) translateX(-100px);
+  transform-origin: 0% 0%;
 }
 
 .pet-info {
-    flex: 1;
-    align-items: center;
-    padding: 24px 24px 0 12px;
-    display: flex;
-    height: 100%;
-    min-height: 400px;
-    flex-direction: column;
-    justify-content: space-around;
+  flex: 1;
+  align-items: center;
+  padding: 24px 24px 0 12px;
+  display: flex;
+  height: 100%;
+  min-height: 400px;
+  flex-direction: column;
+  justify-content: space-around;
 }
 
-.pet-name {
-    text-align: center;
-    position: relative;
-    font-size: 72px;
-    font-family: "title01";
+.pet-info .pet-name {
+  text-align: center;
+  position: relative;
+  font-size: 64px;
+  font-family: title01, "PingFang SC", sans-serif;
+  color: var(--yo-text);
+  font-weight: 800;
+  line-height: 1.1;
 }
-
-
-
 
 .pet-base {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .pet-base .pet-battle-tag {
-    font-size: 24px;
-    display: inline-block;
-    padding: 3px 10px 3px 3px;
-    margin: 0 3px 0 3px;
-    border-radius: 20px;
-    color: #525252;
-    background-color: white;
+  font-size: 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 4px 6px;
+  margin: 4px;
+  border-radius: 999px;
+  color: var(--yo-text-secondary);
+  background-color: var(--yo-surface);
+  border: 1px solid var(--yo-border);
+  box-shadow: var(--yo-shadow);
+  font-weight: 600;
 }
 
-.pet-base .pet-battle-tag>* {
-    vertical-align: top;
+.pet-base .pet-battle-tag > * {
+  vertical-align: middle;
 }
 
 .pet-base-skills {
-    margin-top: 12px;
-    background-color: #eaeae8;
-    width: 100%;
-    border-radius: 20px 5px 20px 5px;
-    display: flex;
-    color: #8d8d8d;
-    align-items: center;
-    padding: 12px;
+  margin-top: 14px;
+  background: var(--yo-surface);
+  width: 100%;
+  border-radius: var(--yo-radius-sm);
+  display: flex;
+  color: var(--yo-text-muted);
+  align-items: center;
+  padding: 14px 16px;
+  border: 1px solid var(--yo-border);
+  box-shadow: var(--yo-shadow);
 }
 
 .pet-base-skills-title {
-    font-size: 20px;
-    padding-top: 4px;
-    flex: 1;
+  font-size: 24px;
+  padding-top: 2px;
+  flex: 0 0 auto;
+  margin-right: 12px;
+  font-weight: 700;
+  color: var(--yo-text-secondary);
 }
 
 .pet-base-skill {
-    display: inline-block;
-    border-radius: 20px;
-    background-color: #b6aecb;
-    color: white;
-    padding: 3px 8px;
-    font-size: 20px;
-    text-shadow: 0 0 1px #000, 1px 1px 3px rgba(0, 0, 0, 0.9);
+  display: inline-block;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 22px;
+  font-weight: 600;
+  margin: 4px;
+  color: #fff;
 }
 
-.pet-base-skill:nth-child(2n) {
-    background-color: #e5d199;
+.pet-base-skill:nth-child(3n + 1) {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.pet-base-skill:nth-child(3n + 2) {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
 }
 
 .pet-base-skill:nth-child(3n) {
-    background-color: #b6d1e3;
+  background: linear-gradient(135deg, #d97706, #b45309);
 }
 
 .pet-box {
-    background-color: rgba(255, 255, 255, 0.3);
-    border-radius: 5px;
-    padding: 12px;
-    margin-top: 12px;
+  background: var(--yo-surface-glass);
+  border-radius: var(--yo-radius-sm);
+  padding: 14px 16px;
+  margin-top: 14px;
+  border: 1px solid var(--yo-border);
+  box-shadow: var(--yo-shadow);
 }
 
 .pet-tab {
-    display: flex;
-    justify-content: space-between;
-    color: #7a8290;
-    border-bottom: 1px dashed #7a8290;
-    font-size: 20px;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  color: var(--yo-text-secondary);
+  border-bottom: 1px dashed var(--yo-border-strong);
+  font-size: 22px;
+  width: 100%;
+  font-weight: 600;
 }
 
-.pet-tab>div {
-    text-align: center;
-    margin-top: 12px;
-    margin-bottom: 12px;
+.pet-tab > div {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .pet-tab .pet-size {
-    border-radius: 50%;
-    width: 26px;
-    height: 26px;
-    display: inline-block;
-    background-color: #8797ae;
-    color: white;
+  border-radius: 50%;
+  min-width: 28px;
+  height: 28px;
+  line-height: 28px;
+  display: inline-block;
+  padding: 0 6px;
+  background: var(--yo-accent);
+  color: #fff;
+  font-size: 18px;
+  vertical-align: middle;
 }
 
-.pet-tab>div.line {
-    border-right: 1px solid #7a8290;
+.pet-tab > div.line {
+  border-right: 1px solid var(--yo-border-strong);
 }
 
 .pet-desc {
-    margin-top: 12px;
-    font-size: 22px;
-    color: #7f7f7f;
-    text-indent: 2em;
+  margin-top: 14px;
+  font-size: 24px;
+  color: var(--yo-text-secondary);
+  text-indent: 2em;
+  line-height: 1.55;
 }
 
-
-
-
 .evolution-title {
-    font-size: 32px;
-    font-weight: bold;
-    margin: 24px;
-    text-align: center;
-    background-image: linear-gradient(to right, rgba(37, 43, 44, 0.8), rgba(75, 68, 60, 0.7));
-    color: white;
-    border-radius: 25px;
+  font-size: 30px;
+  font-weight: 700;
+  margin: 20px 16px 16px;
+  text-align: center;
+  background: linear-gradient(90deg, #dbeafe 0%, #e0e7ff 50%, #fce7f3 100%);
+  color: var(--yo-text);
+  border-radius: var(--yo-radius);
+  padding: 12px 16px;
+  border: 1px solid var(--yo-border);
+  box-shadow: var(--yo-shadow);
 }
 
 .evolution {
-    display: flex;
-    justify-content: space-between;
-    margin: 0 24px;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 16px 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .evolution-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .evolution-pet-stage {
-    display: inline-block;
-    border-radius: 20px;
-    background-color: #303133;
-    color: white;
-    padding: 3px 8px;
-    font-size: 20px;
+  display: inline-block;
+  border-radius: 999px;
+  background: var(--yo-text);
+  color: #fff;
+  padding: 4px 12px;
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 8px;
 }
 
 .evolution .evolution-pet-name {
-    text-align: center;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--yo-text);
+  margin-top: 6px;
+  max-width: 140px;
+  line-height: 1.25;
 }
 
-.evolution>:last-child {
-    display: none;
+.evolution > :last-child {
+  display: none;
 }
-
-
-
-/**
-* 技能区域
-*/
