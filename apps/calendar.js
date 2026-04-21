@@ -8,15 +8,15 @@ export const Calendar = plugin({
     priority: 100,
     rule: [
         {
-            reg: `^(#|悠悠|yy|yoyo)?活动日历$`,
+            reg: `^(#|悠悠|yy|yoyo)活动日历$`,
             fnc: showCalendar
         },
         {
-            reg: `^(#|悠悠|yy|yoyo)?日历$`,
+            reg: `^(#|悠悠|yy|yoyo)日历$`,
             fnc: showCalendar
         },
         {
-            reg: `^(#|悠悠|yy|yoyo)?活动$`,
+            reg: `^(#|悠悠|yy|yoyo)活动$`,
             fnc: showCalendar
         }
     ]

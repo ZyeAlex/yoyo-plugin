@@ -25,6 +25,7 @@ class Game {
      */
     this.nicknames = setting.getData('data/game/default/nickname', {}) // 角色昵称  {101003:['唐悠悠']}
     this.heros = setting.getData('data/game/hero', {})  // 角色数据 { 101003:{ /* 角色数据 */ } }
+    this.heroIds = {} // 内部使用 角色->ID映射
     this.heroImgs = {} //角色图片 {101003:[]}
 
     /**
@@ -88,7 +89,6 @@ class Game {
     return [...this.element, ...this.groups, ...this.profession]
   }
   async getHeroData(isInit) {
-    this.heroIds = {} // 内部使用 角色->ID映射
     if (!isInit || !Object.keys(this.heros).length) {
       try {
         // 合并数据

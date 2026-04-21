@@ -64,61 +64,12 @@ helpGroup:
       "font-size": "22px"
     "desc": "删除角色昵称"
 
-- "group": "工具"
-  "list":
-  - "title": "#数据"
-    "icon": "tex_icon_item_skin03.png"
-    "desc": "PV数据统计"
-  - "title": "#公告"
-    "icon": "Icon.png"
-    "desc": "查看Wiki最新公告"
-
 - "group": "娱乐"
   "list":
   - "title": "#签到"
     "icon": "tex_icon_item_buildtool03.png"
     "desc": "每日签到并领取老婆"
-  - "title": "#你是什么猪"
-    "icon": "Icon.png"
-    "desc": "看看群友是什么种类的猪"
-  - "title": "~表情列表"
-    "icon": "Icon.png"
-    "desc": "「撅」等互动表情"
-  - "title": "YoAI"
-    "icon": "Icon.png"
-    "desc": "@悠悠和她互动"
 
-- "group": "群管理 (需要管理员权限)"
-  "auth": "admin"
-  "list":
-  - "title": "#查看审核词"
-    "icon": ""
-    "desc": "机器人审批群问题"
-  - "title": "#设置审核词+审核词"
-    "icon": ""
-    "style":
-      "font-size": "21px"
-    "desc": "设置群审批条件(多个词用,隔开)"
-  - "title": "#新增审核词+审核词"
-    "icon": ""
-    "style":
-      "font-size": "21px"
-    "desc": "新增群审批条件(多个词用,隔开)"
-  - "title": "#删除审核词+审核词"
-    "icon": ""
-    "style":
-      "font-size": "21px"
-    "desc": "删除群审批条件(多个词用,隔开)"
-  - "title": "#踢|踢黑+@用户"
-    "icon": ""
-    "style":
-      "font-size": "21px"
-    "desc": "踢出群成员并撤回其近期发送所有消息"
-  - "title": "#禁|撤+@用户"
-    "icon": ""
-    "style":
-      "font-size": "21px"
-    "desc": "批量禁言/批量撤回某个用户消息"
 - "group": "插件管理"
   "auth": "master"
   "list":

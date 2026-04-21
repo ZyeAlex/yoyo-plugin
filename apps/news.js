@@ -9,11 +9,11 @@ export const News = plugin({
     priority: 9999,
     rule: [
         {
-            reg: `^#?公告$`,
+            reg: `^#公告$`,
             fnc: notices
         },
         {
-            reg: `^#?兑换码$`,
+            reg: `^#兑换码$`,
             fnc: RedemptionCode
         }
     ]
