@@ -11,7 +11,9 @@ import utils from './index.js'
 
 
 export default function () {
-    let UI = fs.readdirSync(path.join(setting.path, '/resources/UI'))
+    const uiDir = path.join(setting.path, 'resources/UI')
+    fs.mkdirSync(uiDir, { recursive: true })
+    let UI = fs.readdirSync(uiDir)
     // 要下载的图片列表
     let imgs = []
     // 是否正在下载图片
@@ -73,16 +75,16 @@ export default function () {
     // 下载图片
     const preDownImg = (imgName, imgUrl) => {
         return new Promise(async (resolve, reject) => {
-            const file = fs.createWriteStream(path.join(setting.path, 'resources/UI', imgName));
+            const file = fs.createWriteStream(path.join(uiDir, imgName));
             https.get(imgUrl, (response) => {
                 if (response.statusCode != 200) {
-                    fs.unlink(path.join(setting.path, 'resources/UI', imgName), () => { });
+                    fs.unlink(path.join(uiDir, imgName), () => { });
                     return reject(`[${response.statusCode}] ❌️ ${imgName}下载失败`)
                 }
                 response.pipe(file);
                 file.on('finish', () => resolve(file.close()));
             }).on('error', (err) => {
-                fs.unlink(path.join(setting.path, 'resources/UI', imgName), () => { });
+                fs.unlink(path.join(uiDir, imgName), () => { });
                 reject(` ❌️ ${err}`);
             });
         });
