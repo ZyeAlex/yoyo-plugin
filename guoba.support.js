@@ -10,8 +10,6 @@ import fs from 'fs'
  */
 
 export function supportGuoba() {
-  let allGroup = [];
-  Bot.gl.forEach((v, k) => { k != 'stdin' && allGroup.push({ label: `${v.group_name}(${k})`, value: k }); });
   let packageJson = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'));
 
 
@@ -137,26 +135,33 @@ export function supportGuoba() {
       field: 'config.signInclude',
       label: '白名单群',
       component: 'GSelectGroup',
+      componentProps: { placeholder: '请选择群聊' },
     },
     {
       field: 'config.signExclude',
       label: '黑名单群',
       component: 'GSelectGroup',
+      componentProps: { placeholder: '请选择群聊' },
     }
   ]
 
 
+  const iconPath = path.join(setting.path, '/resources/common/theme/logo_c.png')
+  const pluginInfo = {
+    name: packageJson.name,
+    title: packageJson.title,
+    author: packageJson.author,
+    authorLink: packageJson.authorLink,
+    link: packageJson.link,
+    description: packageJson.description,
+    isV3: true,
+  }
+  if (fs.existsSync(iconPath)) {
+    pluginInfo.iconPath = iconPath
+  }
+
   return {
-    pluginInfo: {
-      name: packageJson.name,
-      title: packageJson.title,
-      author: packageJson.author,
-      authorLink: packageJson.authorLink,
-      link: packageJson.link,
-      description: packageJson.description,
-      isV3: true,
-      iconPath: path.join(setting.path, '/resources/common/theme/logo_c.png'),
-    },
+    pluginInfo,
     // 配置项信息
     configInfo: {
       // 配置项 schemas
@@ -172,12 +177,16 @@ export function supportGuoba() {
       },
       // 设置配置的方法（前端点确定后调用的方法）
       setConfigData(data, { Result }) {
-        let config = {}
-        for (let [keyPath, value] of Object.entries(data)) {
-          lodash.set(config, keyPath, value)
+        const incoming = {}
+        for (const [keyPath, value] of Object.entries(data)) {
+          lodash.set(incoming, keyPath, value)
         }
-        setting.config = config.config
-        setting.setData('config/config', config.config)
+        const patch = incoming.config || {}
+        const next = lodash.mergeWith(lodash.cloneDeep(setting.config), patch, (objValue, srcValue) => {
+          if (Array.isArray(srcValue)) return srcValue
+        })
+        setting.config = next
+        setting.setData('config/config', next)
         return Result.ok({}, '保存成功~')
       }
     },
