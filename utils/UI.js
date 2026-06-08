@@ -5,6 +5,7 @@
 import path from 'path'
 import fs from 'fs'
 import https from 'https'
+import { URL } from 'url'
 import bot from 'nodemw'
 import setting from './setting.js'
 import utils from './index.js'
@@ -12,8 +13,7 @@ import utils from './index.js'
 
 export default function () {
     const uiDir = path.join(setting.path, 'resources/UI')
-    fs.mkdirSync(uiDir, { recursive: true })
-    let UI = fs.readdirSync(uiDir)
+    let UI = fs.existsSync(uiDir) ? fs.readdirSync(uiDir) : []
     // 要下载的图片列表
     let imgs = []
     // 是否正在下载图片
@@ -48,7 +48,7 @@ export default function () {
             }
         } else if (Array.isArray(current)) {
             for (let i = 0; i < current.length; i++) {
-                if (typeof current[i] === 'string' && pattern.test(current[i]) && excludeIconReg.every(item => !current[key].includes(item))) {
+                if (typeof current[i] === 'string' && pattern.test(current[i]) && excludeIconReg.every(item => !current[i].includes(item))) {
                     imgs.push(current[i]) // 保存图片地址
                 } else if (typeof current[i] === 'object') {
                     traverse(current[i]);
@@ -74,20 +74,34 @@ export default function () {
     }
     // 下载图片
     const preDownImg = (imgName, imgUrl) => {
-        return new Promise(async (resolve, reject) => {
-            const file = fs.createWriteStream(path.join(uiDir, imgName));
-            https.get(imgUrl, (response) => {
+        const filePath = path.join(uiDir, imgName)
+        const download = (url, redirect = 0) => new Promise((resolve, reject) => {
+            if (redirect > 5) return reject(`❌️ ${imgName} 重定向过多`)
+            https.get(url, (response) => {
+                if ([301, 302, 303, 307, 308].includes(response.statusCode)) {
+                    const location = response.headers.location
+                    if (!location) {
+                        return reject(`[${response.statusCode}] ❌️ ${imgName}下载失败`)
+                    }
+                    response.resume()
+                    return download(new URL(location, url).href, redirect + 1).then(resolve).catch(reject)
+                }
                 if (response.statusCode != 200) {
-                    fs.unlink(path.join(uiDir, imgName), () => { });
                     return reject(`[${response.statusCode}] ❌️ ${imgName}下载失败`)
                 }
-                response.pipe(file);
-                file.on('finish', () => resolve(file.close()));
+                const file = fs.createWriteStream(filePath)
+                response.pipe(file)
+                file.on('finish', () => file.close(() => resolve()))
+                file.on('error', (err) => {
+                    fs.unlink(filePath, () => { })
+                    reject(` ❌️ ${err}`)
+                })
             }).on('error', (err) => {
-                fs.unlink(path.join(uiDir, imgName), () => { });
-                reject(` ❌️ ${err}`);
-            });
-        });
+                fs.unlink(filePath, () => { })
+                reject(` ❌️ ${err}`)
+            })
+        })
+        return download(imgUrl)
     }
 
 
@@ -104,6 +118,7 @@ export default function () {
         // 搜集图标
         traverse(obj)
         let sourceIndex = 0 // 图片源
+        let downloaded = 0
         // queue内有未处理完任务，且pool内无运行中任务
         while (imgs.length && !loading) {
             let imgName = imgs.shift()// 从queue中取出一张图片
@@ -113,6 +128,7 @@ export default function () {
                 const imgUrl = await getImgUrl(imgName, setting.config.iconSource[sourceIndex])
                 await preDownImg(imgName, imgUrl)
                 UI.push(imgName)
+                downloaded++
                 sourceIndex = 0
             } catch (error) {
                 logs[imgName] = [...(logs[imgName] || []), error]
@@ -131,8 +147,10 @@ export default function () {
         if (!imgs.length) {
             // 保存日志
             setting.setData('data/logs/ui-logs', logs)
-            redis.set('yoyo:ui', new Date().toJSON())
-
+            // 全部已存在，或至少成功下载过，才写入缓存
+            if (downloaded > 0 || Object.keys(logs).length === 0) {
+                redis.set('yoyo:ui', new Date().toJSON())
+            }
         }
     }
     this.getImg = getImg

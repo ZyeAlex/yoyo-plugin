@@ -13,6 +13,8 @@ class Setting {
     // 本插件地址
     this.path = this.yunzaiPath + '/plugins/yoyo-plugin'
 
+    fs.mkdirSync(path.join(this.path, 'resources/UI'), { recursive: true })
+
     // 初始化config
     this.config = this.initConfig()
     // 匹配前缀

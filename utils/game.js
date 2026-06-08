@@ -44,8 +44,10 @@ class Game {
   }
   /** 初始化数据 */
   async getData(isInit = false, type) {
-    // 初始化UI函数
-    this.getUI = initUI.call(this)
+    // 初始化UI函数（仅首次）
+    if (!this.getUI) {
+      this.getUI = initUI.call(this)
+    }
     let types = {
       'Base': this.getBaseData, // 获取基础数据
       'Hero': this.getHeroData,// 获取角色数据
