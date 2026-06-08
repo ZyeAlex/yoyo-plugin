@@ -8,7 +8,7 @@
 <br/>
 <div align="center">
 
-![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%2FZyeAlex%2Fyoyo-plugin%2Frefs%2Fheads%2Fmaster%2Fpackage.json&query=%24.version&label=最新版本)
+![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgitee.com%2Fyoyo-plugin%2Fyoyo-plugin%2Fraw%2Fmaster%2Fpackage.json&query=%24.version&label=最新版本)
 [<img src="https://img.shields.io/badge/插件交流群-991709221-blue" />](https://qm.qq.com/q/y37cqiS4Ks)
 <img src="https://gitee.com/yoyo-plugin/yoyo-plugin/badge/star.svg"/>
 
@@ -22,14 +22,14 @@
 
 ## 开发说明
 
-- 插件开发中... 招募美工、招募美工、招募美工...
+- 插件开发中... 招募美工...
 
 - 插件交流群：[👉🏻加群讨论](https://qm.qq.com/q/Mk3jyhIqSm)
 - 游戏交流群：[👉🏻加群讨论](https://qm.qq.com/q/CwZDY3kUtc)
 
 - 提交代码：
 
-  > 请在 [GitHub](https://github.com/ZyeAlex/yoyo-plugin)  fork 本仓库，修改并测试完成后提交PR
+  > 请在 fork 本仓库，修改并测试完成后提交PR
 
 - [开发文档](./插件开发API说明.md)
 
@@ -65,10 +65,7 @@
     ```shell
     git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-plugin.git ./plugins/yoyo-plugin
     ```
-  - github（<font color="red">不推荐，不稳定版本</font>）
-    ```shell
-    git clone --depth=1 https://github.com/ZyeAlex/yoyo-plugin.git ./plugins/yoyo-plugin
-    ```
+
 3. 安装环境
     ```shell
     pnpm install
@@ -95,11 +92,11 @@
 
 感谢以下贡献者对本项目做出的贡献
 
-<a href="https://github.com/ZyeAlex/yoyo-plugin/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=ZyeAlex/yoyo-plugin" />
+<a href="https://gitee.com/yoyo-plugin/yoyo-plugin/contributors">
+  <img src="https://gitee.com/ZyeAlex.png" width="50" title="ZyeAlex" />
 </a>
 
-![Alt](https://repobeats.axiom.co/api/embed/2ea99ed765b7cbc37c5375c5644fe816096f3966.svg "Repobeats analytics image")
+[查看全部贡献者 →](https://gitee.com/yoyo-plugin/yoyo-plugin/contributors)
 
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->

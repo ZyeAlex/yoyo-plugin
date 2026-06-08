@@ -37,11 +37,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ZyeAlex/yoyo-plugin.git"
+    "url": "git+https://gitee.com/yoyo-plugin/yoyo-plugin.git"
   },
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ZyeAlex/yoyo-plugin/issues"
+    "url": "https://gitee.com/yoyo-plugin/yoyo-plugin/issues"
   },
-  "homepage": "https://github.com/ZyeAlex/yoyo-plugin#readme"
+  "homepage": "https://gitee.com/yoyo-plugin/yoyo-plugin#readme"
 }
