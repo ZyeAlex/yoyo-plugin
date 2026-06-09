@@ -44,27 +44,55 @@ export function enrichSkills(skills = []) {
   return skills.map(skill => enrichSkillDesc(skill))
 }
 
+const KIBO_SKILL_LEVEL_COUNT = 5
+
+/** 旧版 yaml：5 级描述被 stripHtml 后逐行堆叠，按 5 级还原最高级文本 */
+function parseLegacyMergedKiboDesc(desc = '') {
+  const lines = String(desc).split(/\n+/).filter(line => line.trim())
+  if (!lines.length) return { level: 1, descHtml: '' }
+  const level = KIBO_SKILL_LEVEL_COUNT
+  const linesPerLevel = Math.max(1, Math.floor(lines.length / level))
+  const start = (level - 1) * linesPerLevel
+  return {
+    level,
+    descHtml: parseRichText(lines.slice(start).join('\n')),
+  }
+}
+
+function resolveKiboSkillLevel(skill = {}) {
+  if (skill.level) return skill.level
+  if (skill.descLevels?.length) return skill.descLevels.length
+  const text = String(skill.desc || '').trim()
+  if (!text) return 1
+  const lines = text.split(/\n+/).filter(line => line.trim())
+  if (lines.length > 1) return KIBO_SKILL_LEVEL_COUNT
+  return 1
+}
+
 /** 单条技能：补全 descHtml（角色/奇波通用） */
 export function enrichSkillDesc(skill) {
   if (!skill) return skill
   return {
     ...skill,
+    level: resolveKiboSkillLevel(skill),
     descHtml: skill.descHtml || buildSkillDescHtml(skill.template, skill.maxLevel)
       || buildKiboSkillDescHtml(skill),
   }
 }
 
-/** 奇波技能：各级描述拼段落，保留 Wiki 颜色 */
+/** 奇波技能：仅最高等级描述，保留 Wiki 颜色 */
 export function buildKiboSkillDescHtml(skill = {}) {
   if (skill.descLevels?.length) {
-    return skill.descLevels.join('<br/>')
+    return skill.descLevels[skill.descLevels.length - 1]
   }
   if (skill.desc?.includes('<span')) {
     return String(skill.desc).replace(/\n/g, '<br/>')
   }
   const text = String(skill.desc || '').trim()
   if (!text) return ''
-  return text.split(/\n+/).map(line => parseRichText(line)).join('<br/>')
+  const lines = text.split(/\n+/).filter(line => line.trim())
+  if (lines.length <= 1) return parseRichText(text)
+  return parseLegacyMergedKiboDesc(text).descHtml
 }
 
 export function parseKiboSkillDesc(params, prefix, count = 5) {
@@ -74,10 +102,12 @@ export function parseKiboSkillDesc(params, prefix, count = 5) {
     if (val) rawParts.push(val)
   }
   const descLevels = rawParts.map(v => parseRichText(v))
+  const maxRaw = rawParts[rawParts.length - 1] || ''
   return {
-    descHtml: descLevels.join('<br/>'),
-    desc: stripHtml(rawParts[rawParts.length - 1] || ''),
+    descHtml: descLevels[descLevels.length - 1] || '',
+    desc: stripHtml(maxRaw),
     descLevels,
+    level: rawParts.length || 1,
   }
 }
 

@@ -87,28 +87,43 @@
   display: flex;
   color: var(--yo-text-muted);
   align-items: center;
-  padding: 14px 16px;
+  padding: 10px 12px;
   border: 1px solid var(--yo-border);
   box-shadow: var(--yo-shadow);
+  box-sizing: border-box;
 }
 
 .pet-base-skills-title {
-  font-size: 24px;
-  padding-top: 2px;
+  font-size: 22px;
   flex: 0 0 auto;
-  margin-right: 12px;
+  margin-right: 8px;
   font-weight: 700;
   color: var(--yo-text-secondary);
+  white-space: nowrap;
+}
+
+.pet-base-skills-list {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  overflow: hidden;
 }
 
 .pet-base-skill {
   display: inline-block;
   border-radius: 999px;
-  padding: 5px 12px;
-  font-size: 22px;
+  padding: 3px 8px;
+  font-size: 18px;
   font-weight: 600;
-  margin: 4px;
+  margin: 0;
   color: #fff;
+  white-space: nowrap;
+  flex-shrink: 1;
+  line-height: 1.2;
 }
 
 .pet-base-skill:nth-child(3n + 1) {

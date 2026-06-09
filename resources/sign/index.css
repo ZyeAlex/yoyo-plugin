@@ -1,6 +1,9 @@
-.background {
-  opacity: 0.38 !important;
-  filter: blur(8px) saturate(1.08);
+html {
+  background: var(--yo-bg) !important;
+}
+
+body {
+  background: transparent !important;
 }
 
 .sign-img {
@@ -18,13 +21,10 @@
       rgba(0, 0, 0, 0.92) 82%,
       transparent 100%);
   margin-bottom: -5%;
-  z-index: 0;
-  position: relative;
+  display: block;
 }
 
 .sign-rank {
-  position: relative;
-  z-index: 1;
   font-size: 34px;
   font-family: title02, "PingFang SC", sans-serif;
   margin-top: 16px;
@@ -62,16 +62,29 @@
     0 0 2px #fff,
     0 0 10px rgba(255, 255, 255, 0.9);
   font-weight: 600;
-  line-height: 1.5;
+}
+
+.sign-user-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .sign-user-img {
   width: 56px;
   height: 56px;
+  min-width: 56px;
+  min-height: 56px;
   border-radius: 50%;
-  transform: translate(0, 12px);
   border: 2px solid #fff;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.15);
+  object-fit: cover;
+  flex-shrink: 0;
+  vertical-align: middle;
+  position: relative;
+  z-index: 100;
 }
 
 .sign-name {
@@ -81,18 +94,36 @@
   font-style: italic;
 }
 
+.sign-user-suffix {
+  font-size: 32px;
+}
+
+.sign-hero-line {
+  margin-top: 6px;
+  font-size: 60px;
+}
+
 .sign-hero {
-  font-size: 58px;
   font-family: title01, "PingFang SC", sans-serif;
   color: var(--yo-text);
   font-weight: 800;
 }
 
-.sign-text>div:last-child {
-  margin-top: 6px;
+/* 与奇波 .pet-box / 技能 .main 卡片一致 */
+.sign-history-box.main {
+  position: relative;
+  z-index: 2;
+  background: var(--yo-surface-glass);
+  border-radius: var(--yo-radius-sm);
+  padding: 14px 16px;
+  margin: 8px 20px 14px;
+  border: 1px solid var(--yo-border);
+  box-shadow: var(--yo-shadow);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
-.main .sign-history-title {
+.sign-history-title {
   font-size: 26px;
   font-weight: 600;
   color: var(--yo-text-secondary);
@@ -102,7 +133,7 @@
 }
 
 .sign-history {
-  margin: 14px 16px 20px;
+  margin: 14px 0 6px;
   color: var(--yo-text-muted);
   font-size: 24px;
   display: flex;

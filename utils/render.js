@@ -41,7 +41,9 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
   })
 
   let bgImg
-  if (cacheScope) {
+  if (p === 'sign/index') {
+    bgImg = ''
+  } else if (cacheScope) {
     bgImg = '/common/pet/background.png'
   } else {
     const pet = lodash.sample(Object.values(game.pets))

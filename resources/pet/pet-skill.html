@@ -37,6 +37,13 @@
         color: var(--yo-text);
     }
 
+    .pet-skill .pet-skill-level {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--yo-text-muted);
+        margin-left: auto;
+    }
+
     .pet-skill .pet-skill-desc {
         margin-top: 10px;
         margin-bottom: 6px;
@@ -54,6 +61,7 @@
     <div>
         <div class="pet-skill-title">
             <div class="pet-skill-name">{{skill.name}}</div>
+            <div class="pet-skill-level">lv.{{skill.level || 5}}</div>
         </div>
         <div class="pet-skill-desc">{{@skill.descHtml || skill.desc.replace(/\n/g, '<br/>')}}</div>
     </div>
