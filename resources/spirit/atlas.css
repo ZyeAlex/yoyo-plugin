@@ -1,0 +1,18 @@
+.spirit-atlas,
+.item-atlas {
+  padding: 16px;
+}
+
+.spirit-related {
+  margin-top: 8px;
+  color: var(--yo-text-secondary);
+  font-size: 22px;
+}
+
+.spirit-block,
+.item-block {
+  margin-top: 16px;
+  font-size: 24px;
+  line-height: 1.5;
+  color: var(--yo-text-secondary);
+}

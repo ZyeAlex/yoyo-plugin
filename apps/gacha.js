@@ -1,5 +1,3 @@
-import render from '#render'
-import game from '#game'
 import plugin from '#plugin'
 
 

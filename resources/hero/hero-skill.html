@@ -6,5 +6,8 @@
         </div>
         <div>lv.10</div>
     </div>
-    <div>{{@skill.skillDescribe.replace(/\n/g, '<br/>').replace(/<color=(#\w+)>([^<]+)<\/color>/g, (_, color, text) => `<font color="${color}">${text}</font>`).replace(/\{(\d+)\}/g, (_, index) => (skill.skillLevel.values[9] || skill.skillLevel.values[0])?.[index])}} </div>
+    <div>{{@skill.descHtml || skill.desc.replace(/\n/g, '<br/>')}}</div>
+    {{if skill.special}}
+    <div class="hero-skill-special">「{{skill.special}}」</div>
+    {{/if}}
 </div>

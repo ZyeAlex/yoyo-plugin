@@ -1,12 +1,12 @@
 {
-  "version": "0.9.0-beta.1",
+  "version": "0.10.0-beta.0",
   "name": "yoyo-plugin",
   "title": "蓝色星原旅谣插件",
   "group": "9701000",
-  "pluginGroup":"991709221",
+  "pluginGroup": "991709221",
   "author": "@子叶Alex",
-  "authorLink":"https://gitee.com/yoyo-plugin",
-  "link":"https://gitee.com/yoyo-plugin/yoyo-plugin",
+  "authorLink": "https://gitee.com/yoyo-plugin",
+  "link": "https://gitee.com/yoyo-plugin/yoyo-plugin",
   "description": "云崽QQ机器人的《蓝色星原：旅谣》插件",
   "main": "main.js",
   "type": "module",
@@ -16,7 +16,8 @@
     "#game": "./utils/game.js",
     "#user": "./utils/user.js",
     "#plugin": "./utils/plugin.js",
-    "#render": "./utils/render.js"
+    "#render": "./utils/render.js",
+    "#wiki": "./api/wiki/data.js"
   },
   "keywords": [
     "蓝色星原旅谣",
@@ -31,7 +32,6 @@
     "lowdb": "^7.0.1",
     "luaparse": "^0.3.1",
     "md5": "^2.3.0",
-    "nodemw": "^0.24.1",
     "sharp": "^0.34.2",
     "yaml": "^2.8.2"
   },

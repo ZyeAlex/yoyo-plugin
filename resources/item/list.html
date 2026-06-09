@@ -1,0 +1,30 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/item/list.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="head">
+    <div class="title">物品图鉴 <span class="label">共{{length}}个</span></div>
+</div>
+<div class="nav">
+    <div class="item">发送 <mark>{{rulePrefix}}物品名图鉴</mark> 查看详情</div>
+</div>
+<div class="main">
+<div class="yo-catalog-grid">
+    {{each items item}}
+    <div class="yo-catalog-card yo-catalog-card--item rarity-{{item.rarityClass||0}}">
+        <div class="yo-catalog-media">
+            <img src="{{pluResPath}}/UI/{{item.image}}" alt="{{item.name}}">
+        </div>
+        <div class="rarity">
+            <img src="{{pluResPath}}/common/rarity/rarity-{{item.rarityClass||0}}.png">
+        </div>
+        <div class="yo-catalog-name text">{{item.name}}</div>
+        <div class="yo-catalog-meta">{{item.typeName}}</div>
+    </div>
+    {{/each}}
+</div>
+</div>
+{{/block}}

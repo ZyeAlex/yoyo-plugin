@@ -3,7 +3,7 @@ import game from '#game'
 import plugin from '#plugin'
 import render from '#render'
 
-export default plugin({
+export const Hero = plugin({
     name: '[悠悠助手]角色',
     event: 'message',
     priority: 100,

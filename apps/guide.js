@@ -47,9 +47,9 @@ function getGuide(type, id) {
     // 本地路径
     paths.push(path.join(setting.path, '/resources/img/guide', type, id))
     // 挂载路径
-    setting.config.guidePath.forEach(guidePath => {
-        paths.push(path.join(setting.path, guidePath, type, id))
-        paths.push(path.join(setting.path, guidePath, type, game.heros[id].name))
+    setting.config.heroGuidePath?.forEach(guidePath => {
+        paths.push(path.join(setting.yunzaiPath, guidePath, type, id))
+        paths.push(path.join(setting.yunzaiPath, guidePath, type, game.heros[id].name))
     })
 
     paths.filter(p => fs.existsSync(p)).forEach(filePath => {

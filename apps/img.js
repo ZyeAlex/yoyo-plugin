@@ -75,7 +75,7 @@ async function getHeroImgList(e, heroName) {
     return await render(e, 'hero/imgs', {
         heroName,
         heroImgs,
-        color: game.heros[heroId]?.element?.elementColor || '#000000',
+        color: game.getHeroThemeColor(heroId),
     })
 }
 
@@ -84,7 +84,7 @@ async function getHeroImgList(e, heroName) {
 async function delHeroImg(e, heroName, select) {
     // 查询是否有此角色
     let heroId = game.getHeroId(heroName)
-    if (!heroId) return ture
+    if (!heroId) return true
     if (!cacheHeroImgs[heroId]?.length) {
         e.reply(`未获取到角色图片列表，请先「>${heroName}图片列表」`)
     }

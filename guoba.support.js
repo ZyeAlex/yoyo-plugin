@@ -92,23 +92,6 @@ export function supportGuoba() {
         placeholder: '请输入图片大小'
       }
     },
-    {
-      field: "config.iconSource",
-      label: "图标载入地址",
-      bottomHelpMessage: '插件图标载入地址',
-      component: 'Select',
-      componentProps: {
-        allowAdd: true,
-        allowDel: true,
-        mode: 'multiple',
-        options: [
-          { label: 'wiki', value: 'wiki' },
-          { label: 'gitee', value: 'https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/' }
-        ],
-        // placeholder: '自动撤回模式选择',
-      },
-    },
-
   ]
   
   const fun = [

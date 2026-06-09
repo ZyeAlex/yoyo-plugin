@@ -12,7 +12,7 @@
 
 /* 分组标题与下方表格连成一块（上一版「连在一起」布局） */
 .group-header {
-  background: linear-gradient(90deg, #4a667a 0%, #5a768c 42%, #6a869e 100%);
+  background: var(--yo-group-header);
   padding: 12px 18px;
   margin-bottom: 0;
   color: #f8fafc;

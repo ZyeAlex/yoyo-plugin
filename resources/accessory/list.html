@@ -4,25 +4,26 @@
 <link rel="stylesheet" type="text/css" href="{{pluResPath}}/accessory/list.css" />
 {{/block}}
 
-
 {{block 'main'}}
-
 <div class="head">
-    <div class="title">装备图鉴 <span class="label">共{{accessories.length}}件</span> </div>
+    <div class="title">装备图鉴 <span class="label">共{{accessories.length}}件</span></div>
 </div>
 <div class="nav">
-    <div class="item">发送 <mark>{{rulePrefix}}套装图鉴</mark> 查看装备套装效果 </div>
+    <div class="item">发送 <mark>{{rulePrefix}}装备名图鉴</mark> 查看装备详情（列表页）</div>
 </div>
-<div class="main accessory-list">
+<div class="main">
+<div class="yo-catalog-grid">
     {{each accessories accessory idx}}
-    <div class="accessory-item rarity-{{accessory.rarity||0}}">
-        <img class="accessory-img img" src="{{pluResPath}}/UI/{{accessory.texture?.[2]}}" />
-        <div class="rarity">
-            <img src="{{pluResPath}}/common/rarity/rarity-{{accessory.rarity||0}}.png">
+    <div class="yo-catalog-card yo-catalog-card--accessory rarity-{{accessory.rarityClass||0}}">
+        <div class="yo-catalog-media">
+            <img src="{{pluResPath}}/UI/{{accessory.image}}" alt="{{accessory.name}}">
         </div>
-        <div class="accessory-text text">{{accessory.name}}</div>
+        <div class="rarity">
+            <img src="{{pluResPath}}/common/rarity/rarity-{{accessory.rarityClass||0}}.png">
+        </div>
+        <div class="yo-catalog-name text">{{accessory.name}}</div>
     </div>
     {{/each}}
 </div>
-
+</div>
 {{/block}}

@@ -19,7 +19,7 @@ export const Update = plugin({
       permission: 'master'
     },
     {
-      reg: new RegExp(`^(?:${game.rulePrefix}|悠悠|yoyo)切?换(github|gitee)?源(github|gitee)?$`, 'i'),
+      reg: new RegExp(`^(?:${setting.rulePrefix}|悠悠|yoyo)切?换(github|gitee)?源(github|gitee)?$`, 'i'),
       fnc: migrate,
       permission: 'master'
     },

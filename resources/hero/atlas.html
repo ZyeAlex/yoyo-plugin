@@ -6,33 +6,61 @@
 
 {{block 'main'}}
 <div class="hero-atlas">
-    <div style="display:flex;align-items:center;">
-        <img class="hero-img" src="{{pluResPath}}/UI/{{avatarTexture?.[1]}}"
-            onerror="this.onerror=null; this.src='{{pluResPath}}/UI/tex_icon_hero_m_default.png'">
+    <div class="yo-atlas-head hero-head">
+        <div class="yo-atlas-portrait hero-portrait">
+            <div class="hero-portrait-inner">
+                <img class="hero-portrait-img" src="{{pluResPath}}/UI/{{portraitIcon}}"
+                    onerror="this.onerror=null; this.src='{{pluResPath}}/UI/{{headIcon}}';">
+            </div>
+        </div>
         <div class="hero-base">
-            {{if charData?.characterGroup}}
-            <img class="hero-group-img" src="{{pluResPath}}/UI/{{charData?.characterGroup?.icon[2]}}" alt="">
+            <div class="hero-identity">
+                <div class="hero-name-stack">
+                    {{if groupData}}
+                    <img class="hero-group-img" src="{{pluResPath}}/UI/{{groupData.icon[2]}}" alt="{{groupData.name}}">
+                    {{/if}}
+                    <div class="hero-name-block">
+                        {{if englishName}}
+                        <div class="hero-english-name">{{englishName}}</div>
+                        {{/if}}
+                        <div class="hero-name">{{name}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-badges">
+                {{if elementData?.petElem}}
+                <img class="hero-element-img" src="{{pluResPath}}/UI/{{elementData.petElem}}" alt="{{element}}">
+                {{/if}}
+                <img class="hero-rarity-img" src="{{pluResPath}}/common/rarity/rarity-{{rarityClass||3}}.png" alt="{{rarity}}">
+                {{if professionData}}
+                <img class="hero-profession-img" src="{{pluResPath}}/UI/{{professionData.icon[0]}}"
+                    style="background-color:{{elementData?.elementColor}};" alt="{{profession}}">
+                {{/if}}
+            </div>
+            <table class="hero-meta">
+                <tr>
+                    {{if element}}<th>元素</th><td>{{element}}</td>{{/if}}
+                    {{if profession}}<th>职业</th><td>{{profession}}</td>{{/if}}
+                </tr>
+                <tr>
+                    {{if group}}<th>阵营</th><td>{{group}}</td>{{/if}}
+                    {{if race}}<th>种族</th><td>{{race}}</td>{{/if}}
+                </tr>
+                <tr>
+                    {{if birthday}}<th>生日</th><td>{{birthday}}</td>{{/if}}
+                    {{if weapon}}<th>武器</th><td>{{weapon}}</td>{{/if}}
+                </tr>
+            </table>
+            {{if desc}}
+            <div class="hero-desc">{{desc}}</div>
             {{/if}}
-            <div class="hero-name">
-                {{if position}}
-                <img class="hero-career" src="{{pluResPath}}/UI/{{position?.icon[0]}}"
-                    style="background-color:{{element?.elementColor}};">
-                {{/if}}
-                {{name}}
-                <img class="hero-rarity-img" src="{{pluResPath}}/common/rarity/rarity-{{rarity?.id||3}}.png">
-            </div>
-            <div class="hero-tags">
-                {{if battleTag}}
-                {{each battleTag item index}}
-                <div class="hero-tag" style="background-color:{{item.color}}">{{item.title}}</div>
-                {{/each}}
-                {{/if}}
-            </div>
-            <!-- <div class="hero-info">
-                    <div class="hero-weapon"> <span>武器类型</span> <span>{{weaponType?.typeName}}</span> </div>
-                </div> -->
         </div>
     </div>
+    {{if intro && showIntro}}
+    <div class="hero-profile main">
+        <div class="hero-profile-text">{{intro}}</div>
+    </div>
+    {{/if}}
     {{each type type}}
 
     {{ if type=='nickname' }}
@@ -45,54 +73,55 @@
     </div>
     {{/if}}
 
-
-    {{ if type=='voice' && charData.characterVoice }}
-    <div class="hero-words  main">
-        {{each charData.characterVoice item index}}
+    {{ if type=='voice' && voices?.length }}
+    <div class="hero-words main">
+        {{each voices item index}}
         <div class="hero-word">
-            <div>【{{item.title}}】</div>
+            <div>【{{item.name}}】</div>
             <div>{{item.text}}</div>
         </div>
         {{/each}}
     </div>
     {{/if}}
-    {{ if type=='skill' && skillSystem }}
+
+    {{ if type=='skill' && skills?.length }}
     <div class="hero-skills main">
-        {{each skillSystem.slice(0,1) skill}}
-        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:element.elementColor}) %>
-            {{/each}}
+        {{each skills.slice(0,1) skill}}
+        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:elementData.elementColor}) %>
+        {{/each}}
     </div>
     <div class="hero-skills main">
-        {{each skillSystem.slice(1,2) skill}}
-        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:element.elementColor}) %>
-            {{/each}}
+        {{each skills.slice(1,2) skill}}
+        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:elementData.elementColor}) %>
+        {{/each}}
     </div>
     <div class="hero-skills main">
-        {{each skillSystem.slice(2,3) skill}}
-        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:element.elementColor}) %>
-            {{/each}}
+        {{each skills.slice(2,3) skill}}
+        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:elementData.elementColor}) %>
+        {{/each}}
     </div>
     <div class="hero-skills main">
-        {{each skillSystem.slice(3,4) skill}}
-        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:element.elementColor}) %>
-            {{/each}}
+        {{each skills.slice(3,4) skill}}
+        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:elementData.elementColor}) %>
+        {{/each}}
     </div>
-    <div class="hero-skills  main">
-        {{each skillSystem.slice(4) skill}}
-        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:element.elementColor}) %>
-            {{/each}}
+    <div class="hero-skills main">
+        {{each skills.slice(4) skill}}
+        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:elementData.elementColor}) %>
+        {{/each}}
     </div>
     {{/if}}
-    {{ if type=='talent' && talent }}
+
+    {{ if type=='talent' && talents?.length }}
     <div class="hero-talents main">
-        {{each talent talentLevel level}}
+        {{each talents talentLevel}}
         <div class="hero-talent-level">{{ (n=>{let
             r='',m=[["M",1e3],["CM",900],["D",500],["CD",400],["C",100],["XC",90],["L",50],["XL",40],["X",10],["IX",9],["V",5],["IV",4],["I",1]];for(let[c,v]of
-            m)while(n>=v)r+=c,n-=v;return r})(level+1) }}</div>
+            m)while(n>=v)r+=c,n-=v;return r})(talentLevel.level) }}</div>
         <div class="hero-talent-item">
-            {{each talentLevel talentItem}}
+            {{each talentLevel.items talentItem}}
             <% include(pluginPath+'/resources/hero/hero-talent.html',{pluResPath,...talentItem}) %>
-                {{/each}}
+            {{/each}}
         </div>
         {{/each}}
     </div>

@@ -22,10 +22,20 @@
    - `config/config.yaml` 与 Guoba 表单字段映射  
    - yoyo 后续如何按功能拆组接入 Guoba 面板
 
+4. `memory/04-wiki-data-and-cache.md`  
+   - Wiki SMW 数据拉取与 YAML 缓存  
+   - 图鉴渲染磁盘缓存与 `#更新xxx数据` 失效规则  
+   - 角色面板缓存预留（`panel` scope）
+
+> 渐进式入口：[memory/README.md](./README.md)
+
 ---
 
 ## 当前结论（供快速记忆）
 
+- **Wiki 数据**：列表（SMW / 分类成员，同源「角色图鉴」等页）→ 详情页 wikitext → `{{xxx图鉴}}` 解析 → `data/game/*.yaml`；Base（元素/阵营/职业）从 `模块:Icon/*` 拉取一次。无内置 `wiki-modules` fallback。详见 `04-wiki-data-and-cache.md`。
+- **图鉴渲染**：`apps/atlas.js` 传 `cache: 'atlas'`，截图落盘 `data/cache/render/atlas/`；`#更新xxx数据` 触发 `clearRenderCache`。
+- **面板渲染缓存**：`CACHE_SCOPE.PANEL` / `clearPanelCache(uid)` 已预留，待 `#更新面板` 接入。
 - `miao-plugin` 主要是功能层和 `App.init().reg()` 写法示例，**不是账号登录主实现层**。
 - 账号绑定主链路应参考：
   - `genshin/apps/user.js` + `genshin/model/user.js`（Cookie/UID/NoteUser/MysUser 体系）

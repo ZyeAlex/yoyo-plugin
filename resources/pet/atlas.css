@@ -1,20 +1,37 @@
 .pet-atlas {
   display: flex;
+  align-items: flex-end;
+  position: relative;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, transparent 40%);
+  overflow: visible;
+}
+
+.pet-atlas .pet-main-img {
+  width: 320px;
+  height: 320px;
+  object-fit: contain;
 }
 
 .pet-img {
   width: 400px;
   height: 500px;
   position: relative;
+  z-index: 1;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  flex-shrink: 0;
 }
 
-.pet-img > div {
+.pet-img > .pet-illustration {
   transform: scale(calc(500 / 700)) translateX(-100px);
-  transform-origin: 0% 0%;
+  transform-origin: 0% 100%;
 }
 
 .pet-info {
+  position: relative;
+  z-index: 2;
   flex: 1;
   align-items: center;
   padding: 24px 24px 0 12px;
@@ -194,6 +211,13 @@
   font-size: 22px;
   font-weight: 600;
   margin-top: 8px;
+}
+
+.evolution-arrow {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--yo-text-muted);
+  padding: 0 4px;
 }
 
 .evolution .evolution-pet-name {

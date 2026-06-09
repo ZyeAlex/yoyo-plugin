@@ -1,0 +1,10 @@
+.item-atlas {
+  padding: 16px;
+}
+
+.item-block {
+  margin-top: 16px;
+  font-size: 24px;
+  line-height: 1.5;
+  color: var(--yo-text-secondary);
+}

@@ -1,27 +1,36 @@
 @import url(./font.css);
+@import url(./list.css);
 
-/* ========== 亮色主题变量（QQ 大图约 830px 宽，字号按清晰阅读略放大） ========== */
+/* ========== 蓝色星原 · 旅谣 主题（BWIKI 冷色星空 + 星虹金点缀） ========== */
 :root {
-  --yo-bg: #e8eef7;
-  --yo-bg-elevated: #f4f7fc;
-  /* 与 help 格子相近：半透明面板，底图能透一点，少「一片死白」 */
-  --yo-surface: rgba(255, 255, 255, 0.78);
-  --yo-surface-glass: rgba(248, 250, 252, 0.48);
-  --yo-panel-border: rgba(100, 116, 139, 0.28);
-  --yo-text: #152238;
-  --yo-text-secondary: #334155;
-  --yo-text-muted: #64748b;
-  --yo-border: #d7e0ed;
-  --yo-border-strong: #b8c7dc;
-  --yo-accent: #2563eb;
-  --yo-accent-hover: #1d4ed8;
+  --yo-bg: #dfe8f5;
+  --yo-bg-elevated: #eef3fb;
+  --yo-cosmos: #1e3a5f;
+  --yo-surface: rgba(255, 255, 255, 0.82);
+  --yo-surface-glass: rgba(248, 250, 252, 0.52);
+  --yo-panel-border: rgba(71, 100, 140, 0.28);
+  --yo-text: #0f1f33;
+  --yo-text-secondary: #2c3f58;
+  --yo-text-muted: #5b708a;
+  --yo-border: #c8d6ea;
+  --yo-border-strong: #a8bdd8;
+  --yo-accent: #3b6fd4;
+  --yo-accent-deep: #1e4a8c;
+  --yo-accent-hover: #2558a8;
+  --yo-star-gold: #e8b923;
+  --yo-star-gold-soft: #f6e6a8;
   --yo-mark-bg: #fef3c7;
   --yo-mark-text: #92400e;
+  --yo-success: #059669;
+  --yo-warning: #d97706;
+  --yo-danger: #dc2626;
+  --yo-section-gradient: linear-gradient(90deg, #dbeafe 0%, #e8eef8 45%, #fce7f3 100%);
+  --yo-group-header: linear-gradient(90deg, #3d5a73 0%, #4d6a83 42%, #5d7a93 100%);
   --yo-radius: 18px;
   --yo-radius-sm: 12px;
-  --yo-shadow: 0 6px 20px rgba(15, 23, 42, 0.07);
-  --yo-shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.85);
-  --yo-head-shadow: 0 2px 0 rgba(255, 255, 255, 0.9);
+  --yo-shadow: 0 6px 22px rgba(15, 35, 70, 0.08);
+  --yo-shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  --yo-head-shadow: 0 2px 0 rgba(255, 255, 255, 0.92);
 }
 
 * {
@@ -89,7 +98,7 @@ body {
 .head .title {
   font-size: 44px;
   font-family: title01, "PingFang SC", sans-serif;
-  color: var(--yo-text);
+  color: var(--yo-cosmos);
   line-height: 1.2;
 }
 
@@ -302,17 +311,26 @@ mark {
 }
 
 .rarity {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
   height: 0;
   overflow: visible;
+  position: relative;
+  z-index: 1;
 }
 
 .rarity img {
+  display: block;
+  width: auto;
   height: 22px;
-  margin-left: 50%;
-  transform: translate(-50%, -12px);
+  margin: 0;
+  flex-shrink: 0;
+  transform: translateY(-12px);
 }
 
 .hero-list .text,
-.accessory-list .text {
+.yo-catalog-grid .text {
   font-weight: 600;
 }

@@ -1,12 +1,12 @@
 /**
- * 下载UI图标
+ * 从 BWIKI 下载 UI 图标到 resources/UI
  */
 
 import path from 'path'
 import fs from 'fs'
 import https from 'https'
 import { URL } from 'url'
-import bot from 'nodemw'
+import { getWikiImageUrl } from '../api/wiki/data.js'
 import setting from './setting.js'
 import utils from './index.js'
 
@@ -14,65 +14,71 @@ import utils from './index.js'
 export default function () {
     const uiDir = path.join(setting.path, 'resources/UI')
     let UI = fs.existsSync(uiDir) ? fs.readdirSync(uiDir) : []
-    // 要下载的图片列表
     let imgs = []
-    // 是否正在下载图片
-    let loading = false
-    // 定义匹配模式的正则表达式
-    const pattern = /^tex_[a-zA-Z0-9_]+\.(png|jpg|jpeg|gif)$/;
-    // 日志
+    const pattern = /^tex_[a-zA-Z0-9_]+\.(png|jpg|jpeg|gif)$/
     let logs = {}
-    // wiki 链接
-    const client = new bot({
-        protocol: "https",
-        server: "wiki.biligame.com",
-        path: "/ap",
-        debug: false,
-    });
 
+    const { helpGroup } = setting.getData('config/help')
 
-    // 获取help图片
-    let { helpGroup, excludeIconReg } = setting.getData('config/help')
+    const queueIcon = (name) => {
+        if (typeof name === 'string' && pattern.test(name) && !imgs.includes(name)) {
+            imgs.push(name)
+        }
+    }
 
-    // 递归处理对象
-    const traverse = (current) => {
-        if (typeof current === 'object' && current !== null) {
-            for (const key in current) {
-                if (current.hasOwnProperty(key)) {
-                    if (typeof current[key] === 'string' && pattern.test(current[key]) && excludeIconReg.every(item => !current[key].includes(item))) {
-                        imgs.push(current[key]) // 保存图片地址
-                    } else if (typeof current[key] === 'object') {
-                        traverse(current[key]);
-                    }
-                }
-            }
-        } else if (Array.isArray(current)) {
+    const traverse = (current, visited = new WeakSet()) => {
+        if (current === null || typeof current !== 'object') return
+        if (visited.has(current)) return
+        visited.add(current)
+        if (Array.isArray(current)) {
             for (let i = 0; i < current.length; i++) {
-                if (typeof current[i] === 'string' && pattern.test(current[i]) && excludeIconReg.every(item => !current[i].includes(item))) {
-                    imgs.push(current[i]) // 保存图片地址
+                if (typeof current[i] === 'string') {
+                    queueIcon(current[i])
                 } else if (typeof current[i] === 'object') {
-                    traverse(current[i]);
+                    traverse(current[i], visited)
                 }
+            }
+            return
+        }
+        for (const key in current) {
+            if (!Object.prototype.hasOwnProperty.call(current, key)) continue
+            if (typeof current[key] === 'string') {
+                queueIcon(current[key])
+            } else if (typeof current[key] === 'object') {
+                traverse(current[key], visited)
             }
         }
     }
-    // 获取图片地址
-    const getImgUrl = (imgName, source) => {
-        switch (source) {
-            case 'wiki':
-                return new Promise((res, rej) => {
-                    client.getImageInfo('文件:' + imgName, (err, info) => {
-                        if (err || !info?.url) {
-                            return rej(`[wiki] ❌️ 未从Wiki查询到图片：${imgName}`)
-                        }
-                        return res(info?.url)
-                    });
-                })
-            default:
-                return source + imgName
+
+    const collectSources = () => {
+        const heroPortraits = {}
+        Object.entries(this.heros || {}).forEach(([id, hero]) => {
+            heroPortraits[id] = hero.portraitIcon || `tex_icon_hero_get_${id}.png`
+        })
+        return {
+            helpGroup,
+            element: this.element,
+            groups: this.groups,
+            profession: this.profession,
+            heros: this.heros,
+            heroPortraits,
+            pets: this.pets,
+            spirits: this.spirits,
+            items: this.items,
+            accessories: this.accessories,
         }
     }
-    // 下载图片
+
+    const getImgUrl = async (imgName) => {
+        try {
+            const url = await getWikiImageUrl(imgName)
+            if (!url) throw new Error('empty url')
+            return url
+        } catch {
+            throw `[wiki] ❌️ 未从Wiki查询到图片：${imgName}`
+        }
+    }
+
     const preDownImg = (imgName, imgUrl) => {
         const filePath = path.join(uiDir, imgName)
         const download = (url, redirect = 0) => new Promise((resolve, reject) => {
@@ -104,56 +110,36 @@ export default function () {
         return download(imgUrl)
     }
 
+    const getImg = async (obj) => {
+        traverse(obj || collectSources.call(this))
+        const pending = imgs.filter(name => !fs.existsSync(path.join(uiDir, name)))
+        imgs.length = 0
+        pending.forEach(queueIcon)
+        if (!imgs.length) return
 
-
-    // 流程函数
-    let getImg = async (obj) => {
-        // 时间差
-        // 一个小时内不重复更新图标
-        let time = await redis.get('yoyo:ui')
-        if (time && utils.getDateDiffHours(time, new Date()) < 1) {
-            // logger.info(`[yoyo-plugin] 🎈 上次下载图库于一小时内，不再重复下载`)
-            return
-        }
-        // 搜集图标
-        traverse(obj)
-        let sourceIndex = 0 // 图片源
         let downloaded = 0
-        // queue内有未处理完任务，且pool内无运行中任务
-        while (imgs.length && !loading) {
-            let imgName = imgs.shift()// 从queue中取出一张图片
-            if (UI.includes(imgName)) continue //过滤
-            loading = true
+        while (imgs.length) {
+            const imgName = imgs.shift()
+            if (fs.existsSync(path.join(uiDir, imgName))) {
+                if (!UI.includes(imgName)) UI.push(imgName)
+                continue
+            }
             try {
-                const imgUrl = await getImgUrl(imgName, setting.config.iconSource[sourceIndex])
+                const imgUrl = await getImgUrl(imgName)
                 await preDownImg(imgName, imgUrl)
-                UI.push(imgName)
+                if (!UI.includes(imgName)) UI.push(imgName)
                 downloaded++
-                sourceIndex = 0
             } catch (error) {
                 logs[imgName] = [...(logs[imgName] || []), error]
-                // 更换图片源
-                if (sourceIndex < setting.config.iconSource.length - 1) {
-                    imgs.unshift(imgName)
-                    sourceIndex++
-                } else {
-                    UI.push(imgName) // 不再重复下载该图片
-                }
             }
             await utils.sleep(500)
-            loading = false
         }
 
-        if (!imgs.length) {
-            // 保存日志
-            setting.setData('data/logs/ui-logs', logs)
-            // 全部已存在，或至少成功下载过，才写入缓存
-            if (downloaded > 0 || Object.keys(logs).length === 0) {
-                redis.set('yoyo:ui', new Date().toJSON())
-            }
+        setting.setData('data/logs/ui-logs', logs)
+        if (downloaded > 0) {
+            redis.set('yoyo:ui', new Date().toJSON())
         }
     }
     this.getImg = getImg
-    getImg(helpGroup)
     return getImg
 }

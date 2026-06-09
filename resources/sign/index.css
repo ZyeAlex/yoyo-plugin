@@ -1,5 +1,6 @@
 .background {
-  opacity: 0!important;
+  opacity: 0.38 !important;
+  filter: blur(8px) saturate(1.08);
 }
 
 .sign-img {
@@ -115,8 +116,4 @@
 
 .sign-interrupt {
   margin-top: 12px;
-}
-
-.background {
-  opacity: 0.55;
 }

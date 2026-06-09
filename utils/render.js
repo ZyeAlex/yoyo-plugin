@@ -3,37 +3,69 @@ import game from './game.js'
 import fs from 'fs'
 import lodash from 'lodash'
 import path from 'path'
-// 读取package
+import {
+  CACHE_SCOPE,
+  buildAtlasKey,
+  getCachedPath,
+  getImagePath,
+  saveCachedImage,
+} from './renderCache.js'
+import { enrichSkills, enrichPetAtlasSkills } from '../api/wiki/parser.js'
 
 export default async function render(e, p, renderData = {}, cfg = {}) {
   if (!e.runtime) {
     console.log('未找到e.runtime，请升级至最新版Yunzai')
   }
-  let { name, title, pluginGroup, version } = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'));
 
-  // 遍历 setting.path + '/resources/common' 下的html, 保存为 { name:'path/name.html' }
+  const cacheScope = cfg.cache === 'atlas' ? CACHE_SCOPE.ATLAS
+    : cfg.cache === 'panel' ? CACHE_SCOPE.PANEL
+      : null
+  const cacheKey = cacheScope
+    ? (cfg.cacheKey || (cacheScope === CACHE_SCOPE.ATLAS ? buildAtlasKey(p, renderData) : null))
+    : null
+
+  if (cacheScope && cacheKey) {
+    const cachedPath = getCachedPath(cacheScope, cacheKey)
+    if (cachedPath) {
+      return e.reply(segment.image(cachedPath))
+    }
+  }
+
+  let { name, title, pluginGroup, version } = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'))
+
   let commonHtml = {}
   fs.readdirSync(setting.path + '/resources/common').forEach(file => {
     if (file.endsWith('.html')) {
       commonHtml[file.replace('.html', '')] = setting.path + '/resources/common/' + file
     }
   })
-  // 背景图片
-  let bgImg = lodash.sample(Object.values(game.pets))?.kiboBoxCardIcon?.[2]
 
-
-
-  if (bgImg && fs.existsSync(path.join(setting.path, '/resources/UI', bgImg))) {
-    bgImg = '/UI/' + bgImg
-  } else {
+  let bgImg
+  if (cacheScope) {
     bgImg = '/common/pet/background.png'
+  } else {
+    const pet = lodash.sample(Object.values(game.pets))
+    const cardBg = pet?.id ? `tex_pet_kibo_card_background_${pet.id}.png` : null
+    if (cardBg && fs.existsSync(path.join(setting.path, 'resources/UI', cardBg))) {
+      bgImg = '/UI/' + cardBg
+    } else {
+      bgImg = '/common/pet/background.png'
+    }
   }
-  // copyright
+
   let copyright = `${title} <span class="version">${version}</span> | 插件群 <span class="version">${pluginGroup}</span>`
-  // if (cfg.origin) copyright += `| 数据源 <span class="version">${cfg.origin}</span> `
-  copyright += `| 急需<span class="version">UI</span>!!! `
-  return e.runtime.render('yoyo-plugin', p, renderData, {
+  if (cfg.origin) copyright += `| 数据源 <span class="version">${cfg.origin}</span> `
+
+  const useCacheWrite = cacheScope && cacheKey && !cfg.retType
+  let cacheTargetPath = null
+  if (useCacheWrite) {
+    cacheTargetPath = getImagePath(cacheScope, cacheKey)
+    const dir = path.dirname(cacheTargetPath)
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true })
+  }
+  const renderCfg = {
     ...cfg,
+    retType: useCacheWrite ? 'base64' : cfg.retType,
     beforeRender({ data }) {
       return {
         ...data,
@@ -46,10 +78,32 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
         Math,
         JSON,
         style,
-        quality: 100
+        quality: 100,
+        ...(cacheTargetPath ? { path: cacheTargetPath } : {}),
       }
     }
-  })
+  }
+
+  if (renderData.skills?.length) {
+    renderData = { ...renderData, skills: enrichSkills(renderData.skills) }
+  }
+  if (p === 'pet/atlas' || p.startsWith('pet/')) {
+    renderData = enrichPetAtlasSkills(renderData)
+  }
+
+  const result = await e.runtime.render('yoyo-plugin', p, renderData, renderCfg)
+
+  if (useCacheWrite && result) {
+    let savedPath = cacheTargetPath
+    if (!savedPath || !fs.existsSync(savedPath)) {
+      savedPath = await saveCachedImage(cacheScope, cacheKey, result)
+    } else {
+      logger.mark(`[yoyo-plugin][renderCache] saved ${cacheScope}/${cacheKey}`)
+    }
+    return e.reply(segment.image(savedPath))
+  }
+
+  return result
 }
 
 
@@ -57,7 +111,6 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
 export async function saveRender(e, p, url, renderData = {}, ...args) {
   let msgRes = await e.reply([await render(e, p, renderData, { e, retType: 'base64' })], ...args)
   if (msgRes) {
-    // 如果消息发送成功，就将message_id和图片路径存起来，3小时过期
     const message_id = [e.message_id]
     if (Array.isArray(msgRes.message_id)) {
       message_id.push(...msgRes.message_id)
@@ -70,7 +123,7 @@ export async function saveRender(e, p, url, renderData = {}, ...args) {
   }
 }
 
-
+export { CACHE_SCOPE, buildAtlasKey, clearRenderCache, clearPanelCache, buildPanelKey } from './renderCache.js'
 
 const style = (style = {}) => {
   let styleStr = ''

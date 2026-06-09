@@ -16,11 +16,8 @@ characterImgPath: [] #立绘图 无背景图片
 heroGuidePath: [] #角色攻略图
 imgUpAuth: all # 图片上传权限 "master"|"admin"|"owner"|"all"
 imgDelAuth: all # 图片删除权限 "master"|"admin"|"owner"|"all"
-# 资源配置  
-# 图标载入地址，  git 从 https://gitee.com/yoyo-plugin/yoyo-icon 载入   wiki  从bwiki载入
-iconSource:
-- wiki
-- https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/
+# 资源配置
+# UI 图标从 BWIKI 下载，见 utils/UI.js
 
 # 签到
 sign: true # 开启签到

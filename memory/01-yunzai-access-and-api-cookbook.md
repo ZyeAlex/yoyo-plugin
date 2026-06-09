@@ -138,7 +138,10 @@
 ### 5.4 `#render` 渲染
 
 - `render(e, tpl, data, cfg?)`
+- `cfg.cache`：`'atlas'` 启用图鉴磁盘缓存（见 `04-wiki-data-and-cache.md`）；`'panel'` 预留
+- `cfg.cacheKey`：可选，覆盖默认 `buildAtlasKey(tpl, data)` 生成的 key
 - `saveRender(...)` 会记录 `message_id -> 原图 url` 到 redis
+- 导出：`clearRenderCache(type?)`、`clearPanelCache(uid?)`（面板预留）
 
 ### 5.5 `#utils` 常用
 
@@ -149,11 +152,12 @@
 ### 5.6 `#game` 常用
 
 - 数据对象：
-  - `game.heros / game.pets / game.accessories / game.sets`
-  - `game.heroIds / game.petIds / game.nicknames / game.heroImgs`
+  - `game.heros / game.pets / game.accessories / game.spirits / game.items`
+  - `game.heroIds / game.petIds / game.spiritIds / game.itemIds / game.nicknames / game.heroImgs`
 - 关键方法：
-  - `game.getData(isInit?, type?)`：更新/加载 wiki 数据
-  - `game.getHeroId(nameOrId)`：角色解析
+  - `game.getData({ mode, type? })`：`init` 仅空数据拉 Wiki；`refresh` 强制拉 Wiki，成功后 `clearRenderCache(type)`
+  - `game.getHeroId(nameOrId)` / `game.getPetId` / `game.getSpiritId` / `game.getItemId`
+  - `game.getHeroThemeColor(heroId)`：签到/图片等 UI 主题色
   - `game.setHeroImgs(heroId, imageMsgs)`：下载保存角色图
   - `game.delHeroImg(heroId, fileList)`：删除角色图
 

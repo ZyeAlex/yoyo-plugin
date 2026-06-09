@@ -9,12 +9,12 @@ import setting from '#setting'
 |---|---|---|
 |setting.config|<font color=bluesky>配置</font>|请参考[config](./config/default.yaml)|
 |setting.yunzaiPath|yunzai地址||
-|game.path|yoyo地址||
+|setting.path|yoyo插件目录||
 
 | 方法 | 说明  |参数|返回值 |
 |---|---|---|---|
-|game.getData(yamlPath) | 获取YAML数据 | yaml地址 | 数据\|undefined |
-|setting.setData(yamlPath,data) | 保存YAML数据 | yaml地址 , 数据 | boolean |
+|setting.getData(yamlPath, def?, root?) | 获取YAML数据 | yaml相对路径 | 数据 |
+|setting.setData(yamlPath, data, root?) | 保存YAML数据 | yaml路径 , 数据 | boolean |
 
 ### game 
 > 存放游戏内容数据
@@ -23,21 +23,19 @@ import game from '#game'
 ```
 | 属性  |说明  | 示例 |
 |---|---|---|
-|game.heros|角色信息|`{ 101003:{ name:'寒悠悠',id:101003,...... } }`|
-|<font color=gray><s>game.heroIds</s></font>|<font color=gray><s>内部使用</s></font>| |
+|game.heros|角色信息|`{ 101003:{ name:'寒悠悠',... } }`|
 |game.nicknames|角色昵称|`{ 101003:['唐悠悠',...] }`|
-|game.heroImgs|角色图片|`{ 101003:[ 'c:/xxx.png','c:/yyy.png' ],...  }`|
-|game.pets|奇波信息|`{ 500001:{ name:'迅狼',id:500001,...... } }`|
-|game.petIds|奇波名称->奇波ID|`{ 迅狼:500001,... }`|
-|game.sets|套装列表||
+|game.heroImgs|角色图片|`{ 101003:[ 'path.png',... ] }`|
+|game.pets|奇波信息|`{ 500001:{ name:'迅狼',... } }`|
+|game.spirits|灵子信息||
+|game.items|物品信息||
 |game.accessories|装备列表||
-|game.achievements|成就系统||
-|game.foods|食物系统||
-|game.buildings|建造系统||
 
 | 方法 | 说明  |参数|返回值 |
 |---|---|---|---|
-|game.getHeroId(heroName) |根据名称获取角色ID | 角色名/角色昵称/角色ID|角色ID / undefined|
+|game.getData(options?) |拉取/加载 Wiki 图鉴数据 | `{ mode:'init'|'refresh', type? }` 或旧式 `(isInit, type)` | — |
+|game.getHeroId(name) |根据名称获取角色ID | 角色名/昵称/ID|角色ID |
+|game.getHeroThemeColor(heroId) |角色主题色 | heroId | 色值 |
 
 
 ### user
@@ -47,7 +45,7 @@ import game from '#game'
 ```js
 import game from '#game' // 引入setting配置
 import plugin from '#plugin' // 引入plugin函数
-import render from '#render' // 引入rander函数
+import render from '#render' // 引入render函数
 ```
 
 ```js

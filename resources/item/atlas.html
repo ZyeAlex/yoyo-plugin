@@ -1,0 +1,22 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/item/atlas.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="item-atlas main">
+    <div class="yo-atlas-head item-head">
+        <div class="yo-atlas-portrait">
+            <img src="{{pluResPath}}/UI/{{image}}" width="96" height="96">
+        </div>
+        <div class="yo-atlas-info">
+            <div class="yo-atlas-title">{{name}}</div>
+            <div class="yo-atlas-meta">{{rarityText}} · {{typeName}}</div>
+        </div>
+    </div>
+    {{if desc}}<div class="item-block"><div class="yo-section-label">描述</div><div>{{desc}}</div></div>{{/if}}
+    {{if effect}}<div class="item-block"><div class="yo-section-label">效果</div><div>{{effect}}</div></div>{{/if}}
+    {{if source}}<div class="item-block"><div class="yo-section-label">获取方式</div><div>{{source}}</div></div>{{/if}}
+</div>
+{{/block}}

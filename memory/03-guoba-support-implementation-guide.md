@@ -52,7 +52,6 @@
   - `config.imgUpAuth`
   - `config.imgDelAuth`
   - `config.imgMaxSize`
-  - `config.iconSource`
 - 签到：
   - `config.sign`
   - `config.signWithdrawal`

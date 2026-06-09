@@ -8,12 +8,36 @@ helpGroup:
   - "title": "#奇波图鉴"
     "icon": "tex_icon_taskitem_doll.png"
     "desc": "查询所有奇波图鉴"
-  - "title": "#套装图鉴"
-    "desc": "查看所有套装"
-    "icon": "tex_icon_equipment_large_suit1_4.png"
+  - "title": "#灵子图鉴"
+    "icon": "tex_icon_soulessences_107002_133.png"
+    "desc": "查询所有灵子图鉴"
+  - "title": "#物品图鉴"
+    "icon": "tex_icon_item_antidotebottle.png"
+    "desc": "查询所有物品图鉴"
   - "title": "#装备图鉴"
     "desc": "查看所有装备"
     "icon": "tex_icon_equipment_large_suit1_8.png"
+
+- "group": "数据"
+  "list":
+  - "title": "#更新图鉴数据"
+    "icon": "tex_icon_item_skillup02.png"
+    "desc": "从 Wiki 更新全部图鉴数据"
+  - "title": "#更新角色数据"
+    "icon": "tex_icon_hero_m_default.png"
+    "desc": "从 Wiki 更新角色数据"
+  - "title": "#更新奇波数据"
+    "icon": "tex_icon_taskitem_doll.png"
+    "desc": "从 Wiki 更新奇波数据"
+  - "title": "#更新灵子数据"
+    "icon": "tex_icon_soulessences_107002_133.png"
+    "desc": "从 Wiki 更新灵子数据"
+  - "title": "#更新物品数据"
+    "icon": "tex_icon_item_antidotebottle.png"
+    "desc": "从 Wiki 更新物品数据"
+  - "title": "#更新装备数据"
+    "icon": "tex_icon_equipment_large_suit1_8.png"
+    "desc": "从 Wiki 更新装备数据"
 
 - "group": "角色"
   "list":
@@ -81,10 +105,3 @@ helpGroup:
     "style":
       "font-size": "22px"
     "desc": "清除退群成员数据、错误的签到数据等"
-
-excludeIconReg:
-- tex_icon_hero_full
-- tex_icon_hero_get
-- tex_pet_kibo_card_foreeffect
-- tex_pet_kibo_card_backeffect
-- tex_icon_item_gift

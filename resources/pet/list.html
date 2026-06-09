@@ -5,26 +5,29 @@
 {{/block}}
 
 {{block 'main'}}
-
 <div class="head">
     <div class="title">奇波图鉴 <span class="label">共{{length}}个</span></div>
 </div>
 <div class="nav">
-    <div class="label item">发送 <mark>{{rulePrefix}}菜鸡图鉴</mark> 查看奇波图鉴 </div>
+    <div class="item">发送 <mark>{{rulePrefix}}菜鸡图鉴</mark> 查看奇波图鉴</div>
 </div>
 <div class="main">
-    <div class="pet-list">
-        {{each pets pet}}
-        <div class="pet-item"
-            style="background-color: {{pet?.element?.[0]?.elementColor||'#ffffff'}}88;border: 1px solid {{pet?.element?.[0]?.elementColor||'#000000'}};">
-            <img src="{{pluResPath}}/UI/{{pet.petIcon}}" alt="图片加载失败" />
-            <div class="pet-text">
-                <div class="pet-name">{{pet.name}}</div>
-            </div>
-            <img class="pet-tag" src="{{pluResPath}}/UI/{{pet.battleTag?.battle}}" width="40">
+<div class="yo-catalog-grid">
+    {{each pets pet}}
+    <div class="yo-catalog-card yo-catalog-card--pet"
+        style="--yo-card-accent: {{pet?.elements?.[0]?.elementColor||'#94a3b8'}};">
+        <div class="yo-catalog-media">
+            <img src="{{pluResPath}}/UI/{{pet.petIcon}}" alt="{{pet.name}}">
+            {{if pet.tagData}}
+            <img class="yo-catalog-tag" src="{{pluResPath}}/UI/{{pet.tagData.battle}}" alt="">
+            {{/if}}
+            {{if pet.stage}}<div class="yo-catalog-stage">{{pet.stage}}</div>{{/if}}
         </div>
-        {{/each}}
+        <div class="yo-catalog-name">
+            <span class="yo-catalog-name-fit">{{pet.name}}</span>
+        </div>
     </div>
+    {{/each}}
 </div>
-
+</div>
 {{/block}}

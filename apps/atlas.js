@@ -1,7 +1,9 @@
 import game from '#game'
 import render from '#render'
 import plugin from '#plugin'
-// type   skill voice
+
+const ATLAS_CFG = { origin: 'BWiki' }
+
 export const Atlas = plugin({
     name: '[悠悠助手]图鉴',
     event: 'message',
@@ -20,7 +22,7 @@ export const Atlas = plugin({
             fnc: heroInfo
         },
         {
-            reg: `^#?(角色列表|全部角色|所有角色)$`,
+            reg: `^#?(角色列表|全部角色|所有角色|角色图鉴)$`,
             fnc: heroList
         },
         {
@@ -28,136 +30,125 @@ export const Atlas = plugin({
             fnc: petList
         },
         {
-            reg: `^#?(套装列表|全部套装)$`,
-            fnc: setList
+            reg: `^#?(灵子列表|全部灵子|所有灵子|灵子图鉴)$`,
+            fnc: spiritList
         },
         {
-            reg: `^#?(装备列表|全部装备)$`,
+            reg: `^#?(物品列表|全部物品|所有物品|物品图鉴)$`,
+            fnc: itemList
+        },
+        {
+            reg: `^#?(装备列表|全部装备|装备图鉴)$`,
             fnc: accessoryList
         },
     ]
 })
 
+const RESOLVERS = [
+    { names: ['角色'], list: heroList },
+    { names: ['奇波', '宠物'], list: petList },
+    { names: ['灵子'], list: spiritList },
+    { names: ['物品'], list: itemList },
+    { names: ['装备'], list: accessoryList },
+    { getId: name => game.getHeroId(name), atlas: heroAtlas },
+    { getId: name => game.getPetId(name), atlas: petAtlas },
+    { getId: name => game.getSpiritId(name), atlas: spiritAtlas },
+    { getId: name => game.getItemId(name), atlas: itemAtlas },
+]
+
 function atlas(e, atlasName) {
-    if (atlasName == '角色') {
-        return heroList(e)
+    for (const { names, list } of RESOLVERS) {
+        if (names?.includes(atlasName)) return list(e)
     }
-    if (atlasName == '奇波' || atlasName == '宠物') {
-        return petList(e)
-    }
-    if (atlasName == '套装') {
-        return setList(e)
-    }
-    if (atlasName == '装备') {
-        return accessoryList(e)
-    }
-    let heroId = game.getHeroId(atlasName, false)
-    // 角色
-    if (heroId) {
-        return heroAtlas(e, heroId)
-    }
-    // 奇波
-    if (game.petIds[atlasName]) {
-        return petAtlas(e, game.petIds[atlasName])
+    for (const { getId, atlas: atlasFn } of RESOLVERS) {
+        if (!getId) continue
+        const id = getId(atlasName)
+        if (!id) continue
+        if (atlasFn === heroAtlas) return heroAtlas(e, id, ['skill', 'talent'], { showIntro: true })
+        return atlasFn(e, id)
     }
     return true
 }
 
-
-/**
-    * 角色
-    */
-// 角色图鉴
 async function heroList(e) {
     let heroList = Object.values(game.heros)
-    heroList.sort((a, b) => a.id - b.id).sort((a, b) => (b.rarity?.id || 0) - (a.rarity?.id || 0)).sort((a) => {
-        if (a.state == 1) return -1
-        if (a.state == 2 || a.state == 3) return 1
-        return 0
-    })
-    await render(e, 'hero/list', {
-        heros: heroList
-    })
+    heroList.sort((a, b) => Number(a.id) - Number(b.id))
+    heroList.sort((a, b) => (b.rarityStars || 0) - (a.rarityStars || 0))
+    await render(e, 'hero/list', { heros: heroList }, ATLAS_CFG)
 }
-// 角色信息
+
 async function heroInfo(e, name) {
     let heroId = game.getHeroId(name)
     if (!heroId) return true
-    let config = []
-
-    // 如果reg包含 技能
-    // 如果reg 包含技能文本
-
-    if (e.msg.includes('技能')) {
-        config.push('skill')
-    }
-    if (e.msg.includes('星赐')) {
-        config.push('talent')
-    }
-    // 台词|语音|文本
-    if (e.msg.includes('语音') || e.msg.includes('台词') || e.msg.includes('文本')) {
-        config.push('voice')
-    }
-
-    await heroAtlas(e, heroId, config)
+    let type = []
+    if (e.msg.includes('技能')) type.push('skill')
+    if (e.msg.includes('星赐')) type.push('talent')
+    if (e.msg.includes('语音') || e.msg.includes('台词') || e.msg.includes('文本')) type.push('voice')
+    await heroAtlas(e, heroId, type)
 }
 
-// 角色图鉴
-async function heroAtlas(e, heroId, type = ['skill', 'talent']) {
-    // 角色信息
-    let heroMsg = game.heros[heroId] || {}
+async function heroAtlas(e, heroId, type = ['skill', 'talent'], { showIntro = false } = {}) {
+    const hero = game.heros[heroId]
     await render(e, 'hero/atlas', {
-        ...heroMsg,
-        type
-    }, { origin: 'BWiki' })
+        ...hero,
+        portraitIcon: hero.portraitIcon || `tex_icon_hero_get_${heroId}.png`,
+        type,
+        showIntro,
+    }, ATLAS_CFG)
 }
-/**
- * 奇波
- */
-// 奇波图鉴
+
 async function petList(e) {
-    let pets = Object.values(game.pets)
-    pets = pets.filter(({ petIcon }) => petIcon)
-    pets.sort((a, b) => a.iconographyNum - b.iconographyNum)
-    await render(e, 'pet/list', {
-        pets: pets.map(pet => {
-            return pet
-        }),
-        length: pets.length
-    }, { origin: 'BWiki' })
+    let pets = Object.values(game.pets).filter(({ petIcon, name }) => petIcon && String(name || '').trim())
+    pets.sort((a, b) => Number(a.id) - Number(b.id))
+    await render(e, 'pet/list', { pets, length: pets.length }, ATLAS_CFG)
 }
-// 奇波图鉴
+
 async function petAtlas(e, petId) {
-    let pet = { ...game.pets[petId] }
-    pet.evolution = (game.pets[petId].evolution || []).map(petId => {
-        return game.pets[petId]
-    })
-    await render(e, 'pet/atlas', pet, { origin: 'BWiki' })
+    await render(e, 'pet/atlas', { ...game.pets[petId] }, ATLAS_CFG)
 }
-/**
- * 装备
- */
-async function setList(e) {
-    await render(e, 'accessory/set-list', {
-        sets: Object.values(game.sets)
-    })
+
+async function spiritList(e) {
+    let spirits = Object.values(game.spirits)
+    spirits.sort((a, b) => Number(a.id) - Number(b.id))
+    await render(e, 'spirit/list', { spirits, length: spirits.length }, ATLAS_CFG)
 }
-//   装备图鉴
+
+async function spiritAtlas(e, spiritId) {
+    await render(e, 'spirit/atlas', game.spirits[spiritId] || {}, ATLAS_CFG)
+}
+
+async function itemList(e) {
+    let items = Object.values(game.items)
+    items.sort((a, b) => Number(a.id) - Number(b.id))
+    await render(e, 'item/list', { items, length: items.length }, ATLAS_CFG)
+}
+
+async function itemAtlas(e, itemId) {
+    await render(e, 'item/atlas', game.items[itemId] || {}, ATLAS_CFG)
+}
+
 async function accessoryList(e) {
     await render(e, 'accessory/list', {
-        accessories: Object.values(game.accessories).filter(({ name }) => name != '暂未开放').sort((a, b) => b.rarity - a.rarity)
-    })
+        accessories: Object.values(game.accessories).sort((a, b) => (b.rarity || 0) - (a.rarity || 0))
+    }, ATLAS_CFG)
 }
 
 async function updateAtlas(e, type) {
     try {
         e.reply('即将为你更新图鉴数据~')
-        if (!type) await game.getData()
-        else if (type == '角色') await game.getData(false, 'Hero')
-        else if (type == '奇波') await game.getData(false, 'Kibo')
-        else if (type == '装备') await game.getData(false, 'Accessory')
+        const typeMap = {
+            '角色': 'Hero',
+            '奇波': 'Kibo',
+            '灵子': 'Spirit',
+            '装备': 'Accessory',
+            '物品': 'Item',
+        }
+        if (!type) await game.getData({ mode: 'refresh' })
+        else if (typeMap[type]) await game.getData({ mode: 'refresh', type: typeMap[type] })
+        else await game.getData({ mode: 'refresh' })
         e.reply((type || '') + '图鉴数据已更新完毕！')
     } catch (error) {
-
+        logger.error('[yoyo-plugin][updateAtlas]', error)
+        e.reply('图鉴数据更新失败，请查看日志')
     }
 }

@@ -1,0 +1,242 @@
+/* 图鉴列表通用卡片（角色/奇波/灵子/物品/装备等复用） */
+
+.yo-catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.yo-catalog-card {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border-radius: var(--yo-radius-sm);
+  border: 1px solid var(--yo-panel-border);
+  background: var(--yo-surface);
+  padding: 0;
+  text-align: center;
+  box-shadow: var(--yo-shadow-inset);
+  position: relative;
+  overflow: hidden;
+}
+
+.yo-catalog-media {
+  width: 100%;
+  margin: 0 auto;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.yo-catalog-media > img:not(.yo-catalog-career):not(.yo-catalog-tag) {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.main > .yo-catalog-grid {
+  width: 100%;
+}
+
+.yo-catalog-name {
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+  font-size: 19px;
+  line-height: 1.3;
+  font-weight: 600;
+  font-family: title02, "PingFang SC", sans-serif;
+}
+
+.yo-catalog-meta {
+  margin-top: 2px;
+  margin-bottom: 6px;
+  font-size: 16px;
+  color: var(--yo-text-muted);
+}
+
+/* 角色列表 */
+.yo-catalog-card--hero .yo-catalog-media {
+  height: 125px;
+  background: linear-gradient(
+    180deg,
+    rgba(248, 250, 252, 0.52) 0%,
+    rgba(226, 232, 240, 0.44) 100%
+  );
+}
+
+.yo-catalog-card--hero .yo-catalog-media img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 125px;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.yo-catalog-card--hero .yo-catalog-career {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 35px;
+  border-radius: 10px;
+  padding: 1px;
+  box-sizing: border-box;
+  background-color: rgba(248, 250, 252, 0.92);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.2);
+  z-index: 2;
+}
+
+.yo-catalog-card--hero .yo-catalog-name {
+  font-size: 22px;
+  color: #3f4f63;
+}
+
+.yo-catalog-card--hero.rarity-0 .yo-catalog-name {
+  color: #475569;
+}
+
+.yo-catalog-card--hero.rarity-1 .yo-catalog-name {
+  color: #166534;
+}
+
+.yo-catalog-card--hero.rarity-2 .yo-catalog-name {
+  color: #1e4a73;
+}
+
+.yo-catalog-card--hero.rarity-3 .yo-catalog-name {
+  color: #4c3d6e;
+}
+
+.yo-catalog-card--hero.rarity-4 .yo-catalog-name {
+  color: #5c4b32;
+}
+
+/* 奇波：元素色边框 */
+.yo-catalog-card--pet {
+  border-color: color-mix(in srgb, var(--yo-card-accent, var(--yo-border-strong)) 55%, var(--yo-panel-border));
+  background: color-mix(in srgb, var(--yo-card-accent, #fff) 12%, var(--yo-surface));
+}
+
+.yo-catalog-card--pet .yo-catalog-media {
+  aspect-ratio: 1;
+  height: auto;
+  align-items: center;
+}
+
+.yo-catalog-card--pet .yo-catalog-media > img:not(.yo-catalog-tag) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.yo-catalog-card--pet .yo-catalog-tag {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 40px;
+  border-radius: 0 0 0 10px;
+  background: rgba(248, 250, 252, 0.88);
+  box-shadow: -1px 1px 6px rgba(15, 23, 42, 0.1);
+  z-index: 1;
+}
+
+.yo-catalog-card--pet .yo-catalog-name {
+  font-size: 22px;
+  padding: 6px 4px 5px;
+  background: rgba(248, 250, 252, 0.72);
+  color: var(--yo-text);
+  font-weight: 700;
+}
+
+/* 装备：方形图标 */
+.yo-catalog-card--accessory .yo-catalog-media {
+  height: 105px;
+  margin-top: 10px;
+}
+
+.yo-catalog-card--accessory .yo-catalog-media img {
+  width: 105px;
+  height: 105px;
+  object-fit: contain;
+}
+
+.yo-catalog-card--accessory .yo-catalog-name {
+  font-size: 24px;
+}
+
+/* 灵子 / 物品 */
+.yo-catalog-card--spirit .yo-catalog-media,
+.yo-catalog-card--item .yo-catalog-media {
+  height: 96px;
+  align-items: center;
+}
+
+.yo-catalog-card--spirit .yo-catalog-media img,
+.yo-catalog-card--item .yo-catalog-media img {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+}
+
+/* 详情页分区标题 */
+.yo-section-label {
+  display: block;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--yo-accent-deep);
+  margin: 12px 0 8px;
+  padding-left: 10px;
+  border-left: 4px solid var(--yo-star-gold);
+}
+
+.yo-section-banner {
+  background: var(--yo-section-gradient);
+  border-radius: var(--yo-radius-sm);
+  padding: 10px 14px;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--yo-text);
+  margin: 10px 0;
+}
+
+.yo-atlas-head {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.yo-atlas-portrait {
+  flex-shrink: 0;
+  border-radius: var(--yo-radius-sm);
+  border: 1px solid var(--yo-panel-border);
+  background: var(--yo-surface-glass);
+  overflow: hidden;
+}
+
+.yo-atlas-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.yo-atlas-title {
+  font-family: title01, "PingFang SC", sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--yo-text);
+}
+
+.yo-atlas-meta {
+  margin-top: 8px;
+  font-size: 22px;
+  color: var(--yo-text-secondary);
+  line-height: 1.45;
+}

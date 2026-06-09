@@ -75,18 +75,34 @@ class Utils {
     if (e.bot.adapter?.name !== "OneBotv11" || typeof e.bot.sendApi !== "function") {
       if (isReply) {
         e.reply('❎ Bot未运行在OneBotv11环境', true)
-        throw new Error(msg)
+        throw new Error('Bot未运行在OneBotv11环境')
       }
       return false
     }
-    let groupObj = e.bot.pickGroup(e.group_id)
-    let memberInfo = await e.bot.sendApi("get_group_member_info", {
-      group_id: e.group_id,
-      user_id: e.self_id,
-      no_cache: true // 强制不走缓存，实时拉取
-    });
 
-    if (!groupObj && permission != "master") return true
+    // 私聊或未带群号：不能调用 get_group_member_info
+    if (!e.group_id) {
+      if (!e.isMaster && permission === 'master') {
+        const msg = '❎ 该命令仅限主人可用'
+        if (isReply) {
+          e.reply(msg, true)
+          throw new Error(msg)
+        }
+        return false
+      }
+      return true
+    }
+
+    let memberInfo = { data: { role: 'member' } }
+    try {
+      memberInfo = await e.bot.sendApi('get_group_member_info', {
+        group_id: e.group_id,
+        user_id: e.self_id,
+        no_cache: true,
+      })
+    } catch (err) {
+      logger.debug(`[yoyo-plugin] get_group_member_info 失败: ${err.message}`)
+    }
     let msg
     if (role == "owner" && role != memberInfo.data.role) {
       msg = "❎ Bot权限不足，需要群主权限"

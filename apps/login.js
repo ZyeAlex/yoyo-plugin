@@ -1,7 +1,7 @@
 import plugin from '#plugin'
 
 
-export const Gacha = plugin({
+export const Login = plugin({
     name: '[悠悠助手]登录',
     event: 'message',
     priority: 100,

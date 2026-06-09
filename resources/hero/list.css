@@ -1,97 +1,14 @@
-.hero-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 10px;
+/* hero list — 6 列（继承 common 网格）；名字区 padding 须在本文件以覆盖 .rarity-* .text */
+
+.yo-catalog-card--hero .yo-catalog-media {
+  height: 118px;
 }
 
-.hero-list::after {
-  content: none;
+.yo-catalog-card--hero .yo-catalog-media img {
+  max-height: 118px;
 }
 
-.hero-item {
-  box-sizing: border-box;
-  margin: 0;
-  border-radius: var(--yo-radius-sm);
-  overflow: hidden;
-  position: relative;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.82) 0%,
-    rgba(241, 245, 249, 0.72) 100%
-  );
-  border: 1px solid var(--yo-panel-border, var(--yo-border-strong));
-  box-shadow: var(--yo-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.55);
-}
-
-.hero-item .hero-img {
-  width: 115px;
-  height: 125px;
-  position: relative;
-  background: linear-gradient(
-    180deg,
-    rgba(248, 250, 252, 0.52) 0%,
-    rgba(226, 232, 240, 0.44) 100%
-  );
-}
-
-.hero-item .hero-img img {
-  width: 130px;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.hero-item img.hero-career {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 35px;
-  border-radius: 10px;
-  padding: 1px;
-  background-color: rgba(248, 250, 252, 0.92);
-  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.2);
-}
-
-.hero-rarity {
-  height: 0;
-  overflow: visible;
-}
-
-.hero-rarity img {
-  height: 22px;
-  margin-left: 50%;
-  transform: translate(-50%, -12px);
-}
-
-/* 名字：仅小一号 + 与稀有底协调的字色；不覆盖 padding/位移（交给 common .rarity-* .text） */
-.hero-list .hero-text {
-  width: 100%;
-  text-align: center;
-  font-size: 22px;
-  padding-top: 12px;
-  padding-bottom: 3px;
-  font-weight: 600;
-  color: #3f4f63;
-}
-
-.hero-item.rarity-0 .hero-text {
-  color: #475569;
-}
-
-.hero-item.rarity-1 .hero-text {
-  color: #166534;
-}
-
-.hero-item.rarity-2 .hero-text {
-  color: #1e4a73;
-}
-
-.hero-item.rarity-3 .hero-text {
-  color: #4c3d6e;
-}
-
-.hero-item.rarity-4 .hero-text {
-  color: #5c4b32;
+.yo-catalog-card--hero .yo-catalog-name.text {
+  padding-top: 10px;
+  padding-bottom: 4px;
 }

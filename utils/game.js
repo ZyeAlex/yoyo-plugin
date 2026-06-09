@@ -8,17 +8,23 @@ import MD5 from 'md5'
 import { promisify } from 'util'
 import { pipeline } from 'stream'
 import setting from './setting.js'
-import { getWikiData, getWikiModuleData } from '../api/wiki/data.js'
+import {
+  fetchCatalog,
+  buildKiboEvolutionChains,
+  lookupElement,
+} from '../api/wiki/data.js'
+import { fetchIconModule } from '../api/wiki/luaModule.js'
 import initUI from './UI.js'
+import { clearRenderCache } from './renderCache.js'
 
 class Game {
   constructor() {
     /**
      * 基础数据
      */
-    this.element = setting.getData('data/game/element', {})
-    this.groups = setting.getData('data/game/groups', {})
-    this.profession = setting.getData('data/game/profession', {})
+    this.element = setting.getData('data/game/element', [])
+    this.groups = setting.getData('data/game/groups', [])
+    this.profession = setting.getData('data/game/profession', [])
 
     /**
      * 角色数据
@@ -33,108 +39,166 @@ class Game {
      */
     this.petIds = {}
     this.pets = setting.getData('data/game/pet', {})
+
+    /**
+     * 灵子数据
+     */
+    this.spiritIds = {}
+    this.spirits = setting.getData('data/game/spirit', {})
+
+    /**
+     * 物品数据
+     */
+    this.itemIds = {}
+    this.items = setting.getData('data/game/item', {})
+
     /**
      * 装备系统
      */
-    this.sets = {}//套装效果
     this.accessories = setting.getData('data/game/accessory', []) //装备列表
 
-    // 初始化数据
-    this.getData(true)
+    this.ready = this.bootstrap()
   }
-  /** 初始化数据 */
-  async getData(isInit = false, type) {
-    // 初始化UI函数（仅首次）
+
+  dataFileExists(relPath) {
+    return fs.existsSync(path.join(setting.path, `${relPath}.yaml`))
+  }
+
+  async bootstrap() {
+    try {
+      await this.getData({ mode: 'init' })
+      logger.info('[yoyo-plugin][game] 数据初始化完成')
+    } catch (err) {
+      logger.error('[yoyo-plugin][game] 数据初始化失败', err)
+    }
+  }
+
+  shouldFetchWiki(mode, isEmpty, cacheMissing = false) {
+    return mode === 'refresh' || isEmpty || cacheMissing
+  }
+
+  normalizeGetDataOptions(arg1, arg2) {
+    if (typeof arg1 === 'object' && arg1 !== null) {
+      return { mode: arg1.mode || 'refresh', type: arg1.type }
+    }
+    if (typeof arg1 === 'boolean') {
+      return { mode: arg1 ? 'init' : 'refresh', type: arg2 }
+    }
+    return { mode: 'refresh', type: arg1 }
+  }
+
+  /** @param {{ mode?: 'init'|'refresh', type?: string }}|boolean arg1 */
+  async getData(arg1, arg2) {
+    const { mode, type } = this.normalizeGetDataOptions(arg1, arg2)
     if (!this.getUI) {
       this.getUI = initUI.call(this)
     }
-    let types = {
-      'Base': this.getBaseData, // 获取基础数据
-      'Hero': this.getHeroData,// 获取角色数据
-      'Kibo': this.getPetData, // 获取奇波数据
-      'Accessory': this.getAccessoryData // 获取装备数据
+    const types = {
+      Base: this.getBaseData,
+      Hero: this.getHeroData,
+      Kibo: this.getPetData,
+      Spirit: this.getSpiritData,
+      Accessory: this.getAccessoryData,
+      Item: this.getItemData,
+    }
+    const run = async (fn) => {
+      try {
+        await fn.call(this, mode)
+      } catch (err) {
+        logger.error(`[yoyo-plugin][game] ${fn.name} 失败`, err)
+      }
     }
     if (!type) {
-      for (let fn of Object.values(types)) {
-        await fn.call(this, isInit).then(this.getUI)
+      for (const fn of Object.values(types)) {
+        await run(fn)
+      }
+    } else if (types[type]) {
+      await run(types[type])
+    } else {
+      throw new Error(`Unknown data type: ${type}`)
+    }
+    if (mode === 'refresh') clearRenderCache(type)
+    this.scheduleUIDownload()
+  }
+
+  /** 后台下载 UI 图标，不阻塞插件加载 */
+  scheduleUIDownload() {
+    if (this._uiDownloadTask) return
+    this._uiDownloadTask = Promise.resolve()
+      .then(() => this.getUI())
+      .catch(err => logger.error('[yoyo-plugin][game] UI 图标下载失败', err))
+      .finally(() => { this._uiDownloadTask = null })
+  }
+  /** 元素 / 阵营 / 职业：首次从 Wiki Lua 模块拉取并写入 yaml，之后读本地缓存 */
+  async getBaseData(mode) {
+    const baseKeys = [
+      { key: 'element', field: 'element', module: 'element' },
+      { key: 'groups', field: 'groups', module: 'groups' },
+      { key: 'profession', field: 'profession', module: 'profession' },
+    ]
+    for (const { key, field, module } of baseKeys) {
+      const storagePath = `data/game/${key}`
+      const cacheMissing = !this.dataFileExists(storagePath)
+      const isEmpty = !Array.isArray(this[field]) || !this[field].length
+      if (this.shouldFetchWiki(mode, isEmpty, cacheMissing)) {
+        logger.info(`[yoyo-plugin][game] ${key}.yaml 缺失或为空，从 Wiki 拉取...`)
+        const rows = await fetchIconModule(module)
+        if (rows.length) {
+          this[field] = rows
+          setting.setData(storagePath, this[field])
+        }
+      } else {
+        this[field] = setting.getData(storagePath, this[field])
       }
     }
-    else if (types[type]) {
-      await types[type].call(this, isInit).then(this.getUI)
-    } else {
-      throw new Error()
-    }
-  }
-  /**
-   * 从网络获取配置数据
-   */
-  async getBaseData(isInit) {
-    // 属性
-    if (!isInit || !this.element.length) {
-      let element = await getWikiData('模块:Icon/element').catch(error => [])
-      if (element.length) this.element = element
-      setting.setData('data/game/element', this.element)
-    }
-    // 势力
-    if (!isInit || !this.groups.length) {
-      let groups = await getWikiData('模块:Icon/groups').catch(error => [])
-      if (groups.length) this.groups = groups
-      setting.setData('data/game/groups', this.groups)
-    }
-    // 职业
-    if (!isInit || !this.profession.length) {
-      let profession = await getWikiData('模块:Icon/profession').catch(error => [])
-      if (profession.length) this.profession = profession
-      setting.setData('data/game/profession', this.profession)
-    }
-
     return [...this.element, ...this.groups, ...this.profession]
   }
-  async getHeroData(isInit) {
-    if (!isInit || !Object.keys(this.heros).length) {
-      try {
-        // 合并数据
-        const heros = await getWikiModuleData('Hero')
-        heros?.forEach(hero => {
-          // 对女主进行重命名
-          if (hero.id == '199001') {
-            hero.name = '星临者'
-          }
-          // 对男主进行过滤
-          if (hero.id == '199002') {
-            return
-          }
 
-          // 保存角色数据
-          if (!this.heros[hero.id]) this.heros[hero.id] = hero
-          Object.assign(this.heros[hero.id], hero)
-        })
-        setting.setData('data/game/hero', this.heros)
-      } catch (error) {
-        logger.error(`[yoyo-plugin][getHeroData]${error}`)
+  getElementColor(elementName) {
+    return lookupElement(elementName).elementColor
+  }
+
+  getHeroThemeColor(heroId) {
+    const hero = this.heros[heroId]
+    return hero?.elementData?.elementColor
+      || this.getElementColor(hero?.element)
+      || '#2563eb'
+  }
+
+  async getHeroData(mode) {
+    const cacheMissing = !this.dataFileExists('data/game/hero')
+    const isEmpty = !Object.keys(this.heros).length
+    if (this.shouldFetchWiki(mode, isEmpty, cacheMissing)) {
+      if (cacheMissing || isEmpty) {
+        logger.info('[yoyo-plugin][game] hero.yaml 缺失或为空，从 Wiki 拉取角色数据...')
       }
+      const rows = await fetchCatalog('Hero')
+      const heros = {}
+      rows?.forEach(hero => {
+        if (hero.id == '199002') return
+        if (hero.id == '199001') hero.name = '星临者'
+        heros[hero.id] = hero
+      })
+      this.heros = heros
+      setting.setData('data/game/hero', this.heros)
     }
     this.heroIds = Object.entries(this.heros).reduce((heroIds, [heroId, { name }]) => {
       heroIds[name] = heroId
       return heroIds
     }, {})
 
-    // 获取角色图片
     this.getHeroImgs()
 
-    // 设置角色昵称
     if (!fs.existsSync(path.join(setting.path, 'data/game/nickname.yaml'))) {
       fs.copyFileSync(path.join(setting.path, 'data/game/default/nickname.yaml'), path.join(setting.path, 'data/game/nickname.yaml'))
     } else {
       const nicknames = setting.getData('data/game/nickname')
-      Object.entries(nicknames).forEach(([id, names]) => this.nicknames[id] = [... new Set([...(this.nicknames[id] || []), ...names])])
+      Object.entries(nicknames).forEach(([id, names]) => this.nicknames[id] = [...new Set([...(this.nicknames[id] || []), ...names])])
     }
     return this.heros
   }
   async getHeroImgs() {
-    // 清空图片
     this.heroImgs = {}
-    // 初始化hero path
     if (!fs.existsSync(path.join(setting.path, '/resources/img/hero'))) {
       fs.mkdirSync(path.join(setting.path, '/resources/img/hero'), { recursive: true })
     }
@@ -142,13 +206,10 @@ class Game {
       path.join(setting.path, '/resources/img/hero'),
       ...(setting.config.imgPath || []).map(imgPath => path.join(setting.yunzaiPath, imgPath))
     ]
-    // 遍历所有图片库路径
     heroImgPaths.forEach(heroImgPath => {
-      // 查找角色图片
       if (!fs.existsSync(heroImgPath)) return
       let heroImgDirs = fs.readdirSync(heroImgPath)
       heroImgDirs.forEach(dir => {
-        // 如果dir是目录
         if (!dir.startsWith('.') && fs.statSync(path.join(heroImgPath, dir)).isDirectory()) {
           let heroId = this.getHeroId(dir)
           if (heroId) {
@@ -160,103 +221,77 @@ class Game {
           }
         }
       })
-
     })
   }
-  async getPetData(isInit) {
-    if (!isInit || !Object.keys(this.pets).length) {
-      try {
-        let rank = {}
-        // 合并数据
-        const pets = await getWikiModuleData('Kibo')
-        pets.forEach(pet => {
-          if (!this.pets[pet.id]) this.pets[pet.id] = {}
-          Object.assign(this.pets[pet.id], pet)
-        })
-
-        Object.entries(this.pets).forEach(([petId, petData]) => {
-          // 记录进化路线
-          let nextPetId = petData?.rank?.evolutionAfterStart
-          let rankArr = rank[petId] || rank[nextPetId] || []
-          rank[petId] = rankArr
-          if (nextPetId) {
-            rank[nextPetId] = rankArr
-
-            // 当前节点是否存在
-            let index = rankArr.findIndex(item => item == petId)
-            let nextIndex = rankArr.findIndex(item => item == nextPetId)
-            if (index > -1 && nextIndex > -1) {
-              return
-            }
-            if (index > -1) {
-              rankArr.splice(index + 1, 0, nextPetId)
-            } else if (nextIndex > -1) {
-              rankArr.splice(nextIndex, 0, petId)
-            } else {
-              rankArr.unshift(nextPetId)
-              rankArr.unshift(petId)
-            }
-
-          }
-          petData.evolution = rankArr
-        })
-        setting.setData('data/game/pet', this.pets)
-      } catch (error) {
-        logger.error(`[yoyo-plugin][getPetData]${error}`)
+  async syncIdMapCatalog(mode, { catalogType, targetKey, idsKey, storagePath, postProcess }) {
+    const cacheMissing = !this.dataFileExists(storagePath)
+    const isEmpty = !Object.keys(this[targetKey]).length
+    if (this.shouldFetchWiki(mode, isEmpty, cacheMissing)) {
+      if (cacheMissing || isEmpty) {
+        logger.info(`[yoyo-plugin][game] ${storagePath}.yaml 缺失或为空，从 Wiki 拉取...`)
       }
+      const rows = await fetchCatalog(catalogType)
+      this[targetKey] = {}
+      rows.forEach(row => {
+        this[targetKey][row.id] = row
+      })
+      postProcess?.call(this)
+      setting.setData(storagePath, this[targetKey])
     }
-    this.petIds = Object.entries(this.pets).reduce((petIds, [petId, { name }]) => {
-      petIds[name] = petId
-      return petIds
+    this[idsKey] = Object.entries(this[targetKey]).reduce((ids, [id, { name }]) => {
+      ids[name] = id
+      return ids
     }, {})
+    return this[targetKey]
+  }
+  async getPetData(mode) {
+    await this.syncIdMapCatalog(mode, {
+      catalogType: 'Kibo',
+      targetKey: 'pets',
+      idsKey: 'petIds',
+      storagePath: 'data/game/pet',
+      postProcess() { buildKiboEvolutionChains(this.pets) },
+    })
+    buildKiboEvolutionChains(this.pets)
     return this.pets
   }
-  async getAccessoryData(isInit) {
-    if (!isInit || !this.accessories.length) {
-      try {
-        let accessories = await getWikiModuleData('Accessory')
-        accessories.forEach(accessory => {
-          if (typeof accessory.texture == 'string') {
-            accessory.texture = accessory.texture.split(',')
-          }
-        })
-        if (accessories.length) this.accessories = accessories
-      } catch (error) {
-        logger.error(`[yoyo-plugin][getAccessoryData]${error}`)
+  async getSpiritData(mode) {
+    return this.syncIdMapCatalog(mode, {
+      catalogType: 'Spirit',
+      targetKey: 'spirits',
+      idsKey: 'spiritIds',
+      storagePath: 'data/game/spirit',
+    })
+  }
+  async getItemData(mode) {
+    return this.syncIdMapCatalog(mode, {
+      catalogType: 'Item',
+      targetKey: 'items',
+      idsKey: 'itemIds',
+      storagePath: 'data/game/item',
+    })
+  }
+  async getAccessoryData(mode) {
+    const cacheMissing = !this.dataFileExists('data/game/accessory')
+    const isEmpty = !this.accessories?.length
+    if (this.shouldFetchWiki(mode, isEmpty, cacheMissing)) {
+      if (cacheMissing || isEmpty) {
+        logger.info('[yoyo-plugin][game] accessory.yaml 缺失或为空，从 Wiki 拉取...')
       }
+      const accessories = await fetchCatalog('Accessory')
+      if (accessories.length) this.accessories = accessories
     }
-    this.accessories.forEach(({ id, rarity, setId }) => {
-      if (setId?.id) {
-        if (!this.sets[setId.id]) {
-          this.sets[setId.id] = {
-            rarity,
-            ...setId,
-            accessories: []
-          }
-        }
-        this.sets[setId.id].accessories.push(id)
-      }
-    })
-    Object.values(this.sets).forEach((set) => {
-      set.accessories = set.accessories.map(id => this.accessories.find(accessory => accessory.id == id)
-      ).sort((a, b) => a.type - b.type)
-    })
-
     setting.setData('data/game/accessory', this.accessories)
     return this.accessories
   }
-  // 查询是否有此角色，有则返回角色ID
   getHeroId(name) {
-    // name为 heroId
     if (name in this.heros) {
       return name
     }
-    // name 为角色名
     if (this.heroIds[name]) {
       return this.heroIds[name]
     }
     if (!(name in this.heroIds)) {
-      // 遍历
       for (let heroId in this.nicknames) {
         if (this.nicknames[heroId]?.includes?.(name)) {
           return heroId
@@ -264,22 +299,32 @@ class Game {
       }
     }
   }
+  getPetId(name) {
+    if (name in this.pets) return name
+    return this.petIds[name]
+  }
+  getSpiritId(name) {
+    if (name in this.spirits) return name
+    return this.spiritIds[name]
+  }
+  getItemId(name) {
+    if (name in this.items) return name
+    return this.itemIds[name]
+  }
   /**
    * 操作resource
    */
-  // 保存角色图片
   async setHeroImgs(heroId, imageMessages) {
     let str = ''
     let imgCount = 0
     for (let val of imageMessages) {
-      // 下载图片
       const response = await fetch(val.url)
 
       if (!response.ok) {
         str += `❌图片上传失败\n`
         continue
       }
-      if (response.headers.get('size') > 1024 * 1024 * this.config.imgMaxSize) {
+      if (response.headers.get('size') > 1024 * 1024 * setting.config.imgMaxSize) {
         str += `❌图片上传失败：图片太大了\n`
         continue
       }
@@ -293,11 +338,9 @@ class Game {
         fileType = 'gif'
       }
       if (!'jpg,jpeg,png,webp'.split(',').includes(fileType)) {
-        // 角色图像默认jpg
         fileType = 'jpg'
       }
 
-      // 角色图片文件夹地址
       let heroImgPath = path.join(setting.path, '/resources/img/hero', this.heros[heroId].name)
       if (!fs.existsSync(heroImgPath)) {
         fs.mkdirSync(heroImgPath, { recursive: true })
@@ -306,7 +349,6 @@ class Game {
       let imgPath = `${heroImgPath}/${fileName}.${fileType}`
       const streamPipeline = promisify(pipeline)
       await streamPipeline(response.body, fs.createWriteStream(imgPath))
-      // 使用md5作为文件名
       let buffers = fs.readFileSync(imgPath)
       let base64 = Buffer.from(buffers, 'base64').toString()
       let md5 = MD5(base64)
@@ -323,7 +365,6 @@ class Game {
     str += `成功上传${imgCount}张${this.heros[heroId].name}图片`
     return str
   }
-  // 删除图片
   delHeroImg(heroId, imgFiles) {
     imgFiles.forEach(imgFile => {
       if (fs.existsSync(imgFile)) {

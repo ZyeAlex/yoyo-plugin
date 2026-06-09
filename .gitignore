@@ -13,6 +13,7 @@ data/user/
 data/group/
 data/logs/
 data/game/*.yaml
+data/cache/
 
 # 缓存
 slangs.json

@@ -24,14 +24,15 @@
 
 - 插件开发中... 招募美工...
 
+- **开发记忆库（渐进式）**：[memory/README.md](./memory/README.md) — Wiki 数据、图鉴渲染缓存、账号/Guoba 等专题按层阅读
+- 模块 API 速查：[开发文档](./插件开发API说明.md)
+
 - 插件交流群：[👉🏻加群讨论](https://qm.qq.com/q/Mk3jyhIqSm)
 - 游戏交流群：[👉🏻加群讨论](https://qm.qq.com/q/CwZDY3kUtc)
 
 - 提交代码：
 
   > 请在 fork 本仓库，修改并测试完成后提交PR
-
-- [开发文档](./插件开发API说明.md)
 
 ## 插件功能
 
