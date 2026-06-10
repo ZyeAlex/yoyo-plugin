@@ -4,16 +4,37 @@
   border: none;
   box-shadow: none;
   overflow: visible;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.head .title {
+  font-size: 36px;
+}
+
+.head .sub {
+  font-size: 22px;
 }
 
 .function-group {
-  margin-bottom: 22px;
+  margin-bottom: 0;
+}
+
+.function-group + .function-group .group-header {
+  border-top: 1px solid rgba(71, 85, 105, 0.4);
+  border-radius: 0;
+}
+
+.function-group:not(:last-child) .group-grid {
+  border-radius: 0;
+  border-bottom: none;
 }
 
 /* 分组标题与下方表格连成一块（上一版「连在一起」布局） */
 .group-header {
   background: var(--yo-group-header);
-  padding: 12px 18px;
+  padding: 10px 16px;
   margin-bottom: 0;
   color: #f8fafc;
   border-radius: var(--yo-radius-sm) var(--yo-radius-sm) 0 0;
@@ -23,7 +44,7 @@
 }
 
 .group-title {
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
   letter-spacing: 0.1em;
 }
@@ -37,16 +58,15 @@
   overflow: hidden;
   border: 1px solid rgba(100, 116, 139, 0.28);
   border-top: none;
-  background: rgba(30, 41, 59, 0.06);
-  backdrop-filter: blur(8px);
+  background: transparent;
 }
 
 .item {
   min-width: 0;
   overflow: hidden;
   background: rgba(248, 250, 252, 0.42);
-  padding: 10px 12px;
-  min-height: 100px;
+  padding: 8px 10px;
+  min-height: 88px;
   display: flex;
   align-items: center;
   border-radius: 0;
@@ -93,7 +113,7 @@
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 800;
   margin: 0;
   color: #0f172a;
@@ -109,10 +129,10 @@
 .item-desc {
   min-width: 0;
   width: 100%;
-  margin-top: 6px;
+  margin-top: 5px;
   padding: 0;
   border: none;
-  font-size: 19px;
+  font-size: 16px;
   font-weight: 400;
   line-height: 1.45;
   color: #64748b;

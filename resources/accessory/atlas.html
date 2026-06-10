@@ -1,0 +1,109 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/accessory/atlas.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="accessory-atlas">
+    <div class="accessory-atlas-body">
+        <aside class="accessory-aside">
+            <div class="accessory-card rarity-{{rarityClass||0}}">
+                <img class="accessory-card-bg" src="{{pluResPath}}/UI/tex_bag_rarity_tips_bg_{{rarityClass||0}}.png" alt="">
+                <div class="accessory-card-inner">
+                    <div class="accessory-card-top">
+                        <div class="accessory-card-icon">
+                            <img src="{{pluResPath}}/UI/{{image}}" alt="{{name}}">
+                        </div>
+                        <div class="accessory-name">{{name}}+{{maxEnhance}}</div>
+                        <img class="accessory-rarity-img" src="{{pluResPath}}/common/rarity/rarity-{{rarityClass||0}}.png" alt="{{rarityText}}">
+                        <div class="accessory-meta">{{typeName}}</div>
+                    </div>
+                    {{if mainAttrs?.length}}
+                    <div class="accessory-card-section">
+                        {{each mainAttrs attr}}
+                        <div class="accessory-main-attr">
+                            <span class="accessory-attr-name">{{attr.name}}</span>
+                            <span class="accessory-attr-value">+{{attr.value}}</span>
+                        </div>
+                        {{/each}}
+                    </div>
+                    {{/if}}
+                    {{if subAttrs?.length}}
+                    <div class="accessory-card-section accessory-card-sub">
+                        {{each subAttrs attr}}
+                        <div class="accessory-sub-attr">
+                            <span class="accessory-sub-enhance">{{if attr.enhanceLabel}}{{attr.enhanceLabel}}{{/if}}</span>
+                            <span class="accessory-attr-name">{{attr.name}}</span>
+                            <span class="accessory-attr-value">+{{attr.value}}</span>
+                        </div>
+                        {{/each}}
+                    </div>
+                    {{/if}}
+                    {{if suitName}}
+                    <div class="accessory-card-suit">
+                        <div class="accessory-suit-name">{{suitName}}</div>
+                        {{if effect2}}
+                        <div class="accessory-suit-line"><span class="accessory-suit-tag">2件套</span>{{effect2}}</div>
+                        {{/if}}
+                        {{if effect4}}
+                        <div class="accessory-suit-line"><span class="accessory-suit-tag">4件套</span>{{effect4}}</div>
+                        {{/if}}
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+        </aside>
+
+        <div class="accessory-detail">
+            {{if relatedPet || relatedPetName}}
+            <div class="accessory-extra main">
+                <div class="accessory-extra-title">相关奇波</div>
+                <div class="accessory-pet-row">
+                    {{if relatedPetIcon}}
+                    <img class="accessory-pet-icon" src="{{pluResPath}}/UI/{{relatedPetIcon}}" alt="{{relatedPetName||relatedPet}}">
+                    {{/if}}
+                    <span class="accessory-pet-name">{{relatedPetName||relatedPet}}</span>
+                </div>
+            </div>
+            {{/if}}
+
+            {{if desc}}
+            <div class="accessory-extra main">
+                <div class="accessory-extra-title">描述</div>
+                <div class="accessory-extra-text">{{desc}}</div>
+            </div>
+            {{/if}}
+
+            {{if source}}
+            <div class="accessory-extra main">
+                <div class="accessory-extra-title">获取方式</div>
+                <div class="accessory-extra-text">{{source}}</div>
+            </div>
+            {{/if}}
+
+            {{if suitTiers?.length}}
+            <div class="accessory-tier-block main">
+                <div class="accessory-block-title">套装装备</div>
+                {{each suitTiers tier}}
+                <div class="accessory-tier-group">
+                    <div class="accessory-tier-head">
+                        <span class="accessory-tier-name">{{tier.label}}</span>
+                        <span class="accessory-tier-rarity">{{tier.rarityText}}</span>
+                    </div>
+                    <div class="accessory-tier-pieces">
+                        {{each tier.pieces piece}}
+                        <div class="accessory-tier-piece">
+                            <img src="{{pluResPath}}/UI/{{piece.image}}" alt="{{piece.name}}">
+                            <span class="accessory-tier-piece-name">{{piece.name}}</span>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            {{/if}}
+        </div>
+    </div>
+</div>
+{{/block}}

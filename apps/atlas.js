@@ -122,6 +122,7 @@ const RESOLVERS = [
     { getId: name => game.getPetId(name), atlas: petAtlas },
     { getId: name => game.getSpiritId(name), atlas: spiritAtlas },
     { getId: name => game.getItemId(name), atlas: itemAtlas },
+    { getId: name => game.getAccessoryId(name), atlas: accessoryAtlas },
 ]
 
 async function atlas(e, atlasName) {
@@ -223,6 +224,32 @@ async function itemAtlas(e, itemId) {
 async function accessoryList(e) {
     await render(e, 'accessory/list', {
         accessories: Object.values(game.accessories).sort((a, b) => (b.rarity || 0) - (a.rarity || 0))
+    }, ATLAS_CFG)
+}
+
+function resolveRelatedPet(petName) {
+    if (!petName) return { relatedPetIcon: null, relatedPetName: '' }
+    let pet = null
+    const petId = game.getPetId(petName)
+    if (petId) pet = game.pets[petId]
+    if (!pet) {
+        pet = Object.values(game.pets).find(p => p.name === petName || p.page === petName)
+    }
+    return {
+        relatedPetIcon: pet?.petIcon || null,
+        relatedPetName: pet?.name || petName,
+    }
+}
+
+async function accessoryAtlas(e, accessoryId) {
+    const accessory = game.enrichAccessoryAtlas(game.getAccessory(accessoryId))
+    if (!accessory) return true
+    const { relatedPetIcon, relatedPetName } = resolveRelatedPet(accessory.relatedPet)
+    await render(e, 'accessory/atlas', {
+        ...accessory,
+        relatedPetIcon,
+        relatedPetName,
+        maxEnhance: (accessory.rarityClass || 0) * 3,
     }, ATLAS_CFG)
 }
 

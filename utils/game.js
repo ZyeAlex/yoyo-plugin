@@ -13,7 +13,7 @@ import {
   buildKiboEvolutionChains,
   lookupElement,
 } from '../api/wiki/data.js'
-import { fetchSuitSets, enrichSuitSets } from '../api/wiki/suitSet.js'
+import { fetchSuitSets, enrichSuitSets, buildAccessoryAtlasContext } from '../api/wiki/suitSet.js'
 import { fetchIconModule } from '../api/wiki/luaModule.js'
 import initUI from './UI.js'
 import { clearRenderCache } from './renderCache.js'
@@ -70,6 +70,7 @@ class Game {
      * 装备系统
      */
     this.accessories = setting.getData('data/game/accessory', []) //装备列表
+    this.accessoryIds = {}
     this.suits = setting.getData('data/game/suit', []) // 套装列表
 
     this.ready = this.bootstrap()
@@ -297,6 +298,11 @@ class Game {
       if (accessories.length) this.accessories = accessories
     }
     setting.setData('data/game/accessory', this.accessories)
+    this.accessoryIds = (Array.isArray(this.accessories) ? this.accessories : Object.values(this.accessories))
+      .reduce((ids, { id, name }) => {
+        if (name) ids[name] = id
+        return ids
+      }, {})
 
     const suitCacheMissing = !this.dataFileExists('data/game/suit')
     const suitEmpty = !this.suits?.length
@@ -315,6 +321,27 @@ class Game {
 
   getSuitSets() {
     return enrichSuitSets(this.suits, this.accessories)
+  }
+
+  getAccessoryId(name) {
+    if (!name) return null
+    const list = Array.isArray(this.accessories) ? this.accessories : Object.values(this.accessories || {})
+    const direct = list.find(item => String(item.id) === String(name))
+    if (direct) return direct.id
+    if (this.accessoryIds?.[name]) return this.accessoryIds[name]
+    const matched = list.find(item => item.name === name || item.page === name)
+    return matched?.id || null
+  }
+
+  getAccessory(idOrName) {
+    const id = this.getAccessoryId(idOrName)
+    if (!id) return null
+    const list = Array.isArray(this.accessories) ? this.accessories : Object.values(this.accessories || {})
+    return list.find(item => String(item.id) === String(id)) || null
+  }
+
+  enrichAccessoryAtlas(accessory) {
+    return buildAccessoryAtlasContext(accessory, this.suits, this.accessories)
   }
   getHeroId(name) {
     if (name in this.heros) {
