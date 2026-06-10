@@ -9,20 +9,22 @@
     <div class="title">灵子图鉴 <span class="label">共{{length}}个</span></div>
 </div>
 <div class="nav">
-    <div class="item">发送 <mark>{{rulePrefix}}灵子名图鉴</mark> 查看详情</div>
+    <div class="item">发送 <mark>{{rulePrefix}}灵子名图鉴</mark> 查看灵子详情</div>
 </div>
 <div class="main">
 <div class="yo-catalog-grid">
     {{each spirits spirit}}
     <div class="yo-catalog-card yo-catalog-card--spirit rarity-{{spirit.rarityClass||0}}">
         <div class="yo-catalog-media">
-            <img class="yo-catalog-img" src="{{pluResPath}}/UI/{{spirit.image}}"
-                onerror="this.onerror=null; this.src='{{pluResPath}}/UI/{{spirit.image2}}'">
+            <img src="{{pluResPath}}/UI/{{spirit.image}}" alt="{{spirit.name}}"
+                onerror="this.onerror=null; this.src='{{pluResPath}}/UI/{{spirit.image2}}';">
         </div>
         <div class="rarity">
-            <img src="{{pluResPath}}/common/rarity/rarity-{{spirit.rarityClass||0}}.png">
+            <img src="{{pluResPath}}/common/rarity/rarity-{{spirit.rarityClass||0}}.png" alt="{{spirit.rarity}}">
         </div>
-        <div class="yo-catalog-name text">{{spirit.name}}</div>
+        <div class="yo-catalog-name text">
+            <span class="yo-catalog-name-fit">{{spirit.name}}</span>
+        </div>
     </div>
     {{/each}}
 </div>

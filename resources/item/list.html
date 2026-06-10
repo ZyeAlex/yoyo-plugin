@@ -6,10 +6,13 @@
 
 {{block 'main'}}
 <div class="head">
-    <div class="title">物品图鉴 <span class="label">共{{length}}个</span></div>
+    <div class="title">物品图鉴 <span class="label">共{{length}}个</span>{{if totalPages > 1}} <span class="label">第{{page}}/{{totalPages}}页</span>{{/if}}</div>
 </div>
 <div class="nav">
     <div class="item">发送 <mark>{{rulePrefix}}物品名图鉴</mark> 查看详情</div>
+    {{if totalPages > 1}}
+    <div class="item">发送 <mark>{{rulePrefix}}物品图鉴{{nextPage}}</mark> 查看下一页{{if prevPage}}，<mark>{{rulePrefix}}物品图鉴{{prevPage}}</mark> 查看上一页{{/if}}</div>
+    {{/if}}
 </div>
 <div class="main">
 <div class="yo-catalog-grid">

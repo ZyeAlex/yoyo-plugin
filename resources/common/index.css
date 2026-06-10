@@ -185,33 +185,48 @@ body {
 }
 
 .copyright {
-  font-size: 20px;
+  font-size: 17px;
   text-align: center;
   color: var(--yo-text-muted);
   position: relative;
-  padding: 16px 20px 22px;
-  line-height: 1.5;
+  padding: 6px 20px 10px;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
 }
 
 .copyright::before {
   content: "";
   display: block;
-  width: 100%;
+  width: calc(100% - 48px);
+  max-width: 640px;
   height: 1px;
+  margin: 0 auto 6px;
   background: linear-gradient(
     to right,
     transparent,
-    var(--yo-border-strong),
+    rgba(168, 189, 216, 0.55),
     transparent
   );
-  margin-bottom: 14px;
 }
 
-.copyright .version {
-  color: var(--yo-accent);
-  display: inline-block;
-  padding: 0 4px;
+.copyright-value {
+  color: var(--yo-cosmos);
   font-weight: 600;
+  font-size: 0.94em;
+}
+
+.copyright-sep {
+  color: var(--yo-border-strong);
+  font-weight: 400;
+  padding: 0 2px;
+}
+
+/* 兼容旧缓存模板中的 class 名 */
+.copyright .version {
+  color: var(--yo-cosmos);
+  font-weight: 600;
+  font-size: 0.94em;
+  padding: 0 2px;
 }
 
 /* 指令高亮 */

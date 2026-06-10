@@ -1,0 +1,64 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/accessory/suit-list.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="suit-atlas">
+    <div class="head">
+        <div class="title">套装图鉴 <span class="label">共{{length}}套</span></div>
+    </div>
+    <div class="nav">
+        <div class="item">发送 <mark>{{rulePrefix}}装备图鉴</mark> 查看全部装备</div>
+        <div class="item">发送 <mark>{{rulePrefix}}装备名图鉴</mark> 查看单件装备详情</div>
+    </div>
+    {{each suits suit}}
+    <div class="suit-item main">
+        <div class="yo-atlas-head suit-item-head">
+            <div class="yo-atlas-portrait suit-cover">
+                {{if suit.coverImage}}
+                <img class="suit-cover-img" src="{{pluResPath}}/UI/{{suit.coverImage}}" alt="{{suit.name}}">
+                {{/if}}
+            </div>
+            <div class="suit-base">
+                <div class="suit-name">{{suit.name}}</div>
+                {{if suit.relatedPet}}
+                <div class="suit-related-pet">相关奇波：{{suit.relatedPet}}</div>
+                {{/if}}
+                <div class="suit-effects">
+                    {{if suit.effect2}}
+                    <div class="suit-effect-row">
+                        <span class="suit-effect-tag">2件套</span>
+                        <span class="suit-effect-text">{{suit.effect2}}</span>
+                    </div>
+                    {{/if}}
+                    {{if suit.effect4}}
+                    <div class="suit-effect-row">
+                        <span class="suit-effect-tag">4件套</span>
+                        <span class="suit-effect-text">{{suit.effect4}}</span>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+        {{if suit.pieces?.length}}
+        <div class="suit-pieces">
+            <div class="suit-pieces-title">套装装备（{{suit.pieceCount}}件）</div>
+            <div class="suit-piece-list">
+                {{each suit.pieces piece}}
+                <div class="suit-piece">
+                    <img class="suit-piece-icon" src="{{pluResPath}}/UI/{{piece.image}}" alt="{{piece.name}}">
+                    <div class="suit-piece-info">
+                        <div class="suit-piece-name">{{piece.name}}</div>
+                        <div class="suit-piece-type">{{piece.typeName}}</div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+        {{/if}}
+    </div>
+    {{/each}}
+</div>
+{{/block}}

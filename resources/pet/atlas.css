@@ -4,6 +4,7 @@
   position: relative;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, transparent 40%);
   overflow: visible;
+  padding-bottom: 10px;
 }
 
 .pet-atlas .pet-main-img {
@@ -108,21 +109,24 @@
   min-width: 0;
   flex-wrap: nowrap;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
+  justify-content: flex-end;
+  gap: 10px;
   overflow: hidden;
 }
 
 .pet-base-skill {
   display: inline-block;
   border-radius: 999px;
-  padding: 3px 8px;
+  padding: 3px 10px;
   font-size: 18px;
   font-weight: 600;
   margin: 0;
   color: #fff;
   white-space: nowrap;
   flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   line-height: 1.2;
 }
 

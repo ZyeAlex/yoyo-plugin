@@ -1,1 +1,49 @@
-/* spirit list — 基础样式见 common/list.css */
+/* 灵子列表：图标铺满、稀有度色条同角色、名字单行紧凑 */
+
+.yo-catalog-card--spirit {
+  container-type: inline-size;
+  padding: 0;
+}
+
+.yo-catalog-card--spirit .yo-catalog-media {
+  aspect-ratio: 1;
+  height: auto;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  align-items: stretch;
+  justify-content: stretch;
+  background: transparent;
+}
+
+.yo-catalog-card--spirit .yo-catalog-media > img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.yo-catalog-card--spirit .yo-catalog-name.text {
+  padding: 8px 4px 6px;
+  line-height: 1.15;
+  min-height: 28px;
+  box-sizing: border-box;
+}
+
+.yo-catalog-card--spirit .rarity {
+  z-index: 2;
+}
+
+.yo-catalog-card--spirit .yo-catalog-name-fit {
+  display: block;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: clamp(13px, 15cqi, 17px);
+  letter-spacing: -0.03em;
+  font-weight: 700;
+}

@@ -27,6 +27,12 @@
    - 图鉴渲染磁盘缓存与 `#更新xxx数据` 失效规则  
    - 角色面板缓存预留（`panel` scope）
 
+5. `memory/05-render-ui-styles.md`  
+   - 角色图鉴右侧布局、立绘 stretch 规则  
+   - 奇波特性条 / 技能最高级描述  
+   - 签到页（无背景图、头像、历史卡片）  
+   - **CSS 维护禁忌**（禁止误 checkout / 整文件覆盖）
+
 > 渐进式入口：[memory/README.md](./README.md)
 
 ---
@@ -35,6 +41,7 @@
 
 - **Wiki 数据**：列表（SMW / 分类成员，同源「角色图鉴」等页）→ 详情页 wikitext → `{{xxx图鉴}}` 解析 → `data/game/*.yaml`；Base（元素/阵营/职业）从 `模块:Icon/*` 拉取一次。无内置 `wiki-modules` fallback。详见 `04-wiki-data-and-cache.md`。
 - **图鉴渲染**：`apps/atlas.js` 传 `cache: 'atlas'`，截图落盘 `data/cache/render/atlas/`；`#更新xxx数据` 触发 `clearRenderCache`。
+- **图鉴/签到 UI**：样式已定稿，见 `05-render-ui-styles.md`；`hero/atlas.css` 须与 `atlas.html` 新类名同步；改 CSS 禁止 git checkout / 无关整文件覆盖。
 - **面板渲染缓存**：`CACHE_SCOPE.PANEL` / `clearPanelCache(uid)` 已预留，待 `#更新面板` 接入。
 - `miao-plugin` 主要是功能层和 `App.init().reg()` 写法示例，**不是账号登录主实现层**。
 - 账号绑定主链路应参考：

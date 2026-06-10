@@ -13,9 +13,12 @@ helpGroup:
     "desc": "查询所有灵子图鉴"
   - "title": "#物品图鉴"
     "icon": "tex_icon_item_antidotebottle.png"
-    "desc": "查询所有物品图鉴"
+    "desc": "查询物品图鉴（每页300个，可用 #物品图鉴2 翻页）"
   - "title": "#装备图鉴"
     "desc": "查看所有装备"
+    "icon": "tex_icon_equipment_large_suit1_8.png"
+  - "title": "#套装图鉴"
+    "desc": "查看全部套装效果与组成装备"
     "icon": "tex_icon_equipment_large_suit1_8.png"
 
 - "group": "数据"

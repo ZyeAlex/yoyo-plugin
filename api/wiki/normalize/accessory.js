@@ -50,6 +50,7 @@ export function normalizeAccessory(params, smwMeta = {}) {
     desc: stripHtml(params['描述'] || smwMeta.meta?.['描述'] || ''),
     source: params['获取方式'] || '',
     version: params['实装版本'] || '',
+    suitName: params['套装'] || smwMeta.meta?.['套装'] || '',
     mainAttrs: parseMainAttrs(params),
     subAttrs: parseSubAttrs(params),
   }

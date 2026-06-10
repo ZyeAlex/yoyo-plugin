@@ -1,8 +1,67 @@
-import game from '#game'
+import game, { parseSpiritHeroQuery } from '#game'
 import render from '#render'
 import plugin from '#plugin'
+import { parseRarityStars, rarityClass } from '../api/wiki/parser.js'
+import { buildSpiritAttrs } from '../api/wiki/normalize/spirit.js'
 
 const ATLAS_CFG = { origin: 'BWiki' }
+const ITEM_LIST_PAGE_SIZE = 300
+
+function parseItemListPage(e) {
+    const m = String(e.msg || '').match(/^#?(?:物品列表|全部物品|所有物品|物品图鉴)(\d+)?$/i)
+    return Math.max(1, parseInt(m?.[1], 10) || 1)
+}
+
+function enrichSpiritRarity(spirit) {
+  if (!spirit) return spirit
+  const stars = spirit.rarityStars || parseRarityStars(spirit.rarity)
+  let attrs = spirit.attrs
+  if (!attrs?.length) {
+    const legacy = {}
+    if (spirit.baseAtk) legacy['基础攻击'] = spirit.baseAtk
+    if (spirit.basePDef) legacy['基础物理防御'] = spirit.basePDef
+    if (spirit.baseMDef) legacy['基础魔法防御'] = spirit.baseMDef
+    if (spirit.baseHp) legacy['基础生命'] = spirit.baseHp
+    if (spirit.attribute && spirit[spirit.attribute]) legacy[spirit.attribute] = spirit[spirit.attribute]
+    attrs = buildSpiritAttrs({ ...legacy, 属性: spirit.attribute })
+  }
+  return {
+    ...spirit,
+    rarityStars: stars,
+    rarityClass: rarityClass(stars),
+    portraitIcon: spirit.portraitIcon || spirit.image2 || spirit.image,
+    attrs,
+  }
+}
+
+async function spiritHeroSpiritsAtlas(e, heroId, heroName, spiritIds) {
+  const spirits = spiritIds
+    .map(id => enrichSpiritRarity(game.spirits[id]))
+    .filter(Boolean)
+  await render(e, 'spirit/hero-spirits', { heroId, heroName, spirits }, ATLAS_CFG)
+}
+
+async function resolveSpiritAtlas(e, query) {
+  const heroName = parseSpiritHeroQuery(query)
+  if (!heroName) return false
+  const ids = game.getSpiritIdsByHeroSpiritQuery(query)
+  if (!ids.length) {
+    if (!game.getHeroId(heroName)) {
+      return true
+    }
+    const official = game.heros[game.getHeroId(heroName)]?.name
+    await e.reply(`未找到【${official}】的相关灵子`)
+    return true
+  }
+  const heroId = game.getHeroId(heroName)
+  const official = game.heros[heroId]?.name || heroName
+  if (ids.length === 1) {
+    await spiritAtlas(e, ids[0])
+  } else {
+    await spiritHeroSpiritsAtlas(e, heroId, official, ids)
+  }
+  return true
+}
 
 export const Atlas = plugin({
     name: '[悠悠助手]图鉴',
@@ -16,6 +75,10 @@ export const Atlas = plugin({
         {
             reg: `^#?(?!更新)(.{1,10}?)(图鉴|卡片|card|Card)$`,
             fnc: atlas
+        },
+        {
+            reg: `^#?(?!更新)(.{1,10}?)(专武图鉴|专属灵子图鉴|专武|专属灵子)$`,
+            fnc: spiritHeroAtlas
         },
         {
             reg: `^#?(.{1,10}?)((?:技能|星赐|台词|语音|文本)[\n+,，、]?)+(图鉴)?$`,
@@ -34,12 +97,16 @@ export const Atlas = plugin({
             fnc: spiritList
         },
         {
-            reg: `^#?(物品列表|全部物品|所有物品|物品图鉴)$`,
+            reg: `^#?(物品列表|全部物品|所有物品|物品图鉴)(\\d+)?$`,
             fnc: itemList
         },
         {
             reg: `^#?(装备列表|全部装备|装备图鉴)$`,
             fnc: accessoryList
+        },
+        {
+            reg: `^#?(套装图鉴|套装列表|全部套装)$`,
+            fnc: suitList
         },
     ]
 })
@@ -50,15 +117,19 @@ const RESOLVERS = [
     { names: ['灵子'], list: spiritList },
     { names: ['物品'], list: itemList },
     { names: ['装备'], list: accessoryList },
+    { names: ['套装'], list: suitList },
     { getId: name => game.getHeroId(name), atlas: heroAtlas },
     { getId: name => game.getPetId(name), atlas: petAtlas },
     { getId: name => game.getSpiritId(name), atlas: spiritAtlas },
     { getId: name => game.getItemId(name), atlas: itemAtlas },
 ]
 
-function atlas(e, atlasName) {
+async function atlas(e, atlasName) {
     for (const { names, list } of RESOLVERS) {
         if (names?.includes(atlasName)) return list(e)
+    }
+    if (parseSpiritHeroQuery(atlasName)) {
+        return resolveSpiritAtlas(e, atlasName)
     }
     for (const { getId, atlas: atlasFn } of RESOLVERS) {
         if (!getId) continue
@@ -68,6 +139,10 @@ function atlas(e, atlasName) {
         return atlasFn(e, id)
     }
     return true
+}
+
+async function spiritHeroAtlas(e, heroPart, suffix) {
+    return resolveSpiritAtlas(e, heroPart + suffix)
 }
 
 async function heroList(e) {
@@ -108,19 +183,37 @@ async function petAtlas(e, petId) {
 }
 
 async function spiritList(e) {
-    let spirits = Object.values(game.spirits)
+    let spirits = Object.values(game.spirits).map(enrichSpiritRarity)
     spirits.sort((a, b) => Number(a.id) - Number(b.id))
+    spirits.sort((a, b) => (b.rarityStars || 0) - (a.rarityStars || 0))
     await render(e, 'spirit/list', { spirits, length: spirits.length }, ATLAS_CFG)
 }
 
 async function spiritAtlas(e, spiritId) {
-    await render(e, 'spirit/atlas', game.spirits[spiritId] || {}, ATLAS_CFG)
+    await render(e, 'spirit/atlas', enrichSpiritRarity(game.spirits[spiritId]) || {}, ATLAS_CFG)
 }
 
 async function itemList(e) {
+    const page = parseItemListPage(e)
     let items = Object.values(game.items)
     items.sort((a, b) => Number(a.id) - Number(b.id))
-    await render(e, 'item/list', { items, length: items.length }, ATLAS_CFG)
+    const total = items.length
+    const totalPages = Math.max(1, Math.ceil(total / ITEM_LIST_PAGE_SIZE))
+    if (page > totalPages) {
+        await e.reply(`物品图鉴共 ${totalPages} 页，请输入 1~${totalPages}`)
+        return
+    }
+    const start = (page - 1) * ITEM_LIST_PAGE_SIZE
+    const pageItems = items.slice(start, start + ITEM_LIST_PAGE_SIZE)
+    await render(e, 'item/list', {
+        items: pageItems,
+        length: total,
+        page,
+        totalPages,
+        pageSize: ITEM_LIST_PAGE_SIZE,
+        nextPage: page < totalPages ? page + 1 : null,
+        prevPage: page > 1 ? page - 1 : null,
+    }, ATLAS_CFG)
 }
 
 async function itemAtlas(e, itemId) {
@@ -130,6 +223,14 @@ async function itemAtlas(e, itemId) {
 async function accessoryList(e) {
     await render(e, 'accessory/list', {
         accessories: Object.values(game.accessories).sort((a, b) => (b.rarity || 0) - (a.rarity || 0))
+    }, ATLAS_CFG)
+}
+
+async function suitList(e) {
+    const suits = game.getSuitSets()
+    await render(e, 'accessory/suit-list', {
+        suits,
+        length: suits.length,
     }, ATLAS_CFG)
 }
 

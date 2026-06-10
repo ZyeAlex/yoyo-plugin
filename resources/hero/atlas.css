@@ -13,25 +13,20 @@
   padding: 8px 12px 0;
 }
 
-.hero-atlas > .yo-atlas-head.hero-head {
-  align-items: stretch;
-}
-
 .hero-head {
   position: relative;
+  align-items: stretch;
+  min-height: 350px;
   overflow: visible;
 }
 
-/* 左侧外框：400px 宽，高度仅跟随右侧 stretch，布局不额外增高 */
+/* 外框：恢复最初左右宽比例，不占溢出空间 */
 .hero-portrait {
   position: relative;
   z-index: 1;
   width: 400px;
   min-width: 400px;
-  align-self: stretch;
-  height: auto;
-  min-height: 0;
-  margin: 0;
+  height: 420px;
   flex-shrink: 0;
   overflow: visible;
   border: none;
@@ -45,21 +40,24 @@
   background: transparent;
 }
 
-/* 内框：+100px 且 top:-100px，absolute 不参与 flex 高度计算 */
+/* 内框：600px，相对外框居中；右侧 10% 透明渐变 */
 .hero-portrait-inner {
   position: absolute;
   left: 50%;
-  top: -100px;
-  height: calc(100% + 100px);
-  width: auto;
-  max-width: none;
+  top: 0;
+  bottom: 0;
+  width: 600px;
   transform: translateX(-50%);
   pointer-events: none;
   -webkit-mask-image: linear-gradient(to right, #000 0%, #000 90%, transparent 100%);
   mask-image: linear-gradient(to right, #000 0%, #000 90%, transparent 100%);
 }
 
+/* 图片：宽等于内框，高自动，右下角与内框对齐 */
 .hero-portrait-img {
+  position: absolute;
+  right: 0;
+  bottom: 0;
   width: auto;
   height: 100%;
   max-width: none;
@@ -73,160 +71,53 @@
   position: relative;
   z-index: 2;
   flex: 1;
-  min-width: 0;
-  align-self: stretch;
-  margin: 10px 8px 10px 0;
+  margin: 12px;
+  margin-left: 0;
   text-align: center;
+  font-size: 32px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  min-height: 350px;
 }
 
-.hero-identity {
-  width: 100%;
-}
-
-.hero-name-stack {
-  position: relative;
+.hero-base .hero-name {
+  font-size: 56px;
+  font-family: title01, "PingFang SC", sans-serif;
+  margin-top: -56px;
+  margin-bottom: 20px;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  position: relative;
+  color: var(--yo-text);
+  font-weight: 800;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
 }
 
 .hero-base .hero-group-img {
-  height: 240px;
-  width: auto;
+  height: 140px;
   object-fit: contain;
   filter: drop-shadow(0 4px 12px rgba(15, 23, 42, 0.12));
 }
 
-.hero-name-block {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  margin-top: -120px;
-}
-
-.hero-name-stack:not(:has(.hero-group-img)) .hero-name-block {
-  margin-top: 0;
-}
-
-.hero-english-name {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--yo-text-muted);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.hero-base .hero-name {
-  font-size: 54px;
-  font-family: title01, "PingFang SC", sans-serif;
-  color: var(--yo-text);
-  font-weight: 800;
-  line-height: 1.1;
-  margin: 0;
-}
-
-.hero-badges {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.hero-element-img {
-  height: 28px;
-  width: auto;
-  object-fit: contain;
-}
-
 .hero-base .hero-rarity-img {
-  height: 24px;
-  width: auto;
-  object-fit: contain;
-  position: static;
+  position: absolute;
+  right: -8px;
+  bottom: -20px;
 }
 
-.hero-profession-img {
-  width: 28px;
-  height: 28px;
-  padding: 1px;
-  border-radius: 10px;
+.hero-base .hero-career {
+  width: 56px;
+  margin-left: -64px;
+  margin-right: 10px;
+  padding: 4px;
+  border-radius: 50%;
   box-sizing: border-box;
-  background-color: rgba(248, 250, 252, 0.92);
-  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.2);
-  object-fit: contain;
-}
-
-.hero-meta {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 20px;
-  line-height: 1.35;
-  border: 1px solid var(--yo-border);
-  border-radius: var(--yo-radius-sm);
-  overflow: hidden;
-  background: rgba(248, 250, 252, 0.72);
-  box-shadow: var(--yo-shadow-inset);
-}
-
-.hero-meta th,
-.hero-meta td {
-  padding: 5px 6px;
-  border-bottom: 1px solid var(--yo-border);
-  text-align: center;
-  vertical-align: middle;
-}
-
-.hero-meta td:nth-child(2) {
-  border-right: 1px solid var(--yo-border);
-}
-
-.hero-meta tr:last-child th,
-.hero-meta tr:last-child td {
-  border-bottom: none;
-}
-
-.hero-meta th {
-  width: 18%;
-  color: var(--yo-text-muted);
-  font-weight: 600;
-  white-space: nowrap;
-  background: rgba(236, 242, 252, 0.55);
-}
-
-.hero-meta td {
-  width: 32%;
-  color: var(--yo-text);
-  font-weight: 600;
-}
-
-.hero-desc {
-  width: 100%;
-  font-size: 22px;
-  line-height: 1.45;
-  color: var(--yo-text-secondary);
-  padding: 0 2px;
-  text-align: left;
-}
-
-.hero-profile {
-  text-align: left;
-}
-
-.hero-profile-text {
-  font-size: 26px;
-  line-height: 1.6;
-  color: var(--yo-text-secondary);
-  text-align: left;
-  text-indent: 2em;
+  border: 2px solid #fff;
+  box-shadow: var(--yo-shadow);
 }
 
 .hero-base .hero-tag {
@@ -339,6 +230,13 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
+}
+
+.hero-intro {
+  margin-top: 8px;
+  font-size: 22px;
+  color: var(--yo-text-secondary);
+  line-height: 1.4;
 }
 
 .hero-skill-special {

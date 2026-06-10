@@ -137,8 +137,14 @@ export function parseTemplate(wikitext, templateName) {
 }
 
 export function parseRarityStars(rarity = '') {
-  const m = String(rarity).match(/(\d+)星/)
-  return m ? Number(m[1]) : 0
+  const raw = String(rarity).trim()
+  const digitMatch = raw.match(/(\d+)星/)
+  if (digitMatch) return Number(digitMatch[1])
+  const upper = raw.toUpperCase()
+  if (upper.includes('SSR')) return 5
+  if (upper.includes('SR')) return 4
+  if (/^R$/.test(upper)) return 3
+  return 0
 }
 
 /** 稀有度 CSS 类（与 resources/hero/list.css 对齐） */

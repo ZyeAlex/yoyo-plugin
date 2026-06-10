@@ -4,12 +4,12 @@
 
 # <div align="center">悠悠助手 （ yoyo-plugin ）</div>
 
-<div align="center"> <i>云崽QQ机器人的「蓝色星原：旅谣」插件</i> </div>
+<div align="center"> <i>云崽 QQ 机器人的「蓝色星原：旅谣」插件</i> </div>
 <br/>
 <div align="center">
 
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgitee.com%2Fyoyo-plugin%2Fyoyo-plugin%2Fraw%2Fmaster%2Fpackage.json&query=%24.version&label=最新版本)
-[<img src="https://img.shields.io/badge/插件交流群-991709221-blue" />](https://qm.qq.com/q/y37cqiS4Ks)
+[<img src="https://img.shields.io/badge/插件交流群-991709221-blue" />](https://qm.qq.com/q/Mk3jyhIqSm)
 <img src="https://gitee.com/yoyo-plugin/yoyo-plugin/badge/star.svg"/>
 
 </div>
@@ -19,73 +19,103 @@
 
 ---
 
+## 简介
 
-## 开发说明
+`yoyo-plugin` 用于在 Yunzai 机器人中查询《蓝色星原：旅谣》图鉴、角色信息与部分娱乐功能。数据主要来自 [BWIKI](https://wiki.biligame.com/ap/)，支持本地缓存与图鉴渲染缓存。
 
-- 插件开发中... 招募美工...
-
-- **开发记忆库（渐进式）**：[memory/README.md](./memory/README.md) — Wiki 数据、图鉴渲染缓存、账号/Guoba 等专题按层阅读
-- 模块 API 速查：[开发文档](./插件开发API说明.md)
-
-- 插件交流群：[👉🏻加群讨论](https://qm.qq.com/q/Mk3jyhIqSm)
-- 游戏交流群：[👉🏻加群讨论](https://qm.qq.com/q/CwZDY3kUtc)
-
-- 提交代码：
-
-  > 请在 fork 本仓库，修改并测试完成后提交PR
-
-## 插件功能
-
-`yoyo-plugin`为查询「蓝色星原：旅谣」信息的插件，包括角色面板、角色图鉴、角色图片等一系列功能
-
-<!-- ✅ ⬜️ -->
-大致包含有：
-- Wiki相关
-  - ✅ `角色、奇波等图鉴` 
-- 角色相关
-  - ✅ `{角色}图片`
-- 账号相关
-  - ⬜️ `绑定UID（开发中）`
-- 娱乐相关
-  - ✅ `签到`
-- 悠悠Agent（开发中）
-
-> 具体功能可在安装插件后 通过 `悠悠帮助` 查看详细指令
-
-### 如果觉得插件对你有帮助的话请点一个star！这是对我们最大的支持和动力！
+安装后发送 `悠悠帮助` 或 `#帮助` 可查看完整指令列表。
 
 ---
 
-## 安装方法 
+## 功能概览
 
-1. 确保已部署 Yunzai Bot，如果未安装，推荐使用 [LLBot]( https://luckylillia.com/guide/getting-started ) + [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai) 的机器人部署方案
+### 图鉴（BWIKI 数据）
 
-2. 推荐使用git进行安装，在Yunzai根目录内打开终端执行以下命令
-  - gitee （<font color="green">推荐使用</font>）
+| 功能 | 示例指令 | 说明 |
+|------|----------|------|
+| 角色图鉴 | `#角色图鉴` / `#寒悠悠图鉴` | 列表 + 单角色详情（技能、星赐、语音等） |
+| 奇波图鉴 | `#奇波图鉴` | 列表 + 单奇波详情 |
+| 灵子图鉴 | `#灵子图鉴` / `#汁石就是力量图鉴` | 列表 + 单灵子详情 |
+| 专属灵子 | `#诺诺专武` / `#诺诺专属灵子` | 按角色查询关联灵子 |
+| 物品图鉴 | `#物品图鉴` / `#物品图鉴2` | 分页展示，每页 300 个 |
+| 装备图鉴 | `#装备图鉴` | 装备列表 |
+| 套装图鉴 | `#套装图鉴` | 套装效果与组成装备 |
+| 更新数据 | `#更新图鉴数据` / `#更新角色数据` 等 | 从 Wiki 拉取并刷新缓存 |
 
-    ```shell
-    git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-plugin.git ./plugins/yoyo-plugin
-    ```
+### 角色与图片
 
-3. 安装环境
-    ```shell
-    pnpm install
-    ```
+| 功能 | 示例指令 | 说明 |
+|------|----------|------|
+| 角色别名 | `#寒悠悠设置别名XX` | 支持用别名触发指令 |
+| 角色图片 | `#寒悠悠图片` | 随机图片，需配置图片资源 |
+| 图片管理 | `#上传寒悠悠图片` / `#寒悠悠图片列表` | 引用消息上传或管理 |
+| 角色攻略 | `#寒悠悠攻略` | 读取本地/挂载目录中的攻略图 |
 
-4. 安装图片库（娱乐互动功能需要）
+### 娱乐与其他
 
-  - 安装[yoyo-image](https://gitee.com/yoyo-plugin/yoyo-image)
+| 功能 | 示例指令 | 说明 |
+|------|----------|------|
+| 签到 | `#签到` | 每日签到 |
+| 活动日历 | `#活动日历` | 活动日历页 |
+| 兑换码 | `#兑换码` | 兑换码汇总（需自行维护内容） |
 
-    ```shell
-    git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-image.git ./plugins/yoyo-image
-    ```
+### 账号与插件管理
 
-    > 如果想自己上传图片，请将图片拷贝至 `yoyo-plugin/resources/img/hero/` 下 , 文件夹以角色名命名
+| 功能 | 示例指令 | 说明 |
+|------|----------|------|
+| UID 绑定 | `#绑定uid123456` | 群维度绑定与切换 UID |
+| 面板 | `#面板` | 开发中，当前为调试输出 |
+| 登录 | `#登录` / `#扫码登录` | 预留，尚未实现 |
+| 插件更新 | `#悠悠更新` | 更新插件本体 |
+| 清理数据 | `#清除无效数据` | 清理退群用户等脏数据 |
 
+> 具体指令以游戏内 `悠悠帮助` 为准；带 `#` 前缀的写法与帮助页一致。
+
+---
+
+## 开发说明
+
+- **开发记忆库**：[memory/README.md](./memory/README.md) — Wiki 数据、渲染缓存、Guoba 配置等专题文档
+- **模块 API 速查**：[插件开发API说明.md](./插件开发API说明.md)
+- **插件交流群**：[991709221](https://qm.qq.com/q/Mk3jyhIqSm)
+- **游戏交流群**：[点击加群](https://qm.qq.com/q/CwZDY3kUtc)
+
+提交代码请在 fork 本仓库后修改、自测，再提交 Pull Request。
+
+---
+
+## 安装方法
+
+1. 确保已部署 Yunzai Bot。未安装时可参考 [LLBot](https://luckylillia.com/guide/getting-started) + [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai)。
+
+2. 在 Yunzai 根目录执行（推荐使用 gitee）：
+
+   ```shell
+   git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-plugin.git ./plugins/yoyo-plugin
+   ```
+
+3. 安装依赖：
+
+   ```shell
+   cd plugins/yoyo-plugin
+   pnpm install
+   ```
+
+4. **（可选）** 安装图片库 [yoyo-image](https://gitee.com/yoyo-plugin/yoyo-image)，用于签到等娱乐功能的默认图片：
+
+   ```shell
+   git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-image.git ./plugins/yoyo-image
+   ```
+
+   也可自行上传角色图到 `yoyo-plugin/resources/img/hero/`，按角色名分文件夹存放。
+
+5. 首次使用建议执行 `#更新图鉴数据`，拉取 Wiki 数据并下载 UI 图标。
+
+---
 
 ## 插件配置
 
-> 推荐使用[锅巴插件](https://gitee.com/guoba-yunzai/guoba-plugin)配置本插件
+推荐使用 [锅巴插件 (guoba-plugin)](https://gitee.com/guoba-yunzai/guoba-plugin) 可视化配置本插件；也可直接编辑 `config/config.yaml`。
 
 ---
 
@@ -99,11 +129,9 @@
 
 [查看全部贡献者 →](https://gitee.com/yoyo-plugin/yoyo-plugin/contributors)
 
-
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-

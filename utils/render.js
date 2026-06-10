@@ -55,8 +55,12 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
     }
   }
 
-  let copyright = `${title} <span class="version">${version}</span> | 插件群 <span class="version">${pluginGroup}</span>`
-  if (cfg.origin) copyright += `| 数据源 <span class="version">${cfg.origin}</span> `
+  let copyrightParts = [
+    `${title} <span class="copyright-value">${version}</span>`,
+    `插件群 <span class="copyright-value">${pluginGroup}</span>`,
+  ]
+  if (cfg.origin) copyrightParts.push(`数据源 <span class="copyright-value">${cfg.origin}</span>`)
+  const copyright = copyrightParts.join(' <span class="copyright-sep">|</span> ')
 
   const useCacheWrite = cacheScope && cacheKey && !cfg.retType
   let cacheTargetPath = null

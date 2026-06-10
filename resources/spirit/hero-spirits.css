@@ -1,0 +1,84 @@
+.spirit-hero-atlas {
+  width: 100%;
+  padding: 8px 12px 14px;
+  box-sizing: border-box;
+}
+
+.spirit-hero-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 4px 8px 14px;
+  padding: 12px 16px;
+  border-radius: var(--yo-radius-sm);
+  background: var(--yo-section-gradient);
+  border: 1px solid var(--yo-border);
+  box-shadow: var(--yo-shadow);
+}
+
+.spirit-hero-name {
+  font-family: title01, "PingFang SC", sans-serif;
+  font-size: 44px;
+  font-weight: 800;
+  color: var(--yo-text);
+  line-height: 1.1;
+}
+
+.spirit-hero-label {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--yo-accent-deep);
+}
+
+.spirit-hero-count {
+  font-size: 22px;
+  color: var(--yo-text-muted);
+  font-weight: 600;
+}
+
+.spirit-hero-item {
+  margin-bottom: 12px;
+}
+
+.spirit-hero-item:last-child {
+  margin-bottom: 0;
+}
+
+.spirit-hero-item-head {
+  padding: 0;
+  min-height: 280px;
+}
+
+.spirit-hero-portrait {
+  width: 300px;
+  min-width: 300px;
+}
+
+.spirit-hero-portrait .spirit-portrait-img {
+  min-height: 280px;
+}
+
+.spirit-hero-base {
+  margin: 8px 0 0;
+  min-height: 280px;
+  gap: 8px;
+}
+
+.spirit-hero-item-name {
+  font-size: 40px;
+}
+
+.spirit-hero-item-skill {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--yo-border);
+}
+
+.spirit-hero-item .spirit-flavor-desc {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--yo-border);
+  text-align: left;
+}

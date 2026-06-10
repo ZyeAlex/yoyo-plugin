@@ -1,0 +1,69 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/spirit/atlas.css" />
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/spirit/hero-spirits.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="spirit-hero-atlas">
+    <div class="spirit-hero-title">
+        <span class="spirit-hero-name">{{heroName}}</span>
+        <span class="spirit-hero-label">专属灵子</span>
+        <span class="spirit-hero-count">共 {{spirits.length}} 个</span>
+    </div>
+    {{each spirits spirit}}
+    <div class="spirit-hero-item main">
+        <div class="yo-atlas-head spirit-head spirit-hero-item-head">
+            <div class="yo-atlas-portrait spirit-portrait spirit-hero-portrait">
+                <img class="spirit-portrait-img" src="{{pluResPath}}/UI/{{spirit.portraitIcon||spirit.image2||spirit.image}}" alt="{{spirit.name}}"
+                    onerror="this.onerror=null; this.src='{{pluResPath}}/UI/{{spirit.image||spirit.image2}}';">
+            </div>
+            <div class="spirit-base spirit-hero-base">
+                <div class="spirit-identity">
+                    <div class="spirit-name spirit-hero-item-name">{{spirit.name}}</div>
+                </div>
+                <div class="spirit-badges">
+                    <img class="spirit-rarity-img" src="{{pluResPath}}/common/rarity/rarity-{{spirit.rarityClass||0}}.png" alt="{{spirit.rarity}}">
+                    {{if spirit.professionData}}
+                    <img class="spirit-profession-img" src="{{pluResPath}}/UI/{{spirit.professionData.icon[0]}}" alt="{{spirit.profession}}">
+                    {{/if}}
+                </div>
+                {{if spirit.attrs?.length}}
+                <div class="spirit-attrs-box">
+                    <div class="spirit-section-head">
+                        <span>属性加成</span>
+                        <span class="spirit-level-tag">Lv.1/Lv.80</span>
+                    </div>
+                    <table class="spirit-meta">
+                        {{each spirit.attrs attr}}
+                        <tr>
+                            <th>{{attr.name}}</th>
+                            <td>{{attr.lv1}}{{if attr.lv80}}/{{attr.lv80}}{{/if}}</td>
+                        </tr>
+                        {{/each}}
+                    </table>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+        {{if spirit.skillDesc}}
+        <div class="spirit-skill-panel spirit-hero-item-skill">
+            {{if spirit.professionData}}
+            <div class="spirit-skill-condition">
+                <span>以下效果对</span>
+                <img class="spirit-skill-profession" src="{{pluResPath}}/UI/{{spirit.professionData.icon[0]}}" alt="{{spirit.profession}}">
+                <span class="spirit-skill-profession-name">[{{spirit.profession}}]</span>
+                <span>角色生效</span>
+            </div>
+            {{/if}}
+            <div class="spirit-skill-desc">{{spirit.skillDesc}}</div>
+        </div>
+        {{/if}}
+        {{if spirit.desc}}
+        <div class="spirit-flavor-desc">{{spirit.desc}}</div>
+        {{/if}}
+    </div>
+    {{/each}}
+</div>
+{{/block}}

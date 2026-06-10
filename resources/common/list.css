@@ -172,14 +172,12 @@
   font-size: 24px;
 }
 
-/* 灵子 / 物品 */
-.yo-catalog-card--spirit .yo-catalog-media,
+/* 灵子 / 物品（基础尺寸；灵子列表细节见 spirit/list.css） */
 .yo-catalog-card--item .yo-catalog-media {
   height: 96px;
   align-items: center;
 }
 
-.yo-catalog-card--spirit .yo-catalog-media img,
 .yo-catalog-card--item .yo-catalog-media img {
   width: 88px;
   height: 88px;

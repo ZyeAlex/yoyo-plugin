@@ -13,9 +13,23 @@ import {
   buildKiboEvolutionChains,
   lookupElement,
 } from '../api/wiki/data.js'
+import { fetchSuitSets, enrichSuitSets } from '../api/wiki/suitSet.js'
 import { fetchIconModule } from '../api/wiki/luaModule.js'
 import initUI from './UI.js'
 import { clearRenderCache } from './renderCache.js'
+
+const SPIRIT_HERO_SUFFIXES = ['专属灵子图鉴', '专武图鉴', '专属灵子', '专武']
+
+export function parseSpiritHeroQuery(query = '') {
+  const q = String(query).trim()
+  for (const suffix of SPIRIT_HERO_SUFFIXES) {
+    if (q.endsWith(suffix)) {
+      const heroName = q.slice(0, -suffix.length).trim()
+      if (heroName) return heroName
+    }
+  }
+  return null
+}
 
 class Game {
   constructor() {
@@ -56,6 +70,7 @@ class Game {
      * 装备系统
      */
     this.accessories = setting.getData('data/game/accessory', []) //装备列表
+    this.suits = setting.getData('data/game/suit', []) // 套装列表
 
     this.ready = this.bootstrap()
   }
@@ -282,7 +297,24 @@ class Game {
       if (accessories.length) this.accessories = accessories
     }
     setting.setData('data/game/accessory', this.accessories)
+
+    const suitCacheMissing = !this.dataFileExists('data/game/suit')
+    const suitEmpty = !this.suits?.length
+    if (this.shouldFetchWiki(mode, suitEmpty, suitCacheMissing)) {
+      try {
+        this.suits = await fetchSuitSets()
+        setting.setData('data/game/suit', this.suits)
+      } catch (error) {
+        logger.error('[yoyo-plugin][game] 套装数据拉取失败', error)
+      }
+    } else {
+      this.suits = setting.getData('data/game/suit', this.suits)
+    }
     return this.accessories
+  }
+
+  getSuitSets() {
+    return enrichSuitSets(this.suits, this.accessories)
   }
   getHeroId(name) {
     if (name in this.heros) {
@@ -303,9 +335,23 @@ class Game {
     if (name in this.pets) return name
     return this.petIds[name]
   }
+  getSpiritIdsByHeroSpiritQuery(query = '') {
+    const heroName = parseSpiritHeroQuery(query)
+    if (!heroName) return []
+    const heroId = this.getHeroId(heroName)
+    if (!heroId) return []
+    const officialName = this.heros[heroId]?.name
+    if (!officialName) return []
+    return Object.values(this.spirits)
+      .filter(spirit => spirit.relatedHero === officialName)
+      .sort((a, b) => Number(a.id) - Number(b.id))
+      .map(spirit => spirit.id)
+  }
   getSpiritId(name) {
     if (name in this.spirits) return name
-    return this.spiritIds[name]
+    if (this.spiritIds[name]) return this.spiritIds[name]
+    const ids = this.getSpiritIdsByHeroSpiritQuery(name)
+    if (ids.length === 1) return ids[0]
   }
   getItemId(name) {
     if (name in this.items) return name

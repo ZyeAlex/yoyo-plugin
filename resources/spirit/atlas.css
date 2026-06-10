@@ -1,18 +1,265 @@
-.spirit-atlas,
-.item-atlas {
-  padding: 16px;
+.spirit-atlas {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: visible;
+  overflow-y: hidden;
+  font-size: 28px;
+  color: var(--yo-text-secondary);
+}
+
+.spirit-atlas > .spirit-head {
+  padding: 8px 12px 0;
+}
+
+.yo-atlas-head.spirit-head {
+  display: flex;
+  align-items: stretch;
+  min-height: 350px;
+}
+
+.spirit-head {
+  position: relative;
+  overflow: visible;
+}
+
+/* 左侧立绘：与右侧同高，图尽量撑满 */
+.spirit-portrait {
+  position: relative;
+  z-index: 1;
+  width: 400px;
+  min-width: 400px;
+  align-self: stretch;
+  flex-shrink: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  overflow: visible;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.yo-atlas-portrait.spirit-portrait {
+  overflow: visible;
+  border: none;
+  background: transparent;
+}
+
+.spirit-portrait-img {
+  width: auto;
+  height: 100%;
+  max-width: none;
+  min-height: 350px;
+  object-fit: contain;
+  object-position: center bottom;
+  display: block;
+  align-self: stretch;
+  filter: drop-shadow(0 8px 24px rgba(15, 35, 70, 0.16));
+}
+
+/* 右侧信息区 */
+.spirit-base {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  min-width: 0;
+  align-self: stretch;
+  margin: 12px;
+  margin-left: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  min-height: 350px;
+}
+
+.spirit-identity {
+  width: 100%;
+}
+
+.spirit-name {
+  font-size: 52px;
+  font-family: title01, "PingFang SC", sans-serif;
+  color: var(--yo-text);
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0;
+}
+
+.spirit-badges {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.spirit-rarity-img {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+}
+
+.spirit-profession-img {
+  width: 28px;
+  height: 28px;
+  padding: 1px;
+  border-radius: 10px;
+  box-sizing: border-box;
+  background-color: rgba(248, 250, 252, 0.92);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.2);
+  object-fit: contain;
 }
 
 .spirit-related {
-  margin-top: 8px;
-  color: var(--yo-text-secondary);
-  font-size: 22px;
+  font-size: 20px;
+  color: var(--yo-text-muted);
+  font-weight: 600;
 }
 
-.spirit-block,
-.item-block {
-  margin-top: 16px;
-  font-size: 24px;
-  line-height: 1.5;
+.spirit-attrs-box {
+  width: 100%;
+}
+
+.spirit-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--yo-text);
+  padding: 0 2px 8px;
+}
+
+.spirit-level-tag {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--yo-text-muted);
+}
+
+.spirit-meta {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 20px;
+  line-height: 1.35;
+  border: 1px solid var(--yo-border);
+  border-radius: var(--yo-radius-sm);
+  overflow: hidden;
+  background: rgba(248, 250, 252, 0.72);
+  box-shadow: var(--yo-shadow-inset);
+}
+
+.spirit-meta th,
+.spirit-meta td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--yo-border);
+  text-align: center;
+  vertical-align: middle;
+}
+
+.spirit-meta tr:last-child th,
+.spirit-meta tr:last-child td {
+  border-bottom: none;
+}
+
+.spirit-meta th {
+  width: 46%;
+  color: var(--yo-text-muted);
+  font-weight: 600;
+  white-space: nowrap;
+  background: rgba(236, 242, 252, 0.55);
+}
+
+.spirit-meta td {
+  width: 54%;
+  color: var(--yo-text);
+  font-weight: 600;
+}
+
+.spirit-desc {
+  width: 100%;
+  font-size: 22px;
+  line-height: 1.45;
   color: var(--yo-text-secondary);
+  padding: 0 2px;
+  text-align: left;
+  white-space: pre-line;
+}
+
+/* 下方技能区：无图标、无标题 */
+.spirit-skill-block {
+  font-size: 26px;
+}
+
+.spirit-skill-condition {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 22px;
+  line-height: 1.45;
+  color: var(--yo-text-secondary);
+  margin-bottom: 10px;
+}
+
+.spirit-skill-profession {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  vertical-align: middle;
+}
+
+.spirit-skill-profession-name {
+  color: #dd8d4b;
+  font-weight: 700;
+}
+
+.spirit-skill-desc {
+  font-size: 26px;
+  line-height: 1.55;
+  color: var(--yo-text-secondary);
+}
+
+/* 专武合页复用 */
+.spirit-attr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.spirit-attr-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 22px;
+  line-height: 1.35;
+  padding: 4px 2px;
+}
+
+.spirit-attr-name {
+  color: var(--yo-text-muted);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.spirit-attr-value {
+  color: var(--yo-text);
+  font-weight: 700;
+  text-align: right;
+}
+
+.spirit-flavor-desc {
+  font-size: 22px;
+  line-height: 1.55;
+  color: var(--yo-text-secondary);
+  white-space: pre-line;
+}
+
+.spirit-skill-panel {
+  padding-top: 0;
 }

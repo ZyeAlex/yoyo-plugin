@@ -53,6 +53,12 @@ export function buildAtlasKey(tpl, renderData = {}) {
   const [category, page] = parts
 
   if (page === 'list') {
+    if (category === 'item' && renderData.page) {
+      return `${category}/list/${renderData.page}`
+    }
+    if (category === 'accessory' && page === 'suit-list') {
+      return `${category}/suit-list`
+    }
     return `${category}/list`
   }
 
@@ -63,6 +69,10 @@ export function buildAtlasKey(tpl, renderData = {}) {
     const types = [...(renderData.type || ['skill', 'talent'])].sort().join('-') || 'default'
     const introFlag = renderData.showIntro ? 'intro' : 'no-intro'
     return `hero/${id}/${types}-${introFlag}`
+  }
+
+  if (category === 'spirit' && page === 'hero-spirits' && renderData.heroId) {
+    return `spirit/hero/${renderData.heroId}`
   }
 
   return `${category}/${id}`

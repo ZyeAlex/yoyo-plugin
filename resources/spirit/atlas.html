@@ -5,21 +5,57 @@
 {{/block}}
 
 {{block 'main'}}
-<div class="spirit-atlas main">
+<div class="spirit-atlas">
     <div class="yo-atlas-head spirit-head">
-        <div class="yo-atlas-portrait">
-            <img src="{{pluResPath}}/UI/{{image}}" width="120" height="120"
-                onerror="this.onerror=null; this.src='{{pluResPath}}/UI/{{image2}}'">
+        <div class="yo-atlas-portrait spirit-portrait">
+            <img class="spirit-portrait-img" src="{{pluResPath}}/UI/{{portraitIcon||image2||image}}" alt="{{name}}"
+                onerror="this.onerror=null; this.src='{{pluResPath}}/UI/{{image||image2}}';">
         </div>
-        <div class="yo-atlas-info">
-            <div class="yo-atlas-title">{{name}}</div>
-            <div class="yo-atlas-meta">{{rarity}} · {{profession}} · {{attribute}}</div>
-            {{if relatedHero}}<div class="spirit-related">相关角色：{{relatedHero}}</div>{{/if}}
+        <div class="spirit-base">
+            <div class="spirit-identity">
+                <div class="spirit-name">{{name}}</div>
+            </div>
+            <div class="spirit-badges">
+                <img class="spirit-rarity-img" src="{{pluResPath}}/common/rarity/rarity-{{rarityClass||0}}.png" alt="{{rarity}}">
+                {{if professionData}}
+                <img class="spirit-profession-img" src="{{pluResPath}}/UI/{{professionData.icon[0]}}" alt="{{profession}}">
+                {{/if}}
+                {{if relatedHero}}<span class="spirit-related">相关角色：{{relatedHero}}</span>{{/if}}
+            </div>
+            {{if attrs?.length}}
+            <div class="spirit-attrs-box">
+                <div class="spirit-section-head">
+                    <span>属性加成</span>
+                    <span class="spirit-level-tag">Lv.1/Lv.80</span>
+                </div>
+                <table class="spirit-meta">
+                    {{each attrs attr}}
+                    <tr>
+                        <th>{{attr.name}}</th>
+                        <td>{{attr.lv1}}{{if attr.lv80}}/{{attr.lv80}}{{/if}}</td>
+                    </tr>
+                    {{/each}}
+                </table>
+            </div>
+            {{/if}}
+            {{if desc}}
+            <div class="spirit-desc">{{desc}}</div>
+            {{/if}}
         </div>
     </div>
-    {{if desc}}<div class="spirit-block"><div class="yo-section-label">描述</div><div>{{desc}}</div></div>{{/if}}
-    {{if skill}}<div class="spirit-block"><div class="yo-section-label">技能</div><div>{{skill}}</div></div>{{/if}}
-    {{if skillDesc}}<div class="spirit-block"><div class="yo-section-label">技能描述</div><div>{{@skillDesc.replace(/\n/g,'<br/>')}}</div></div>{{/if}}
-    {{if maxSkillDesc}}<div class="spirit-block"><div class="yo-section-label">满星技能</div><div>{{@maxSkillDesc.replace(/\n/g,'<br/>')}}</div></div>{{/if}}
+
+    {{if skillDesc}}
+    <div class="spirit-skill-block main">
+        {{if professionData}}
+        <div class="spirit-skill-condition">
+            <span>以下效果对</span>
+            <img class="spirit-skill-profession" src="{{pluResPath}}/UI/{{professionData.icon[0]}}" alt="{{profession}}">
+            <span class="spirit-skill-profession-name">[{{profession}}]</span>
+            <span>角色生效</span>
+        </div>
+        {{/if}}
+        <div class="spirit-skill-desc">{{skillDesc}}</div>
+    </div>
+    {{/if}}
 </div>
 {{/block}}
