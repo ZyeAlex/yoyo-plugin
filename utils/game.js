@@ -5,8 +5,6 @@
 import path from 'path'
 import fs from 'fs'
 import MD5 from 'md5'
-import { promisify } from 'util'
-import { pipeline } from 'stream'
 import setting from './setting.js'
 import {
   fetchCatalog,
@@ -387,53 +385,107 @@ class Game {
   /**
    * 操作resource
    */
-  async setHeroImgs(heroId, imageMessages) {
+  normalizeImageBuffer(data, maxSize) {
+    if (Buffer.isBuffer(data)) {
+      if (data.length > maxSize) throw new Error('图片太大了')
+      return data
+    }
+    if (typeof data === 'string') {
+      if (data.startsWith('file://')) {
+        const buf = fs.readFileSync(data.replace(/^file:\/\//, ''))
+        if (buf.length > maxSize) throw new Error('图片太大了')
+        return buf
+      }
+      if (data.startsWith('base64://')) {
+        const buf = Buffer.from(data.replace(/^base64:\/\//, ''), 'base64')
+        if (buf.length > maxSize) throw new Error('图片太大了')
+        return buf
+      }
+    }
+    return null
+  }
+
+  detectImageExt(val, buffer) {
+    const sourceName = String(val?.filename || val?.file || val?.url || '')
+    let fileType = 'jpg'
+    if (sourceName.includes('.')) {
+      fileType = sourceName.substring(sourceName.lastIndexOf('.') + 1).toLowerCase()
+    }
+    if (buffer?.[0] === 0x47 && buffer?.[1] === 0x49) fileType = 'gif'
+    else if (buffer?.[0] === 0x89 && buffer?.[1] === 0x50) fileType = 'png'
+    else if (buffer?.[0] === 0xff && buffer?.[1] === 0xd8) fileType = 'jpg'
+    if (!['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(fileType)) fileType = 'jpg'
+    return fileType === 'jpeg' ? 'jpg' : fileType
+  }
+
+  async readHeroImageBuffer(val, maxSize, e) {
+    if (Buffer.isBuffer(val?.file)) {
+      return this.normalizeImageBuffer(val.file, maxSize)
+    }
+
+    const sources = []
+    if (val?.file) sources.push(val.file)
+    if (val?.url && val.url !== val.file) sources.push(val.url)
+
+    let lastErr
+    for (const source of sources) {
+      try {
+        if (typeof Bot !== 'undefined' && typeof Bot.Buffer === 'function') {
+          const data = await Bot.Buffer(source, { size: maxSize })
+          const buf = this.normalizeImageBuffer(data, maxSize)
+          if (buf) return buf
+        }
+      } catch (err) {
+        lastErr = err
+        logger.debug(`[yoyo-plugin][game] Bot.Buffer(${source}) 失败: ${err.message}`)
+      }
+    }
+
+    if (val?.url && e?.bot?.sendApi) {
+      try {
+        const result = await e.bot.sendApi('download_file', { url: val.url })
+        const filePath = String(result?.file || result?.path || '').replace(/^file:\/\//, '')
+        if (filePath && fs.existsSync(filePath)) {
+          return this.normalizeImageBuffer(fs.readFileSync(filePath), maxSize)
+        }
+      } catch (err) {
+        lastErr = err
+        logger.debug(`[yoyo-plugin][game] download_file 失败: ${err.message}`)
+      }
+    }
+
+    throw lastErr || new Error('未找到可用的图片数据')
+  }
+
+  async setHeroImgs(heroId, imageMessages, e) {
     let str = ''
     let imgCount = 0
+    const heroImgRoot = path.join(setting.path, 'resources/img/hero', this.heros[heroId].name)
+    const maxSize = 1024 * 1024 * (setting.config.imgMaxSize || 10)
+
     for (let val of imageMessages) {
-      const response = await fetch(val.url)
+      try {
+        const buffers = await this.readHeroImageBuffer(val, maxSize, e)
+        const fileType = this.detectImageExt(val, buffers)
 
-      if (!response.ok) {
-        str += `❌图片上传失败\n`
-        continue
-      }
-      if (response.headers.get('size') > 1024 * 1024 * setting.config.imgMaxSize) {
-        str += `❌图片上传失败：图片太大了\n`
-        continue
-      }
-      let fileName = ''
-      let fileType = 'png'
-      if (val.filename) {
-        fileName = val.filename.substring(0, val.file.lastIndexOf('.'))
-        fileType = val.filename.substring(val.file.lastIndexOf('.') + 1)
-      }
-      if (response.headers.get('content-type') === 'image/gif') {
-        fileType = 'gif'
-      }
-      if (!'jpg,jpeg,png,webp'.split(',').includes(fileType)) {
-        fileType = 'jpg'
-      }
+        if (!fs.existsSync(heroImgRoot)) {
+          fs.mkdirSync(heroImgRoot, { recursive: true })
+        }
 
-      let heroImgPath = path.join(setting.path, '/resources/img/hero', this.heros[heroId].name)
-      if (!fs.existsSync(heroImgPath)) {
-        fs.mkdirSync(heroImgPath, { recursive: true })
-      }
+        const md5 = MD5(buffers)
+        const newImgPath = path.join(heroImgRoot, `${md5}.${fileType}`)
+        fs.writeFileSync(newImgPath, buffers)
 
-      let imgPath = `${heroImgPath}/${fileName}.${fileType}`
-      const streamPipeline = promisify(pipeline)
-      await streamPipeline(response.body, fs.createWriteStream(imgPath))
-      let buffers = fs.readFileSync(imgPath)
-      let base64 = Buffer.from(buffers, 'base64').toString()
-      let md5 = MD5(base64)
-      let newImgPath = `${heroImgPath}/${md5}.${fileType}`
-      if (fs.existsSync(newImgPath)) {
-        fs.unlink(newImgPath, (err) => { })
+        if (!this.heroImgs[heroId]) this.heroImgs[heroId] = []
+        if (!this.heroImgs[heroId].includes(newImgPath)) {
+          this.heroImgs[heroId].push(newImgPath)
+        }
+        str += `✅图片上传成功\n`
+        imgCount++
+      } catch (err) {
+        logger.error('[yoyo-plugin][game] setHeroImgs 失败', err)
+        str += `❌图片上传失败：${err.message}\n`
       }
-      fs.rename(imgPath, newImgPath, () => { })
-      if (!this.heroImgs[heroId]) this.heroImgs[heroId] = []
-      this.heroImgs[heroId].push(`${heroImgPath}/${md5}.${fileType}`)
-      str += `✅图片上传成功\n`
-      imgCount++
     }
     str += `成功上传${imgCount}张${this.heros[heroId].name}图片`
     return str

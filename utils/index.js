@@ -72,6 +72,10 @@ class Utils {
    * 返回当前用户是否拥有admin权限
    */
   async checkPermission(e, permission = "admin", role = "all", isReply = true) {
+    if (permission === 'all' && role === 'all') {
+      return true
+    }
+
     if (e.bot.adapter?.name !== "OneBotv11" || typeof e.bot.sendApi !== "function") {
       if (isReply) {
         e.reply('❎ Bot未运行在OneBotv11环境', true)

@@ -12,6 +12,10 @@ export const Img = plugin({
     priority: -1,
     rule: [
         {
+            reg: `^#?(?:查看)?原图$`,
+            fnc: originalPic
+        },
+        {
             reg: `^#?(?:上传|添加)(.{0,10})${imgReg}$`,
             fnc: uploadHeroImg
         },
@@ -20,17 +24,13 @@ export const Img = plugin({
             fnc: delHeroImg
         },
         {
-            reg: `^#?(?!上传|添加|随机(?!角色)?)(.{0,5})${imgReg}([0-9]{0,4})$`,
+            reg: `^(?!#?(?:查看)?原图$)#?(?!上传|添加|随机(?!角色)?)(.{0,5})${imgReg}([0-9]{0,4})$`,
             fnc: getHeroImg
         },
         {
             reg: `^#?(.{1,10})${imgReg}(列表|表列|合集|集合)$`,
             fnc: getHeroImgList
         },
-        {
-            reg: `^#?(查看)?原图$`,
-            fnc: originalPic
-        }
     ]
 })
 
@@ -101,44 +101,55 @@ async function delHeroImg(e, heroName, select) {
 
 
 // 获取原图
-async function originalPic(e) {
-    let source
+async function getReplyMessage(e) {
+    if (e.getReply) {
+        try {
+            return await e.getReply()
+        } catch (err) {
+            logger.debug(`[yoyo-plugin][img] getReply 失败: ${err.message}`)
+        }
+    }
     if (e.reply_id) {
-        source = { message_id: e.reply_id }
-    } else {
-        if (!e.hasReply && !e.source) {
-            return true
-        }
-        // 引用的消息不是自己的消息
-        if (e.source.user_id !== e.self_id) {
-            return true
-        }
-        // 获取原消息
-        if (e.group?.getChatHistory) {
-            logger.info(await e.group.getChatHistory(e.source.seq, 1))
-            source = (await e.group.getChatHistory(e.source.seq, 1)).pop()
-        } else if (e.friend?.getChatHistory) {
-            source = (await e.friend.getChatHistory(e.source.time, 1)).pop()
-        }
-        // 引用的不是纯图片
-        if (!(source?.message?.length === 1 && source?.message[0]?.type === 'image')) {
-            return true
-        }
+        if (e.group?.getMsg) return e.group.getMsg(e.reply_id)
+        if (e.friend?.getMsg) return e.friend.getMsg(e.reply_id)
+        return { message_id: e.reply_id }
     }
-    if (source?.message_id) {
-        let imgPath = await redis.get(`yoyo:original-picture:${source.message_id}`)
-        if (imgPath) {
-            if (!e.isMaster) {
-                // e.reply('已禁止获取原图...')
-                // return true
-            }
-            e.reply(segment.image(imgPath), false, { recallMsg: 60 })
-            return
-        }
+    if (e.source && e.group?.getChatHistory) {
+        return (await e.group.getChatHistory(e.source.seq, 1)).pop()
+    }
+    if (e.source && e.friend?.getChatHistory) {
+        return (await e.friend.getChatHistory(e.source.time, 1)).pop()
+    }
+    return null
+}
+
+function isBotReplyMessage(e, replyMsg) {
+    const senderId = replyMsg?.sender?.user_id ?? replyMsg?.user_id ?? e.source?.user_id
+    if (!senderId) return !!e.reply_id || !!e.source
+    return String(senderId) === String(e.self_id)
+}
+
+async function originalPic(e) {
+    if (!e.hasReply && !e.source && !e.reply_id) {
+        return true
     }
 
-    return true
+    // 引用的消息不是机器人发的
+    if (e.source?.user_id && String(e.source.user_id) !== String(e.self_id)) {
+        return true
+    }
 
+    const replyMsg = await getReplyMessage(e)
+    if (!replyMsg?.message_id || !isBotReplyMessage(e, replyMsg)) {
+        return true
+    }
+
+    const imgPath = await redis.get(`yoyo:original-picture:${replyMsg.message_id}`)
+    if (!imgPath) {
+        return true
+    }
+
+    await e.reply(segment.image(imgPath), false, { recallMsg: 60 })
 }
 
 
@@ -147,8 +158,12 @@ async function uploadHeroImg(e, heroName) {
     // 查询是否有此角色
     let heroId = game.getHeroId(heroName)
     if (!heroId) return true // 本插件不处理
-    // 权限检测
-    await utils.checkPermission(e, setting.config.imgUpAuth)
+    try {
+        // 权限检测
+        await utils.checkPermission(e, setting.config.imgUpAuth)
+    } catch (err) {
+        return true
+    }
     let imgs = []
     for (let val of e.message) {
         logger.info(val)
@@ -198,7 +213,16 @@ async function uploadHeroImg(e, heroName) {
         return
     }
     // 保存图片
-    const msg = e.reply([segment.at(e.user_id, lodash.truncate(e.sender.card, { length: 8 })), '\n正在上传图片，请稍候...'])
-    e.reply(await game.setHeroImgs(heroId, imgs))
-    e?.group?.recallMsg(msg?.data?.message_id)
+    const msg = await e.reply([segment.at(e.user_id, lodash.truncate(e.sender.card, { length: 8 })), '\n正在上传图片，请稍候...'])
+    try {
+        await e.reply(await game.setHeroImgs(heroId, imgs, e))
+    } catch (err) {
+        logger.error('[yoyo-plugin][img] uploadHeroImg 失败', err)
+        await e.reply(`❌图片上传失败：${err.message}`)
+    }
+    if (msg?.message_id) {
+        e?.group?.recallMsg(msg.message_id)
+    } else if (msg?.data?.message_id) {
+        e?.group?.recallMsg(msg?.data?.message_id)
+    }
 }

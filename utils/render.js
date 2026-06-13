@@ -27,7 +27,7 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
   if (cacheScope && cacheKey) {
     const cachedPath = getCachedPath(cacheScope, cacheKey)
     if (cachedPath) {
-      return e.reply(segment.image(cachedPath))
+      return replyImageWithOriginal(e, cachedPath)
     }
   }
 
@@ -106,27 +106,47 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
     } else {
       logger.mark(`[yoyo-plugin][renderCache] saved ${cacheScope}/${cacheKey}`)
     }
-    return e.reply(segment.image(savedPath))
+    return replyImageWithOriginal(e, savedPath)
   }
 
   return result
 }
 
+const ORIGINAL_PICTURE_TTL = 3600 * 3
 
-// 保存原图
-export async function saveRender(e, p, url, renderData = {}, ...args) {
-  let msgRes = await e.reply([await render(e, p, renderData, { e, retType: 'base64' })], ...args)
-  if (msgRes) {
-    const message_id = [e.message_id]
-    if (Array.isArray(msgRes.message_id)) {
-      message_id.push(...msgRes.message_id)
-    } else if (msgRes.message_id) {
-      message_id.push(msgRes.message_id)
-    }
-    for (const i of message_id) {
-      await redis.set(`yoyo:original-picture:${i}`, url, { EX: 3600 * 3 })
-    }
+export function extractReplyMessageIds(msgRes) {
+  const ids = new Set()
+  const push = (id) => {
+    if (id == null || id === '') return
+    if (Array.isArray(id)) id.forEach(push)
+    else ids.add(String(id))
   }
+  push(msgRes?.message_id)
+  push(msgRes?.data?.message_id)
+  if (Array.isArray(msgRes?.data)) {
+    msgRes.data.forEach(item => push(item?.message_id))
+  }
+  return [...ids]
+}
+
+export async function registerOriginalPicture(msgRes, originalPath) {
+  if (!originalPath || !msgRes) return
+  for (const id of extractReplyMessageIds(msgRes)) {
+    await redis.set(`yoyo:original-picture:${id}`, originalPath, { EX: ORIGINAL_PICTURE_TTL })
+  }
+}
+
+async function replyImageWithOriginal(e, imgPath) {
+  const msgRes = await e.reply(segment.image(imgPath))
+  await registerOriginalPicture(msgRes, imgPath)
+  return msgRes
+}
+
+// 保存原图（签到等场景：渲染图 + 关联更高清本地图）
+export async function saveRender(e, p, url, renderData = {}, ...args) {
+  const rendered = await render(e, p, renderData, { retType: 'base64' })
+  const msgRes = await e.reply([rendered], ...args)
+  await registerOriginalPicture(msgRes, url)
 }
 
 export { CACHE_SCOPE, buildAtlasKey, clearRenderCache, clearPanelCache, buildPanelKey } from './renderCache.js'
