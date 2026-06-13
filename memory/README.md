@@ -11,6 +11,7 @@
 |------|--------|
 | 图鉴/签到 UI 布局、CSS 维护禁忌 | [05-render-ui-styles.md](./05-render-ui-styles.md) |
 | 图鉴数据从哪来、渲染缓存怎么失效 | [04-wiki-data-and-cache.md](./04-wiki-data-and-cache.md) |
+| 角色图片库 / yoyo-image 仓库在哪 | [06-yoyo-image-repo.md](./06-yoyo-image-repo.md) |
 | 写新命令、`#plugin` / `#render` / 权限 | [01-yunzai-access-and-api-cookbook.md](./01-yunzai-access-and-api-cookbook.md) |
 | 账号绑定 / 扫码登录设计 | [02-game-account-login-flow-design.md](./02-game-account-login-flow-design.md) |
 | Guoba 配置面板接入 | [03-guoba-support-implementation-guide.md](./03-guoba-support-implementation-guide.md) |
@@ -33,6 +34,7 @@
 | 03 | [03-guoba-support-implementation-guide.md](./03-guoba-support-implementation-guide.md) | Guoba support 实现 |
 | 04 | [04-wiki-data-and-cache.md](./04-wiki-data-and-cache.md) | Wiki SMW 数据 + 图鉴渲染缓存 |
 | 05 | [05-render-ui-styles.md](./05-render-ui-styles.md) | 角色/奇波图鉴 + 签到页 UI 样式定稿 |
+| 06 | [06-yoyo-image-repo.md](./06-yoyo-image-repo.md) | 角色图片库 = `resources/img/hero/`（yoyo-image 嵌套 Git 仓） |
 
 ---
 
