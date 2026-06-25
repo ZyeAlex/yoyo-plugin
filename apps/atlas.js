@@ -69,7 +69,7 @@ export const Atlas = plugin({
     priority: 100,
     rule: [
         {
-            reg: `^#?更新(.{0,4})(图鉴|数据|图鉴数据)$`,
+            reg: `^#?更新(图鉴|数据|图鉴数据)$`,
             fnc: updateAtlas
         },
         {
@@ -174,13 +174,15 @@ async function heroAtlas(e, heroId, type = ['skill', 'talent'], { showIntro = fa
 }
 
 async function petList(e) {
-    let pets = Object.values(game.pets).filter(({ petIcon, name }) => petIcon && String(name || '').trim())
+    let pets = game.getPublicPets()
     pets.sort((a, b) => Number(a.id) - Number(b.id))
     await render(e, 'pet/list', { pets, length: pets.length }, ATLAS_CFG)
 }
 
 async function petAtlas(e, petId) {
-    await render(e, 'pet/atlas', { ...game.pets[petId] }, ATLAS_CFG)
+    const pet = game.pets[petId]
+    if (!game.isPublicPet(pet)) return true
+    await render(e, 'pet/atlas', { ...pet }, ATLAS_CFG)
 }
 
 async function spiritList(e) {
@@ -233,7 +235,7 @@ function resolveRelatedPet(petName) {
     const petId = game.getPetId(petName)
     if (petId) pet = game.pets[petId]
     if (!pet) {
-        pet = Object.values(game.pets).find(p => p.name === petName || p.page === petName)
+        pet = game.getPublicPets().find(p => p.name === petName || p.page === petName)
     }
     return {
         relatedPetIcon: pet?.petIcon || null,
@@ -261,22 +263,13 @@ async function suitList(e) {
     }, ATLAS_CFG)
 }
 
-async function updateAtlas(e, type) {
+async function updateAtlas(e) {
     try {
-        e.reply('即将为你更新图鉴数据~')
-        const typeMap = {
-            '角色': 'Hero',
-            '奇波': 'Kibo',
-            '灵子': 'Spirit',
-            '装备': 'Accessory',
-            '物品': 'Item',
-        }
-        if (!type) await game.getData({ mode: 'refresh' })
-        else if (typeMap[type]) await game.getData({ mode: 'refresh', type: typeMap[type] })
-        else await game.getData({ mode: 'refresh' })
-        e.reply((type || '') + '图鉴数据已更新完毕！')
+        e.reply('即将为你更新数据~')
+        await game.getData({ mode: 'refresh' })
+        e.reply('数据已更新完毕！')
     } catch (error) {
         logger.error('[yoyo-plugin][updateAtlas]', error)
-        e.reply('图鉴数据更新失败，请查看日志')
+        e.reply('数据更新失败，请查看日志')
     }
 }

@@ -46,7 +46,7 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
   } else if (cacheScope) {
     bgImg = '/common/pet/background.png'
   } else {
-    const pet = lodash.sample(Object.values(game.pets))
+    const pet = lodash.sample(game.getPublicPets())
     const cardBg = pet?.id ? `tex_pet_kibo_card_background_${pet.id}.png` : null
     if (cardBg && fs.existsSync(path.join(setting.path, 'resources/UI', cardBg))) {
       bgImg = '/UI/' + cardBg

@@ -1,0 +1,148 @@
+slug: game-info
+title: 游戏信息整理合集
+kind: reference
+description: 官方情报合集：开发历程、元素职业、角色奇波索引等
+sourceUrl: https://wiki.biligame.com/ap/%E6%B8%B8%E6%88%8F%E4%BF%A1%E6%81%AF%E6%95%B4%E7%90%86%E5%90%88%E9%9B%86
+fetchedAt: 2026-06-24T08:15:54.687Z
+sectionCount: 18
+sections:
+  - id: 前言
+    title: 前言
+    level: 2
+    text: |-
+      前情提示：当前，本合集资料来源于官方视频、官网以及部分投放的广告内容。
+
+      首曝PV＆实机演示：https://www.bilibili.com/video/BV1Jr421n7n4
+
+      PS5 实机演示PV：https://www.bilibili.com/video/BV1GZ421h7XP
+
+      PV2 向蓝色的彼方启航：https://www.bilibili.com/video/BV1KUopYZEs5
+
+      「星至测试」旅行手册：https://www.bilibili.com/video/BV1CvuyzzEhw
+
+      姬瑟贝露角色PV：https://www.bilibili.com/video/BV1A3cvzdEzh/
+
+      官网：https://azurpromilia.manjuu.com/home/
+
+      另请注意：当前所有信息都是初步的，在游戏测试期间，可能会多次更改。
+      鉴于游戏测试已经结束，故将本页面中测试出现的部分内容移动至已击毁的卫星，有需要的可前往该页面查看。
+    charCount: 442
+  - id: 本页面更新时间线
+    title: 本页面更新时间线
+    level: 2
+    text: |-
+      2026年04月03日 - 至今：游戏内外后续卫星内容收集整理
+      2025年08月18日 - 2026年04月03日：「星至测试」——「恒序测试」游戏本体外情报收集整理
+      2025年08月15日 - 2025年08月18日：「星至测试」期间中的游戏本体内相关情报
+      2024年03月20日 - 2025年08月15日：游戏本体外情报收集整理
+    charCount: 167
+  - id: 游戏开发历程
+    title: 游戏开发历程
+    level: 2
+    text: ""
+    charCount: 0
+  - id: 普罗米利亚
+    title: 普罗米利亚
+    level: 2
+    text: |-
+      普罗米利亚大陆存在不同的国家/阵营/聚落，目前已知有：
+
+      普罗米利亚大陆存在不同的智慧种族，目前已知有：
+    charCount: 52
+  - id: 元素
+    title: 元素
+    level: 2
+    text: ""
+    charCount: 0
+  - id: 职业
+    title: 职业
+    level: 2
+    text: ""
+    charCount: 0
+  - id: 角色伙伴
+    title: 角色伙伴
+    level: 2
+    text: 此处不再收录测试中可操作角色，请前往已击毁的卫星查看
+    charCount: 26
+  - id: 二测未实装角色
+    title: 二测未实装角色
+    level: 3
+    text: 以下角色极大概率为可操作角色，但未必会在公测版本实装。
+    charCount: 27
+  - id: npc角色
+    title: NPC角色
+    level: 3
+    text: 以下角色在二测中是明确的NPC形象，不排除未来升格为可操作角色的可能。
+    charCount: 35
+  - id: 未知角色
+    title: 未知角色
+    level: 3
+    text: 以下角色信息较少，或可能属于NPC
+    charCount: 17
+  - id: 奇波
+    title: 奇波
+    level: 2
+    text: |-
+      此处不再收录测试中出现的奇波，请前往奇波查看
+
+      表中顺序大体上按各PV、测试、动态时间顺序排序，存在进化关系的排一起
+
+      目前，奇波进化阶段至少包括：幼年期——成长期——成熟期——超限体（首领）。
+    charCount: 97
+  - id: 二测未实装奇波
+    title: 二测未实装奇波
+    level: 3
+    text: ""
+    charCount: 0
+  - id: 特殊个体
+    title: 特殊个体
+    level: 3
+    text: ""
+    charCount: 0
+  - id: 首领
+    title: 首领
+    level: 3
+    text: |-
+      文件:卫星-紫电鹿.png|缩略图|？？？（PV 2:19）
+      文件:卫星-狼神.png|缩略图|？？？（PS5演示PV结尾）
+      文件:卫星-神秘狐狸.png|缩略图|？？？（官方宣传图）
+    charCount: 92
+  - id: 环境生物
+    title: 环境生物
+    level: 3
+    text: |-
+      环境生物（非官方名称）为游戏地图中会出现的一类生物，有的会显示名称、有的不会显示。
+      目前环境生物均无法被玩家获得，暂时无法确认它们与奇波的关系。
+
+      /**/
+      .wikitable.kibo-files td:last-child {
+          text-align: left;
+      }
+      /**/
+    charCount: 145
+  - id: 凶兽
+    title: 凶兽
+    level: 2
+    text: |-
+      测试中的凶兽均不可捕捉。
+
+      凶兽存在位阶的设定，其中暗焰兽为厄位凶兽，厄位凶兽不需要睡眠也不需要繁殖，只要不击碎核心就会不断重生。
+
+      暂时不明确凶兽是否存在分类和成长阶段。
+    charCount: 86
+  - id: 官方插画合集
+    title: 官方插画合集
+    level: 2
+    text: ""
+    charCount: 0
+  - id: 来源
+    title: 来源
+    level: 2
+    text: |-
+      /**/
+      /*显示评论区*/
+      .post-content,.comment-component {
+          display: block!important;
+      }
+      /**/
+    charCount: 86

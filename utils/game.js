@@ -9,7 +9,15 @@ import setting from './setting.js'
 import {
   fetchCatalog,
   buildKiboEvolutionChains,
+  buildKiboPetIds,
+  isKiboStorySpecial,
   lookupElement,
+  loadAllLorePages,
+  loadLorePage,
+  refreshLoreCache,
+  getLoreSection,
+  searchLoreSections,
+  scheduleLoreRefresh,
 } from '../api/wiki/data.js'
 import { fetchSuitSets, enrichSuitSets, buildAccessoryAtlasContext } from '../api/wiki/suitSet.js'
 import { fetchIconModule } from '../api/wiki/luaModule.js'
@@ -71,6 +79,9 @@ class Game {
     this.accessoryIds = {}
     this.suits = setting.getData('data/game/suit', []) // 套装列表
 
+    /** BWIKI 背景 / 资料合集（data/game/lore/*.yaml） */
+    this.lore = loadAllLorePages()
+
     this.ready = this.bootstrap()
   }
 
@@ -91,48 +102,65 @@ class Game {
     return mode === 'refresh' || isEmpty || cacheMissing
   }
 
-  normalizeGetDataOptions(arg1, arg2) {
-    if (typeof arg1 === 'object' && arg1 !== null) {
-      return { mode: arg1.mode || 'refresh', type: arg1.type }
+  normalizeGetDataMode(arg) {
+    if (typeof arg === 'object' && arg !== null) {
+      return arg.mode || 'refresh'
     }
-    if (typeof arg1 === 'boolean') {
-      return { mode: arg1 ? 'init' : 'refresh', type: arg2 }
+    if (typeof arg === 'boolean') {
+      return arg ? 'init' : 'refresh'
     }
-    return { mode: 'refresh', type: arg1 }
+    return 'refresh'
   }
 
-  /** @param {{ mode?: 'init'|'refresh', type?: string }}|boolean arg1 */
-  async getData(arg1, arg2) {
-    const { mode, type } = this.normalizeGetDataOptions(arg1, arg2)
+  /** @param {{ mode?: 'init'|'refresh' }|boolean} [arg] */
+  async getData(arg) {
+    const mode = this.normalizeGetDataMode(arg)
     if (!this.getUI) {
       this.getUI = initUI.call(this)
     }
-    const types = {
-      Base: this.getBaseData,
-      Hero: this.getHeroData,
-      Kibo: this.getPetData,
-      Spirit: this.getSpiritData,
-      Accessory: this.getAccessoryData,
-      Item: this.getItemData,
-    }
-    const run = async (fn) => {
+    const loaders = [
+      this.getBaseData,
+      this.getHeroData,
+      this.getPetData,
+      this.getSpiritData,
+      this.getAccessoryData,
+      this.getItemData,
+      this.getLoreData,
+    ]
+    for (const fn of loaders) {
       try {
         await fn.call(this, mode)
       } catch (err) {
         logger.error(`[yoyo-plugin][game] ${fn.name} 失败`, err)
       }
     }
-    if (!type) {
-      for (const fn of Object.values(types)) {
-        await run(fn)
-      }
-    } else if (types[type]) {
-      await run(types[type])
-    } else {
-      throw new Error(`Unknown data type: ${type}`)
-    }
-    if (mode === 'refresh') clearRenderCache(type)
+    if (mode === 'refresh') clearRenderCache()
     this.scheduleUIDownload()
+    scheduleLoreRefresh()
+  }
+
+  /** BWIKI 背景页：普罗米利亚、游戏信息整理合集 */
+  async getLoreData(mode = 'init') {
+    const cacheMissing = !fs.existsSync(path.join(setting.path, 'data/game/lore'))
+      || !fs.readdirSync(path.join(setting.path, 'data/game/lore')).some(f => f.endsWith('.yaml') && f !== 'index.yaml')
+    if (mode === 'refresh' || cacheMissing) {
+      this.lore = await refreshLoreCache({ mode })
+    } else {
+      this.lore = loadAllLorePages()
+    }
+    return this.lore
+  }
+
+  getLorePage(slug) {
+    return this.lore?.[slug] || loadLorePage(slug)
+  }
+
+  findLoreSection(slug, sectionQuery) {
+    return getLoreSection(slug, sectionQuery)
+  }
+
+  searchLore(query, options) {
+    return searchLoreSections(query, options)
   }
 
   /** 后台下载 UI 图标，不阻塞插件加载 */
@@ -267,6 +295,7 @@ class Game {
       postProcess() { buildKiboEvolutionChains(this.pets) },
     })
     buildKiboEvolutionChains(this.pets)
+    this.petIds = buildKiboPetIds(this.pets)
     return this.pets
   }
   async getSpiritData(mode) {
@@ -356,9 +385,20 @@ class Game {
       }
     }
   }
+  isPublicPet(pet) {
+    return !!pet?.id && !isKiboStorySpecial(pet)
+  }
+  getPublicPets() {
+    return Object.values(this.pets).filter(
+      pet => pet?.petIcon && String(pet.name || '').trim() && this.isPublicPet(pet)
+    )
+  }
   getPetId(name) {
-    if (name in this.pets) return name
-    return this.petIds[name]
+    if (name in this.pets) {
+      return this.isPublicPet(this.pets[name]) ? name : undefined
+    }
+    const id = this.petIds[name]
+    return id && this.isPublicPet(this.pets[id]) ? id : undefined
   }
   getSpiritIdsByHeroSpiritQuery(query = '') {
     const heroName = parseSpiritHeroQuery(query)

@@ -70,9 +70,33 @@ function normalizeEvolutionNext(value) {
   return String(value).trim()
 }
 
+export function isKiboStorySpecial(pet) {
+  return String(pet?.page || '').includes('特殊')
+}
+
+export function buildKiboPetIds(pets) {
+  return Object.entries(pets).reduce((ids, [id, pet]) => {
+    if (!pet?.name || isKiboStorySpecial(pet)) return ids
+    ids[pet.name] = id
+    return ids
+  }, {})
+}
+
+function buildKiboLookupMaps(pets) {
+  const byPage = {}
+  const byName = {}
+  Object.values(pets).forEach(pet => {
+    if (!pet?.id || isKiboStorySpecial(pet)) return
+    if (pet.page) byPage[pet.page] = pet.id
+    if (pet.name) byName[pet.name] = pet.id
+  })
+  return { byPage, byName }
+}
+
 export function enrichKiboCardAssets(pets) {
   const uiDir = path.join(setting.path, 'resources/UI')
   Object.values(pets).forEach(pet => {
+    if (isKiboStorySpecial(pet)) return
     const id = pet?.id
     if (!id) return
     const bg = `tex_pet_kibo_card_background_${id}.png`
@@ -94,26 +118,30 @@ export function enrichKiboCardAssets(pets) {
 }
 
 export function buildKiboEvolutionChains(pets) {
-  const byName = {}
-  Object.values(pets).forEach(pet => {
-    if (pet?.name) byName[pet.name] = pet.id
-  })
+  const { byPage, byName } = buildKiboLookupMaps(pets)
 
-  const prevByNextName = {}
+  function resolveEvolutionNext(nextName) {
+    if (!nextName) return null
+    if (byPage[nextName]) return byPage[nextName]
+    return byName[nextName] || null
+  }
+
+  const prevByNextId = {}
   Object.values(pets).forEach(pet => {
+    if (isKiboStorySpecial(pet)) return
     const nextName = normalizeEvolutionNext(pet.evolutionNext)
-    if (!nextName || !pet.name) return
-    if (!prevByNextName[nextName]) prevByNextName[nextName] = []
-    prevByNextName[nextName].push(pet.id)
+    if (!nextName) return
+    const nextId = resolveEvolutionNext(nextName)
+    if (!nextId || isKiboStorySpecial(pets[nextId])) return
+    if (!prevByNextId[nextId]) prevByNextId[nextId] = []
+    prevByNextId[nextId].push(pet.id)
   })
 
   function findRootId(petId) {
     let rootId = petId
     const visited = new Set([petId])
     while (true) {
-      const pet = pets[rootId]
-      if (!pet?.name) break
-      const prevIds = prevByNextName[pet.name]
+      const prevIds = prevByNextId[rootId]
       if (!prevIds?.length) break
       const prevId = [...prevIds].sort((a, b) => Number(a) - Number(b))[0]
       if (visited.has(prevId)) break
@@ -133,16 +161,18 @@ export function buildKiboEvolutionChains(pets) {
       if (!pet?.name) break
       chain.push(currentId)
       const nextName = normalizeEvolutionNext(pet.evolutionNext)
-      currentId = nextName ? byName[nextName] : null
+      currentId = nextName ? resolveEvolutionNext(nextName) : null
     }
     return chain
   }
 
   Object.values(pets).forEach(pet => {
-    if (!pet?.id) return
+    if (!pet?.id || isKiboStorySpecial(pet)) return
     const rootId = findRootId(pet.id)
     const chainIds = buildForwardChain(rootId)
-    pet.evolution = chainIds.map(id => pets[id]).filter(p => p?.name)
+    pet.evolution = chainIds
+      .map(id => pets[id])
+      .filter(p => p?.name && !isKiboStorySpecial(p))
     pet.evolutionName = pet.evolutionSeries || pets[rootId]?.evolutionSeries || '成长'
   })
   enrichKiboCardAssets(pets)

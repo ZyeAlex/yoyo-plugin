@@ -38,16 +38,25 @@
    - 即 **yoyo-image** 独立 Git 仓库（嵌套 `.git`，主仓 `.gitignore` 排除 `resources/img/`）  
    - 签到 / 随机图 / `#上传xx图片` 的数据落点
 
+7. `memory/07-agent-integration.md`  
+   - 悠悠 ↔ **YoAgent** 插件侧对接（配置、HTTP schema、联调）  
+   - YoAgent 实现专题见 `memory/agent/`
+
+8. `memory/agent/README.md`  
+   - YoAgent Harness 需求、代码结构、进度、外部参照（原 `server/memory/`）
+
 > 渐进式入口：[memory/README.md](./README.md)
 
 ---
 
 ## 当前结论（供快速记忆）
 
-- **Wiki 数据**：列表（SMW / 分类成员，同源「角色图鉴」等页）→ 详情页 wikitext → `{{xxx图鉴}}` 解析 → `data/game/*.yaml`；Base（元素/阵营/职业）从 `模块:Icon/*` 拉取一次。无内置 `wiki-modules` fallback。详见 `04-wiki-data-and-cache.md`。
+- **Wiki 数据**：列表（SMW / 分类成员）→ 详情页 wikitext → `{{xxx图鉴}}` 解析 → `data/game/*.yaml`；背景页 → `data/game/lore/*.yaml`（普罗米利亚、游戏信息整理合集）；Base 从 `模块:Icon/*` 拉取。详见 `04-wiki-data-and-cache.md`。
+- **剧情特殊奇波**：`pet.yaml` 保留、`page` 含「（特殊）」的条目（目前仅苗鸡/菜鸡各 1 条，非异色）展示层过滤；见 `04-wiki-data-and-cache.md` §3.3。
 - **图鉴渲染**：`apps/atlas.js` 传 `cache: 'atlas'`，截图落盘 `data/cache/render/atlas/`；`#更新xxx数据` 触发 `clearRenderCache`。
-- **图鉴/签到 UI**：样式已定稿，见 `05-render-ui-styles.md`；`hero/atlas.css` 须与 `atlas.html` 新类名同步；改 CSS 禁止 git checkout / 无关整文件覆盖。
+- **图鉴/签到 UI**：样式已定稿，见 `05-render-ui-styles.md`。**`hero/atlas.html` + `atlas.css` 已锁定**，非用户明确要求禁止改；崩坏时用 `memory/reference/hero-atlas.*` 100% 还原（MD5 见 §2.4）。
 - **角色图片库（yoyo-image）**：独立 Git 仓 [gitee.com/yoyo-plugin/yoyo-image](https://gitee.com/yoyo-plugin/yoyo-image)；维护者在 `resources/img/hero/` 内嵌开发并 push，**用户须手动 clone 到 `plugins/yoyo-image`**（或自上传）。详见 `06-yoyo-image-repo.md`。
+- **悠悠 / YoAgent**：插件对接见 `07-agent-integration.md`；**2026-06-24** 起纯 ReAct + ContextAssembler + memory guards（见 `agent/progress/phase-context-refactor-2026-06.md`）；游戏工具见 `agent/requirements/game-knowledge.md`。
 - **面板渲染缓存**：`CACHE_SCOPE.PANEL` / `clearPanelCache(uid)` 已预留，待 `#更新面板` 接入。
 - `miao-plugin` 主要是功能层和 `App.init().reg()` 写法示例，**不是账号登录主实现层**。
 - 账号绑定主链路应参考：

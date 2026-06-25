@@ -1,0 +1,282 @@
+slug: promilia
+title: 普罗米利亚
+kind: lore
+description: 游戏世界观、地区、阵营、种族等背景设定
+sourceUrl: https://wiki.biligame.com/ap/%E6%99%AE%E7%BD%97%E7%B1%B3%E5%88%A9%E4%BA%9A
+fetchedAt: 2026-06-24T08:15:54.524Z
+sectionCount: 36
+sections:
+  - id: 世界观
+    title: 世界观
+    level: 2
+    text: |-
+      当星空珍存的故事被改写，
+      当预言也无法提及之人出现。
+      星临者，跟随那流星的轨迹，
+      改写这片星原的历史吧。
+
+      这个世界与你熟知的并不相同。
+      文明、魔法、不可思议的幻想生物，被星空珍存的传说，在此构筑想象以上的广袤星原。
+      纵身飞跃，从深海到天空，再一次与新的生命邂逅，并与之结缘；
+      在流星的指引下、在闪耀的群星中，这只属于你的——
+      整个宇宙都翘首以盼的，星辰与旅途的歌谣。
+
+      「那些」战争结束以后，星空仍未回归宁静。
+      凶兽肆虐，引力消散，时间仿佛带走了记忆、平衡，以及——牵挂。
+
+      但星原下的智慧种族，
+      从未放弃刻印在血脉深处的因果。
+      希望与天穹的意志抗衡，
+      被寄予未来的幻想生物，
+      至今期待着与你的约定之日。
+
+      追逐、探索、直至我们回到目的地。
+      等待、邂逅、哪怕改变流星的轨迹。
+
+      然后再一次，谱写成诗。
+
+      向往星原的奇幻旅途，将与你再次重逢。
+      星临者，欢迎回到普罗米利亚！
+    charCount: 386
+  - id: 世界地图
+    title: 世界地图
+    level: 2
+    text: ""
+    charCount: 0
+  - id: 地区
+    title: 地区
+    level: 2
+    text: >-
+      目前，官网已公布了世界地图中的部分地区：新芽山谷、夏露露村、弗利斯、镜花洲、勒布
+
+      新芽山谷（Sprout Valley）：由森林、山谷、湖泊、草原等构成的广大区域。
+
+      夏露露村（Charlulu Village）：位于新芽山谷西南，是一个由兽人族为主构成的村落，居民以打猎和采集为生，与外界的交流沟通很少。
+
+      弗利斯（Fleece）：以中世纪欧洲为原型的地区，内有文化多元的自由贸易城邦弗利斯城邦（Fleece
+      City），附近遗留有部分第三纪元时期留下的圆环状残骸。
+
+      镜花洲（Jinghua Cape）：以中国江南水乡为原型的地区，所属国度辰王朝（Chen Dynasty）。
+
+      勒布（Lebe）：以蒸汽工业文明为原型的地区，所属国度罗吉尼亚联邦。
+
+      从角色语音中，还包括以下非阵营名的地区名：
+
+      黄金海岸：从末音口中得知，位于洛斯兰瑟的沿海。
+
+      塔尔西斯：从末音口中得知，其为一片红色沙漠地区，所属不明。
+
+      雾花谷：从芃芃口中得知，有很多带毒的花和蝴蝶，推测所属辰王朝。
+
+      云海遥：从洛卿口中得知，洛卿的隐居地，一片高峰连绵的群山的统称，祭祀典仪的场所也在其中，推测所属辰王朝。
+
+      阿瓦利安大森林：从露米口中得知，是纤羽叶的主要生长地。
+    charCount: 511
+  - id: 阵营
+    title: 阵营
+    level: 2
+    text: 在不同地区，则存在不同的国度/阵营/聚落，目前披露的相关信息如下：
+    charCount: 33
+  - id: 无阵营
+    title: 无阵营
+    level: 3
+    text: |-
+      不隶属于其他任何阵营
+      代表角色：、呱呱
+    charCount: 19
+  - id: 辰王朝
+    title: 辰王朝（Chen Dynasty）
+    level: 3
+    text: |-
+      镜花洲所属的国家，以中国为原型的国度
+      代表角色：、佩佩、涂山芷霜、涂山小玉
+    charCount: 37
+  - id: 夏露露村
+    title: 夏露露村（Charlulu Village）
+    level: 3
+    text: |-
+      位于新芽山谷西南侧的兽人村落，居民们以打猎和采集为生。
+      代表角色：
+    charCount: 33
+  - id: 断风磐
+    title: 断风磐
+    level: 3
+    text: |-
+      以翼人为主体（但翼人也属于兽人族），与夏露露村的兽人族之间关系似乎不好
+      代表角色：
+    charCount: 41
+  - id: 洛斯兰瑟
+    title: 洛斯兰瑟（Lors Lains）
+    level: 3
+    text: |-
+      位于未知的森林地区，以木精灵族为主体
+      英文名曾为Los Lancer
+      代表角色：、米砂
+    charCount: 43
+  - id: 阿瓦利安
+    title: 阿瓦利安（Averian）
+    level: 3
+    text: |-
+      「万识汇聚之地」，以高等精灵族为主体，认为洛斯兰瑟的木精灵是守旧派
+      代表角色：
+    charCount: 39
+  - id: 祈云
+    title: 祈云
+    level: 3
+    text: |-
+      以日本为原型的地区/国度
+      代表角色：
+    charCount: 18
+  - id: 弗利斯城邦
+    title: 弗利斯城邦（Fleece City）
+    level: 3
+    text: |-
+      以小麦为图标，可能是农业为主的地区/国度，从西芙莉雅口中得知是一个文化多元的城邦
+      弗利斯遗留有部分第三纪元时期留下的圆环状残骸。
+      代表角色：
+    charCount: 70
+  - id: 软壳餐厅
+    title: 软壳餐厅（Soft Shell Restaurant）
+    level: 4
+    text: 一流的美食，有趣的故事，还有治愈你的壳咩！无论闲聊还是吃饭，这家弗利斯特色餐厅都绝对适合你。
+    charCount: 46
+  - id: 丰获之厅
+    title: 丰获之厅
+    level: 4
+    text: 位置瞩目的拍卖行，一些价值不菲的商品会在此处进行展示和拍卖活动。
+    charCount: 32
+  - id: 广场集市摊铺
+    title: 广场集市摊铺
+    level: 4
+    text: 摊铺通常由各种形式的热气球构成。
+    charCount: 16
+  - id: 罗吉亚帝国
+    title: 罗吉亚帝国
+    level: 3
+    text: |-
+      N/A
+      代表角色：
+    charCount: 9
+  - id: 罗吉尼亚联邦
+    title: 罗吉尼亚联邦
+    level: 3
+    text: |-
+      勒布所属的国家，可能是蒸汽工业文明为主的地区/国度，从露米口中得知正在发展魔导技术
+      代表角色：红宝石
+    charCount: 50
+  - id: 艾登兰
+    title: 艾登兰
+    level: 3
+    text: |-
+      从莉莉口中得知，其位于罗吉亚帝国以北，是骑士的起源之地（以中世纪西欧的法英德为原型）？
+      代表角色：N/A
+    charCount: 52
+  - id: 天穹洛特兰
+    title: 天穹洛特兰
+    level: 3
+    text: |-
+      从露米口中得知，云海国度，在兽人语中被称为祖加达尔
+      代表角色：N/A
+    charCount: 34
+  - id: 组织
+    title: 组织
+    level: 2
+    text: ""
+    charCount: 0
+  - id: 帕米奇迹坊
+    title: 帕米奇迹坊（Pammy's Miracle House）
+    level: 4
+    text: |-
+      N/A
+      代表角色：芃芃、诺诺、佩佩、呱呱、咕咕
+    charCount: 23
+  - id: 进化教派
+    title: 进化教派
+    level: 4
+    text: |-
+      据露米所说，进化教派是一个遍布大陆各地的庞大而古老的组织，行事风格诡秘莫测，没有人知道他们的目的究竟是什么。他们四处捕捉珍惜奇波，甚至是抢夺他人已经星结的奇波，来满足自己的邪恶研究，曾经引发过好几次厄级凶兽事件。
+      进化教派使用苏亚能量，能将奇波转化为凶化奇波，并且能操纵凶兽。根据进化教派成员的对话，他们在寻找能够承载进化之力的奇波样本，目的是“伟大的进化”。
+      代表角色：N/A
+    charCount: 189
+  - id: 赤蝎团
+    title: 赤蝎团
+    level: 4
+    text: |-
+      在弗利斯周边进行破坏活动的组织。
+      代表角色：N/A
+    charCount: 25
+  - id: 官网图片介绍
+    title: 官网图片介绍
+    level: 2
+    text: |-
+      新芽山谷介绍.png|新芽山谷介绍
+      夏露露村介绍.png|夏露露村介绍
+      镜花洲介绍.png|镜花洲介绍
+      feilisi.f9679f5c.png|弗利斯概念图
+      ChenDynasty.a27f6a41.png|辰王朝概念图
+      Lebe.1093428a.png|罗吉尼亚勒布概念图
+    charCount: 139
+  - id: 种族
+    title: 种族
+    level: 2
+    text: ""
+    charCount: 0
+  - id: 未知
+    title: 未知
+    level: 3
+    text: 代表角色：星临者
+    charCount: 8
+  - id: 智人族
+    title: 智人族
+    level: 3
+    text: 代表角色：寒悠悠、莉莉、红宝石
+    charCount: 15
+  - id: 兽人族
+    title: 兽人族（Furrian）
+    level: 3
+    text: 代表角色：忒拉拉、璐璐卡、卡塔露、米蒂、法兰塔、艾妮丝、姬瑟贝露、涂山小玉、涂山芷霜
+    charCount: 42
+  - id: 龙人族
+    title: 龙人族（Dragonborn）
+    level: 3
+    text: |-
+      在万约以前统治世界建立龙代文明的种族，龙代文明已经毁灭，但大陆上依然生存着为数不多的龙人族。龙人族是卵生种族。
+      代表角色：阿比、洛卿
+    charCount: 66
+  - id: 木精灵族
+    title: 木精灵族（Wood Elf）
+    level: 3
+    text: 代表角色：西芙莉雅、米砂
+    charCount: 12
+  - id: 高等精灵族
+    title: 高等精灵族（High Elf）
+    level: 3
+    text: 代表角色：夏儿、末音
+    charCount: 10
+  - id: 魔灵族
+    title: 魔灵族
+    level: 3
+    text: |-
+      精灵的一种，很少和外人打交道。长相与高等精灵族相近，但看不起高等精灵族，认为高等精灵族傲慢、自负又短视。
+      代表角色：N/A
+    charCount: 61
+  - id: 帕米族
+    title: 帕米族（Pammy）
+    level: 3
+    text: 代表角色：诺诺、缇缇、芃芃、佩佩、呱呱、咕咕
+    charCount: 22
+  - id: 鬼人族
+    title: 鬼人族
+    level: 3
+    text: 代表角色：源千代
+    charCount: 8
+  - id: 文字
+    title: 文字
+    level: 2
+    text: ""
+    charCount: 0
+  - id: 来源
+    title: 来源
+    level: 2
+    text: ""
+    charCount: 0

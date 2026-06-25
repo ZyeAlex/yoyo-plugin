@@ -60,6 +60,19 @@ class Utils {
     return forwardMsg
   }
 
+  /** 解析当前说话人身份（与 checkPermission 同源：e.isMaster + e.sender.role） */
+  resolveCallerAuth(e) {
+    const sender = e?.sender || {}
+    const groupRole =
+      sender.role === 'owner' || sender.role === 'admin' ? sender.role : 'member'
+    return {
+      user_id: String(e?.user_id ?? ''),
+      user_name: sender.card || sender.nickname || String(e?.user_id ?? ''),
+      group_role: groupRole,
+      is_master: !!e?.isMaster,
+    }
+  }
+
   /** 获取用户权限
    * @param {*} e - 接收到的事件对象
    * @param {"master"|"owner"|"admin"|"all"} permission - 用户所需的权限

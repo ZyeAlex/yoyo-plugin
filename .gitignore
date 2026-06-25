@@ -22,5 +22,9 @@ slangs.json
 .bat
 pnpm-lock.yaml
 
+# 扩展
+apps/agent.js
 
 
+server/
+bin/

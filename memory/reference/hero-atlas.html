@@ -1,0 +1,131 @@
+{{extend layout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}/hero/atlas.css" />
+{{/block}}
+
+{{block 'main'}}
+<div class="hero-atlas">
+    <div class="yo-atlas-head hero-head">
+        <div class="yo-atlas-portrait hero-portrait">
+            <div class="hero-portrait-inner">
+                <img class="hero-portrait-img" src="{{pluResPath}}/UI/{{portraitIcon}}"
+                    onerror="this.onerror=null; this.src='{{pluResPath}}/UI/{{headIcon}}';">
+            </div>
+        </div>
+        <div class="hero-base">
+            <div class="hero-identity">
+                <div class="hero-name-stack">
+                    {{if groupData}}
+                    <img class="hero-group-img" src="{{pluResPath}}/UI/{{groupData.icon[2]}}" alt="{{groupData.name}}">
+                    {{/if}}
+                    <div class="hero-name-block">
+                        {{if englishName}}
+                        <div class="hero-english-name">{{englishName}}</div>
+                        {{/if}}
+                        <div class="hero-name">{{name}}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-badges">
+                {{if elementData?.petElem}}
+                <img class="hero-element-img" src="{{pluResPath}}/UI/{{elementData.petElem}}" alt="{{element}}">
+                {{/if}}
+                <img class="hero-rarity-img" src="{{pluResPath}}/common/rarity/rarity-{{rarityClass||3}}.png" alt="{{rarity}}">
+                {{if professionData}}
+                <img class="hero-profession-img" src="{{pluResPath}}/UI/{{professionData.icon[0]}}"
+                    style="background-color:{{elementData?.elementColor}};" alt="{{profession}}">
+                {{/if}}
+            </div>
+            <table class="hero-meta">
+                <tr>
+                    {{if element}}<th>元素</th><td>{{element}}</td>{{/if}}
+                    {{if profession}}<th>职业</th><td>{{profession}}</td>{{/if}}
+                </tr>
+                <tr>
+                    {{if group}}<th>阵营</th><td>{{group}}</td>{{/if}}
+                    {{if race}}<th>种族</th><td>{{race}}</td>{{/if}}
+                </tr>
+                <tr>
+                    {{if birthday}}<th>生日</th><td>{{birthday}}</td>{{/if}}
+                    {{if weapon}}<th>武器</th><td>{{weapon}}</td>{{/if}}
+                </tr>
+            </table>
+            {{if desc}}
+            <div class="hero-desc">{{desc}}</div>
+            {{/if}}
+        </div>
+    </div>
+    {{if intro && showIntro}}
+    <div class="hero-profile main">
+        <div class="hero-profile-text">{{intro}}</div>
+    </div>
+    {{/if}}
+    {{each type type}}
+
+    {{ if type=='nickname' }}
+    <div class="hero-nickname main">
+        {{ if nicknames?.length }}
+            {{ nicknames.join('、') }}
+        {{else}}
+            <div>当前角色没有别名，请<mark>{{rulePrefix}}设置{{name}}别名</mark></div>
+        {{/if}}
+    </div>
+    {{/if}}
+
+    {{ if type=='voice' && voices?.length }}
+    <div class="hero-words main">
+        {{each voices item index}}
+        <div class="hero-word">
+            <div>【{{item.name}}】</div>
+            <div>{{item.text}}</div>
+        </div>
+        {{/each}}
+    </div>
+    {{/if}}
+
+    {{ if type=='skill' && skills?.length }}
+    <div class="hero-skills main">
+        {{each skills.slice(0,1) skill}}
+        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:elementData.elementColor}) %>
+        {{/each}}
+    </div>
+    <div class="hero-skills main">
+        {{each skills.slice(1,2) skill}}
+        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:elementData.elementColor}) %>
+        {{/each}}
+    </div>
+    <div class="hero-skills main">
+        {{each skills.slice(2,3) skill}}
+        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:elementData.elementColor}) %>
+        {{/each}}
+    </div>
+    <div class="hero-skills main">
+        {{each skills.slice(3,4) skill}}
+        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:elementData.elementColor}) %>
+        {{/each}}
+    </div>
+    <div class="hero-skills main">
+        {{each skills.slice(4) skill}}
+        <% include(pluginPath+'/resources/hero/hero-skill.html',{pluResPath,skill,elemColor:elementData.elementColor}) %>
+        {{/each}}
+    </div>
+    {{/if}}
+
+    {{ if type=='talent' && talents?.length }}
+    <div class="hero-talents main">
+        {{each talents talentLevel}}
+        <div class="hero-talent-level">{{ (n=>{let
+            r='',m=[["M",1e3],["CM",900],["D",500],["CD",400],["C",100],["XC",90],["L",50],["XL",40],["X",10],["IX",9],["V",5],["IV",4],["I",1]];for(let[c,v]of
+            m)while(n>=v)r+=c,n-=v;return r})(talentLevel.level) }}</div>
+        <div class="hero-talent-item">
+            {{each talentLevel.items talentItem}}
+            <% include(pluginPath+'/resources/hero/hero-talent.html',{pluResPath,...talentItem}) %>
+            {{/each}}
+        </div>
+        {{/each}}
+    </div>
+    {{/if}}
+    {{/each}}
+</div>
+{{/block}}

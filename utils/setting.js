@@ -5,6 +5,7 @@
 import path from 'path'
 import fs from 'fs'
 import YAML from 'yaml'
+import { ensureAgentServerIfEnabled } from './agent-server.js'
 
 class Setting {
   constructor() {
@@ -36,6 +37,7 @@ class Setting {
       }
     })
     this.setData('config/config', config)
+    ensureAgentServerIfEnabled(this.path, config)
     return config
   }
   /**

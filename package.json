@@ -17,7 +17,8 @@
     "#user": "./utils/user.js",
     "#plugin": "./utils/plugin.js",
     "#render": "./utils/render.js",
-    "#wiki": "./api/wiki/data.js"
+    "#wiki": "./api/wiki/data.js",
+    "#agent": "./api/agent/client.js"
   },
   "keywords": [
     "蓝色星原旅谣",
@@ -25,7 +26,12 @@
     "yoyo-plugin",
     "Yunzai"
   ],
-  "scripts": {},
+  "scripts": {
+    "test:agent": "cd ../.. && node --import ./plugins/yoyo-plugin/tests/agent/register_globals.js --test plugins/yoyo-plugin/tests/agent/sse.test.js",
+    "test:agent:live": "cd ../.. && node --import ./plugins/yoyo-plugin/tests/agent/register_globals.js --test plugins/yoyo-plugin/tests/agent/sse_live.test.js",
+    "test:agent:tools-dir": "cd ../.. && node --import ./plugins/yoyo-plugin/tests/agent/register_globals.js --test plugins/yoyo-plugin/tests/agent/tools_dir_live.test.js",
+    "test:agent:all": "cd ../.. && node --import ./plugins/yoyo-plugin/tests/agent/register_globals.js --test plugins/yoyo-plugin/tests/agent/*.test.js"
+  },
   "dependencies": {
     "axios": "1.3.4",
     "fake-useragent": "^1.0.1",

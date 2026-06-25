@@ -1,0 +1,314 @@
+{{面包屑}}
+==前言==
+<center>
+<big>前情提示：当前，本合集资料来源于官方视频、官网以及部分投放的广告内容。</big><br>
+首曝PV＆实机演示：https://www.bilibili.com/video/BV1Jr421n7n4<br>
+PS5 实机演示PV：https://www.bilibili.com/video/BV1GZ421h7XP<br>
+PV2 向蓝色的彼方启航：https://www.bilibili.com/video/BV1KUopYZEs5<br>
+「星至测试」旅行手册：https://www.bilibili.com/video/BV1CvuyzzEhw<br>
+姬瑟贝露角色PV：https://www.bilibili.com/video/BV1A3cvzdEzh/<br><br>
+官网：https://azurpromilia.manjuu.com/home/<br>
+<big>另请注意：当前所有信息都是初步的，在游戏测试期间，可能会多次更改。<br><font color=red>鉴于游戏测试已经结束，故将本页面中测试出现的部分内容移动至[[已击毁的卫星]]，有需要的可前往该页面查看。</font></big><br>
+</center>
+
+==本页面更新时间线==
+*2026年04月03日 - 至今：游戏内外后续卫星内容收集整理
+*2025年08月18日 - 2026年04月03日：「星至测试」——「恒序测试」游戏本体外情报收集整理
+*2025年08月15日 - 2025年08月18日：「星至测试」期间中的游戏本体内相关情报
+*2024年03月20日 - 2025年08月15日：游戏本体外情报收集整理
+
+==游戏开发历程==
+{{main|蓝色星原：旅谣|游戏开发历程}}
+
+==普罗米利亚==
+{{main|普罗米利亚}}
+:普罗米利亚大陆存在不同的'''国家/阵营/聚落'''，目前已知有：
+<center>
+<div style="overflow-x:auto">
+{| class="wikitable" style="text-align:center;min-width:600px;"
+|-
+|[[file:{{icon|阵营|无阵营|2}}|80px|class=img-black]]||[[file:{{icon|阵营|辰王朝|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|夏露露村|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|断风磐|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|洛斯兰瑟|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|阿瓦利安|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|祈云|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|弗利斯城邦|2}}|80px|class=img-black]]
+|-
+|无阵营||辰王朝||夏露露村||断风磐||洛斯兰瑟||阿瓦利安||祈云||弗利斯城邦
+|-
+|[[file:{{icon|阵营|罗吉亚帝国|2}}|80px|class=img-black]] || [[file:{{icon|阵营|罗吉尼亚联邦|2}}|80px|class=img-black]] ||<!-- [[file:{{icon|阵营|艾登兰|2}}|80px|class=img-black]] -->||<!-- [[file:{{icon|阵营|天穹洛特兰|2}}|80px|class=img-black]] -->|| ||
+|-
+|罗吉亚帝国||罗吉尼亚联邦||艾登兰||天穹洛特兰||伊东大公国||涅瓦兰
+|}
+
+</div>
+</center>
+
+<br><br>
+:普罗米利亚大陆存在不同的'''智慧种族'''，目前已知有：
+<center>
+<div style="overflow-x:auto">
+{| class="wikitable" style="text-align:center;min-width:600px;"
+|-
+|智人族||兽人族||龙人族||木精灵族||高等精灵族||魔灵族||帕米族||鬼人族
+|}
+</div>
+</center>
+
+==元素==
+{{main|元素}}
+<center>
+<div style="overflow-x:auto">
+<table class="wikitable" style="text-align:center;min-width:500px;">
+<tr>{{#arraymap:{{#invoke:icon|getElementList}}|,|@|<td>[[file:{{icon|元素|@|3}}]]</td>|}}</tr>
+<tr>{{#arraymap:{{#invoke:icon|getElementList}}|,|@|<td>@</td>|}}</tr>
+</table>
+</div>
+</center>
+
+==职业==
+{{main|职业}}
+[[file:策略职业介绍.png|600px|center]]
+
+==角色伙伴==
+{{main|角色}}
+<big><font color=red>此处不再收录测试中可操作角色，请前往[[已击毁的卫星]]查看</font></big>
+
+===二测未实装角色===
+以下角色极大概率为可操作角色，但未必会在公测版本实装。
+<center>
+<div style="overflow:auto;clear:both;" class="scroll-freeze-table-div">
+{| class="wikitable sortable" style="text-align:center;"
+|-
+! style="min-width:150px;" | 模型 !! style="min-width:150px;" | 立绘/展板 !! style="min-width:12em;" | 角色名 !! style="min-width:5em;" | 稀有度 !! style="min-width:6em;" | 种族 !! style="min-width:7em;" | 阵营 !! style="min-width:5em;" | 元素 !! style="min-width:5em;" | 职业  !! style="min-width:15em;" | 介绍
+|-
+| [[file:卫星-涂山芷霜模型.jpg|200px]] || <!--[[file:卫星-涂山芷霜立绘.jpg|200px]]--> || 涂山芷霜<br>（Tushan Zhishuang） || style="background:gold"|金 || 兽人族？ || 辰王朝<br>[[file:{{icon|阵营|辰王朝|2}}|60px|class=img-black]] || 火<br>[[file:{{icon|元素|火|3}}]] || N/A || 首爆PV出现
+|-
+| [[file:卫星-佩佩模型.jpg|200px]] || [[file:卫星-佩佩立绘.jpg|200px]] || 佩佩<br>（Peipei） || N/A || 帕米族 || 辰王朝<br>[[file:{{icon|阵营|辰王朝|2}}|60px|class=img-black]] || N/A  || N/A || 迷倒镜花洲万千食客的吉逸楼唯一指定看板娘，会功夫会算账会卖萌的熊猫帕米佩佩是也！试图打趣或者刁难佩佩的客人还请三思，毕竟后厨师傅的大铁勺可是不忌荤腥的。
+|-
+| [[file:卫星-缇缇模型.jpg|200px]] || [[file:卫星-缇缇立绘.jpg|200px]] || 缇缇<br>（Titti） || N/A || 帕米族 || 无阵营<br>[[file:{{icon|阵营|无阵营|2}}|60px|class=img-black]] || N/A || N/A || N/A 
+|-
+|  || [[file:卫星-Flear Vogel.jpg|200px]] || Fleur Vogel || N/A || 智人族？ || 弗利斯城邦？<br>[[file:{{icon|阵营|弗利斯城邦|2}}|60px|class=img-black]] || N/A || N/A || 蛮啾赠送/抽奖的官方色纸
+|-
+|  || [[file:卫星-宣传图CN龙女.jpg|200px]] || ？？？ || N/A || 龙人族 || 辰王朝？<br>[[file:{{icon|阵营|辰王朝|2}}|60px|class=img-black]] || N/A || N/A || 游戏宣传图
+|-
+| [[file:卫星-LOGO女模型.jpg|200px]] || [[file:卫星-未知角色2.jpg|200px]] || ？？？ || N/A || N/A || N/A || N/A || N/A || PV和主线剧情中出现，所在处名为无垢海
+|-
+| [[file:卫星-一测过场pv粉毛女.jpg|200px]] || || ？？？ || N/A || N/A || 天穹洛特兰？<br>[[file:{{icon|阵营|天穹洛特兰|2}}|60px|class=img-black]] || N/A || N/A || 游戏一测过场pv
+|}
+</div>
+</center>
+
+===NPC角色===
+以下角色在二测中是明确的NPC形象，不排除未来升格为可操作角色的可能。
+<center>
+<div style="overflow:auto;clear:both;" class="scroll-freeze-table-div">
+{| class="wikitable sortable" style="text-align:center;"
+|-
+! style="min-width:150px;" | 模型 !! style="min-width:150px;" | 立绘/展板 !! style="min-width:12em;" | 角色名 !! style="min-width:5em;" | 种族 !! style="min-width:7em;" | 阵营 !! style="min-width:5em;" | 介绍
+|-
+| [[file:卫星-呱呱模型.jpg|200px]] || [[file:卫星-呱呱立绘.jpg|200px]] || 呱呱<br>（Cocco） || 帕米族 || 无阵营<br>[[file:{{icon|阵营|无阵营|2}}|60px|class=img-black]] || 研究奇波生态
+|-
+| [[file:卫星-咕咕模型.jpg|200px]] || [[file:卫星-咕咕.jpg|200px]] || 咕咕 || 帕米族 || 无阵营<br>[[file:{{icon|阵营|无阵营|2}}|60px|class=img-black]] || 帕米奇迹坊的邮递员<ref name="帕米奇迹坊">[https://www.bilibili.com/opus/1090140030663393345 帕米奇迹坊]</ref>
+|-
+| [[file:卫星-帕米女仆模型.jpg|200px]] || [[file:卫星-帕米女仆立绘.jpg|200px]] || 奈奈茶 || 帕米族 || 弗利斯城邦<br>[[file:{{icon|阵营|弗利斯城邦|2}}|60px|class=img-black]] || 游戏宣传图/官网<br>弗利斯领主府的女仆长，在「弗利斯形象大使提名」中获得人气第一的帕米
+|-
+| [[file:卫星-漫漫模型.jpg|200px]] || [[file:卫星-帕米探险家立绘.jpg|200px]] || 漫漫 || 帕米族 || 无阵营<br>[[file:{{icon|阵营|无阵营|2}}|60px|class=img-black]] || BW2024展板<br>一名云游商人
+|}
+</div>
+</center>
+
+===未知角色===
+以下角色信息较少，或可能属于NPC
+<center>
+<div style="overflow:auto;clear:both;" class="scroll-freeze-table-div">
+{| class="wikitable" style="text-align:center;"
+|-
+! style="min-width:150px;" | 图片 !! style="min-width:5em;" | 角色名/出处 !! 种族 !! 阵营 !! 备注
+|-
+| [[file:卫星-辰王朝女仆立绘.jpg|200px]] || 官网 || 兽人族？ || 辰王朝<br>[[file:{{icon|阵营|辰王朝|2}}|60px|class=img-black]]
+|-
+| [[file:卫星-夏露露村未知角色.jpg|200px]] || 游戏宣传图 || 兽人族？ || 夏露露村<br>[[file:{{icon|阵营|夏露露村|2}}|60px|class=img-black]] || N/A
+|-
+|}
+</div>
+</center>
+
+==奇波==
+{{main|奇波}}
+<big><font color=red>此处不再收录测试中出现的奇波，请前往[[奇波]]查看</font></big>
+
+<center>
+表中顺序大体上按各PV、测试、动态时间顺序排序，存在进化关系的排一起<br>
+目前，奇波进化阶段至少包括：'''幼年期——成长期——成熟期——超限体（首领）'''。<br>
+</center>
+
+===二测未实装奇波===
+<center>
+<div style="overflow:auto;clear:both;" class="scroll-freeze-table-div">
+{| class="wikitable sortable kibo-files" style="text-align:center;"
+|-
+! style="min-width:80px;" | 图片 !! style="min-width:4em;" | 奇波名 !! style="min-width:8em;" |分类 !! style="min-width:4em;" |成长阶段 !! style="min-width:50px;" |主元素 !! style="min-width:50px;" |副元素 !! style="width:20em;min-width:10em;" | 备注/习性记载
+|-
+| [[file:卫星-小水母.png|80px]] || 小桃子 || N/A || N/A ||  N/A || N/A || 名字来源二测游戏内书籍《弗利斯街头巷尾报》
+|-
+| [[file:卫星-水母二阶.png|80px]] || 桃花水母 || N/A || N/A ||  N/A || N/A || 
+|-
+| [[file:卫星-小天马.png|80px]] || ？？？ || N/A || N/A ||  N/A || N/A || 下方天马型奇波的幼年期，来源官方宣传图，
+|-
+| [[file:卫星-天马.png|80px]] || ？？？ || N/A || N/A ||  N/A || N/A || 可骑乘的天马型奇波，来源官方PS5 PV开头
+|-
+| [[file:卫星-鲸鱼.png|80px]] || ？？？ || N/A || N/A ||  N/A || N/A || 来源首曝PV
+|-
+| [[file:卫星-五彩鸟.png|80px]] || ？？？ || N/A || N/A ||  N/A || N/A || 来源首曝PV
+|-
+| [[file:卫星-角鹿.png|80px]] || ？？？ || N/A || N/A ||  N/A || N/A || 来源首曝PV
+|-
+| [[file:卫星-丸地灵.png|80px]] || 土灵仔 || 幻生类-元素族 || 幼年期 || 地<br>[[file:{{icon|元素|地|3}}]]|| / || 
+|-
+| [[file:卫星-土灵偶.png|80px]] || 土灵偶 || 幻生类-元素族 || 成长期 || 地<br>[[file:{{icon|元素|地|3}}]]|| / || 
+|-
+| [[file:卫星-磐岩灵偶.png|80px]] || 岩灵偶 || 幻生类-元素族 || 成熟期 || 地<br>[[file:{{icon|元素|地|3}}]]|| / || 
+|-
+| [[file:卫星-火灵苞.png|80px]] || 火灵苞 || 幻生类-精怪族|| 幼年期 || 火<br>[[file:{{icon|元素|火|3}}]] || / || 
+|-
+| [[file:卫星-红音花.png|80px]] || 火灵朵 || 幻生类-精怪族|| 成长期 || 火<br>[[file:{{icon|元素|火|3}}]] || / || 一测前官方宣传图里的火系花灵
+|-
+| [[file:卫星-焰灵花.png|80px]] || 焰灵花 || 幻生类-精怪族|| 成熟期 || 火<br>[[file:{{icon|元素|火|3}}]] || / || 
+|-
+| [[file:卫星-蓝松鼠.png|80px]] || ？？？ || N/A|| N/A || N/A || N/A ||来源官方宣传图
+|-
+| [[file:卫星-雪球.png|80px]] || 雪球 || 幻生类-精怪族 || 幼年期 ||冰<br>[[file:{{icon|元素|冰|3}}]]|| / || 碎冰兔幼年期，来源官方动态，奇波博物杂记-碎冰兔篇
+|-
+| [[file:卫星-绒耳.png|80px]] || 绒耳 || 幻生类-精怪族 || 成长期 ||冰<br>[[file:{{icon|元素|冰|3}}]]|| / || 碎冰兔成长期，来源官方动态，奇波博物杂记-碎冰兔篇
+|-
+| [[file:卫星-魄角熊.png|80px]] || 魄角熊 || N/A || N/A || N/A|| N/A || 
+|-
+| [[file:卫星-鹰嘴兽.png|80px]] || 鹰嘴兽 || 异生类-兽形族|| 幼年期 ||风<br>[[file:{{icon|元素|风|3}}]]|| 光<br>[[file:{{icon|元素|光|3}}]]  ||
+|-
+| [[file:卫星-积怨卷.png|80px]] || 积怨卷<br>（Crumpler） || N/A|| N/A || N/A || N/A || 一测前官网卫星
+|-
+| [[file:卫星-鸟形奇波成熟期.png|80px]] || ？？？ || 异生类-羽形族 || N/A || 风<br>[[file:{{icon|元素|风|3}}]]|| / || 来源BW2024，更大的风剪鹰/疑似进化型
+|-
+| [[file:卫星-灯笼兽.png|80px]] || ？？？ || 异生类-鳞形族 || N/A || 水<br>[[file:{{icon|元素|水|3}}]] || 光<br>[[file:{{icon|元素|光|3}}]]  ||
+|-
+| [[file:卫星-浮结鱼.png|80px]] || 浮结鱼 || 异生类-鳞形族 || 成长期 || 水<br>[[file:{{icon|元素|水|3}}]] || 光<br>[[file:{{icon|元素|光|3}}]]  || 来源BW2024
+|-
+| [[file:卫星-墩墩.png|80px]] || 墩墩 || 异生类-兽形族 || 幼年期 || 地<br>[[file:{{icon|元素|地|3}}]] || / || 来源BW2024
+|-
+| [[file:卫星-狻猊.png|80px]] || ？？？ || 异生类-兽形族 || N/A || 地<br>[[file:{{icon|元素|地|3}}]] || / || 来源首曝PV，疑似墩墩进化型
+|-
+| [[file:卫星-伶牙狼.png|80px]] || 伶牙狼 || 异生类-兽形族 || N/A || 风<br>[[file:{{icon|元素|风|3}}]]|| / || 迅狼前一阶段，无法获得，在支线剧情中出现
+|-
+| [[file:卫星-棕木鹿.png|80px]] || 棕木鹿 || 异生类-兽形族 || 幼年期 || 木<br>[[file:{{icon|元素|木|3}}]]|| / || 森境鹿的幼年期，无法获得，在米砂个人剧情中出现
+|-
+| [[file:卫星-森境鹿成长期.png|80px]] || ？？？ || 异生类-兽形族 || 成长期 || 木<br>[[file:{{icon|元素|木|3}}]]|| / || 棕木鹿的进化形态，森境鹿的成长期，无法获得，在米砂个人剧情中出现
+|-
+| [[file:卫星-炎豹.png|80px]] || 炎豹 || 异生类-兽形族 || N/A || 火<br>[[file:{{icon|元素|火|3}}]] || / || 可能为烈豹的前某阶段，来源二测游戏内书籍《魔法锄头故事集II》
+|-
+| [[file:卫星-水羊羊.png|80px]] || 水羊羊？ || 异生类-兽形族 || 幼年期 || 水<br>[[file:{{icon|元素|水|3}}]] || N/A || 艾妮丝海报和色纸中出现，焰羊羊的水属性换色版
+|-
+| [[file:卫星-尾木羊.png|80px]] || 尾木羊？ || 异生类-兽形族 || 成长期 || 木<br>[[file:{{icon|元素|木|3}}]] || N/A || 一测过场动画出现，显然是尾火羊的木属性换色版
+|-
+| [[file:卫星-信使鸟奇波.png|80px]] || 摩空球 || N/A || N/A ||  N/A || N/A || 来源二测前官网，名字来源官方动态：帕米速报-欢迎来到弗利斯城邦
+|-
+| [[file:卫星-糖啾啾.png|80px]] || 糖啾啾 || N/A || N/A ||  N/A || N/A || 来源官方动态，闲谈邀约Vol.03-礼物分享
+|-
+| [[file:卫星-糖鸟.png|80px]] || 糖鸟 || N/A || N/A ||  N/A || N/A || 可能为糖啾啾的后某阶段，来源二测游戏内书籍《奇物保价专场拍卖图录书》
+|-
+| [[file:卫星-春节贺图奇波.png|80px]] || ？？？ || N/A || N/A ||  N/A || N/A || 来源2026年春节贺图
+|-
+| [[file:卫星-司方犬.png|80px]] || 司方犬 || N/A || N/A ||  N/A || N/A || 来源2026年元宵节贺图
+|-
+| [[file:卫星-粒粒蜥.png|80px]] || 粒粒蜥 || N/A || N/A ||  N/A || N/A || 名字来源官方动态，奇波图鉴-跳跳稻草人
+|-
+| [[file:卫星-毛腿谷鹫.png|80px]] || 毛腿谷鹫 || N/A || N/A ||  N/A || N/A || 名字来源官方动态，奇波图鉴-跳跳稻草人
+|-
+| [[file:卫星-怯影之翼幼年期.png|80px]] || ？？？ || 幻生类-精怪族|| 幼年期 || 暗<br>[[file:{{icon|元素|暗|3}}]]|| 风<br>[[file:{{icon|元素|风|3}}]] || 来源官方动态，奇迹攻略书-怯影之翼
+|-
+| [[file:卫星-怯影之翼成长期.png|80px]] || ？？？ || 幻生类-精怪族|| 成长期 || 暗<br>[[file:{{icon|元素|暗|3}}]]|| 风<br>[[file:{{icon|元素|风|3}}]] || 来源官方动态，奇迹攻略书-怯影之翼
+|-
+| [[file:卫星-怯影之翼成熟期.png|80px]] || ？？？ || 幻生类-精怪族|| 成熟期 || 暗<br>[[file:{{icon|元素|暗|3}}]]|| 风<br>[[file:{{icon|元素|风|3}}]] || 来源官方动态，奇迹攻略书-怯影之翼
+|-
+| [[file:卫星-芭布鼠.png|80px]] || 芭布鼠 || N/A || N/A ||  N/A || N/A || 来源二测游戏内书籍《魔法锄头故事集I》
+|-
+| [[file:卫星-茸茸鼠.png|80px]] || 茸茸鼠 || N/A || N/A ||  N/A || N/A || 来源二测游戏内书籍《破旧的药方》
+|-
+| [[file:卫星-幼雷爪翼.png|80px]] || 幼雷爪翼 || N/A || N/A ||  N/A || N/A || 存在于阿瓦利安，可能为末音身边的奇波（图中奇波），来源二测游戏内书籍《雷暴与不熄灭之心》
+|-
+| [[file:卫星-霆羽兽.png|80px]] || 霆羽兽 || N/A || N/A ||  N/A || N/A || 幼雷爪翼的进化型，来源二测游戏内书籍《雷暴与不熄灭之心》
+|-
+| [[file:卫星-渡影.png|80px]] || 渡影 || N/A || N/A ||  N/A || N/A || 头顶有着蓝色火焰的鸟型奇波，来源二测游戏内书籍《蓝影夜谈》
+|-
+| [[file:卫星-希露波可.png|80px]] || 希露波可 || N/A || N/A ||  N/A || N/A || 居住于圣湖之境的圣域，头上长着两只角、四只大耳朵。来源二测游戏内书籍《圣域王者》
+|}
+</div>
+</center>
+<br>
+
+===特殊个体===
+{{#section-h:奇波|特殊个体}}
+===首领===
+<gallery mode="packed" heights="180px">
+文件:卫星-紫电鹿.png|缩略图|？？？（PV 2:19）
+文件:卫星-狼神.png|缩略图|？？？（PS5演示PV结尾）
+文件:卫星-神秘狐狸.png|缩略图|？？？（官方宣传图）
+</gallery>
+
+===环境生物===
+*环境生物（非官方名称）为游戏地图中会出现的一类生物，有的会显示名称、有的不会显示。
+*目前环境生物均无法被玩家获得，暂时无法确认它们与奇波的关系。
+
+<center>
+<div style="overflow:auto;clear:both;" class="scroll-freeze-table-div">
+{| class="wikitable sortable kibo-files" style="text-align:center;"
+|-
+! style="min-width:80px;" | 图片 !! style="min-width:4em;" | 生物名称 !! style="min-width:8em;" | 备注/习性记载
+|-
+| [[file:卫星-小鸣鸟.png|80px]] || 小鸣鸟 || 游戏中非常常见的一种鸟类
+|-
+| [[file:卫星-蘑菇蟹.png|80px]] || 蘑菇蟹 || 遇到玩家时会逃跑，可交互采集
+|-
+| [[file:卫星-岩石蟹.png|80px]] || 岩石蟹 || 遇到玩家时会逃跑，可交互采集获得尘石
+|-
+| [[file:卫星-摇曳草鳗.png|80px]] || 摇曳草鳗 || 常见于河边、湖边，玩家靠近时会缩入地中
+|-
+| [[file:卫星-壳咩.png|80px]] || 壳咩 || 出现于弗利斯，形似蜗牛的生物，玩家靠近时会缩入壳中
+|}
+</div>
+</center>
+<bstyle>/*<pre>*/
+.wikitable.kibo-files td:last-child {
+    text-align: left;
+}
+/*</pre>*/</bstyle>
+
+==凶兽==
+{{main|凶兽}}
+<center>
+测试中的凶兽均不可捕捉。<br>
+凶兽存在位阶的设定，其中暗焰兽为'''厄位凶兽'''，厄位凶兽不需要睡眠也不需要繁殖，只要不击碎核心就会不断重生。<br>
+暂时不明确凶兽是否存在分类和成长阶段。<br>
+<div style="overflow:auto;clear:both;" class="scroll-freeze-table-div">
+{| class="wikitable sortable kibo-files" style="text-align:center;"
+|-
+! style="min-width:80px;" | 图片 !! style="min-width:4em;" | 凶兽名 !! style="min-width:8em;" |分类 !! style="min-width:4em;" |成长阶段 !! style="min-width:50px;" |主元素 !! style="min-width:50px;" |副元素 !! style="width:20em;min-width:10em;" | 备注/习性记载
+|-
+| [[file:卫星-谜狼.png|80px]] || 谜狼 || N/A || N/A ||  暗<br>[[file:{{icon|元素|暗|3}}]] || / || 以迅狼为基础诞生的凶兽，虽然个体弱小，但聚在一起就会变得非常难缠
+|-
+| [[file:卫星-黯灵狼.png|80px]] || 黯灵狼 || N/A || N/A ||  暗<br>[[file:{{icon|元素|暗|3}}]] || / || 
+|-
+| [[file:卫星-厄卒进化型.png|80px]] || 厄卒 || N/A || N/A ||  暗<br>[[file:{{icon|元素|暗|3}}]] || / || 
+|-
+| [[file:Shadowblaze（暗焰兽）.png|120px]] || 暗焰兽<br>(Shadowblaze) || N/A || N/A ||  暗<br>[[file:{{icon|元素|暗|3}}]] ||  火<br>[[file:{{icon|元素|火|3}}]] || '''凶兽首领'''<br>融合了多种生物特征，本质却迥然不同的怪异凶兽；驱使它行动的是对于「吞噬」的极端渴求，甚至将同类也视作食粮。
+|-
+| [[file:Spitehorn（巨刺凶鸟）.png|120px]] || 巨刺凶鸟<br>(Spitehorn)|| N/A || N/A ||  冰<br>[[file:{{icon|元素|冰|3}}]] || / || '''凶兽首领'''<br>生有狞恶角刺的巨大猛禽，扇动双翼便会唤来凛风与寒霜；由于其刺耳的鸣叫和阴鸷的外表，被视为唤来凋零与灭亡的不祥之兆。
+|}
+</center>
+
+==官方插画合集==
+{{main|壁纸}}
+
+==来源==
+<references/>
+<bstyle>/*<pre>*/
+/*显示评论区*/
+.post-content,.comment-component {
+    display: block!important;
+}
+/*</pre>*/</bstyle>

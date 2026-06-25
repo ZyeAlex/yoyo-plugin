@@ -8,9 +8,16 @@
 }
 
 .pet-atlas .pet-main-img {
-  width: 320px;
-  height: 320px;
+  position: absolute;
+  left: 50%;
+  top: -50px;
+  display: block;
+  width: auto;
+  height: calc(100% + 100px);
+  max-width: none;
+  transform: translateX(-50%);
   object-fit: contain;
+  object-position: center bottom;
 }
 
 .pet-img {
@@ -21,8 +28,13 @@
   overflow: visible;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   justify-content: flex-end;
   flex-shrink: 0;
+}
+
+.pet-img:has(> .pet-main-img) {
+  align-items: center;
 }
 
 .pet-img > .pet-illustration {

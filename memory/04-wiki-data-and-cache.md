@@ -91,13 +91,78 @@ flowchart TD
 
 [`api/wiki/normalize/`](../api/wiki/normalize/)：`hero.js` / `kibo.js` / `spirit.js` / `accessory.js` / `item.js`
 
+#### 剧情特殊奇波（`page` 含「（特殊）」）
+
+Wiki / `pet.yaml` 中**仍保留**剧情专用条目（与普通形态同名、独立 id）。**与异色无关**；截至 2026-06 全游戏仅 **2 条**：
+
+| id | page | 对应普通形态 |
+|----|------|-------------|
+| `500297` | 苗鸡（特殊） | `500023` 苗鸡 |
+| `500298` | 菜鸡（特殊） | `500024` 菜鸡 |
+
+**当前策略**：展示层**一律过滤**，不参与图鉴列表、名称查询、进化链、随机背景等。
+
+| 识别 | `isKiboStorySpecial(pet)` — `page` 包含 `（特殊）` |
+| 过滤入口 | `game.getPublicPets()` / `game.isPublicPet()` / `game.getPetId()` |
+| 数据仍写入 | `data/game/pet.yaml` 不删上述行；`buildKiboEvolutionChains` 仅对公开奇波建链 |
+| 实现 | [`api/wiki/normalize/kibo.js`](../api/wiki/normalize/kibo.js)、[`utils/game.js`](../utils/game.js)、[`apps/atlas.js`](../apps/atlas.js) |
+
+**后续待定**：剧情特殊与普通形态关联展示（若 Wiki 新增同类条目，仍按 `page` 含「（特殊）」过滤）— **暂不做**。
+
 ### 3.4 Lookup
 
 [`api/wiki/lookup.js`](../api/wiki/lookup.js)：元素色、职业、阵营、奇波标签等，读本地 yaml。
 
 ### 3.5 统一导出
 
-[`api/wiki/data.js`](../api/wiki/data.js) 对外 export `fetchCatalog`、`buildKiboEvolutionChains` 等。
+[`api/wiki/data.js`](../api/wiki/data.js) 对外 export `fetchCatalog`、`buildKiboEvolutionChains`、`isKiboStorySpecial` 等。
+
+### 3.6 背景 / Lore 页（Agent 共用）
+
+与五类图鉴并列的 **长文设定页**，供 YoAgent `get_lore` 与插件 `game.lore` 共用。
+
+| slug | Wiki 页 | YAML | kind |
+|------|---------|------|------|
+| `promilia` | [普罗米利亚](https://wiki.biligame.com/ap/%E6%99%AE%E7%BD%97%E7%B1%B3%E5%88%A9%E4%BA%9A) | `data/game/lore/promilia.yaml` | lore |
+| `game-info` | [游戏信息整理合集](https://wiki.biligame.com/ap/%E6%B8%B8%E6%88%8F%E4%BF%A1%E6%81%AF%E6%95%B4%E7%90%86%E5%90%88%E9%9B%86) | `data/game/lore/game-info.yaml` | reference |
+
+实现：
+
+| 模块 | 路径 |
+|------|------|
+| 页面定义 | [`api/wiki/lorePages.js`](../api/wiki/lorePages.js) |
+| wikitext 解析 | [`api/wiki/wikitext.js`](../api/wiki/wikitext.js) → 按 `== 标题 ==` 切 `sections[]` |
+| 拉取与缓存 | [`api/wiki/loreCache.js`](../api/wiki/loreCache.js) |
+| 游戏层封装 | [`utils/game.js`](../utils/game.js) `getLoreData` / `getLorePage` / `searchLoreSections` |
+
+落盘结构（每页 yaml）：
+
+```yaml
+slug: promilia
+title: 普罗米利亚
+sections:
+  - id: section-id
+    title: 章节标题
+    level: 2
+    text: 正文纯文本
+    charCount: 1234
+fetchedAt: "2026-06-17T..."
+```
+
+原始 wikitext 备份：`data/game/lore/raw/{slug}.wikitext`  
+元数据索引：`data/game/lore/index.yaml`（`lastRefreshAt`、各页 `sectionCount`）
+
+刷新策略：
+
+| 触发 | 行为 |
+|------|------|
+| 插件 `bootstrap` | `game.getLoreData('init')` — 缓存缺失或超过 `wikiLoreRefreshHours`（默认 168h）时拉取 |
+| 定时 | `scheduleLoreRefresh()` — 间隔约为有效期的 1/4，后台 `refreshLoreCache` |
+| `#更新数据` | `game.getData({ mode: 'refresh' })` 内一并 `getLoreData('refresh')` |
+
+检索（插件侧 `searchLoreSections`）：标题 + 正文子串匹配，按标题命中优先排序。YoAgent 侧见 `src/agent/knowledge/lore.py` + 工具 `get_lore`。
+
+配置：`config/config.yaml` → `wikiLoreRefreshHours`（默认 168）。
 
 ---
 

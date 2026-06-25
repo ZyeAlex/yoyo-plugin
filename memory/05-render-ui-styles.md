@@ -22,6 +22,11 @@
 
 ## 2. 角色图鉴 [`hero/atlas.html` + `atlas.css`]
 
+> **🔒 已定稿锁定（2026-06）**  
+> **AI / 开发者：除非用户明确要求改角色图鉴头部样式，否则禁止修改 `resources/hero/atlas.html` 与 `resources/hero/atlas.css`。**  
+> 修其他页面（图片列表、装备、灵子等）时**不得**顺带 `Write` / 整文件覆盖这两个文件。  
+> 曾三次因 HTML/CSS 不同步或误覆盖导致右侧上半部崩坏（最近一次：`43f77fc` 灵子提交回退 CSS 至 247 行旧版）。
+
 ### 2.1 右侧 `.hero-base`（与 BWIKI「信息」区对齐）
 
 自上而下：
@@ -46,10 +51,42 @@
 
 图片：`portraitIcon`（`tex_icon_hero_get_{id}.png`），失败回退 `headIcon`（**不用**小 `avatarIcon`）。
 
-### 2.3 文件
+### 2.3 文件与校验
 
-- CSS 约 **348 行**，含 `.hero-identity` / `.hero-badges` / `.hero-meta` / `.hero-desc` 等**全部**新类名
-- **禁止**回退到旧版（缺上述类名、`.hero-name { margin-top: -56px }`、`.hero-rarity-img { position: absolute }`、立绘固定高度）
+- CSS **必须 348 行**，含 `.hero-identity` / `.hero-badges` / `.hero-meta` / `.hero-desc` 等**全部**新类名
+- HTML **131 行**，头部结构见 §2.1（含 `.hero-name-stack`、`.hero-badges`、`table.hero-meta`）
+- **禁止**回退到旧版（缺上述类名、`.hero-name { margin-top: -56px }`、`.hero-rarity-img { position: absolute }`、立绘固定 `height: 420px`）
+
+### 2.4 100% 还原（必读）
+
+**权威快照**（优先使用，不依赖 git 历史）：
+
+```
+memory/reference/hero-atlas.html   → resources/hero/atlas.html
+memory/reference/hero-atlas.css    → resources/hero/atlas.css
+```
+
+| 文件 | 行数 | MD5 |
+|------|------|-----|
+| `hero-atlas.css` | 348 | `1d17086d05f0019bb8891795f2549151` |
+| `hero-atlas.html` | 131 | `47345dfcbcd055e8da212d6d7bdec45b` |
+
+还原后执行 `md5sum resources/hero/atlas.css resources/hero/atlas.html` 核对；再 `#更新图鉴数据` 或删 `data/cache/render/atlas/` 清渲染缓存。
+
+**Git 备选**（快照与仓库一致时等价）：
+
+```shell
+git show 4a8c624:resources/hero/atlas.css  > resources/hero/atlas.css
+git show 4a8c624:resources/hero/atlas.html > resources/hero/atlas.html
+```
+
+**崩坏特征（说明 CSS 已是旧版，立即按上表还原）**：
+
+- `atlas.css` 仅 ~247 行，且无 `.hero-identity` / `.hero-meta`
+- 存在 `.hero-name { margin-top: -56px }` 或 `.hero-rarity-img { position: absolute }`
+- 右侧：名字/星级错位、属性表无样式、徽章挤成一团
+
+**更新快照规则**：仅当**用户明确要求**修改角色图鉴头部样式且验收通过后，才同步覆盖 `memory/reference/hero-atlas.*` 并更新本节 MD5/行数。
 
 ---
 
@@ -106,6 +143,7 @@
 
 ## 6. 维护禁忌（曾导致样式「丢失」三次）
 
+0. **`resources/hero/atlas.html` / `atlas.css` 为锁定文件** — 非用户明确要求不得改；其他任务禁止 touch（见 §2.4 快照还原）
 1. **不要**对 CSS 使用 `git checkout` 除非用户明确要求（会丢掉未 commit 的会话改动）
 2. **不要**用 `Write` 整文件覆盖与当前任务无关的 CSS（易写入旧版片段）
 3. **改 CSS 前必须先 Read 当前文件**，优先 `StrReplace` 局部修改
@@ -117,6 +155,8 @@
 ## 7. 相关文件速查
 
 ```
+memory/reference/hero-atlas.html   # 角色图鉴 HTML 定稿快照（只读参考）
+memory/reference/hero-atlas.css    # 角色图鉴 CSS 定稿快照（只读参考）
 resources/hero/atlas.html
 resources/hero/atlas.css
 resources/pet/atlas.html
