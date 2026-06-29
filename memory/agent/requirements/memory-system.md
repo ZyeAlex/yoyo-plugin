@@ -16,9 +16,9 @@
 ```
 src/agent/memory/data/
 ├── global/
-│   └── MEMORY.md              # 跨群事实（master 写）
+│   └── MEMORY.md              # 通用事实/词汇/约定（master 写）
 └── group/{group_id}/
-    ├── MEMORY.md              # 本群约定/黑话
+    ├── MEMORY.md              # 仅本群身份描述 / 本群成员关系（极窄）
     ├── users.yaml             # 用户画像（非 USER.md）
     └── logs/YYYY-MM-DD.md     # 日誌观察
 ```

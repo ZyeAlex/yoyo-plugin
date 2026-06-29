@@ -17,9 +17,7 @@ import {
 
 const TEST_CFG = {
   agentPort: 0,
-  agentTimeout: 30,
-  agentLlmTimeoutSec: 10,
-  agentMaxSteps: 4,
+  agentMaxSteps: 8,
   agentMaxReplies: 3,
 }
 
@@ -62,7 +60,8 @@ async function collectStreamLikeAgent(e, payload, cfg) {
         return
       }
       if (event === 'reply') {
-        sent = await sendReplies(e, data, cfg)
+        const delivery = await sendReplies(e, data, cfg)
+        sent = delivery.sent
         const list = extractReplies(data)
         for (const item of list) {
           const seg = item.message?.[0]
@@ -165,7 +164,7 @@ describe('空 reply SSE（回归：有 status 无结果）', () => {
     await stopMockSseServer(mock.server)
   })
 
-  it('reply 为空时 sendReplies 返回 false', async () => {
+  it('reply 为空时 sendReplies 返回 sent=false', async () => {
     const e = mockEvent()
     const cfg = { ...TEST_CFG, agentPort: mock.port }
     const result = await collectStreamLikeAgent(e, searchPayload(), cfg)

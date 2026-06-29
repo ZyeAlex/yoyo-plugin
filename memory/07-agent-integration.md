@@ -76,7 +76,9 @@ sequenceDiagram
 | `agentIsAt` | `true` | 需 `@` 机器人或唤醒词时触发 |
 | `agentWakeWords` | `悠悠`、`小悠` | 唤醒词列表（与 `@` 等价触发，见 `api/agent/trigger.js`） |
 | `agentPort` | `8787` | YoAgent 监听端口；`api/agent/schema.js` 拼 `http://127.0.0.1:{port}` |
-| `agentTimeout` | `60` | 秒；超时走 catch，向用户发短提示（见 §2.3） |
+| `agentStepTimeoutSimpleSec` | `20` | 简单 step 限时（LLM / 轻量工具，秒） |
+| `agentStepTimeoutComplexSec` | `60` | 复杂工具 step 限时（秒） |
+| `agentTimeout` | — | **已废弃**（无整次 HTTP 总体超时） |
 
 YoAgent 推理侧（锅巴 / 同一 YAML，由 `server/src/core/settings.py` 读取）：
 
@@ -85,7 +87,9 @@ YoAgent 推理侧（锅巴 / 同一 YAML，由 `server/src/core/settings.py` 读
 | `agentLlmApiKey` | `""` | OpenAI 兼容 API Key |
 | `agentLlmBaseUrl` | `""` | LLM 基址 |
 | `agentLlmModel` | `gpt-4o-mini` | 模型名 |
-| `agentMaxSteps` | `4` | Agent 最大推理步数 |
+| `agentMaxSteps` | `8` | Agent 最大推理步数 |
+| `agentStepTimeoutSimpleSec` | `20` | 简单 step 限时 |
+| `agentStepTimeoutComplexSec` | `60` | 复杂工具 step 限时 |
 | `agentToolResultMaxChars` | `1500` | 工具结果截断 |
 | `agentWebSearchProvider` | `jina` | 联网搜索 `mock` \| `jina` |
 | `agentVisionEnabled` | `true` | 按需图片识别 `describe_image` |
@@ -430,12 +434,12 @@ agentLlmModel: gpt-4o-mini
 
 ### 8.3 检查清单
 
-- [ ] `POST /api/chat` 返回 `code: 0`
-- [ ] 非空 `data.reply.content` 或有效 `segments`
-- [ ] 能识别 @ `bot_id` 的触发消息
-- [ ] 多条 `messages` 作上下文
-- [ ] 失败 / 空回复时 QQ 有短句兜底（非完全静默）
-- [ ] 60s 内响应
+- [x] `POST /api/chat` 返回 `code: 0`
+- [x] 非空 `data.reply.content` 或有效 `segments`
+- [x] 能识别 @ `bot_id` 的触发消息
+- [x] 多条 `messages` 作上下文
+- [x] 失败 / 空回复时 QQ 有短句兜底（非完全静默）
+- [x] 简单对话 step ≤ `agentStepTimeoutSimpleSec`（默认 20s）
 - [ ] `server/yoagent.log` 无持续报错
 
 ---
@@ -447,7 +451,7 @@ agentLlmModel: gpt-4o-mini
 | 无长期 memory | 插件缓冲仍单次清空；跨轮见 session；持久见 MEMORY/users（**情绪不写 users**） |
 | 重启丢缓冲 | 内存缓冲，Bot 重启即空 |
 | 仅群聊 | 当前无私聊 |
-| 并发 | 同群连续 @ 可能重叠请求，YoAgent 自行串行/去重 |
+| 并发 | 同群 `try_claim` 串行；Run 中再次 @ 走 `POST /api/messages` 追发 |
 | 条数上限 | 默认 10，更早消息已丢弃 |
 | 不含 bot 回复 | 缓冲仅群友消息，不含机器人上一条回复 |
 

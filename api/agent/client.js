@@ -1,6 +1,6 @@
 import setting from '#setting'
 import { createHttp } from '../../utils/http.js'
-import { AGENT_CHAT_PATH, getAgentBaseURL } from './schema.js'
+import { AGENT_CHAT_PATH, AGENT_MESSAGES_PATH, getAgentBaseURL } from './schema.js'
 
 const response = (data) => {
   if (data?.code !== 0) {
@@ -15,19 +15,14 @@ const response = (data) => {
   return data
 }
 
-function agentTimeoutMs(cfg = setting.config) {
-  const pluginSec = Number(cfg.agentTimeout) || 60
-  const llmSec = Number(cfg.agentLlmTimeoutSec) || 60
-  const steps = Number(cfg.agentMaxSteps) || 4
-  const estimatedSec = (steps + 2) * llmSec
-  return Math.max(pluginSec, estimatedSec) * 1000
-}
+/** 无总体 HTTP 超时：由服务端 per-step 限时控制；仅防连接挂死用极大值 */
+const HTTP_IDLE_MS = 30 * 60 * 1000
 
 function createAgentHttp(cfg = setting.config) {
   return createHttp({
     config: {
       baseURL: getAgentBaseURL(cfg),
-      timeout: agentTimeoutMs(cfg),
+      timeout: HTTP_IDLE_MS,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -49,6 +44,14 @@ function createAgentHttp(cfg = setting.config) {
 export async function chat(payload, cfg = setting.config) {
   const http = createAgentHttp(cfg)
   return http.post(AGENT_CHAT_PATH, payload)
+}
+
+/** 同群 Run 进行中时追发消息入队 */
+export async function enqueueMessages(payload, cfg = setting.config) {
+  const http = createAgentHttp(cfg)
+  const res = await http.post(AGENT_MESSAGES_PATH, payload)
+  if (res?.queued) return res
+  return res
 }
 
 export function parseSseChunk(buffer) {
@@ -79,28 +82,18 @@ export function parseSseChunk(buffer) {
  */
 export async function chatStream(payload, onEvent, cfg = setting.config) {
   const baseURL = getAgentBaseURL(cfg)
-  const timeoutMs = agentTimeoutMs(cfg)
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), timeoutMs)
-
   let res
   try {
     res = await fetch(`${baseURL}${AGENT_CHAT_PATH}?stream=1`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
-      signal: controller.signal,
     })
   } catch (err) {
-    clearTimeout(timer)
-    if (err.name === 'AbortError') {
-      throw new Error('Agent 请求超时')
-    }
     throw err
   }
 
   if (!res.ok) {
-    clearTimeout(timer)
     let message = `Agent HTTP ${res.status}`
     try {
       const body = await res.json()
@@ -113,7 +106,6 @@ export async function chatStream(payload, onEvent, cfg = setting.config) {
 
   const reader = res.body?.getReader()
   if (!reader) {
-    clearTimeout(timer)
     throw new Error('Agent 未返回可读流')
   }
 
@@ -145,7 +137,6 @@ export async function chatStream(payload, onEvent, cfg = setting.config) {
       }
     }
   } finally {
-    clearTimeout(timer)
     reader.releaseLock?.()
   }
 
@@ -154,4 +145,4 @@ export async function chatStream(payload, onEvent, cfg = setting.config) {
   }
 }
 
-export default { chat, chatStream }
+export default { chat, chatStream, enqueueMessages }

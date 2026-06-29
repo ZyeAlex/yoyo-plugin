@@ -1,6 +1,6 @@
 # 业务硬约束
 
-最后更新：2026-06-24
+最后更新：2026-06-26
 
 ## 架构
 
@@ -27,10 +27,11 @@
 
 13. **终端工具即结束 Loop**（规划；见 terminal-tool-contract）。
 14. **memory 工具落盘前过 guards**。
+15. **禁止用户消息关键词/正则硬编码**：不得用 `re.search`、关键词表等匹配用户原文来分支 prompt 注入、工具选择或上下文逻辑；仅允许 OneBot 结构信号（@、reply 链、user_id、mid）与配置项（权限、开关）。语义由 LLM 在已组装的上下文中完成。
 
 ## 游戏资料
 
-15. **数值/面板以本地 YAML 为准**；未收录须明说。
-16. **Mem0/SQLite 不替代当前 YAML 工具路径**（FTS 为规划增强）。
+16. **数值/面板以本地 YAML 为准**；未收录须明说。
+17. **Mem0/SQLite 不替代当前 YAML 工具路径**（FTS 为规划增强）。
 
 详见 [game-knowledge.md](game-knowledge.md)。

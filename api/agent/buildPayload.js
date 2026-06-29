@@ -6,7 +6,9 @@ import { sessionId } from './buffer.js'
  * @param {import('../../../lib/plugins/loader.js')} e
  * @param {object[]} messages 内存缓冲中的 OneBot 消息列表
  */
-export function buildAgentPayload(e, messages) {
+export function buildAgentPayload(e, taken) {
+  const batch = taken?.batch ?? taken ?? []
+  const recent = taken?.recent ?? []
   return {
     request_id: randomUUID(),
     session: {
@@ -15,7 +17,8 @@ export function buildAgentPayload(e, messages) {
       bot_id: String(e.self_id),
     },
     caller: utils.resolveCallerAuth(e),
-    messages,
+    messages: batch,
+    recent_messages: recent,
   }
 }
 

@@ -1,6 +1,6 @@
 # 阶段总览
 
-最后更新：2026-06-24  
+最后更新：2026-06-26  
 **状态**：进行中 — 游戏助手 Agent（蓝色星原：旅谣）
 
 ## 目标
@@ -19,9 +19,9 @@ QQ 群内的 **角色扮演 + 游戏资料助手**，2 核 4G 可部署，Token-
   → 详见 [phase-context-refactor-2026-06.md](phase-context-refactor-2026-06.md)
 - [x] structlog 风格 trace（`route`、`system_chars`、`playbooks` 等）
 
-## 进行中
+- [x] **P0 真机可靠性（2026-06-26）**：同群 `try_claim` + 插件 inFlight 追发 `/api/messages`；ReAct 按 step 限时（简单 20s / 复杂 60s）；`maxSteps=8`；无整次 chat 总体超时
 
-- [x] 与 yoyo-plugin 真机联调（基础 @ / 唤醒词 / 游戏工具 / 表情包）
+## 进行中
 
 ## 待办
 
@@ -37,8 +37,9 @@ QQ 群内的 **角色扮演 + 游戏资料助手**，2 核 4G 可部署，Token-
 
 ### MVP-D（工程）
 
-- [ ] 同群串行增强（已有 session_run 基础）
-- [ ] SSE 流式（插件侧部分已接）
+- [x] 同群串行（server `try_claim` + 插件 `sessionQueues` / `inFlight`）
+- [x] 追发 `POST /api/messages`（插件 inFlight 入队）
+- [x] SSE 流式（插件侧已接；busy 时 `event: queued`）
 - [ ] Token 预算压缩阶梯落地
 
 ## 模块状态快照

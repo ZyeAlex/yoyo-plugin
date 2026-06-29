@@ -29,7 +29,6 @@ signExclude: [] # 签到排除群聊
 # Agent（悠悠 / YoAgent）— 插件与后端共用 config/config.yaml
 agentEnabled: false # 总开关（插件侧）
 agentPort: 8787 # YoAgent 后端端口（CORS 同源自动对齐此端口）
-agentTimeout: 120 # 请求超时（秒，插件侧）；建议 ≥ (agentMaxSteps+2)*agentLlmTimeoutSec
 agentStreamEnabled: true # 使用 SSE 流式接口（工具执行中推送状态回复）；失败时回退同步 JSON
 agentIsAt: true # 群聊需 @ 机器人或唤醒词（见 agentWakeWords）时触发
 agentWakeWords:
@@ -38,6 +37,7 @@ agentWakeWords:
 agentLegacyFullPrompt: false # true=回退旧版全量 system 注入（临时兼容）
 agentInclude: [] # 启用群白名单（空=不监听任何群）
 agentBufferSize: 10 # 单次 @ 对话附带的最近群聊条数（插件侧缓冲）
+agentRecentContextSize: 24 # 跨 @ 保留的近期群消息条数（按需选取上下文，trigger 后不清空）
 agentSessionHistoryTurns: 10 # 每群保留最近 N 次 @ 对话（YoAgent 进程内，重启清空）
 agentSessionHistoryMaxChars: 800 # 单条历史消息最大字符数
 agentLogLevel: INFO # 后端日志级别
@@ -46,8 +46,10 @@ agentLlmBaseUrl: "" # LLM 接口基址（不含 /chat/completions）
 agentLlmModel: gpt-4o-mini # LLM 模型名
 agentMaxInputTokens: 6000 # 单次请求最大输入 token
 agentMaxOutputTokens: 512 # 单次回复最大输出 token
-agentMaxSteps: 12 # Agent 最大推理步数（写代码/多工具任务宜 8~16）
-agentLlmTimeoutSec: 120 # 单次 LLM 请求超时（秒）；list_dir/多步 ReAct 后一轮常 >60s
+agentMaxSteps: 8 # Agent 最大推理步数
+agentStepTimeoutSimpleSec: 20 # 简单 step（LLM 思考 / 轻量工具）限时（秒）
+agentStepTimeoutComplexSec: 60 # 复杂工具 step 限时（秒）
+agentLlmTimeoutSec: 120 # 已废弃，由 agentStepTimeout* 替代
 agentSkillsDir: "" # 用户技能目录，空=server/src/agent/memory/skills（内置在 src/agent/skills/）
 agentToolResultMaxChars: 1500 # 工具结果截断长度
 # 工具并发组上限（0 或不填=该组不限制；普通聊天/只读工具不受此限）
@@ -78,5 +80,3 @@ agentEmoticonEnabled: true # 表情包 Sidecar：提取入库 src/agent/memory/e
 agentEmoticonMaxIndexPerTurn: 3 # 每次 @ 后台最多索引几张新表情包
 agentEmoticonSearchLimit: 6 # search_emoticons 默认返回条数
 agentEmoticonRecencyHalfLifeDays: 14 # 时效权重半衰期（天）
-agentEmoticonCatalogInjectMax: 12 # 已废弃（保留兼容）
-agentEmoticonCatalogInjectChars: 600 # 已废弃（保留兼容）

@@ -55,6 +55,69 @@ export function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+/** 长延迟后 e.reply 可能失效，保留群/账号快照走 Bot 直发 */
+export function captureReplyTarget(e) {
+  return {
+    isGroup: !!e?.isGroup,
+    group_id: e?.group_id != null ? String(e.group_id) : '',
+    user_id: e?.user_id != null ? String(e.user_id) : '',
+    self_id: e?.self_id != null ? String(e.self_id) : '',
+  }
+}
+
+async function sendViaBot(target, msg) {
+  const bot = global.Bot?.[target.self_id]
+  if (!bot) return false
+  try {
+    if (target.isGroup && target.group_id && bot.pickGroup) {
+      await bot.pickGroup(target.group_id).sendMsg(msg)
+      return true
+    }
+    if (!target.isGroup && target.user_id && bot.pickUser) {
+      await bot.pickUser(target.user_id).sendMsg(msg)
+      return true
+    }
+  } catch (err) {
+    logger.warn(`[yoyo-agent] Bot.sendMsg 失败: ${err.message}`)
+  }
+  return false
+}
+
+/**
+ * @param {import('../../../lib/plugins/loader.js')} e
+ * @param {object} reply
+ * @param {{ isGroup?: boolean, group_id?: string, user_id?: string, self_id?: string }} [target]
+ * @returns {Promise<{ sent: boolean, via?: string }>}
+ */
+export async function sendReply(e, reply, target = null) {
+  if (!reply) return { sent: false }
+
+  const segs = reply.message || reply.segments
+  let msg = null
+  if (Array.isArray(segs) && segs.length) {
+    msg = segs.flatMap((s) => onebotSegmentToYunzai(s))
+  } else if (reply.type === 'image' && reply.content) {
+    msg = [segment.image(reply.content)]
+  } else if (reply.content) {
+    msg = [reply.content]
+  }
+  if (!msg?.length) return { sent: false }
+
+  const ctx = target || captureReplyTarget(e)
+
+  try {
+    await e.reply(msg)
+    return { sent: true, via: 'e.reply' }
+  } catch (err) {
+    logger.warn(`[yoyo-agent] e.reply 失败: ${err.message}`)
+  }
+
+  if (await sendViaBot(ctx, msg)) {
+    return { sent: true, via: 'bot.sendMsg' }
+  }
+  return { sent: false }
+}
+
 function maxReplyCount(cfg = {}) {
   const n = Number(cfg.agentMaxReplies)
   if (!Number.isFinite(n) || n < 1) return 3
@@ -86,6 +149,10 @@ function onebotSegmentToYunzai(seg) {
     const qq = data.qq ?? seg.qq ?? seg.user_id ?? ''
     return qq ? [segment.at(qq)] : []
   }
+  if (type === 'reply') {
+    const id = data.id ?? seg.id
+    return id != null && id !== '' ? [segment.reply(id)] : []
+  }
   if (type === 'face') {
     const id = data.id ?? seg.id
     return id != null ? [segment.face(id)] : []
@@ -93,30 +160,23 @@ function onebotSegmentToYunzai(seg) {
   return []
 }
 
-export async function sendReply(e, reply) {
-  if (!reply) return false
+/** 按序连发 1~N 条回复；第 2、3 条前随机等待 0.5~2s；至少一条成功才返回 true */
+export async function sendReplies(e, data, cfg = {}, target = null) {
+  const list = expandReplyBubbles(extractReplies(data), cfg)
+  if (!list.length) return { sent: false, via: null }
 
-  const segs = reply.message || reply.segments
-  if (Array.isArray(segs) && segs.length) {
-    const msg = segs.flatMap((s) => onebotSegmentToYunzai(s))
-    if (msg.length) {
-      await e.reply(msg)
-      return true
+  let anySent = false
+  let lastVia = null
+  const ctx = target || captureReplyTarget(e)
+  for (let i = 0; i < list.length; i++) {
+    if (i > 0) await sleep(randomReplyDelayMs(cfg))
+    const result = await sendReply(e, list[i], ctx)
+    if (result.sent) {
+      anySent = true
+      lastVia = result.via || lastVia
     }
-    return false
   }
-
-  if (reply.type === 'image' && reply.content) {
-    await e.reply(segment.image(reply.content))
-    return true
-  }
-
-  if (reply.content) {
-    await e.reply(reply.content)
-    return true
-  }
-
-  return false
+  return { sent: anySent, via: lastVia }
 }
 
 /** 第 2、3 条连发前的随机延时（毫秒） */
@@ -124,17 +184,4 @@ export function randomReplyDelayMs(cfg = {}) {
   const min = Math.max(0, Number(cfg.agentReplyDelayMinMs) || 500)
   const max = Math.max(min, Number(cfg.agentReplyDelayMaxMs) || 2000)
   return min + Math.floor(Math.random() * (max - min + 1))
-}
-
-/** 按序连发 1~N 条回复；第 2、3 条前随机等待 0.5~2s；至少一条成功才返回 true */
-export async function sendReplies(e, data, cfg = {}) {
-  const list = expandReplyBubbles(extractReplies(data), cfg)
-  if (!list.length) return false
-
-  let anySent = false
-  for (let i = 0; i < list.length; i++) {
-    if (i > 0) await sleep(randomReplyDelayMs(cfg))
-    if (await sendReply(e, list[i])) anySent = true
-  }
-  return anySent
 }

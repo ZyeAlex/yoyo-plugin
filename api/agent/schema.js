@@ -1,5 +1,6 @@
 /** YoAgent 聊天接口路径（相对服务根地址） */
 export const AGENT_CHAT_PATH = '/api/chat'
+export const AGENT_MESSAGES_PATH = '/api/messages'
 
 const DEFAULT_AGENT_PORT = 8787
 

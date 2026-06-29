@@ -1,6 +1,6 @@
 # API 契约（yoyo-plugin）
 
-最后更新：2026-06-17
+最后更新：2026-06-26
 
 **Base URL**：`http://127.0.0.1:{agentPort}`（默认 `8787`，由 `api/agent/schema.js` 拼接）  
 **认证**：YoAgent 支持 `Authorization: Bearer <API_KEY>`（`server/.env` 的 `API_KEY`；为空时不校验）。**当前插件 `client.js` 未发送 Bearer**，同源本机调用。
@@ -66,6 +66,25 @@ HTTP `200` 且 **`code === 0`**：
 
 详见 [`../../07-agent-integration.md`](../../07-agent-integration.md) §2.3。
 
+### 同群 busy（queued）
+
+当该群已有 RUNNING 的 Agent Run 时，**不再**开启新 Run，返回：
+
+```json
+{ "code": 0, "message": "ok", "data": { "queued": true } }
+```
+
+SSE：`event: queued` + `event: done`（无 `reply`）。插件应改走 `POST /api/messages` 追发。
+
+## POST /api/messages
+
+同群 **已有 RUNNING** 时，将 `messages` 入队供 `run_tool_loop` 在 step 间 `inject_followup_batches` 注入。
+
+- 无进行中 Run → `code: 1`，message 提示改走 `/api/chat`
+- 成功 → `code: 0`，`data.queued: true`
+
+请求体与 `/api/chat` 相同（至少含 `session` + `messages`）。
+
 ## GET /api/health
 
 无需认证。`{"status": "ok"}`
@@ -87,8 +106,12 @@ agentEnabled: true
 agentPort: 8787
 agentInclude: [群号]
 agentIsAt: true
-agentTimeout: 60
+agentMaxSteps: 8
+agentStepTimeoutSimpleSec: 20   # 简单 step（LLM / 轻量工具）
+agentStepTimeoutComplexSec: 60  # 重工具 step（web_search / script / 文件等）
 agentLlmApiKey: sk-xxx
 ```
+
+> `agentTimeout` / `agentLlmTimeoutSec` 已废弃：无整次 chat 总体超时，由 per-step 限时控制。
 
 插件侧完整对接文档：[`../../07-agent-integration.md`](../../07-agent-integration.md)。

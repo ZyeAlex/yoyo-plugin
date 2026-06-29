@@ -152,15 +152,39 @@ export function supportGuoba() {
       },
     },
     {
-      field: 'config.agentTimeout',
-      label: '请求超时（秒）',
-      bottomHelpMessage: '调用 YoAgent 的超时时间，超时后静默不回复',
+      field: 'config.agentStepTimeoutSimpleSec',
+      label: '简单 step 限时（秒）',
+      bottomHelpMessage: 'LLM 思考 / 轻量工具每 step 上限，默认 20',
+      component: 'InputNumber',
+      required: true,
+      componentProps: {
+        min: 5,
+        max: 120,
+        placeholder: '20',
+      },
+    },
+    {
+      field: 'config.agentStepTimeoutComplexSec',
+      label: '复杂工具 step 限时（秒）',
+      bottomHelpMessage: 'web_search / 脚本 / 读文件等重工具每 step 上限，默认 60',
+      component: 'InputNumber',
+      required: true,
+      componentProps: {
+        min: 10,
+        max: 300,
+        placeholder: '60',
+      },
+    },
+    {
+      field: 'config.agentMaxSteps',
+      label: 'Agent 最大步数',
+      bottomHelpMessage: 'ReAct 循环上限，默认 8',
       component: 'InputNumber',
       required: true,
       componentProps: {
         min: 1,
-        max: 600,
-        placeholder: '60',
+        max: 24,
+        placeholder: '8',
       },
     },
     {
@@ -178,7 +202,7 @@ export function supportGuoba() {
     {
       field: 'config.agentWakeWords',
       label: '唤醒词',
-      bottomHelpMessage: 'agentIsAt 开启时，@ 机器人或消息中含「悠悠」「小悠」等唤醒词即可触发（无需 @）',
+      bottomHelpMessage: 'agentIsAt 开启时，@ 机器人，或消息以唤醒词开头、或以「唤醒词+标点」结尾即可触发',
       component: 'GTags',
       componentProps: {
         placeholder: '悠悠、小悠',
@@ -194,13 +218,25 @@ export function supportGuoba() {
     {
       field: 'config.agentBufferSize',
       label: '消息缓冲条数',
-      bottomHelpMessage: '触发前保留最近 N 条群消息作为上下文，触发后清空',
+      bottomHelpMessage: '单次触发时附带的本轮群消息条数（触发后本轮 batch 清空）',
       component: 'InputNumber',
       required: true,
       componentProps: {
         min: 1,
         max: 100,
         placeholder: '10',
+      },
+    },
+    {
+      field: 'config.agentRecentContextSize',
+      label: '跨轮上下文条数',
+      bottomHelpMessage: '跨 @ 保留的近期群消息，服务端按需选取相关上下文（默认 24）',
+      component: 'InputNumber',
+      required: true,
+      componentProps: {
+        min: 4,
+        max: 100,
+        placeholder: '24',
       },
     },
     {
