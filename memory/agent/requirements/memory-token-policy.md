@@ -15,7 +15,7 @@
 
 `tools/memory.py` 在 add/replace 前调用 `memory/guards.validate_memory_write`：
 
-- **拒绝** 游戏 lore/图鉴事实 → 应用 `get_lore` / `query_game_data`
+- **拒绝** 游戏 lore/图鉴事实 → 应用 `search_knowledge` / `get_entity_detail` / `query_game_data`
 - **拒绝** Agent 元信息（工具名、`SKILL.md` 等）
 - **global_memory** 需 master
 - **user** 需有效 user_id

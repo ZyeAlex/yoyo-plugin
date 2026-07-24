@@ -84,9 +84,11 @@ YoAgent 推理侧（锅巴 / 同一 YAML，由 `server/src/core/settings.py` 读
 
 | 字段 | 默认 | 说明 |
 |------|------|------|
-| `agentLlmApiKey` | `""` | OpenAI 兼容 API Key |
-| `agentLlmBaseUrl` | `""` | LLM 基址 |
-| `agentLlmModel` | `gpt-4o-mini` | 模型名 |
+| `agentLlmApiKey` | `""` | 统一 API Key（LLM / Embedding / 视觉） |
+| `agentApiProvider` | `siliconflow` | 供应商：硅基流动 / 火山方舟 / 阿里百炼 / custom |
+| `agentLlmBaseUrl` | `""` | 仅 custom 时填 OpenAI 兼容基址 |
+| `agentLlmModel` | `deepseek-ai/DeepSeek-V4-Flash` | LLM 模型 |
+| `agentEmbeddingModel` | `BAAI/bge-m3` | Embedding 模型 |
 | `agentMaxSteps` | `8` | Agent 最大推理步数 |
 | `agentStepTimeoutSimpleSec` | `20` | 简单 step 限时 |
 | `agentStepTimeoutComplexSec` | `60` | 复杂工具 step 限时 |
@@ -100,6 +102,8 @@ YoAgent 推理侧（锅巴 / 同一 YAML，由 `server/src/core/settings.py` 读
 | `agentEmoticonRecencyHalfLifeDays` | `14` | 检索排序时效半衰期（天） |
 | `agentLegacyFullPrompt` | `false` | `true` 时加载全部 playbook（临时兼容旧版全量 system） |
 | `agentMaxReplies` | `3` | JSON 回复最多气泡数 |
+
+向量索引 API：`GET /api/index/status`、`POST /api/index/notify`、`POST /api/index/rebuild`。详见 [`agent/requirements/vector-index.md`](agent/requirements/vector-index.md)。
 
 完整列表见 [`config/default.yaml`](../config/default.yaml)。
 

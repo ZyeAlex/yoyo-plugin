@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>yoyo-plugin 配置中心</title>
+  <base href="/yoyo/" />
+  <link rel="icon" href="/yoyo/theme/logo_c.png" type="image/png" />
+  <link rel="stylesheet" href="/yoyo/style.css?v=16" />
+</head>
+<body>
+  <div class="bg-glow"></div>
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="brand">
+        <img class="brand-logo" src="/yoyo/theme/logo_c.png" alt="" />
+        <p id="brand-sub">配置中心</p>
+      </div>
+
+      <nav id="nav" class="nav"></nav>
+    </aside>
+
+    <main class="main">
+      <div id="build-banner" class="build-banner hidden" role="status" aria-live="polite">
+        <div class="build-banner-inner">
+          <span class="build-banner-dot" aria-hidden="true"></span>
+          <span id="build-banner-text" class="build-banner-text">索引构建中…</span>
+          <a href="/yoyo/agent" id="build-banner-go" class="build-banner-link">查看进度 →</a>
+        </div>
+      </div>
+
+      <header class="section-hero card" id="section-hero">
+        <div class="section-hero-main">
+          <p class="eyebrow" id="section-eyebrow">config/config.yaml</p>
+          <h2 id="section-title"><span class="title-accent">基础配置</span></h2>
+          <p id="section-desc" class="muted">修改写入 config/config.yaml</p>
+        </div>
+        <div class="agent-bar hidden" id="agent-bar">
+          <div class="agent-bar-top">
+            <div class="agent-pills">
+              <span class="pill" id="pill-agent">Agent · -</span>
+              <span class="pill" id="pill-index">索引 · -</span>
+            </div>
+            <div class="agent-btns">
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-restart">重启 YoAgent</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-rebuild-game" title="BWIKI 背景页 + 角色 / 奇波 / 装备 / 套装等">重建游戏知识</button>
+            </div>
+          </div>
+          <div class="index-breakdown" id="index-breakdown">
+            <div class="index-group">
+              <div class="index-group-head">
+                <span class="index-group-title">游戏知识</span>
+                <span class="index-group-hint">BWIKI 背景 · 角色 / 奇波 / 装备实体</span>
+              </div>
+              <div class="index-group-counts" id="index-game-counts">背景百科 0 · 游戏实体 0</div>
+            </div>
+            <div class="index-group">
+              <div class="index-group-head">
+                <span class="index-group-title">群记忆</span>
+                <span class="index-group-hint" id="index-memory-hint">自动维护 · 写入后后台同步</span>
+              </div>
+              <div class="index-group-counts" id="index-memory-counts">全局 0 · 本群 0 · 用户 0 · 日报 0</div>
+            </div>
+            <div class="index-group">
+              <div class="index-group-head">
+                <span class="index-group-title">表情包</span>
+                <span class="index-group-hint" id="index-emoticon-hint">向量库 · 入库自动 embedding · 超保底自动淘汰冷门</span>
+              </div>
+              <div class="index-group-counts" id="index-emoticon-counts">共 0 张</div>
+            </div>
+          </div>
+          <div class="build-track hidden" id="build-track">
+            <p class="build-scope hidden" id="build-scope"></p>
+            <div class="build-progress"><div class="build-fill" id="build-fill"></div></div>
+            <div class="build-row">
+              <span id="build-label" class="build-label"></span>
+              <span id="build-pct" class="build-pct"></span>
+            </div>
+            <ul id="validate-list" class="validate-list hidden"></ul>
+            <p id="build-error-detail" class="build-error-detail hidden"></p>
+          </div>
+        </div>
+      </header>
+
+      <div id="form" class="form-area"></div>
+
+      <footer class="savebar">
+        <div class="savebar-left">
+          <span id="save-hint" class="muted">所有修改写入 config/config.yaml</span>
+          <span id="dirty-dot" class="dirty-dot hidden" title="有未保存修改"></span>
+        </div>
+        <button type="button" class="btn btn-primary" id="btn-save">保存配置</button>
+      </footer>
+    </main>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+  <script src="/yoyo/app.js?v=29" type="module"></script>
+</body>
+</html>

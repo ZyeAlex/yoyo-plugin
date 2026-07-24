@@ -1,4 +1,4 @@
-/** 从 YoAgent 响应中取出待发送的气泡列表（OneBot v11 二维 message） */
+import fs from 'fs'
 
 export function extractReplies(data) {
   const messages = data?.messages
@@ -83,6 +83,13 @@ async function sendViaBot(target, msg) {
   return false
 }
 
+function replyFailed(res) {
+  if (!res) return false
+  if (res.error) return true
+  if (Array.isArray(res) && res.some((item) => item?.error)) return true
+  return false
+}
+
 /**
  * @param {import('../../../lib/plugins/loader.js')} e
  * @param {object} reply
@@ -105,8 +112,16 @@ export async function sendReply(e, reply, target = null) {
 
   const ctx = target || captureReplyTarget(e)
 
+  // Agent 侧在 trigger 时快照 target；YoAgent 耗时常 >60s，e.reply 易超时且错误被 Yunzai 吞掉
+  if (target?.self_id && (await sendViaBot(ctx, msg))) {
+    return { sent: true, via: 'bot.sendMsg' }
+  }
+
   try {
-    await e.reply(msg)
+    const res = await e.reply(msg)
+    if (replyFailed(res)) {
+      throw new Error('e.reply 返回失败')
+    }
     return { sent: true, via: 'e.reply' }
   } catch (err) {
     logger.warn(`[yoyo-agent] e.reply 失败: ${err.message}`)
@@ -143,7 +158,14 @@ function onebotSegmentToYunzai(seg) {
   }
   if (type === 'image') {
     const url = data.file ?? data.url ?? seg.url ?? ''
-    return url ? [segment.image(url)] : []
+    const ref = String(url).trim()
+    if (!ref) return []
+    if (ref.startsWith('http://') || ref.startsWith('https://') || ref.startsWith('base64://')) {
+      return [segment.image(ref)]
+    }
+    if (fs.existsSync(ref)) return [segment.image(ref)]
+    logger.warn(`[yoyo-agent] 图片路径不存在，跳过: ${ref}`)
+    return []
   }
   if (type === 'at') {
     const qq = data.qq ?? seg.qq ?? seg.user_id ?? ''

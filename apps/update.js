@@ -7,6 +7,7 @@ import fs from 'fs'
 import path from 'path'
 import plugin from '#plugin'
 import { getAgentPort } from '../api/agent/schema.js'
+import { rebuildIndex } from '../api/agent/client.js'
 import { ensureUv, resolveUvBin } from '../utils/uv.js'
 import {
   isAgentServerRunning,
@@ -108,6 +109,11 @@ export const Update = plugin({
     {
       reg: `^#重启悠悠$`,
       fnc: restartAgent,
+      permission: 'master'
+    },
+    {
+      reg: `^#重建知识索引$`,
+      fnc: rebuildAgentIndex,
       permission: 'master'
     }
   ]
@@ -241,9 +247,8 @@ async function installAgent(e) {
       `已安装悠悠，YoAgent 已启动（端口 ${port}${uvTip}），即将重启云崽`,
       '',
       '还需手动配置：',
-      '1. config/config.yaml → agentEnabled: true',
-      '2. config/config.yaml → agentInclude 填入群号',
-      '3. config/config.yaml → 填写 agentLlmApiKey 等 LLM 配置（锅巴可配）',
+      '1. config/config.yaml → agentInclude 填入群号（或锅巴 Agent 配置）',
+      '2. 填写 LLM / Embedding API（锅巴可配）',
     ].join('\n'))
     const Update_Plugin = new update()
     Update_Plugin.e = e
@@ -304,6 +309,24 @@ async function restartAgent(e) {
     await e.reply(`[悠悠] YoAgent 已重启（端口 ${port}）`)
   } catch (err) {
     await e.reply(`[悠悠] 重启失败：${execErrorMessage(err)}`)
+  }
+  return true
+}
+
+async function rebuildAgentIndex(e) {
+  if (!isAgentServerRunning(setting.config)) {
+    await e.reply('[悠悠] YoAgent 未在运行，请先 #启动悠悠')
+    return true
+  }
+  try {
+    await e.reply('[悠悠] 正在后台重建知识索引，请稍候…')
+    const res = await rebuildIndex({ scope: 'game' })
+    const data = res?.data || {}
+    await e.reply(
+      `[悠悠] 游戏知识索引重建完成：${data.game_chunk_count ?? '?'} 条`
+    )
+  } catch (err) {
+    await e.reply(`[悠悠] 索引重建失败：${err.message || err}`)
   }
   return true
 }

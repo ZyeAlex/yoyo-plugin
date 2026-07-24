@@ -26,7 +26,7 @@ describe('hasWakeWord', () => {
 
 describe('messageAtBot / shouldTriggerAgent', () => {
   const botId = '2575547802'
-  const cfg = { agentIsAt: true, agentWakeWords: ['悠悠', '小悠'] }
+  const cfg = { agentWakeWords: ['悠悠', '小悠'] }
 
   it('仅 @ 机器人（无文字）应触发', () => {
     const e = {

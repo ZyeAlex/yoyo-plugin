@@ -26,12 +26,11 @@
 | 2 | 条件 playbook | `prompts/playbooks/*.md` |
 | 3 | 长期记忆 + 用户画像 + 技能目录 | `build_memory_context` |
 | 4 | 权限 | `auth/permissions.format_permission_inject` |
-| 5 | 词条定位（可选） | `term_resolver.format_term_inject(term_source)` |
-| 6 | master 工作区/脚本/技能 runtime | `is_master` 时 |
-| 7 | 可分析图片列表 | `has_images` 时 |
-| 8 | 表情包 taxonomy | `emoticon_enabled` 时 |
-| 9 | 工具目录 | `tools/catalog.format_tool_catalog` |
-| 10 | 技能列表 + lore 索引 | 始终（短目录） |
+| 5 | master 工作区/脚本/技能 runtime | `is_master` 时 |
+| 6 | 可分析图片列表 | `has_images` 时 |
+| 7 | 表情包 taxonomy | `emoticon_enabled` 时 |
+| 8 | 工具目录 | `tools/catalog.format_tool_catalog` |
+| 9 | 技能列表 | 始终（短目录） |
 
 ## Playbook 激活（非 legacy）
 

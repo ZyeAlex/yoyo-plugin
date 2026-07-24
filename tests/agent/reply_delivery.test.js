@@ -62,6 +62,32 @@ describe('sendReply delivery fallback', () => {
     assert.equal(result.via, 'e.reply')
   })
 
+  it('Agent 快照 target 时优先 Bot.sendMsg', async () => {
+    const sent = mockBot()
+    const e = mockEvent()
+    const target = captureReplyTarget(e)
+    const result = await sendReply(
+      e,
+      { message: [{ type: 'text', data: { text: '在呢~' } }] },
+      target,
+    )
+    assert.equal(result.sent, true)
+    assert.equal(result.via, 'bot.sendMsg')
+    assert.equal(sent.length, 1)
+  })
+
+  it('e.reply 返回 error 对象时走 Bot.sendMsg', async () => {
+    const sent = mockBot()
+    const e = mockEvent()
+    e.reply = async () => ({ error: [new Error('请求超时')] })
+    const result = await sendReply(e, {
+      message: [{ type: 'text', data: { text: '记下了~' } }],
+    })
+    assert.equal(result.sent, true)
+    assert.equal(result.via, 'bot.sendMsg')
+    assert.equal(sent.length, 1)
+  })
+
   it('e.reply 失败时走 Bot.sendMsg', async () => {
     const sent = mockBot()
     const e = mockEvent({ replyFails: true })

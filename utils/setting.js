@@ -5,8 +5,6 @@
 import path from 'path'
 import fs from 'fs'
 import YAML from 'yaml'
-import { ensureAgentServerIfEnabled } from './agent-server.js'
-
 class Setting {
   constructor() {
     // 云崽地址
@@ -24,20 +22,25 @@ class Setting {
   }
   // 配置文件
   initConfig() {
+    return this.reloadConfig()
+  }
+
+  /** 从磁盘重载 config，避免内存与 config.yaml 不一致 */
+  reloadConfig() {
     if (!fs.existsSync(path.join(this.path, 'config/config.yaml'))) {
       fs.copyFileSync(path.join(this.path, 'config/default.yaml'), path.join(this.path, 'config/config.yaml'))
     }
-    let defConfig = this.getData('config/default')
-    let config = this.getData('config/config') || {}
+    const defConfig = this.getData('config/default') || {}
+    const config = this.getData('config/config') || {}
 
-    // 增量更新配置
     Object.keys(defConfig).forEach(key => {
       if (!(key in config)) {
         config[key] = defConfig[key]
       }
     })
     this.setData('config/config', config)
-    ensureAgentServerIfEnabled(this.path, config)
+    this.config = config
+    this.rulePrefix = '(?:(?:' + this.config.rulePrefix.join('|') + ') *)'
     return config
   }
   /**

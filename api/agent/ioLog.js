@@ -86,8 +86,8 @@ function replySummary(data) {
 
 /** YoAgent 返回 / 兜底 / 异常 后写入机器人侧结果（不含用户 messages，避免与 user 行重复） */
 export function logBotOut(payload, startedAt, meta = {}) {
-  const { reply, ...rest } = meta
-  appendAgentIoLog({
+  const { reply, timings, ...rest } = meta
+  const record = {
     logged_at: new Date().toISOString(),
     direction: 'bot',
     ...sessionMeta(payload),
@@ -95,7 +95,18 @@ export function logBotOut(payload, startedAt, meta = {}) {
     reply_summary: replySummary(reply),
     reply: reply ?? null,
     ...rest,
-  })
+  }
+  if (timings && typeof timings === 'object') {
+    record.agent_stream_ms = timings.agent_stream_ms ?? null
+    record.sse_agent_ms = timings.sse_agent_ms ?? null
+    record.delivery_ms = timings.delivery_ms ?? null
+    const sse = timings.sse_agent_ms
+    const delivery = timings.delivery_ms
+    if (typeof sse === 'number' && typeof delivery === 'number') {
+      record.overhead_ms = Math.max(0, record.duration_ms - sse - delivery)
+    }
+  }
+  appendAgentIoLog(record)
 }
 
 /** 缓冲为空等无法组 payload 时的最小记录 */

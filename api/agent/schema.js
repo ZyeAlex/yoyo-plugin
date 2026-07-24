@@ -1,6 +1,9 @@
 /** YoAgent 聊天接口路径（相对服务根地址） */
 export const AGENT_CHAT_PATH = '/api/chat'
 export const AGENT_MESSAGES_PATH = '/api/messages'
+export const AGENT_INDEX_STATUS_PATH = '/api/index/status'
+export const AGENT_INDEX_NOTIFY_PATH = '/api/index/notify'
+export const AGENT_INDEX_REBUILD_PATH = '/api/index/rebuild'
 
 const DEFAULT_AGENT_PORT = 8787
 

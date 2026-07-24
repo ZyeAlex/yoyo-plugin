@@ -1,0 +1,70 @@
+{
+  "request_id": "63cef895-0aed-4f8e-8a4f-759ed607bca1",
+  "session_id": "group:9701000:bot:2575547802",
+  "user_logged_at": "2026-06-30T06:58:58.196Z",
+  "bot_logged_at": "2026-06-30T07:01:18.016Z",
+  "duration_ms": 139820,
+  "sse_agent_ms_observed": 18233,
+  "payload": {
+    "request_id": "63cef895-0aed-4f8e-8a4f-759ed607bca1",
+    "session": {
+      "session_id": "group:9701000:bot:2575547802",
+      "group_id": "9701000",
+      "bot_id": "2575547802"
+    },
+    "caller": {
+      "user_id": "384365260",
+      "user_name": "子叶",
+      "group_role": "member",
+      "is_master": true
+    },
+    "messages": [
+      {
+        "message_id": "1268774254",
+        "user_id": "384365260",
+        "sender": {
+          "user_id": 384365260,
+          "nickname": "子叶",
+          "card": "子叶",
+          "role": "member"
+        },
+        "message": [
+          { "text": "悠悠你还记得他吗", "type": "text" },
+          { "qq": "2633901703", "name": "内鬼头子-阿P", "type": "at" },
+          { "text": " ", "type": "text" }
+        ],
+        "raw_message": "悠悠你还记得他吗[CQ:at,qq=2633901703,name=内鬼头子-阿P] ",
+        "time": 1782802737
+      }
+    ]
+  },
+  "reply_data": {
+    "reply": {
+      "message": [{ "type": "text", "data": { "text": "喏~" } }]
+    },
+    "replies": [
+      { "message": [{ "type": "text", "data": { "text": "喏~" } }] },
+      {
+        "message": [
+          {
+            "type": "image",
+            "data": {
+              "file": "/opt/yunzai/plugins/yoyo-plugin/server/src/agent/memory/emoticon/02349f2ad90975b1.jpg"
+            }
+          }
+        ]
+      }
+    ],
+    "messages": [
+      [{ "type": "text", "data": { "text": "喏~" } }],
+      [
+        {
+          "type": "image",
+          "data": {
+            "file": "/opt/yunzai/plugins/yoyo-plugin/server/src/agent/memory/emoticon/02349f2ad90975b1.jpg"
+          }
+        }
+      ]
+    ]
+  }
+}

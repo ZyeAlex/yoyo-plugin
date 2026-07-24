@@ -23,6 +23,9 @@ import { fetchSuitSets, enrichSuitSets, buildAccessoryAtlasContext } from '../ap
 import { fetchIconModule } from '../api/wiki/luaModule.js'
 import initUI from './UI.js'
 import { clearRenderCache } from './renderCache.js'
+import { notifyIndex } from '../api/agent/client.js'
+import { ensureAgentServerRunning } from './agent-server.js'
+import { resolveUvBin } from './uv.js'
 
 const SPIRIT_HERO_SUFFIXES = ['专属灵子图鉴', '专武图鉴', '专属灵子', '专武']
 
@@ -90,6 +93,11 @@ class Game {
   }
 
   async bootstrap() {
+    void ensureAgentServerRunning(setting.path, setting.config, resolveUvBin(setting.path))
+      .then((ok) => {
+        if (ok) logger.info('[yoyo-plugin] YoAgent 已就绪')
+      })
+      .catch(() => {})
     try {
       await this.getData({ mode: 'init' })
       logger.info('[yoyo-plugin][game] 数据初始化完成')
@@ -134,7 +142,12 @@ class Game {
         logger.error(`[yoyo-plugin][game] ${fn.name} 失败`, err)
       }
     }
-    if (mode === 'refresh') clearRenderCache()
+    if (mode === 'refresh') {
+      clearRenderCache()
+      if (isAgentServerRunning(setting.config)) {
+        notifyIndex({ scope: 'game' }).catch(() => {})
+      }
+    }
     this.scheduleUIDownload()
     scheduleLoreRefresh()
   }

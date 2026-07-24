@@ -48,7 +48,7 @@ flowchart TD
 | 结构信号 | `AssembleContext`：`has_images`、`is_master`、`emoticon_enabled`、`legacy_full_prompt` |
 | Playbook | `prompts/system/core.md` + `prompts/playbooks/*.md`（按结构信号加载，非关键词） |
 | 记忆读注入 | `memory/context.py` → `build_memory_context` |
-| 词条定位 | `knowledge/term_resolver.py`（数据驱动，非硬编码角色表） |
+| 游戏知识检索 | `search_knowledge` → `data/index/knowledge.vec.db` hybrid 检索 |
 
 Playbook 默认（非 legacy）：`permissions`、`memory`、`game-query`；有图加 `vision`；master 加 `filesystem`/`script`/`skills-*`。
 
@@ -58,7 +58,7 @@ Playbook 默认（非 legacy）：`permissions`、`memory`、`game-query`；有�
 |------|------|------|
 | 同步写 | `tools/memory.py` + `memory/guards.py` | LLM 调 `memory` 工具；守卫拒绝 lore/图鉴/agent 元信息 |
 | 异步写 | `memory/extract.py` | 回复后 LLM 结构化 JSON；经 guards 后落盘 |
-| 读 | `memory/store.py` + `memory_search` | respond 前注入 top 片段 |
+| 读 | `memory/store.py` `format_for_inject` + 工具 `memory_search` | 每轮注入摘要；按需向量检索 |
 | **不写** | 瞬时情绪 | `analyze_emotion` 仅本轮 `[用户情绪]` 注入，**不落盘** `users.yaml` |
 
 ### 用户画像（users.yaml）

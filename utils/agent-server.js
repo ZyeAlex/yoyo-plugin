@@ -142,7 +142,30 @@ async function waitForAgentReady(port, expectedPid, { timeoutMs = START_READY_TI
 
 export function isAgentServerRunning(config) {
   const port = getAgentPort(config)
-  return probeAgentHealthSync(port) || isAgentPortListening(port)
+  // 端口在监听即视为运行中；curl 健康检查在 Agent 繁忙时易误报未运行
+  if (isAgentPortListening(port)) return true
+  return probeAgentHealthSync(port)
+}
+
+let _ensureAgentRunning = false
+
+/** 已安装 YoAgent 且端口未监听时尝试拉起（防并发重复启动）。 */
+export async function ensureAgentServerRunning(pluginPath, config, uvBin) {
+  if (isAgentServerRunning(config)) return true
+  if (_ensureAgentRunning) return isAgentServerRunning(config)
+  if (!agentVenvUvicorn(pluginPath)) return false
+  _ensureAgentRunning = true
+  try {
+    await startAgentServer(pluginPath, config, uvBin)
+    return true
+  } catch (err) {
+    if (typeof logger !== 'undefined') {
+      logger.warn(`[yoyo-plugin] YoAgent 自动启动失败: ${err.message}`)
+    }
+    return isAgentServerRunning(config)
+  } finally {
+    _ensureAgentRunning = false
+  }
 }
 
 function collectAgentPids(pluginPath, port) {
@@ -270,20 +293,23 @@ export async function restartAgentServer(pluginPath, config, uvBin) {
   await startAgentServer(pluginPath, config, uvBin)
 }
 
-export async function ensureAgentServerIfEnabled(pluginPath, config) {
-  if (!config?.agentEnabled) return
-  const dir = agentServerDir(pluginPath)
-  if (!fs.existsSync(dir)) return
+/** 未运行则启动，已运行则先停再启。以端口监听为准，避免健康检查误报。 */
+export async function startOrRestartAgentServer(pluginPath, config, uvBin) {
   const port = getAgentPort(config)
-  if (isAgentServerRunning(config)) {
-    logger.info(`[悠悠] YoAgent 已在运行（端口 ${port}）`)
-    return
+  const portUp = isAgentPortListening(port)
+  if (portUp) {
+    await restartAgentServer(pluginPath, config, uvBin)
+    return 'restarted'
   }
   try {
-    const uvBin = resolveUvBin(pluginPath)
     await startAgentServer(pluginPath, config, uvBin)
-    logger.info(`[悠悠] YoAgent 已自动启动（端口 ${port}）`)
+    return 'started'
   } catch (err) {
-    logger.error(`[悠悠] 自动启动失败：${err.message}`)
+    if (/已被占用/.test(String(err?.message || ''))) {
+      await restartAgentServer(pluginPath, config, uvBin)
+      return 'restarted'
+    }
+    throw err
   }
 }
+

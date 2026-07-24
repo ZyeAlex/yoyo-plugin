@@ -3,8 +3,8 @@ title: 普罗米利亚
 kind: lore
 description: 游戏世界观、地区、阵营、种族等背景设定
 sourceUrl: https://wiki.biligame.com/ap/%E6%99%AE%E7%BD%97%E7%B1%B3%E5%88%A9%E4%BA%9A
-fetchedAt: 2026-06-24T08:15:54.524Z
-sectionCount: 36
+fetchedAt: 2026-07-17T05:27:39.226Z
+sectionCount: 37
 sections:
   - id: 世界观
     title: 世界观
@@ -89,8 +89,8 @@ sections:
     level: 3
     text: |-
       镜花洲所属的国家，以中国为原型的国度
-      代表角色：、佩佩、涂山芷霜、涂山小玉
-    charCount: 37
+      代表角色：、佩佩、涂山芷霜
+    charCount: 32
   - id: 夏露露村
     title: 夏露露村（Charlulu Village）
     level: 3
@@ -111,8 +111,8 @@ sections:
     text: |-
       位于未知的森林地区，以木精灵族为主体
       英文名曾为Los Lancer
-      代表角色：、米砂
-    charCount: 43
+      代表角色：
+    charCount: 40
   - id: 阿瓦利安
     title: 阿瓦利安（Averian）
     level: 3
@@ -162,8 +162,8 @@ sections:
     level: 3
     text: |-
       勒布所属的国家，可能是蒸汽工业文明为主的地区/国度，从露米口中得知正在发展魔导技术
-      代表角色：红宝石
-    charCount: 50
+      代表角色：
+    charCount: 47
   - id: 艾登兰
     title: 艾登兰
     level: 3
@@ -224,52 +224,60 @@ sections:
   - id: 未知
     title: 未知
     level: 3
-    text: 代表角色：星临者
-    charCount: 8
+    text: 代表角色：
+    charCount: 5
   - id: 智人族
     title: 智人族
     level: 3
-    text: 代表角色：寒悠悠、莉莉、红宝石
-    charCount: 15
+    text: 代表角色：
+    charCount: 5
   - id: 兽人族
     title: 兽人族（Furrian）
     level: 3
-    text: 代表角色：忒拉拉、璐璐卡、卡塔露、米蒂、法兰塔、艾妮丝、姬瑟贝露、涂山小玉、涂山芷霜
-    charCount: 42
+    text: 代表角色：、涂山芷霜
+    charCount: 10
   - id: 龙人族
     title: 龙人族（Dragonborn）
     level: 3
     text: |-
       在万约以前统治世界建立龙代文明的种族，龙代文明已经毁灭，但大陆上依然生存着为数不多的龙人族。龙人族是卵生种族。
-      代表角色：阿比、洛卿
-    charCount: 66
+      代表角色：
+    charCount: 61
   - id: 木精灵族
     title: 木精灵族（Wood Elf）
     level: 3
-    text: 代表角色：西芙莉雅、米砂
-    charCount: 12
+    text: 代表角色：
+    charCount: 5
   - id: 高等精灵族
     title: 高等精灵族（High Elf）
     level: 3
-    text: 代表角色：夏儿、末音
-    charCount: 10
+    text: 代表角色：
+    charCount: 5
   - id: 魔灵族
     title: 魔灵族
     level: 3
     text: |-
       精灵的一种，很少和外人打交道。长相与高等精灵族相近，但看不起高等精灵族，认为高等精灵族傲慢、自负又短视。
+      根据日文片假名，魔灵族的英文可能为：Phantom Elf。
       代表角色：N/A
-    charCount: 61
+    charCount: 92
+  - id: 妖精族
+    title: 妖精族
+    level: 3
+    text: |-
+      在兽人语中被称为萨尔蒙。
+      代表角色：露米
+    charCount: 20
   - id: 帕米族
     title: 帕米族（Pammy）
     level: 3
-    text: 代表角色：诺诺、缇缇、芃芃、佩佩、呱呱、咕咕
-    charCount: 22
+    text: 代表角色：、缇缇、佩佩、呱呱、咕咕
+    charCount: 17
   - id: 鬼人族
     title: 鬼人族
     level: 3
-    text: 代表角色：源千代
-    charCount: 8
+    text: 代表角色：
+    charCount: 5
   - id: 文字
     title: 文字
     level: 2

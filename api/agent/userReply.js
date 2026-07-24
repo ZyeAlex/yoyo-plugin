@@ -56,5 +56,5 @@ export function userReplyForFailure(ctx = {}) {
   if (startedSent) {
     return '还在整理结果，没整理完，稍后再问我吧~'
   }
-  return '唔…一时想不起来，稍后再问我吧'
+  return null
 }

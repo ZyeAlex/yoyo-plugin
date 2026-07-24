@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 import game from './utils/game.js'
+import { registerWebPanel } from './utils/web-panel.js'
 
 const pluginRoot = path.dirname(fileURLToPath(import.meta.url))
 
@@ -57,6 +58,7 @@ logger.info('\t仓库地址: https://gitee.com/yoyo-plugin/yoyo-plugin')
 logger.info('\t插 件 群: https://qm.qq.com/q/Mk3jyhIqSm')
 logger.info('\t插件群号: 991709221')
 logger.info('🍀🍀🍀🍀🍀🍀🍀🍀🍀\tyoyo-plugin载入成功!\t🍀🍀🍀🍀🍀🍀🍀🍀🍀')
+registerWebPanel()
 
 let apps = {}
 for (let i in files) {

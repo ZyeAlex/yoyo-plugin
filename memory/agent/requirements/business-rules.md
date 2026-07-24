@@ -19,7 +19,7 @@
 
 ## 记忆
 
-10. **游戏 lore 不进 MEMORY**：guards 拒绝；用 `get_lore` / `query_game_data`。
+10. **游戏 lore 不进 MEMORY**：guards 拒绝；用 `search_knowledge` / `get_entity_detail` / `query_game_data`。
 11. **情绪不落盘**：`analyze_emotion` 仅本轮语气；users.yaml 不写 emotion 日志。
 12. **画像写稳定事实**：称呼、偏好、群规、他人评价；性格可归纳到 preference/note。
 

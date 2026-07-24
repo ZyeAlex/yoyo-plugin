@@ -1,6 +1,14 @@
 import setting from '#setting'
+import { isAgentServerRunning } from '../../utils/agent-server.js'
 import { createHttp } from '../../utils/http.js'
-import { AGENT_CHAT_PATH, AGENT_MESSAGES_PATH, getAgentBaseURL } from './schema.js'
+import {
+  AGENT_CHAT_PATH,
+  AGENT_INDEX_NOTIFY_PATH,
+  AGENT_INDEX_REBUILD_PATH,
+  AGENT_INDEX_STATUS_PATH,
+  AGENT_MESSAGES_PATH,
+  getAgentBaseURL,
+} from './schema.js'
 
 const response = (data) => {
   if (data?.code !== 0) {
@@ -145,4 +153,44 @@ export async function chatStream(payload, onEvent, cfg = setting.config) {
   }
 }
 
-export default { chat, chatStream, enqueueMessages }
+function createAgentHttpShort(cfg = setting.config, timeoutMs = 8000) {
+  return createHttp({
+    config: {
+      baseURL: getAgentBaseURL(cfg),
+      timeout: timeoutMs,
+      headers: { 'Content-Type': 'application/json' },
+    },
+    response: (data) => data,
+    reject: (error) => error,
+  })
+}
+
+/** Wiki / 记忆源变更后通知 YoAgent 排队建索引（失败静默） */
+export async function notifyIndex(payload = { scope: 'game' }, cfg = setting.config) {
+  if (!isAgentServerRunning(cfg)) return null
+  try {
+    const http = createAgentHttpShort(cfg, 8000)
+    const res = await http.post(AGENT_INDEX_NOTIFY_PATH, payload)
+    return res?.code === 0 ? res : null
+  } catch {
+    return null
+  }
+}
+
+export async function getIndexStatus(cfg = setting.config) {
+  if (!isAgentServerRunning(cfg)) return null
+  try {
+    const http = createAgentHttpShort(cfg, 8000)
+    const res = await http.get(AGENT_INDEX_STATUS_PATH)
+    return res?.code === 0 ? res.data : null
+  } catch {
+    return null
+  }
+}
+
+export async function rebuildIndex(payload = { scope: 'all' }, cfg = setting.config) {
+  const http = createAgentHttp(cfg)
+  return http.post(AGENT_INDEX_REBUILD_PATH, payload)
+}
+
+export default { chat, chatStream, enqueueMessages, notifyIndex, getIndexStatus, rebuildIndex }

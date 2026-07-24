@@ -5,6 +5,11 @@ import { append, isAgentGroup, sessionId, take } from '../api/agent/buffer.js'
 import { buildAgentPayload } from '../api/agent/buildPayload.js'
 import { logAbortedTurn, logBotOut, logUserIn } from '../api/agent/ioLog.js'
 import { captureReplyTarget, sendReplies, sleep } from '../api/agent/reply.js'
+import {
+  computeSseAgentMs,
+  createSseCollectHandler,
+  deliverCollectedStream,
+} from '../api/agent/streamDelivery.js'
 import { shouldTriggerAgent } from '../api/agent/trigger.js'
 import { userReplyForFailure, isServerAgentError } from '../api/agent/userReply.js'
 
@@ -20,10 +25,6 @@ export const Agent = plugin({
 
 function shouldTrigger(e, cfg) {
   return shouldTriggerAgent(e, cfg)
-}
-
-function useAgentStream(cfg) {
-  return cfg.agentStreamEnabled !== false
 }
 
 /** SSE 断流后同步回退：等同群 run 仍占用 session 时轮询等待 */
@@ -67,44 +68,45 @@ async function deliverReplies(e, data, cfg, replyTarget) {
 }
 
 async function runAgentStream(e, payload, cfg, replyTarget) {
+  const collector = createSseCollectHandler()
+  const streamStart = Date.now()
+  await agentClient.chatStream(payload, collector.handler, cfg)
+  const agent_stream_ms = Date.now() - streamStart
+
+  const state = collector.getState()
+  const { queued, replyData, sseEvents } = state
+  const timings = {
+    agent_stream_ms,
+    sse_agent_ms: computeSseAgentMs(sseEvents),
+    delivery_ms: 0,
+  }
+
   let sent = false
   let deliveryVia = null
-  let queued = false
   let startedSent = false
   let responseMeta = null
-  const sseEvents = []
-  await agentClient.chatStream(
-    payload,
-    async (event, data) => {
-      sseEvents.push({ event, at: Date.now() })
-      if (event === 'queued' && data?.queued) {
-        queued = true
-        return
+
+  if (!queued || replyData) {
+    const deliveryStart = Date.now()
+    const delivered = await deliverCollectedStream(e, state, cfg, replyTarget)
+    timings.delivery_ms = Date.now() - deliveryStart
+    sent = delivered.sent
+    startedSent = delivered.startedSent
+    deliveryVia = delivered.deliveryVia
+    if (replyData) {
+      responseMeta = {
+        ok: true,
+        stream: true,
+        queued: false,
+        sent,
+        startedSent,
+        sseEvents,
+        reply: replyData,
+        delivery_via: deliveryVia,
+        timings,
       }
-      if (event === 'started') {
-        return
-      }
-      if (event === 'status' && data?.content) {
-        await e.reply(data.content)
-        startedSent = true
-        return
-      }
-      if (event === 'reply') {
-        const delivery = await sendReplies(e, data, cfg, replyTarget)
-        sent = delivery.sent
-        deliveryVia = delivery.via
-        responseMeta = { ok: true, stream: true, queued, sent, startedSent, sseEvents, reply: data, delivery_via: deliveryVia }
-        return
-      }
-      if (event === 'error') {
-        const err = new Error(data?.message || 'Agent 返回错误')
-        err.code = data?.code ?? 1
-        err.serverAgentError = true
-        throw err
-      }
-    },
-    cfg,
-  )
+    }
+  }
 
   if (queued && !sent) {
     const res = await chatWhenReady(payload, cfg)
@@ -113,7 +115,9 @@ async function runAgentStream(e, payload, cfg, replyTarget) {
       err.code = res?.code ?? 1
       throw err
     }
+    const deliveryStart = Date.now()
     const { sent: retrySent, delivery_via } = await deliverReplies(e, res.data, cfg, replyTarget)
+    timings.delivery_ms = Date.now() - deliveryStart
     sent = retrySent
     responseMeta = {
       ok: true,
@@ -124,10 +128,11 @@ async function runAgentStream(e, payload, cfg, replyTarget) {
       sseEvents,
       reply: res.data,
       delivery_via,
+      timings,
     }
   }
 
-  return { sent, queued, startedSent, responseMeta }
+  return { sent, queued: state.queued, startedSent, responseMeta, timings }
 }
 
 async function runAgent(e) {
@@ -155,83 +160,37 @@ async function runAgent(e) {
   let botMeta = { ok: false, sent: false }
 
   try {
-    if (useAgentStream(cfg)) {
-      try {
-        const streamResult = await runAgentStream(e, payload, cfg, replyTarget)
-        sent = streamResult.sent
-        queued = streamResult.queued
-        startedSent = streamResult.startedSent
-        responseMeta = streamResult.responseMeta || { ok: true, stream: true, queued, sent, startedSent }
-      } catch (streamErr) {
-        failureError = streamErr
-        if (isServerAgentError(streamErr)) {
-          logger.warn(`[yoyo-agent] SSE 服务端失败: ${streamErr.message}`)
-        } else {
-          logger.warn(`[yoyo-agent] SSE 断流，回退同步: ${streamErr.message}`)
-          const res = await chatWhenReady(payload, cfg)
-          syncCode = res?.code
-          syncMessage = res?.message || ''
-          let deliveryVia = null
-          if (res.code !== 0) {
-            failureError = new Error(syncMessage || 'Agent 返回错误')
-          } else {
-            const d = await deliverReplies(e, res.data, cfg, replyTarget)
-            sent = d.sent
-            deliveryVia = d.delivery_via
-          }
-          responseMeta = {
-            ok: res?.code === 0,
-            stream: false,
-            fallback: true,
-            startedSent,
-            response: { code: res?.code, message: res?.message, data: res?.data },
-            reply: res?.data,
-            delivery_via: deliveryVia,
-          }
-        }
-      }
-    } else {
-      const res = await agentClient.chat(payload)
-      syncCode = res?.code
-      syncMessage = res?.message || ''
-      if (res.queued) {
-        const retried = await chatWhenReady(payload, cfg)
-        syncCode = retried?.code
-        syncMessage = retried?.message || ''
-        if (retried.code !== 0) {
+    try {
+      const streamResult = await runAgentStream(e, payload, cfg, replyTarget)
+      sent = streamResult.sent
+      queued = streamResult.queued
+      startedSent = streamResult.startedSent
+      responseMeta = streamResult.responseMeta || { ok: true, stream: true, queued, sent, startedSent }
+    } catch (streamErr) {
+      failureError = streamErr
+      if (isServerAgentError(streamErr)) {
+        logger.warn(`[yoyo-agent] SSE 服务端失败: ${streamErr.message}`)
+      } else {
+        logger.warn(`[yoyo-agent] SSE 断流，回退同步: ${streamErr.message}`)
+        const res = await chatWhenReady(payload, cfg)
+        syncCode = res?.code
+        syncMessage = res?.message || ''
+        let deliveryVia = null
+        if (res.code !== 0) {
           failureError = new Error(syncMessage || 'Agent 返回错误')
         } else {
-          const d = await deliverReplies(e, retried.data, cfg, replyTarget)
+          const d = await deliverReplies(e, res.data, cfg, replyTarget)
           sent = d.sent
-          responseMeta = {
-            ok: true,
-            stream: false,
-            queued_retry: true,
-            response: { code: retried?.code, message: retried?.message, data: retried?.data },
-            reply: retried?.data,
-            delivery_via: d.delivery_via,
-          }
+          deliveryVia = d.delivery_via
         }
-        if (!responseMeta) {
-          responseMeta = {
-            ok: retried?.code === 0,
-            stream: false,
-            queued_retry: true,
-            response: { code: retried?.code, message: retried?.message, data: retried?.data },
-            reply: retried?.data,
-          }
-        }
-      } else if (res.code !== 0) {
-        failureError = new Error(syncMessage || 'Agent 返回错误')
-      } else {
-        const d = await deliverReplies(e, res.data, cfg, replyTarget)
-        sent = d.sent
         responseMeta = {
-          ok: true,
+          ok: res?.code === 0,
           stream: false,
+          fallback: true,
+          startedSent,
           response: { code: res?.code, message: res?.message, data: res?.data },
           reply: res?.data,
-          delivery_via: d.delivery_via,
+          delivery_via: deliveryVia,
         }
       }
     }
@@ -249,6 +208,7 @@ async function runAgent(e) {
       error: failureError?.message || null,
       sync_code: syncCode || null,
       sync_message: syncMessage || null,
+      timings: responseMeta?.timings ?? null,
     }
 
     const fallback = userReplyForFailure({
@@ -288,6 +248,10 @@ async function runAgent(e) {
     ) {
       botMeta.note = 'agent_finished_without_qq_reply'
     }
-    logBotOut(payload, startedAt, botMeta)
+    logBotOut(payload, startedAt, {
+      ...botMeta,
+      reply: botMeta.reply ?? null,
+      timings: botMeta.timings || responseMeta?.timings || null,
+    })
   }
 }

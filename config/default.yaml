@@ -27,28 +27,50 @@ signInclude: [] # 签到包含群聊
 signExclude: [] # 签到排除群聊
 
 # Agent（悠悠 / YoAgent）— 插件与后端共用 config/config.yaml
-agentEnabled: false # 总开关（插件侧）
-agentPort: 8787 # YoAgent 后端端口（CORS 同源自动对齐此端口）
-agentStreamEnabled: true # 使用 SSE 流式接口（工具执行中推送状态回复）；失败时回退同步 JSON
-agentIsAt: true # 群聊需 @ 机器人或唤醒词（见 agentWakeWords）时触发
+# 启用/停止：群内 #安装悠悠 / #启动悠悠 / #停止悠悠（见 config/help.yaml）
+agentPort: 8787 # YoAgent 后端端口（固定，勿改；由 api/agent/schema.js 读取）
 agentWakeWords:
   - 悠悠
   - 小悠
 agentLegacyFullPrompt: false # true=回退旧版全量 system 注入（临时兼容）
 agentInclude: [] # 启用群白名单（空=不监听任何群）
-agentBufferSize: 10 # 单次 @ 对话附带的最近群聊条数（插件侧缓冲）
-agentRecentContextSize: 24 # 跨 @ 保留的近期群消息条数（按需选取上下文，trigger 后不清空）
+agentBufferSize: 20 # 单次 @ 对话附带的最近群聊条数（插件侧缓冲）
+agentRecentContextSize: 10 # 跨 @ 保留的近期群消息条数（按需选取上下文，trigger 后不清空）
 agentSessionHistoryTurns: 10 # 每群保留最近 N 次 @ 对话（YoAgent 进程内，重启清空）
 agentSessionHistoryMaxChars: 800 # 单条历史消息最大字符数
-agentLogLevel: INFO # 后端日志级别
-agentLlmApiKey: "" # LLM API Key（OpenAI 兼容）
-agentLlmBaseUrl: "" # LLM 接口基址（不含 /chat/completions）
-agentLlmModel: gpt-4o-mini # LLM 模型名
+# 模型 API：agentApiProvider=当前默认；各供应商独立配置存 agentApiProfiles
+agentApiProvider: siliconflow
+agentApiProfiles:
+  siliconflow:
+    apiKey: ""
+    baseUrl: https://api.siliconflow.cn/v1
+    llmModel: deepseek-ai/DeepSeek-V4-Flash
+    visionModel: zai-org/GLM-4.5V
+  volcengine:
+    apiKey: ""
+    baseUrl: https://ark.cn-beijing.volces.com/api/v3
+    llmModel: doubao-pro-32k-241215
+    visionModel: doubao-seed-1-8-251228
+  dashscope:
+    apiKey: ""
+    baseUrl: https://dashscope.aliyuncs.com/compatible-mode/v1
+    llmModel: qwen-plus
+    visionModel: qwen-vl-max
+  custom:
+    apiKey: ""
+    baseUrl: ""
+    llmModel: ""
+    visionModel: ""
+# 以下扁平字段由当前默认供应商 LLM profile 同步（Web 面板保存时自动更新）
+agentLlmApiKey: ""
+agentLlmBaseUrl: ""
+agentLlmModel: deepseek-ai/DeepSeek-V4-Flash
+agentVisionModel: zai-org/GLM-4.5V
 agentMaxInputTokens: 6000 # 单次请求最大输入 token
 agentMaxOutputTokens: 512 # 单次回复最大输出 token
 agentMaxSteps: 8 # Agent 最大推理步数
-agentStepTimeoutSimpleSec: 20 # 简单 step（LLM 思考 / 轻量工具）限时（秒）
-agentStepTimeoutComplexSec: 60 # 复杂工具 step 限时（秒）
+agentStepTimeoutSimpleSec: 60 # 简单 step（LLM 思考 / 轻量工具）限时（秒）
+agentStepTimeoutComplexSec: 100 # 复杂工具 step 限时（秒）
 agentLlmTimeoutSec: 120 # 已废弃，由 agentStepTimeout* 替代
 agentSkillsDir: "" # 用户技能目录，空=server/src/agent/memory/skills（内置在 src/agent/skills/）
 agentToolResultMaxChars: 1500 # 工具结果截断长度
@@ -60,8 +82,6 @@ agentToolConcurrency:
 agentFileReadMaxChars: 50000 # 单次 read 最大字符
 agentFileWriteMaxChars: 100000 # 单次 write/edit 最大字符
 agentScriptTimeoutSec: 120 # 脚本执行超时（秒）
-agentWebMarkdownProvider: jina # 网页转 Markdown：mock | direct | jina（Jina 不可达时自动直连）
-agentJinaApiKey: "" # Jina API Key（可选，提高限速）
 agentMemoryMaxInjectChars: 600 # 记忆+技能目录注入 system 的总字符上限
 agentMemoryCharLimit: 2200 # 本群 MEMORY.md 字符上限
 agentGlobalMemoryCharLimit: 2200 # 全局 MEMORY.md 字符上限
@@ -73,10 +93,20 @@ agentMaxReplies: 3 # 单次 @ 最多连发几条 QQ 消息（1~3）
 agentReplyDelayMinMs: 500 # 连发第 2/3 条前随机延时下限（毫秒）
 agentReplyDelayMaxMs: 2000 # 连发第 2/3 条前随机延时上限（毫秒）
 agentVisionEnabled: true # 按需图片识别（describe_image 工具）
-agentVisionModel: doubao-seed-1-8-251228 # 视觉模型（与 agentLlmBaseUrl/Key 共用）
 agentVisionMaxImages: 2 # 单次 @ 最多分析几张候选图
 agentVisionMaxBytes: 5242880 # 单图下载上限（5MB）
 agentEmoticonEnabled: true # 表情包 Sidecar：提取入库 src/agent/memory/emoticon/
 agentEmoticonMaxIndexPerTurn: 3 # 每次 @ 后台最多索引几张新表情包
 agentEmoticonSearchLimit: 6 # search_emoticons 默认返回条数
-agentEmoticonRecencyHalfLifeDays: 14 # 时效权重半衰期（天）
+agentEmoticonRecencyHalfLifeDays: 14 # 检索排序：时效半衰期（天）
+agentEmoticonMinCatalog: 3000 # 自动清理保底条数（低于此不删）
+agentEmoticonPruneGraceDays: 7 # 入库/活跃后保护期（天内不淘汰）
+agentEmoticonPruneZeroUseDays: 45 # 从未被 bot 发送且超过此天数可淘汰
+agentEmoticonPruneLowUseDays: 90 # 仅发送过 ≤1 次且超过此天数可淘汰
+
+# Embedding（模型/维度可单独配置；基址与 Key 留空则沿用当前 LLM 供应商）
+agentEmbeddingBaseUrl: ""
+agentEmbeddingApiKey: ""
+agentEmbeddingModel: BAAI/bge-m3
+agentEmbeddingDim: 1024
+agentEmbeddingBatchSize: 16

@@ -7,7 +7,11 @@ import assert from 'node:assert/strict'
 import { after, before, describe, it } from 'node:test'
 
 import { chatStream, parseSseChunk } from '../../api/agent/client.js'
-import { extractReplies, sendReplies } from '../../api/agent/reply.js'
+import { extractReplies } from '../../api/agent/reply.js'
+import {
+  createSseCollectHandler,
+  deliverCollectedStream,
+} from '../../api/agent/streamDelivery.js'
 import {
   searchBluePlanetScenario,
   startMockSseServer,
@@ -40,38 +44,29 @@ function searchPayload() {
   }
 }
 
-/** 模拟 apps/agent.js 里 runAgentStream 的事件处理 */
+/** 模拟 apps/agent.js 里 runAgentStream 的事件处理（流结束后再投递） */
 async function collectStreamLikeAgent(e, payload, cfg) {
   let sent = false
   let startedSent = false
   const startedTexts = []
   const replyTexts = []
+  const collector = createSseCollectHandler()
 
-  await chatStream(
-    payload,
-    async (event, data) => {
-      if (event === 'started') {
-        return
-      }
-      if (event === 'status' && data?.content) {
-        startedTexts.push(data.content)
-        await e.reply(data.content)
-        startedSent = true
-        return
-      }
-      if (event === 'reply') {
-        const delivery = await sendReplies(e, data, cfg)
-        sent = delivery.sent
-        const list = extractReplies(data)
-        for (const item of list) {
-          const seg = item.message?.[0]
-          const text = seg?.data?.text || item.content || ''
-          if (text) replyTexts.push(text)
-        }
-      }
-    },
-    cfg,
-  )
+  await chatStream(payload, collector.handler, cfg)
+
+  const state = collector.getState()
+  if (state.statusContent) startedTexts.push(state.statusContent)
+
+  const delivered = await deliverCollectedStream(e, state, cfg, null)
+  sent = delivered.sent
+  startedSent = delivered.startedSent
+
+  const list = extractReplies(state.replyData || {})
+  for (const item of list) {
+    const seg = item.message?.[0]
+    const text = seg?.data?.text || item.content || ''
+    if (text) replyTexts.push(text)
+  }
 
   return { sent, startedSent, startedTexts, replyTexts }
 }

@@ -109,6 +109,9 @@ PV2 向蓝色的彼方启航：https://www.bilibili.com/video/BV1KUopYZEs5<br>
 | [[file:卫星-帕米女仆模型.jpg|200px]] || [[file:卫星-帕米女仆立绘.jpg|200px]] || 奈奈茶 || 帕米族 || 弗利斯城邦<br>[[file:{{icon|阵营|弗利斯城邦|2}}|60px|class=img-black]] || 游戏宣传图/官网<br>弗利斯领主府的女仆长，在「弗利斯形象大使提名」中获得人气第一的帕米
 |-
 | [[file:卫星-漫漫模型.jpg|200px]] || [[file:卫星-帕米探险家立绘.jpg|200px]] || 漫漫 || 帕米族 || 无阵营<br>[[file:{{icon|阵营|无阵营|2}}|60px|class=img-black]] || BW2024展板<br>一名云游商人
+|-
+| [[file:卫星-琪琪雅.png|200px]] || [[file:卫星-夏露露村未知角色.jpg|200px]] || 琪琪雅 || 兽人族 || 夏露露村<br>[[file:{{icon|阵营|夏露露村|2}}|60px|class=img-black]] || 夏露露村雕像大师
+|-
 |}
 </div>
 </center>
@@ -122,8 +125,6 @@ PV2 向蓝色的彼方启航：https://www.bilibili.com/video/BV1KUopYZEs5<br>
 ! style="min-width:150px;" | 图片 !! style="min-width:5em;" | 角色名/出处 !! 种族 !! 阵营 !! 备注
 |-
 | [[file:卫星-辰王朝女仆立绘.jpg|200px]] || 官网 || 兽人族？ || 辰王朝<br>[[file:{{icon|阵营|辰王朝|2}}|60px|class=img-black]]
-|-
-| [[file:卫星-夏露露村未知角色.jpg|200px]] || 游戏宣传图 || 兽人族？ || 夏露露村<br>[[file:{{icon|阵营|夏露露村|2}}|60px|class=img-black]] || N/A
 |-
 |}
 </div>
@@ -242,7 +243,9 @@ PV2 向蓝色的彼方启航：https://www.bilibili.com/video/BV1KUopYZEs5<br>
 <br>
 
 ===特殊个体===
+{{main|奇波#特殊个体}}
 {{#section-h:奇波|特殊个体}}
+
 ===首领===
 <gallery mode="packed" heights="180px">
 文件:卫星-紫电鹿.png|缩略图|？？？（PV 2:19）

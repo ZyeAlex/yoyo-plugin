@@ -1,3 +1,5 @@
+import { isAgentServerRunning } from '../utils/agent-server.js'
+
 /** 群会话内存缓冲（重启丢失，零 Redis 开销） */
 const buffers = new Map()
 /** 跨触发保留的近期群消息（trigger 后不清空，供服务端按需选取上下文） */
@@ -7,9 +9,10 @@ export function sessionId(e) {
   return `group:${e.group_id}:bot:${e.self_id}`
 }
 
-/** agentEnabled 且群号在 agentInclude 白名单内 */
+/** YoAgent 已运行且群号在 agentInclude 白名单内 */
 export function isAgentGroup(e, cfg = {}) {
-  if (!cfg.agentEnabled || !e.isGroup || !e.group_id) return false
+  if (!e.isGroup || !e.group_id) return false
+  if (!isAgentServerRunning(cfg)) return false
   const list = cfg.agentInclude
   if (!Array.isArray(list) || !list.length) return false
   const gid = String(e.group_id)

@@ -92,6 +92,16 @@ export function searchBluePlanetScenario() {
   }
 }
 
+/** 模拟「你还记得他吗 @阿P」：started → reply（文本+表情包） */
+export function rememberApScenario(replyData) {
+  return {
+    events: [
+      { event: 'started', data: { request_id: '63cef895-0aed-4f8e-8a4f-759ed607bca1' } },
+      { event: 'reply', data: replyData, delayMs: 18 },
+    ],
+  }
+}
+
 /** 模拟 bug：有 status 但 reply 为空 */
 export function statusOnlyScenario() {
   return {

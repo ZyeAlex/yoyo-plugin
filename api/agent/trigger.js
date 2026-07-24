@@ -66,9 +66,8 @@ export function messageAtBot(e, botId) {
   return false
 }
 
-/** 是否应触发 Agent（agentIsAt=false 时每条消息都触发） */
+/** 是否应触发 Agent（群聊须 @ 机器人或句首/句尾唤醒词） */
 export function shouldTriggerAgent(e, cfg = {}) {
-  if (cfg.agentIsAt === false) return true
   if (e?.atBot || messageAtBot(e)) return true
   return hasWakeWord(messagePlainText(e), getWakeWords(cfg))
 }
