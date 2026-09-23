@@ -1,148 +1,293 @@
-.main {
-  padding: 0;
-  margin: 8px 16px 14px;
+/* ========== 悠悠帮助 · 蓝色星原：旅谣 ==========
+ * 清新明亮 / 治愈柔和 / 手机端一行三列
+ * 顶部：居左风景底标题（与分组同宽）；底部 logo + yoyo-plugin
+ */
+
+html {
+  background:
+    radial-gradient(ellipse 120% 60% at 80% -10%, rgba(120, 190, 255, 0.45), transparent 55%),
+    radial-gradient(ellipse 90% 50% at 10% 0%, rgba(255, 236, 180, 0.28), transparent 50%),
+    linear-gradient(180deg, #cfe4f8 0%, #e8f2fb 38%, #f3f7fc 100%) !important;
+}
+
+body {
+  background: transparent !important;
+}
+
+/* 帮助页自管页脚，隐藏通用 copyright（含群号） */
+.copyright {
+  display: none !important;
+}
+
+/* 帮助页不用通用 .head / .main 玻璃块，整页自管 */
+.help-page {
+  position: relative;
+  width: 830px;
+  padding: 0 0 8px;
+  margin-top: 16px;
+  overflow: hidden;
+}
+
+/* ---------- Hero：居左、与下方分组同宽 ---------- */
+.help-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: auto;
+  height: 108px;
+  margin: 0 14px 14px;
+  padding: 0 28px 0 26px;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  background:
+    linear-gradient(
+      100deg,
+      rgba(248, 252, 255, 0.94) 0%,
+      rgba(236, 246, 255, 0.78) 38%,
+      rgba(220, 236, 250, 0.35) 68%,
+      rgba(200, 225, 245, 0.12) 100%
+    ),
+    url("../common/pet/background.png") right 30% / cover no-repeat;
+  box-shadow:
+    0 6px 18px rgba(40, 80, 130, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.help-hero-bar {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  width: 4px;
+  height: 42px;
+  margin-top: -21px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #f0d070 0%, #e0b84a 40%, #3a8fd6 100%);
+  box-shadow: 0 0 8px rgba(224, 184, 74, 0.35);
+}
+
+.help-title {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding-left: 12px;
+  font-family: title01, "PingFang SC", sans-serif;
+  font-size: 44px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  line-height: 1.15;
+  color: #143860;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95),
+    0 2px 10px rgba(255, 255, 255, 0.55);
+}
+
+/* ---------- 分组内容 ---------- */
+.help-body {
+  padding: 0 14px 4px;
+  margin: 0;
+  background: transparent;
   border: none;
   box-shadow: none;
-  overflow: visible;
-  background: transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  overflow: visible;
 }
 
-.head .title {
-  font-size: 36px;
-}
-
-.head .sub {
-  font-size: 22px;
-}
-
-.function-group {
-  margin-bottom: 0;
-}
-
-.function-group + .function-group .group-header {
-  border-top: 1px solid rgba(71, 85, 105, 0.4);
-  border-radius: 0;
-}
-
-.function-group:not(:last-child) .group-grid {
-  border-radius: 0;
-  border-bottom: none;
-}
-
-/* 分组标题与下方表格连成一块（上一版「连在一起」布局） */
-.group-header {
-  background: var(--yo-group-header);
-  padding: 10px 16px;
-  margin-bottom: 0;
-  color: #f8fafc;
-  border-radius: var(--yo-radius-sm) var(--yo-radius-sm) 0 0;
-  border: 1px solid rgba(71, 85, 105, 0.4);
-  border-bottom: none;
-  box-shadow: none;
-}
-
-.group-title {
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-}
-
-.group-grid {
-  display: grid;
-  /* minmax(0,1fr)：轨道可被压到比「整行不换行文字」更窄，内部才会出现省略号 */
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0;
-  border-radius: 0 0 var(--yo-radius-sm) var(--yo-radius-sm);
+.help-group {
+  position: relative;
+  margin-bottom: 14px;
+  border-radius: 18px;
   overflow: hidden;
-  border: 1px solid rgba(100, 116, 139, 0.28);
-  border-top: none;
-  background: transparent;
+  background: linear-gradient(
+    165deg,
+    rgba(255, 255, 255, 0.78) 0%,
+    rgba(245, 250, 255, 0.7) 100%
+  );
+  border: 1px solid rgba(120, 160, 200, 0.38);
+  box-shadow:
+    0 6px 18px rgba(40, 80, 130, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
-.item {
-  min-width: 0;
-  overflow: hidden;
-  background: rgba(248, 250, 252, 0.42);
-  padding: 8px 10px;
-  min-height: 88px;
-  display: flex;
-  align-items: center;
-  border-radius: 0;
-  border: none;
-  border-right: 1px solid rgba(100, 116, 139, 0.22);
-  border-bottom: 1px solid rgba(100, 116, 139, 0.22);
-  box-shadow: none;
-  backdrop-filter: blur(6px);
+/* 四角星金框线 — 旅谣式饰框 */
+.help-group::before,
+.help-group::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid rgba(224, 184, 74, 0.8);
+  z-index: 4;
+  pointer-events: none;
 }
 
-.item:nth-child(3n) {
+.help-group::before {
+  top: 7px;
+  left: 7px;
   border-right: none;
+  border-bottom: none;
+  border-radius: 3px 0 0 0;
 }
 
-.item-icon {
-  width: 48px;
-  height: 48px;
-  margin-right: 12px;
+.help-group::after {
+  top: 7px;
+  right: 7px;
+  border-left: none;
+  border-bottom: none;
+  border-radius: 0 3px 0 0;
+}
+
+.help-group-head {
   display: flex;
-  justify-content: center;
   align-items: center;
+  gap: 10px;
+  padding: 12px 18px 10px 16px;
+  background: linear-gradient(
+    90deg,
+    rgba(45, 105, 168, 0.95) 0%,
+    rgba(70, 140, 195, 0.88) 55%,
+    rgba(120, 175, 215, 0.55) 100%
+  );
+  border-bottom: 1px solid rgba(255, 230, 160, 0.35);
+  position: relative;
+}
+
+.help-group-ornament {
+  width: 10px;
+  height: 10px;
+  background: linear-gradient(135deg, #fff6c8, #e0b84a);
+  transform: rotate(45deg);
+  box-shadow: 0 0 8px rgba(224, 184, 74, 0.5);
   flex-shrink: 0;
 }
 
-.item-icon img {
-  max-width: 100%;
-  max-height: 100%;
-  filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.12));
+.help-group-title {
+  flex: 1;
+  font-family: title02, "PingFang SC", sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: #f8fbff;
+  text-shadow: 0 1px 2px rgba(20, 50, 90, 0.35);
 }
 
-.item-text {
+/* ---------- 3 列网格（独立小格，手机端清晰可点） ---------- */
+.help-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 10px 10px 12px;
+  background: transparent;
+}
+
+.help-item {
+  min-width: 0;
+  min-height: 88px;
+  padding: 10px 8px 10px 8px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(236, 245, 255, 0.72) 100%
+  );
+  border: 1px solid rgba(130, 168, 205, 0.32);
+  border-radius: 14px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  overflow: hidden;
+}
+
+.help-item-icon {
+  width: 52px;
+  height: 52px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, #ffffff 0%, #e8f3ff 55%, #d4e6f8 100%);
+  border: 2px solid rgba(224, 184, 74, 0.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    0 0 0 2px rgba(255, 255, 255, 0.65),
+    0 2px 6px rgba(40, 80, 130, 0.1);
+  position: relative;
+}
+
+.help-item-icon img {
+  max-width: 78%;
+  max-height: 78%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 3px rgba(20, 50, 90, 0.12));
+}
+
+.help-item-text {
   flex: 1 1 0%;
   min-width: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
 }
 
-/* 指令标题：单行省略号（flex 子项须 min-width:0 + 定宽边界） */
-.item-cmd {
+.help-item-cmd {
   display: block;
-  box-sizing: border-box;
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  font-size: 22px;
+  font-size: 21px;
   font-weight: 800;
-  margin: 0;
-  color: #0f172a;
   line-height: 1.28;
   letter-spacing: 0.01em;
+  color: #16365c;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  min-height: 1.28em;
 }
 
-/* 说明：更小、更灰；不加顶线，与标题仅留间距 */
-.item-desc {
-  min-width: 0;
-  width: 100%;
-  margin-top: 5px;
-  padding: 0;
-  border: none;
-  font-size: 16px;
+.help-pfx {
+  color: #c99218;
+  margin-right: 1px;
+  font-weight: 900;
+}
+
+.help-item-desc {
+  margin-top: 4px;
+  font-size: 15px;
   font-weight: 400;
-  line-height: 1.45;
-  color: #64748b;
+  line-height: 1.4;
+  color: #5b738c;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
 }
 
-.head h1 {
-  margin: 0;
-  font-weight: inherit;
+/* 版权条在亮色底上更清晰 —— 帮助页改用 .help-footer */
+.help-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 4px 20px 12px;
+  margin-top: 2px;
+}
+
+.help-footer-logo {
+  height: 52px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(40, 90, 150, 0.15));
+}
+
+.help-footer-name {
+  font-family: title02, "PingFang SC", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #3d5f82;
 }

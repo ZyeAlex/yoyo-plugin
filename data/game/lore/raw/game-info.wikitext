@@ -27,13 +27,13 @@ PV2 向蓝色的彼方启航：https://www.bilibili.com/video/BV1KUopYZEs5<br>
 <div style="overflow-x:auto">
 {| class="wikitable" style="text-align:center;min-width:600px;"
 |-
-|[[file:{{icon|阵营|无阵营|2}}|80px|class=img-black]]||[[file:{{icon|阵营|辰王朝|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|夏露露村|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|断风磐|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|洛斯兰瑟|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|阿瓦利安|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|祈云|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|弗利斯城邦|2}}|80px|class=img-black]]
+|[[file:{{icon|阵营|无阵营|2}}|80px|class=img-black]]||[[file:{{icon|阵营|辰王朝|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|镜花洲|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|夏露露村|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|断风磐|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|洛斯兰瑟|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|阿瓦利安|2}}|80px|class=img-black]] ||[[file:{{icon|阵营|祈云|2}}|80px|class=img-black]] 
 |-
-|无阵营||辰王朝||夏露露村||断风磐||洛斯兰瑟||阿瓦利安||祈云||弗利斯城邦
+|无阵营||辰王朝<br>Chen Dynasty||辰王朝-镜花洲<br>Jinghua Cape||夏露露村<br>Charlulu Village||断风磐<br>Windbreak Weir||洛斯兰瑟<br>Lors Lains||阿瓦利安<br>Averian||祈云
 |-
-|[[file:{{icon|阵营|罗吉亚帝国|2}}|80px|class=img-black]] || [[file:{{icon|阵营|罗吉尼亚联邦|2}}|80px|class=img-black]] ||<!-- [[file:{{icon|阵营|艾登兰|2}}|80px|class=img-black]] -->||<!-- [[file:{{icon|阵营|天穹洛特兰|2}}|80px|class=img-black]] -->|| ||
+|[[file:{{icon|阵营|弗利斯城邦|2}}|80px|class=img-black]]||[[file:{{icon|阵营|罗吉亚帝国|2}}|80px|class=img-black]] || [[file:{{icon|阵营|罗吉尼亚联邦|2}}|80px|class=img-black]] ||<!-- [[file:{{icon|阵营|艾登兰|2}}|80px|class=img-black]] -->||<!-- [[file:{{icon|阵营|天穹洛特兰|2}}|80px|class=img-black]] -->|| ||
 |-
-|罗吉亚帝国||罗吉尼亚联邦||艾登兰||天穹洛特兰||伊东大公国||涅瓦兰
+|弗利斯城邦<br>Fleece City||罗吉亚帝国<br>Rosier Empire||罗吉尼亚联邦||艾登兰||天穹洛特兰||伊东大公国||涅瓦兰
 |}
 
 </div>
@@ -45,7 +45,7 @@ PV2 向蓝色的彼方启航：https://www.bilibili.com/video/BV1KUopYZEs5<br>
 <div style="overflow-x:auto">
 {| class="wikitable" style="text-align:center;min-width:600px;"
 |-
-|智人族||兽人族||龙人族||木精灵族||高等精灵族||魔灵族||帕米族||鬼人族
+|智人族<br>Sapiens||兽人族<br>Furrian||龙人族<br>Dragonborn||木精灵族<br>Wood Elf||高等精灵族<br>High Elf||魔灵族<br>Phantom Elf||妖精族||帕米族<br>Pammy||鬼人族
 |}
 </div>
 </center>
@@ -79,7 +79,7 @@ PV2 向蓝色的彼方启航：https://www.bilibili.com/video/BV1KUopYZEs5<br>
 |-
 | [[file:卫星-涂山芷霜模型.jpg|200px]] || <!--[[file:卫星-涂山芷霜立绘.jpg|200px]]--> || 涂山芷霜<br>（Tushan Zhishuang） || style="background:gold"|金 || 兽人族？ || 辰王朝<br>[[file:{{icon|阵营|辰王朝|2}}|60px|class=img-black]] || 火<br>[[file:{{icon|元素|火|3}}]] || N/A || 首爆PV出现
 |-
-| [[file:卫星-佩佩模型.jpg|200px]] || [[file:卫星-佩佩立绘.jpg|200px]] || 佩佩<br>（Peipei） || N/A || 帕米族 || 辰王朝<br>[[file:{{icon|阵营|辰王朝|2}}|60px|class=img-black]] || N/A  || N/A || 迷倒镜花洲万千食客的吉逸楼唯一指定看板娘，会功夫会算账会卖萌的熊猫帕米佩佩是也！试图打趣或者刁难佩佩的客人还请三思，毕竟后厨师傅的大铁勺可是不忌荤腥的。
+| [[file:卫星-佩佩模型.jpg|200px]] || [[file:卫星-佩佩立绘.jpg|200px]] || 佩佩<br>（Peipei） || style="background:gold"|金 || 帕米族 || 辰王朝<br>[[file:{{icon|阵营|辰王朝|2}}|60px|class=img-black]] || 地<br>[[file:{{icon|元素|地|3}}]]<br>光<br>[[file:{{icon|元素|光|3}}]] || 爆发<br>[[file:{{icon|职业|爆发|3}}]] || 迷倒镜花洲万千食客的吉逸楼唯一指定看板娘，会功夫会算账会卖萌的熊猫帕米佩佩是也！试图打趣或者刁难佩佩的客人还请三思，毕竟后厨师傅的大铁勺可是不忌荤腥的。
 |-
 | [[file:卫星-缇缇模型.jpg|200px]] || [[file:卫星-缇缇立绘.jpg|200px]] || 缇缇<br>（Titti） || N/A || 帕米族 || 无阵营<br>[[file:{{icon|阵营|无阵营|2}}|60px|class=img-black]] || N/A || N/A || N/A 
 |-
@@ -90,6 +90,10 @@ PV2 向蓝色的彼方启航：https://www.bilibili.com/video/BV1KUopYZEs5<br>
 | [[file:卫星-LOGO女模型.jpg|200px]] || [[file:卫星-未知角色2.jpg|200px]] || ？？？ || N/A || N/A || N/A || N/A || N/A || PV和主线剧情中出现，所在处名为无垢海
 |-
 | [[file:卫星-一测过场pv粉毛女.jpg|200px]] || || ？？？ || N/A || N/A || 天穹洛特兰？<br>[[file:{{icon|阵营|天穹洛特兰|2}}|60px|class=img-black]] || N/A || N/A || 游戏一测过场pv
+|-
+| [[file:卫星-枫糖模型.jpg|200px]] || [[file:卫星-枫糖立绘.jpg|200px]] || 枫糖<br>（Maple） || style="background:plum"|紫 || 兽人族 || 弗利斯城邦<br>[[file:{{icon|阵营|弗利斯城邦|2}}|60px|class=img-black]] || 光<br>[[file:{{icon|元素|光|3}}]]<br>木<br>[[file:{{icon|元素|木|3}}]] || 增幅<br>[[file:{{icon|职业|增幅|3}}]] || 诶嘿，难道你对枫糖很感兴趣喵?我的幸运色是蓝色，最喜欢的食物是果冻，特技是模仿浮云的叫声~还有好多好多，请多多和我聊天吧!
+|-
+|  || [[file:卫星-移动端Banner立绘.jpg|200px]] || 兰香子<br>（Lan Xiangzi） || N/A || N/A || 辰王朝？<br>[[file:{{icon|阵营|辰王朝|2}}|60px|class=img-black]] || N/A || N/A || 26年8月10日B站手机端Banner图<br>名字来源官方广告视频
 |}
 </div>
 </center>
@@ -111,6 +115,8 @@ PV2 向蓝色的彼方启航：https://www.bilibili.com/video/BV1KUopYZEs5<br>
 | [[file:卫星-漫漫模型.jpg|200px]] || [[file:卫星-帕米探险家立绘.jpg|200px]] || 漫漫 || 帕米族 || 无阵营<br>[[file:{{icon|阵营|无阵营|2}}|60px|class=img-black]] || BW2024展板<br>一名云游商人
 |-
 | [[file:卫星-琪琪雅.png|200px]] || [[file:卫星-夏露露村未知角色.jpg|200px]] || 琪琪雅 || 兽人族 || 夏露露村<br>[[file:{{icon|阵营|夏露露村|2}}|60px|class=img-black]] || 夏露露村雕像大师
+|-
+| [[file:卫星-剧情里的坏女人模型.png|200px]] ||  || ？？？ || 智人族？ || 进化教派 || 进化教派司教，会在三测剧情中出现
 |-
 |}
 </div>
@@ -182,6 +188,10 @@ PV2 向蓝色的彼方启航：https://www.bilibili.com/video/BV1KUopYZEs5<br>
 |-
 | [[file:卫星-鹰嘴兽.png|80px]] || 鹰嘴兽 || 异生类-兽形族|| 幼年期 ||风<br>[[file:{{icon|元素|风|3}}]]|| 光<br>[[file:{{icon|元素|光|3}}]]  ||
 |-
+| [[file:卫星-鹰嘴兽-二阶.png|80px]] || ？？？ || 异生类-兽形族|| 成长期 ||风<br>[[file:{{icon|元素|风|3}}]]|| 光<br>[[file:{{icon|元素|光|3}}]]  ||鹰嘴兽成长期，来源B站小广告
+|-
+| [[file:卫星-鹰嘴兽-三阶.png|80px]] || ？？？ || 异生类-兽形族|| 成熟期 ||风<br>[[file:{{icon|元素|风|3}}]]|| 光<br>[[file:{{icon|元素|光|3}}]]  ||鹰嘴兽成熟期，狮鹫型奇波，来源B站小广告
+|-
 | [[file:卫星-积怨卷.png|80px]] || 积怨卷<br>（Crumpler） || N/A|| N/A || N/A || N/A || 一测前官网卫星
 |-
 | [[file:卫星-鸟形奇波成熟期.png|80px]] || ？？？ || 异生类-羽形族 || N/A || 风<br>[[file:{{icon|元素|风|3}}]]|| / || 来源BW2024，更大的风剪鹰/疑似进化型
@@ -237,6 +247,24 @@ PV2 向蓝色的彼方启航：https://www.bilibili.com/video/BV1KUopYZEs5<br>
 | [[file:卫星-渡影.png|80px]] || 渡影 || N/A || N/A ||  N/A || N/A || 头顶有着蓝色火焰的鸟型奇波，来源二测游戏内书籍《蓝影夜谈》
 |-
 | [[file:卫星-希露波可.png|80px]] || 希露波可 || N/A || N/A ||  N/A || N/A || 居住于圣湖之境的圣域，头上长着两只角、四只大耳朵。来源二测游戏内书籍《圣域王者》
+|-
+| [[file:卫星-蓝色螳螂型幼年期.png|80px]] || ？？？ || N/A || 幼年期 ||  N/A || N/A || 蓝色螳螂型奇波，来源B站小广告
+|-
+| [[file:卫星-蓝色螳螂型成熟期.png|80px]] || ？？？ || N/A || 成熟期 ||  N/A || N/A || 蓝色螳螂型奇波，来源B站小广告
+|-
+| [[file:卫星-萤萤.jpg|80px]] || 萤萤 || N/A || 幼年期 ||  N/A || N/A || 萤火虫型奇波，来源B站小广告
+|-
+| [[file:卫星-闪闪萤.png|80px]] || 闪闪萤 || N/A || 成长期? ||  N/A || N/A || 萤火虫型奇波，来源B站小广告
+|-
+| [[file:卫星-iOS商店新奇波.jpg|80px]] || ？？？ || N/A || N/A ||  N/A || N/A || 26年8月10日iOS商店上架插图
+|-
+| [[file:卫星-爆爆鲨.jpg|80px]] || 爆爆鲨 || N/A || N/A ||  N/A || N/A || 来源官方动态-爆爆鲨历险记
+|-
+| [[file:卫星-媒体稿件卫星.png|80px]] || ？？？ || N/A || N/A ||  N/A || N/A || 来源周边媒体宣传稿件
+|-
+| [[file:卫星-媒体稿件卫星2.png|80px]] || ？？？ || N/A || N/A ||  N/A || N/A || 来源周边媒体宣传稿件
+|-
+| [[file:卫星-辣鸡.png|80px]] || 辣鸡 || N/A || N/A ||  N/A || N/A || 来源周边媒体宣传稿件
 |}
 </div>
 </center>

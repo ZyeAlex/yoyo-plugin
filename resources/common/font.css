@@ -1,25 +1,32 @@
 @charset "UTF-8";
 
+/* 正文：MiSans Regular */
 @font-face {
   font-family: "text01";
   src: url("./font/text01.ttf") format("truetype");
+  font-display: swap;
 }
 
 @font-face {
   font-family: "number01";
   src: url("./font/number01.ttf") format("truetype");
 }
+
 @font-face {
   font-family: "number02";
   src: url("./font/number02.ttf") format("truetype");
 }
 
+/* 副标题 / 卡片名：站酷快乐体 ZCOOL KuaiLe */
 @font-face {
   font-family: "title02";
   src: url("./font/title02.ttf") format("truetype");
+  font-display: swap;
 }
 
+/* 主标题：未来荧黑 Glow Sans SC Heavy */
 @font-face {
   font-family: "title01";
-  src: url("./font/title01.ttf") format("truetype");
+  src: url("./font/title01.otf") format("opentype");
+  font-display: swap;
 }

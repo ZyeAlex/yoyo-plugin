@@ -24,7 +24,7 @@ import { fetchIconModule } from '../api/wiki/luaModule.js'
 import initUI from './UI.js'
 import { clearRenderCache } from './renderCache.js'
 import { notifyIndex } from '../api/agent/client.js'
-import { ensureAgentServerRunning } from './agent-server.js'
+import { ensureAgentServerRunning, isAgentServerRunning } from './agent-server.js'
 import { resolveUvBin } from './uv.js'
 
 const SPIRIT_HERO_SUFFIXES = ['专属灵子图鉴', '专武图鉴', '专属灵子', '专武']
@@ -300,12 +300,12 @@ class Game {
     return this[targetKey]
   }
   async getPetData(mode) {
+    // 先落盘再构建进化链：evolution 会挂上 pets 对象引用，形成环，YAML 锚点爆炸
     await this.syncIdMapCatalog(mode, {
       catalogType: 'Kibo',
       targetKey: 'pets',
       idsKey: 'petIds',
       storagePath: 'data/game/pet',
-      postProcess() { buildKiboEvolutionChains(this.pets) },
     })
     buildKiboEvolutionChains(this.pets)
     this.petIds = buildKiboPetIds(this.pets)

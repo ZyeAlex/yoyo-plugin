@@ -75,7 +75,7 @@ class Setting {
     let filename = path.basename(filePath)
     try {
       if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true })
-      fs.writeFileSync(filePath, YAML.stringify(data), 'utf8')
+      fs.writeFileSync(filePath, YAML.stringify(data, { aliasDuplicateObjects: false }), 'utf8')
     } catch (error) {
       logger.error(`[${filename}] 写入失败 ${error}`)
       return false

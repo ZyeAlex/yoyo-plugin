@@ -136,7 +136,7 @@ async function atlas(e, atlasName) {
         if (!getId) continue
         const id = getId(atlasName)
         if (!id) continue
-        if (atlasFn === heroAtlas) return heroAtlas(e, id, ['skill', 'talent'], { showIntro: true })
+        if (atlasFn === heroAtlas) return heroAtlas(e, id, ['skill'], { showIntro: true })
         return atlasFn(e, id)
     }
     return true

@@ -41,7 +41,8 @@ export default async function render(e, p, renderData = {}, cfg = {}) {
   })
 
   let bgImg
-  if (p === 'sign/index') {
+  if (p === 'sign/index' || p === 'help/index') {
+    // 签到 / 帮助：页面自管背景，避免随机奇波底图干扰主题
     bgImg = ''
   } else if (cacheScope) {
     bgImg = '/common/pet/background.png'

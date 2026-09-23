@@ -6,35 +6,42 @@
 
 {{block 'main'}}
 
-<header class="head">
-  <h1 class="title">{{sys.title}}</h1>
-  <p class="sub">{{sys.name}}</p>
-</header>
+<div class="help-page">
+  <header class="help-hero">
+    <span class="help-hero-bar" aria-hidden="true"></span>
+    <h1 class="help-title">悠悠帮助</h1>
+  </header>
 
-<section class="main">
-  {{each helpGroup group}}
-  {{set len = group?.list?.length || 0 }}
-  <div class="function-group">
-    <div class="group-header">
-      <span class="group-title">{{group.group}}</span>
-    </div>
-    <div class="group-grid">
-      {{each group.list help}}
-      <div class="item">
-        <div class="item-icon">
-          <img src="{{pluResPath}}/UI/{{help.icon}}">
-        </div>
-        <div class="item-text">
-          <div class="item-cmd" style="{{style(help.style)}}">
-            {{help.title.replace(/\#/g,rulePrefix)}}
-          </div>
-          <div class="item-desc">{{help.desc}}</div>
-        </div>
+  <section class="help-body">
+    {{each helpGroup group}}
+    <article class="help-group">
+      <div class="help-group-head">
+        <span class="help-group-ornament" aria-hidden="true"></span>
+        <span class="help-group-title">{{group.group}}</span>
       </div>
-      {{/each}}
-    </div>
-  </div>
-  {{/each}}
-</section>
+      <div class="help-grid">
+        {{each group.list help}}
+        <div class="help-item">
+          <div class="help-item-icon">
+            <img src="{{pluResPath}}/UI/{{help.icon}}" alt="" />
+          </div>
+          <div class="help-item-text">
+            <div class="help-item-cmd" style="{{style(help.style)}}">
+              <span class="help-pfx">{{rulePrefix}}</span>{{help.title.replace(/^#/, '')}}
+            </div>
+            <div class="help-item-desc">{{help.desc}}</div>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+    </article>
+    {{/each}}
+  </section>
+
+  <footer class="help-footer">
+    <img class="help-footer-logo" src="{{pluResPath}}/common/theme/logo_c.png" alt="" />
+    <span class="help-footer-name">yoyo-plugin</span>
+  </footer>
+</div>
 
 {{/block}}

@@ -9,7 +9,7 @@ const imgReg = '(?:图片?|照片|美图|美照)'
 export const Img = plugin({
     name: '[悠悠助手]图片',
     event: 'message',
-    priority: -1,
+    priority: 100,
     rule: [
         {
             reg: `^#?(?:查看)?原图$`,
@@ -24,11 +24,11 @@ export const Img = plugin({
             fnc: delHeroImg
         },
         {
-            reg: `^(?!#?(?:查看)?原图$)#?(?!上传|添加|随机(?!角色)?)(.{0,5})${imgReg}([0-9]{0,4})$`,
+            reg: `^(?!#?(?:查看)?原图$)#?(?!上传|添加|随机(?!角色)?)(.{0,5})${imgReg}([0-9]{1,4})$`,
             fnc: getHeroImg
         },
         {
-            reg: `^#?(.{1,10})${imgReg}(列表|表列|合集|集合)$`,
+            reg: `^#?(?!上传|添加|删除|随机(?!角色)?)(.{1,10})${imgReg}(?:列表|表列|合集|集合)?$`,
             fnc: getHeroImgList
         },
     ]
@@ -44,19 +44,14 @@ async function getHeroImg(e, heroName, heroIndex) {
     // 查询是否有此角色
     let heroId = game.getHeroId(heroName)
     if (!heroId) return true
-    // 当前角色图片
-    let heroImg = game.heroImgs[heroId]
-    if (heroImg.length == 0) {
-        e.reply(`什么都没查到呢~\n请「>上传${heroName}图片」`)
+    if (!cacheHeroImgs[heroId]?.length) {
+        e.reply(`未获取到角色图片列表，请先「>${heroName}图片」`)
         return
     }
-    let img_url
-    if (heroIndex > 0 && cacheHeroImgs[heroId]?.length && cacheHeroImgs[heroId][heroIndex - 1]) {
-        img_url = cacheHeroImgs[heroId][heroIndex - 1]
-    } else {
-        heroIndex = lodash.random(0, heroImg.length - 1)
-        img_url = heroImg[heroIndex]
-        heroImg.splice(heroIndex, 1)
+    let img_url = cacheHeroImgs[heroId][heroIndex - 1]
+    if (!img_url) {
+        e.reply(`未找到${heroName}图片${heroIndex}，请先「>${heroName}图片」查看列表`)
+        return
     }
     e.reply(segment.image(img_url))
 }
@@ -86,7 +81,7 @@ async function delHeroImg(e, heroName, select) {
     let heroId = game.getHeroId(heroName)
     if (!heroId) return true
     if (!cacheHeroImgs[heroId]?.length) {
-        e.reply(`未获取到角色图片列表，请先「>${heroName}图片列表」`)
+        e.reply(`未获取到角色图片列表，请先「>${heroName}图片」`)
     }
     if (!select) return
     // 权限检测

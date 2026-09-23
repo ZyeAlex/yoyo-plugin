@@ -3,8 +3,8 @@ title: 普罗米利亚
 kind: lore
 description: 游戏世界观、地区、阵营、种族等背景设定
 sourceUrl: https://wiki.biligame.com/ap/%E6%99%AE%E7%BD%97%E7%B1%B3%E5%88%A9%E4%BA%9A
-fetchedAt: 2026-07-17T05:27:39.226Z
-sectionCount: 37
+fetchedAt: 2026-09-18T05:40:07.579Z
+sectionCount: 38
 sections:
   - id: 世界观
     title: 世界观
@@ -99,7 +99,7 @@ sections:
       代表角色：
     charCount: 33
   - id: 断风磐
-    title: 断风磐
+    title: 断风磐（Windbreak Weir）
     level: 3
     text: |-
       以翼人为主体（但翼人也属于兽人族），与夏露露村的兽人族之间关系似乎不好
@@ -151,7 +151,7 @@ sections:
     text: 摊铺通常由各种形式的热气球构成。
     charCount: 16
   - id: 罗吉亚帝国
-    title: 罗吉亚帝国
+    title: 罗吉亚帝国（Rosier Empire）
     level: 3
     text: |-
       N/A
@@ -227,7 +227,7 @@ sections:
     text: 代表角色：
     charCount: 5
   - id: 智人族
-    title: 智人族
+    title: 智人族（Sapiens）
     level: 3
     text: 代表角色：
     charCount: 5
@@ -283,6 +283,15 @@ sections:
     level: 2
     text: ""
     charCount: 0
+  - id: 术语
+    title: 术语
+    level: 2
+    text: |-
+      卡拉玛：象征生命能量，赐万物以生命，构成世界循环的两种能量之一。
+      苏亚：代表停滞虚无，构成世界循环的两种能量之一。
+      星脉：在普罗米利亚大陆之上，孕育生命的卡拉玛洪流。
+      约：普罗米利亚大陆丈量时间的单位，分为「锦约」和「丰约」。「锦约」万物发芽，草木繁盛，对应现实世界的春季与夏季；「丰约」硕果满枝，白雪覆野，对应现实世界的秋季与冬季，两约交替等于一年。
+    charCount: 176
   - id: 来源
     title: 来源
     level: 2
