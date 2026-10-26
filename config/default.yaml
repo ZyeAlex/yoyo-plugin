@@ -38,6 +38,11 @@ chatMaxReplies: 3
 chatReplyDelayMinMs: 500
 chatReplyDelayMaxMs: 2000
 chatInterruptEnabled: true
+chatProactiveEnabled: true
+chatProactiveCooldownSec: 45
+chatProactiveMaxPerMin: 3
+chatToolsEnabled: true
+chatDrawMockDelaySec: 3
 chatLlmApiKey: ""
 chatLlmBaseUrl: ""
 chatLlmModel: deepseek-ai/DeepSeek-V4-Flash

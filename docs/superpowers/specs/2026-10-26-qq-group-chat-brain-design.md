@@ -1,7 +1,7 @@
 # QQ 群聊 Chat Brain 设计
 
 日期：2026-10-26  
-状态：MVP-1 实现中  
+状态：MVP-2 实现中（主动插话 + 异步工具主线）  
 范围：yoyo-plugin 插件适配层 + yoyo-sauce（`server/`）群聊大脑
 
 ## 1. 目标与非目标

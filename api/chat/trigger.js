@@ -1,13 +1,21 @@
 /** 从 Yunzai 事件提取 hints */
 
 export function messageAtBot(e) {
-  if (!e?.message || !Array.isArray(e.message)) return false
-  const self = String(e.self_id || '')
-  return e.message.some((seg) => {
-    if (!seg || seg.type !== 'at') return false
-    const qq = String(seg.qq ?? seg.data?.qq ?? '')
-    return qq && self && qq === self
-  })
+  if (e?.atme || e?.atBot) return true
+  const self = String(e?.self_id || '')
+  if (!self) return false
+  if (Array.isArray(e?.message)) {
+    const hit = e.message.some((seg) => {
+      if (!seg || seg.type !== 'at') return false
+      const qq = String(seg.qq ?? seg.data?.qq ?? '')
+      return qq === self
+    })
+    if (hit) return true
+  }
+  // OneBot CQ 码兜底：raw_message 含 [CQ:at,qq=bot]
+  const raw = String(e?.raw_message || e?.msg || '')
+  if (raw.includes(`[CQ:at,qq=${self}]`) || raw.includes(`qq=${self}`)) return true
+  return false
 }
 
 export function hasWakeWord(text, wakeWords = []) {

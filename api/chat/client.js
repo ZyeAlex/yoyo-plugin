@@ -36,3 +36,14 @@ export async function health(cfg = {}) {
   if (!res.ok) throw new Error(`health ${res.status}`)
   return res.json()
 }
+
+/** 拉取异步主线气泡（tool_done 等） */
+export async function fetchPending(sessionId, cfg = {}) {
+  if (!isChatServerRunning(cfg)) return null
+  const base = getChatBaseURL(cfg)
+  const url = `${base}/api/chat/pending?session_id=${encodeURIComponent(sessionId)}`
+  const res = await fetch(url, { signal: AbortSignal.timeout(8000) })
+  const body = await res.json().catch(() => ({}))
+  if (!res.ok || body.code !== 0) return null
+  return body
+}

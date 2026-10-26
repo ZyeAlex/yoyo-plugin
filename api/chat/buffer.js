@@ -1,5 +1,3 @@
-import { isChatServerRunning } from '../../utils/chat-server.js'
-
 /** 群会话近期消息（进程内） */
 const recentRings = new Map()
 
@@ -10,7 +8,7 @@ export function sessionId(e) {
 export function isChatGroup(e, cfg = {}) {
   if (!e.isGroup || !e.group_id) return false
   if (cfg.chatEnabled === false) return false
-  if (!isChatServerRunning(cfg)) return false
+  // 不在此处探活端口：ss/沙箱易误判，导致整群静默；由 runChat 再处理未启动
   const list = cfg.chatInclude || cfg.agentInclude
   if (!Array.isArray(list) || !list.length) return false
   const gid = String(e.group_id)

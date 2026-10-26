@@ -1,4 +1,4 @@
-from src.chat.should_respond import decide, is_game_command
+from src.chat.should_respond import decide, is_draw_intent, is_game_command
 
 
 def test_at_bot_reply():
@@ -20,7 +20,7 @@ def test_reply_to_bot():
 
 
 def test_plain_skip():
-    action, reason = decide(text="今天天气不错")
+    action, reason = decide(text="今天天气不错啊哈哈哈哈哈哈哈哈哈哈")
     assert action == "skip"
     assert reason == "no_trigger"
 
@@ -36,3 +36,32 @@ def test_bot_name_in_text():
     action, reason = decide(text="悠悠帮我看看", bot_names=["悠悠", "小悠"])
     assert action == "reply"
     assert reason == "bot_name"
+
+
+def test_proactive_question():
+    action, reason = decide(text="晚上吃什么好呢？", proactive_enabled=True, last_bot_reply_at=0)
+    assert action == "reply"
+    assert reason == "proactive_question"
+
+
+def test_proactive_cooldown():
+    now = 1000.0
+    action, reason = decide(
+        text="在吗",
+        proactive_enabled=True,
+        last_bot_reply_at=990.0,
+        proactive_cooldown_sec=45,
+        now=now,
+    )
+    assert action == "skip"
+    assert reason == "proactive_cooldown"
+
+
+def test_proactive_disabled():
+    action, reason = decide(text="晚上好", proactive_enabled=False)
+    assert action == "skip"
+
+
+def test_draw_intent():
+    assert is_draw_intent("帮我画一只猫")
+    assert not is_draw_intent("今天天气真好")
