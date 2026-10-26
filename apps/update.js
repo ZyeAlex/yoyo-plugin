@@ -6,21 +6,21 @@ import utils from '#utils'
 import fs from 'fs'
 import path from 'path'
 import plugin from '#plugin'
-import { getAgentPort } from '../api/agent/schema.js'
-import { rebuildIndex } from '../api/agent/client.js'
+import { getChatPort } from '../api/chat/schema.js'
 import { ensureUv, resolveUvBin } from '../utils/uv.js'
 import {
-  isAgentServerRunning,
-  restartAgentServer,
-  stopAgentServer,
-  startAgentServer,
-} from '../utils/agent-server.js'
-let packageJson = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'));
+  isChatServerRunning,
+  restartChatServer,
+  stopChatServer,
+  startChatServer,
+} from '../utils/chat-server.js'
+
+let packageJson = JSON.parse(fs.readFileSync(setting.path + '/package.json', 'utf8'))
 const name = packageJson.name || 'yoyo-plugin'
-const AGENT_REPO = 'https://gitee.com/yoyo-plugin/yoyo-sauce.git'
+const CHAT_REPO = 'https://gitee.com/yoyo-plugin/yoyo-sauce.git'
 const UV_PYTHON_MIRROR = 'https://mirrors.ustc.edu.cn/github-release/astral-sh/python-build-standalone/'
 
-function agentUvEnv() {
+function chatUvEnv() {
   return { ...process.env, UV_PYTHON_INSTALL_MIRROR: UV_PYTHON_MIRROR }
 }
 
@@ -29,36 +29,47 @@ function execErrorMessage(err) {
   return parts.join('\n').trim()
 }
 
-function agentServerDir() {
+function chatServerDir() {
   return path.join(setting.path, 'server')
 }
 
-function agentVenvUvicorn() {
-  const name = process.platform === 'win32' ? 'uvicorn.exe' : 'uvicorn'
-  const bin = path.join(agentServerDir(), '.venv', 'bin', name)
+function chatVenvUvicorn() {
+  const binName = process.platform === 'win32' ? 'uvicorn.exe' : 'uvicorn'
+  const bin = path.join(chatServerDir(), '.venv', 'bin', binName)
   return fs.existsSync(bin) ? bin : null
 }
 
-function installAgentPlugin() {
-  const dest = path.join(setting.path, 'apps/agent.js')
+function installChatPlugin() {
+  const dest = path.join(setting.path, 'apps/chat.js')
   fs.mkdirSync(path.dirname(dest), { recursive: true })
-  fs.copyFileSync(path.join(setting.path, 'api/agent/agent.js'), dest)
+  fs.copyFileSync(path.join(setting.path, 'api/chat/plugin.js'), dest)
 }
 
-function ensureAgentServerRepo() {
-  const dir = agentServerDir()
+function ensureChatServerRepo() {
+  const dir = chatServerDir()
   if (fs.existsSync(dir)) {
+    // 本地已有 Chat Brain 源码（含 src/main.py）则优先保留，仅尝试 pull
+    if (fs.existsSync(path.join(dir, 'src', 'main.py'))) {
+      if (fs.existsSync(path.join(dir, '.git'))) {
+        try {
+          execSync('git pull', { cwd: dir, stdio: 'pipe', timeout: 120000 })
+        } catch {
+          // 离线或冲突时继续用本地
+        }
+      }
+      return
+    }
     if (!fs.existsSync(path.join(dir, '.git'))) {
-      throw new Error('server/ 已存在但不是 git 仓库，请先手动清理')
+      throw new Error('server/ 已存在但不是可用的 Chat Brain，请先手动清理')
     }
     try {
       execSync('git pull', { cwd: dir, stdio: 'pipe', timeout: 120000 })
     } catch {
-      // 离线时允许继续用已有 server/
+      // ignore
     }
     return
   }
-  execSync(`git clone ${AGENT_REPO} "${dir}"`, { stdio: 'pipe', timeout: 300000 })
+  execSync(`git clone ${CHAT_REPO} "${dir}"`, { stdio: 'pipe', timeout: 300000 })
 }
 
 export const Update = plugin({
@@ -69,54 +80,49 @@ export const Update = plugin({
     {
       reg: `^(#|悠悠|yoyo)(强制)?更新$`,
       fnc: update_plugin,
-      permission: 'master'
+      permission: 'master',
     },
     {
       reg: new RegExp(`^(?:${setting.rulePrefix}|悠悠|yoyo)切?换(github|gitee)?源(github|gitee)?$`, 'i'),
       fnc: migrate,
-      permission: 'master'
+      permission: 'master',
     },
     {
       reg: `^#更新日志$`,
       fnc: update_log,
-      permission: 'master'
+      permission: 'master',
     },
     {
       reg: `^#?(删除|清除|清空|重置|清理)(错误|无效|脏)数据$`,
       fnc: clearErrorData,
-      permission: 'master'
+      permission: 'master',
     },
     {
       reg: `^#安装悠悠$`,
-      fnc: installAgent,
-      permission: 'master'
+      fnc: installChat,
+      permission: 'master',
     },
     {
       reg: `^#卸载悠悠$`,
-      fnc: uninstallAgent,
-      permission: 'master'
+      fnc: uninstallChat,
+      permission: 'master',
     },
     {
       reg: `^#启动悠悠$`,
-      fnc: startAgent,
-      permission: 'master'
+      fnc: startChat,
+      permission: 'master',
     },
     {
       reg: `^#停止悠悠$`,
-      fnc: stopAgent,
-      permission: 'master'
+      fnc: stopChat,
+      permission: 'master',
     },
     {
       reg: `^#重启悠悠$`,
-      fnc: restartAgent,
-      permission: 'master'
+      fnc: restartChat,
+      permission: 'master',
     },
-    {
-      reg: `^#重建知识索引$`,
-      fnc: rebuildAgentIndex,
-      permission: 'master'
-    }
-  ]
+  ],
 })
 
 async function update_plugin(e) {
@@ -126,10 +132,13 @@ async function update_plugin(e) {
 
   if (Update_Plugin.getPlugin(name)) {
     if (e.msg.includes('强制')) {
-      execSync('git stash save "强制更新前暂存本地修改" --include-untracked', { cwd: setting.path, stdio: 'pipe' });
-      execSync('git fetch origin master', { cwd: setting.path, stdio: 'pipe' });
-      execSync('git reset --hard origin/master', { cwd: setting.path, stdio: 'pipe' });
-      execSync('git stash pop', { cwd: setting.path, stdio: 'pipe' });
+      execSync('git stash save "强制更新前暂存本地修改" --include-untracked', {
+        cwd: setting.path,
+        stdio: 'pipe',
+      })
+      execSync('git fetch origin master', { cwd: setting.path, stdio: 'pipe' })
+      execSync('git reset --hard origin/master', { cwd: setting.path, stdio: 'pipe' })
+      execSync('git stash pop', { cwd: setting.path, stdio: 'pipe' })
     }
     await Update_Plugin.runUpdate(name)
     if (Update_Plugin.isUp) {
@@ -138,15 +147,20 @@ async function update_plugin(e) {
   }
   return true
 }
+
 async function migrate(e, originName = '') {
   let origin = (await execSync('git remote -v get-url origin', { cwd: setting.path })).toString().trim()
   if (/gitee/i.test(origin) && originName.toLowerCase() != 'gitee') {
-    await execSync('git remote set-url origin https://github.com/ZyeAlex/yoyo-plugin', { cwd: setting.path })
+    await execSync('git remote set-url origin https://github.com/ZyeAlex/yoyo-plugin', {
+      cwd: setting.path,
+    })
     e.reply('[yoyo-plugin]已切换至Github开发源')
     return
   }
   if (/github/i.test(origin) && originName.toLowerCase() != 'github') {
-    await execSync('git remote set-url origin https://gitee.com/yoyo-plugin/yoyo-plugin', { cwd: setting.path })
+    await execSync('git remote set-url origin https://gitee.com/yoyo-plugin/yoyo-plugin', {
+      cwd: setting.path,
+    })
     e.reply('[yoyo-plugin]已切换至Gitee用户源')
     return
   }
@@ -164,21 +178,19 @@ async function update_log(e) {
   return true
 }
 
-// 清除错误签到数据
 async function clearErrorData(e) {
   let forward = []
   let userList = await e.group.getMemberList()
   let userSignInfos = setting.getData('data/group/' + e.group_id + '/others', {}, 'yunzai')
-  setting.setData('data/group/' + e.group_id + '/others-b', userSignInfos, 'yunzai')  // 备份
+  setting.setData('data/group/' + e.group_id + '/others-b', userSignInfos, 'yunzai')
 
   if (userSignInfos) {
     let str = ''
-    //清除无效userId
     str += '清除退群用户签到数据：\n'
 
-    let leave = Object.keys(userSignInfos).filter(id => userList.every(userId => userId != id))
+    let leave = Object.keys(userSignInfos).filter((id) => userList.every((userId) => userId != id))
     str += `本次共有${leave.length}位签到成员退群\n(┬┬﹏┬┬)\n\n`
-    leave.forEach(id => {
+    leave.forEach((id) => {
       str += `已清除${id}的签到数据\n`
       delete userSignInfos[id]
     })
@@ -186,12 +198,11 @@ async function clearErrorData(e) {
       forward.push(str.length > 1000 ? str.substring(0, 1000) + '...' : str)
     }
 
-
     if (Object.keys(game.heros).length) {
       let num = 0
       str = '清除无效签到数据：'
 
-      Object.keys(userSignInfos).forEach(userId => {
+      Object.keys(userSignInfos).forEach((userId) => {
         let userInfo = userSignInfos[userId]
 
         if (userInfo.heroId && !(userInfo.heroId in game.heros)) {
@@ -199,7 +210,7 @@ async function clearErrorData(e) {
           delete userInfo.date
         }
         if (userInfo.history) {
-          Object.keys(userInfo.history).forEach(heroName => {
+          Object.keys(userInfo.history).forEach((heroName) => {
             if (!(heroName in game.heroIds)) {
               str += `已清除${userId}:${heroName}的签到数据\n`
               num++
@@ -211,45 +222,44 @@ async function clearErrorData(e) {
       if (num) {
         forward.push(str.length > 1000 ? str.substring(0, 1000) + '...' : str)
       }
-
     }
-
   }
   setting.setData('data/group/' + e.group_id + '/others', userSignInfos, 'yunzai')
   forward.push('无效数据已全部清除完毕！')
   e.reply(utils.makeForwardMsg(e, forward))
 }
 
-
-
-async function installAgent(e) {
+async function installChat(e) {
   try {
-    await e.reply('[悠悠] 开始安装，请稍候…')
+    await e.reply('[悠悠] 开始安装 Chat Brain，请稍候…')
     const hadUv = !!resolveUvBin(setting.path)
     const uvBin = await ensureUv(setting.path, true)
-    await e.reply('[悠悠] 正在拉取/更新 YoAgent 仓库…')
-    ensureAgentServerRepo()
-    if (!agentVenvUvicorn()) {
-      await e.reply('[悠悠] 正在安装 Python 依赖（首次较慢，请耐心等待）…')
+    await e.reply('[悠悠] 正在准备 server/ …')
+    ensureChatServerRepo()
+    if (!chatVenvUvicorn()) {
+      await e.reply('[悠悠] 正在安装 Python 依赖（首次较慢）…')
       execSync(`"${uvBin}" sync`, {
-        cwd: agentServerDir(),
+        cwd: chatServerDir(),
         stdio: 'pipe',
-        env: agentUvEnv(),
+        env: chatUvEnv(),
         timeout: 600000,
       })
     }
-    await e.reply('[悠悠] 正在启动后端服务…')
-    await startAgentServer(setting.path, setting.config, uvBin)
-    installAgentPlugin()
-    const port = getAgentPort(setting.config)
+    await e.reply('[悠悠] 正在启动服务…')
+    await startChatServer(setting.path, setting.config, uvBin)
+    installChatPlugin()
+    const port = getChatPort(setting.config)
     const uvTip = hadUv ? '' : '，已自动安装 uv'
-    await e.reply([
-      `已安装悠悠，YoAgent 已启动（端口 ${port}${uvTip}），即将重启云崽`,
-      '',
-      '还需手动配置：',
-      '1. config/config.yaml → agentInclude 填入群号（或锅巴 Agent 配置）',
-      '2. 填写 LLM / Embedding API（锅巴可配）',
-    ].join('\n'))
+    await e.reply(
+      [
+        `已安装悠悠，Chat Brain 已启动（端口 ${port}${uvTip}），即将重启云崽`,
+        '',
+        '还需手动配置：',
+        '1. chatEnabled: true',
+        '2. chatInclude 填入群号',
+        '3. chatLlmApiKey 等模型配置（面板可配）',
+      ].join('\n'),
+    )
     const Update_Plugin = new update()
     Update_Plugin.e = e
     Update_Plugin.reply = e.reply
@@ -260,15 +270,15 @@ async function installAgent(e) {
   return true
 }
 
-async function uninstallAgent(e) {
-  const dest = path.join(setting.path, 'apps/agent.js')
-  if (!fs.existsSync(dest) && !fs.existsSync(agentServerDir())) {
+async function uninstallChat(e) {
+  const dest = path.join(setting.path, 'apps/chat.js')
+  if (!fs.existsSync(dest) && !fs.existsSync(chatServerDir())) {
     await e.reply('悠悠未安装')
     return true
   }
-  stopAgentServer(setting.path, setting.config)
+  stopChatServer(setting.path, setting.config)
   if (fs.existsSync(dest)) fs.unlinkSync(dest)
-  await e.reply('已卸载悠悠，YoAgent 服务已停止，即将重启云崽')
+  await e.reply('已卸载悠悠，Chat Brain 已停止，即将重启云崽')
   const Update_Plugin = new update()
   Update_Plugin.e = e
   Update_Plugin.reply = e.reply
@@ -276,57 +286,39 @@ async function uninstallAgent(e) {
   return true
 }
 
-async function startAgent(e) {
+async function startChat(e) {
   try {
     const uvBin = await ensureUv(setting.path, false)
-    if (isAgentServerRunning(setting.config)) {
-      await e.reply(`[悠悠] YoAgent 已在运行（端口 ${getAgentPort(setting.config)}）`)
+    if (isChatServerRunning(setting.config)) {
+      await e.reply(`[悠悠] Chat Brain 已在运行（端口 ${getChatPort(setting.config)}）`)
       return true
     }
-    await startAgentServer(setting.path, setting.config, uvBin)
-    await e.reply(`[悠悠] YoAgent 已启动（端口 ${getAgentPort(setting.config)}）`)
+    await startChatServer(setting.path, setting.config, uvBin)
+    await e.reply(`[悠悠] Chat Brain 已启动（端口 ${getChatPort(setting.config)}）`)
   } catch (err) {
     await e.reply(`[悠悠] 启动失败：${execErrorMessage(err)}`)
   }
   return true
 }
 
-async function stopAgent(e) {
-  if (!isAgentServerRunning(setting.config)) {
-    await e.reply('[悠悠] YoAgent 未在运行')
+async function stopChat(e) {
+  if (!isChatServerRunning(setting.config)) {
+    await e.reply('[悠悠] Chat Brain 未在运行')
     return true
   }
-  stopAgentServer(setting.path, setting.config)
-  await e.reply('[悠悠] YoAgent 已停止')
+  stopChatServer(setting.path, setting.config)
+  await e.reply('[悠悠] Chat Brain 已停止')
   return true
 }
 
-async function restartAgent(e) {
+async function restartChat(e) {
   try {
     const uvBin = await ensureUv(setting.path, false)
-    const port = getAgentPort(setting.config)
-    await restartAgentServer(setting.path, setting.config, uvBin)
-    await e.reply(`[悠悠] YoAgent 已重启（端口 ${port}）`)
+    const port = getChatPort(setting.config)
+    await restartChatServer(setting.path, setting.config, uvBin)
+    await e.reply(`[悠悠] Chat Brain 已重启（端口 ${port}）`)
   } catch (err) {
     await e.reply(`[悠悠] 重启失败：${execErrorMessage(err)}`)
-  }
-  return true
-}
-
-async function rebuildAgentIndex(e) {
-  if (!isAgentServerRunning(setting.config)) {
-    await e.reply('[悠悠] YoAgent 未在运行，请先 #启动悠悠')
-    return true
-  }
-  try {
-    await e.reply('[悠悠] 正在后台重建知识索引，请稍候…')
-    const res = await rebuildIndex({ scope: 'game' })
-    const data = res?.data || {}
-    await e.reply(
-      `[悠悠] 游戏知识索引重建完成：${data.game_chunk_count ?? '?'} 条`
-    )
-  } catch (err) {
-    await e.reply(`[悠悠] 索引重建失败：${err.message || err}`)
   }
   return true
 }

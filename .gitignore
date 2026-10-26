@@ -14,7 +14,6 @@ data/group/
 data/logs/
 data/game/*.yaml
 data/cache/
-data/index/
 
 # 缓存
 slangs.json
@@ -23,10 +22,11 @@ slangs.json
 .bat
 pnpm-lock.yaml
 
-# 扩展
-apps/agent.js
+# 聊天插件入口（由 api/chat/plugin.js 同步）
+apps/chat.js
 
-
-server/
-bin/
-.yoagent.pid
+# Chat Brain 运行时
+server/.venv/
+server/.yoagent.pid
+server/*.log
+server/.pytest_cache/
