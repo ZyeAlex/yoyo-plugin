@@ -31,7 +31,7 @@ async function panelLogin(e) {
 
   const message = [
     '欢迎回来主人~',
-    'YoAgent 配置面板登录地址（已附带令牌）：',
+    'yoyo-plugin 配置面板登录地址（已附带令牌）：',
     ...urlLines,
     '令牌 24 小时内有效，请勿告知他人；过期后请重新发送 #悠悠登录',
   ]
@@ -39,7 +39,7 @@ async function panelLogin(e) {
   if (e.isGroup) {
     try {
       await Bot.pickUser(e.user_id).sendMsg(
-        await utils.makeForwardMsg(e, message, 'YoAgent 配置登录'),
+        await utils.makeForwardMsg(e, message, 'yoyo 配置登录'),
       )
       return e.reply('登录地址已私信发送给主人~', true)
     } catch (err) {
@@ -48,5 +48,5 @@ async function panelLogin(e) {
     }
   }
 
-  return e.reply(await utils.makeForwardMsg(e, message, 'YoAgent 配置登录'))
+  return e.reply(await utils.makeForwardMsg(e, message, 'yoyo 配置登录'))
 }

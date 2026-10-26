@@ -113,7 +113,7 @@
 
 ## 插件配置
 
-推荐使用 YoAgent 配置面板（Yunzai 启动后访问 `http://<主机>:2536/yoyo/`）、[锅巴插件 (guoba-plugin)](https://gitee.com/guoba-yunzai/guoba-plugin)，或直接编辑 `config/config.yaml`。
+推荐使用配置面板（Yunzai 启动后发送 `#悠悠登录` 获取地址）、[锅巴插件 (guoba-plugin)](https://gitee.com/guoba-yunzai/guoba-plugin)，或直接编辑 `config/config.yaml`。
 
 ---
 

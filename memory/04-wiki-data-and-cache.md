@@ -119,7 +119,7 @@ Wiki / `pet.yaml` 中**仍保留**剧情专用条目（与普通形态同名、�
 
 ### 3.6 背景 / Lore 页（Agent 共用）
 
-与五类图鉴并列的 **长文设定页**，供 YoAgent `get_lore` 与插件 `game.lore` 共用。
+与五类图鉴并列的 **长文设定页**，供插件 `game.lore` 使用。
 
 | slug | Wiki 页 | YAML | kind |
 |------|---------|------|------|
@@ -160,7 +160,7 @@ fetchedAt: "2026-06-17T..."
 | 定时 | `scheduleLoreRefresh()` — 间隔约为有效期的 1/4，后台 `refreshLoreCache` |
 | `#更新数据` | `game.getData({ mode: 'refresh' })` 内一并 `getLoreData('refresh')` |
 
-检索（插件侧 `searchLoreSections`）：标题 + 正文子串匹配，按标题命中优先排序。YoAgent 侧见 `src/agent/knowledge/lore.py` + 工具 `get_lore`。
+检索（插件侧 `searchLoreSections`）：标题 + 正文子串匹配，按标题命中优先排序。
 
 配置：`config/config.yaml` → `wikiLoreRefreshHours`（默认 168）。
 

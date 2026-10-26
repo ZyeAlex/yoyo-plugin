@@ -130,13 +130,6 @@ export async function refreshLoreCache(options = {}) {
 
   logger.info(`[yoyo-plugin][wiki] 背景页缓存完成（${targets.length} 页）`)
 
-  try {
-    const { notifyIndex } = await import('../agent/client.js')
-    notifyIndex({ scope: 'game' }).catch(() => {})
-  } catch {
-    // Agent 未启动时忽略
-  }
-
   return result
 }
 
