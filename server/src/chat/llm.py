@@ -39,6 +39,20 @@ def _extract_message_text(message: dict[str, Any]) -> str:
     return ""
 
 
+def _pass_through_messages(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Keep content as-is: str or OpenAI multimodal list parts."""
+    out: list[dict[str, Any]] = []
+    for msg in messages:
+        if not isinstance(msg, dict):
+            continue
+        content = msg.get("content")
+        if isinstance(content, list):
+            out.append({**msg, "content": [part for part in content]})
+        else:
+            out.append(msg)
+    return out
+
+
 async def complete(
     messages: list[dict[str, Any]],
     settings: Settings,
@@ -60,7 +74,7 @@ async def complete(
     stream = bool(getattr(settings, "stream", False))
     body = {
         "model": settings.llm_model,
-        "messages": messages,
+        "messages": _pass_through_messages(messages),
         "temperature": 0.7,
         "max_tokens": int(getattr(settings, "max_output_tokens", 512) or 512),
         "stream": stream,
@@ -95,7 +109,7 @@ async def complete(
     return content
 
 
-def parse_replies_json(raw: str, *, max_replies: int = 3) -> list[dict[str, Any]]:
+def parse_replies_json(raw: str, *, max_replies: int = 1) -> list[dict[str, Any]]:
     text = (raw or "").strip()
     if not text:
         return []
@@ -116,16 +130,35 @@ def parse_replies_json(raw: str, *, max_replies: int = 3) -> list[dict[str, Any]
         return [{"type": "text", "text": text[:120]}]
 
     out: list[dict[str, Any]] = []
-    for item in items[:max_replies]:
+    text_or_image = 0
+    budget = max(1, int(max_replies or 1))
+    for item in items:
         if not isinstance(item, dict):
             continue
         typ = item.get("type") or "text"
+        if typ == "sticker":
+            sid = str(item.get("id") or "").strip()
+            query = str(item.get("query") or "").strip()
+            out.append(
+                {
+                    "type": "sticker",
+                    "id": sid,
+                    "query": query,
+                    "auto": bool(item.get("auto")),
+                    "mention": item.get("mention"),
+                }
+            )
+            continue
+        if text_or_image >= budget:
+            continue
         if typ == "image":
             path = item.get("path") or item.get("url")
             if path:
                 out.append({"type": "image", "path": str(path), "mention": item.get("mention")})
+                text_or_image += 1
             continue
         t = str(item.get("text") or "").strip()
         if t:
             out.append({"type": "text", "text": t[:200], "mention": item.get("mention")})
+            text_or_image += 1
     return out

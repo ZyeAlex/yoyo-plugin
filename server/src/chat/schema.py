@@ -30,6 +30,7 @@ class ReplyBubble(BaseModel):
     text: str | None = None
     path: str | None = None
     mention: str | None = None
+    sticker_desc: str | None = None
 
 
 class BusyTool(BaseModel):
