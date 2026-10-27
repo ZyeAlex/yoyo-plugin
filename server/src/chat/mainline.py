@@ -12,7 +12,6 @@ from src.chat.jobs import new_job_id, run_mock_draw
 from src.chat.llm import LLMError, complete, parse_replies_json
 from src.chat.media.segments import (
     effective_text,
-    has_meaningful_text,
     parse_message_segments,
     render_media_placeholders,
 )
@@ -306,6 +305,28 @@ def _message_text(message: dict[str, Any]) -> str:
     if isinstance(message.get("text"), str):
         return message["text"].strip()
     return ""
+
+
+def _chat_visible_text(message: dict[str, Any] | None) -> str:
+    """正文给热度/指令用：纯媒体消息返回空，避免 raw「[图片]」误触游戏指令。"""
+    message = message if isinstance(message, dict) else {}
+    text = effective_text(message)
+    if text:
+        return text
+    segs = message.get("message")
+    has_text_seg = False
+    if isinstance(segs, list):
+        for seg in segs:
+            if not isinstance(seg, dict):
+                continue
+            if seg.get("type") == "text" and str(seg.get("text") or "").strip():
+                has_text_seg = True
+                break
+    refs = parse_message_segments(message)
+    has_media = any(r.kind in {"photo", "sticker", "mface", "face"} for r in refs)
+    if has_media and not has_text_seg:
+        return ""
+    return (_message_text(message) or "").strip()
 
 
 def _sender_label(message: dict[str, Any]) -> str:
@@ -635,7 +656,7 @@ class MainlineManager:
         except asyncio.CancelledError:
             return
         ml = self.get(req.session.session_id, group_id=req.session.group_id)
-        text = effective_text(req.message) or _message_text(req.message)
+        text = _chat_visible_text(req.message)
         task: asyncio.Task | None = None
         async with ml.lock:
             if ml.warm_token != token or ml.phase == "thinking":
@@ -701,14 +722,9 @@ class MainlineManager:
     async def handle(self, req: ChatRequest) -> ChatData:
         ml = self.get(req.session.session_id, group_id=req.session.group_id)
         self._archive_user(req)
-        text = effective_text(req.message) or _message_text(req.message)
+        text = _chat_visible_text(req.message)
         active = self._is_active_initiate(req)
-        if not has_meaningful_text(req.message) and not active:
-            # 纯媒体且非主动：直接 skip（策略 C 的旁听）
-            return ChatData(action="skip", reason="no_trigger", turn_gen=ml.turn_gen)
-        # 主动发起但无有效文字（纯图表情 @）：也 skip
-        if active and not has_meaningful_text(req.message):
-            return ChatData(action="skip", reason="media_only", turn_gen=ml.turn_gen)
+        # 纯表情/纯图不再一刀切 skip；是否开口交给热度 / decide
         to_await: asyncio.Task | None = None
         task: asyncio.Task | None = None
         turn = ml.turn_gen

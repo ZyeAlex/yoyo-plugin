@@ -31,6 +31,9 @@ def is_game_command(text: str) -> bool:
     t = (text or "").strip()
     if not t:
         return False
+    # 纯媒体占位（[图片]/[CQ:image…]）不是游戏指令
+    if re.fullmatch(r"(?:\[(?:CQ:[^\]]+|图片|表情包?[^\]]*)\])+", t, flags=re.I):
+        return False
     return bool(_COMMAND_RE.match(t))
 
 

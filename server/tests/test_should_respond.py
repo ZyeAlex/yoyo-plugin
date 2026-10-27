@@ -1,6 +1,13 @@
 from src.chat.should_respond import decide, is_draw_intent, is_game_command
 
 
+def test_decide_at_bot_with_empty_text_still_replies():
+    """纯媒体 + @ 不再因 media_only 跳过。"""
+    action, reason = decide(hints_at_bot=True, text="")
+    assert action == "reply"
+    assert reason == "at_bot"
+
+
 def test_at_bot_reply():
     action, reason = decide(hints_at_bot=True, text="你好")
     assert action == "reply"
@@ -27,6 +34,8 @@ def test_plain_skip():
 
 def test_game_command_skip():
     assert is_game_command("#角色图鉴")
+    assert not is_game_command("[图片]")
+    assert not is_game_command("")
     action, reason = decide(hints_at_bot=True, text="#角色图鉴")
     assert action == "skip"
     assert reason == "game_command"

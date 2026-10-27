@@ -1,4 +1,5 @@
 import asyncio
+import uuid
 
 import pytest
 
@@ -62,6 +63,57 @@ def _req(
 
 
 @pytest.mark.asyncio
+async def test_active_pure_media_can_reply():
+    """@ + 纯图/表情不再 media_only，走热度硬触发。"""
+    settings = Settings(llm_api_key="x", chat_heat_enabled=True, chat_memory_enabled=False)
+    mgr = reset_mainline_manager_for_tests(MainlineManager(settings=settings, llm_complete=_fake_llm))
+    req = ChatRequest(
+        request_id="media-at",
+        session=SessionInfo(session_id="group:1:bot:2", group_id="1", bot_id="2"),
+        message={
+            "user_id": "100",
+            "sender": {"nickname": "测试"},
+            "raw_message": "[图片]",
+            "message": [{"type": "image", "url": "https://x/a.jpg"}],
+        },
+        recent=[],
+        hints=ChatHints(at_bot=True),
+    )
+    data = await mgr.handle(req)
+    assert data.action == "reply"
+    assert data.reason == "at_bot"
+
+
+@pytest.mark.asyncio
+async def test_non_active_pure_media_uses_heat_not_media_only():
+    """非主动纯媒体不再 early no_trigger；由热度决定（常见 cold_batch）。"""
+    settings = Settings(
+        llm_api_key="x",
+        chat_heat_enabled=True,
+        proactive_enabled=True,
+        proactive_cooldown_sec=0,
+        chat_memory_enabled=False,
+    )
+    mgr = reset_mainline_manager_for_tests(MainlineManager(settings=settings, llm_complete=_fake_llm))
+    req = ChatRequest(
+        request_id="media-listen",
+        session=SessionInfo(session_id="group:1:bot:2", group_id="1", bot_id="2"),
+        message={
+            "user_id": "100",
+            "sender": {"nickname": "测试"},
+            "raw_message": "[图片]",
+            "message": [{"type": "image", "url": "https://x/a.jpg"}],
+        },
+        recent=[],
+        hints=ChatHints(),
+    )
+    data = await mgr.handle(req)
+    assert data.reason != "media_only"
+    # 冷启动攒批：允许 skip，但不允许旧策略 C 的 media_only
+    assert data.action in {"skip", "reply"}
+
+
+@pytest.mark.asyncio
 async def test_skip_without_trigger():
     settings = Settings(llm_api_key="x", proactive_enabled=False)
     mgr = reset_mainline_manager_for_tests(MainlineManager(settings=settings, llm_complete=_fake_llm))
@@ -98,11 +150,17 @@ async def test_thinking_interrupt():
 
 @pytest.mark.asyncio
 async def test_proactive_question_replies():
-    settings = Settings(llm_api_key="x", proactive_enabled=True, proactive_cooldown_sec=0)
+    """冷启动时单条问句先记账，不立刻叫人设。"""
+    gid = f"heatq{uuid.uuid4().hex[:8]}"
+    settings = Settings(llm_api_key="x", proactive_enabled=True, proactive_cooldown_sec=0, chat_heat_enabled=True)
     mgr = reset_mainline_manager_for_tests(MainlineManager(settings=settings, llm_complete=_fake_llm))
-    data = await mgr.handle(_req(request_id="p", text="晚上吃什么好呢？"))
-    assert data.action == "reply"
-    assert data.reason == "proactive_question"
+    data = await mgr.handle(
+        _req(request_id="p", text="晚上吃什么好呢？").model_copy(
+            update={"session": SessionInfo(session_id=f"group:{gid}:bot:2", group_id=gid, bot_id="2")}
+        )
+    )
+    assert data.action == "skip"
+    assert data.reason == "cold_batch"
 
 
 @pytest.mark.asyncio
