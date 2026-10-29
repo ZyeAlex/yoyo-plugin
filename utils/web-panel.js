@@ -253,9 +253,14 @@ export function registerWebPanel() {
     try {
       const buf = await readTtsUploadBody(req)
       if (buf.length < 64) return json(res, 400, {}, '音频太短或未收到文件')
-      const filename = String(req.headers['x-filename'] || 'default.wav')
-        .replace(/[^\w.\u4e00-\u9fff()-]+/g, '_')
-        .slice(0, 80) || 'default.wav'
+      let filename = 'default.wav'
+      try {
+        filename = decodeURIComponent(String(req.headers['x-filename'] || 'default.wav'))
+      } catch {
+        filename = String(req.headers['x-filename'] || 'default.wav')
+      }
+      filename =
+        filename.replace(/[^\w.\u4e00-\u9fff()-]+/g, '_').slice(0, 80) || 'default.wav'
       let prompt_text = ''
       try {
         prompt_text = decodeURIComponent(String(req.headers['x-prompt-text'] || ''))

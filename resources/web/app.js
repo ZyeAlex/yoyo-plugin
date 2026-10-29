@@ -387,7 +387,8 @@ function bindTtsVoiceCard() {
     try {
       const headers = {
         'Content-Type': 'application/octet-stream',
-        'X-Filename': file.name || 'default.wav',
+        // fetch 要求 header 为 ISO-8859-1，中文文件名/参考文本必须编码
+        'X-Filename': encodeURIComponent(file.name || 'default.wav'),
         'X-Prompt-Text': encodeURIComponent(prompt_text),
       }
       if (panelToken) headers['X-Yoyo-Token'] = panelToken
