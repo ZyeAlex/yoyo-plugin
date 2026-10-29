@@ -9,6 +9,7 @@ class SessionInfo(BaseModel):
     session_id: str
     group_id: str = ""
     bot_id: str = ""
+    group_name: str = ""
 
 
 class ChatHints(BaseModel):
@@ -26,7 +27,7 @@ class ChatRequest(BaseModel):
 
 
 class ReplyBubble(BaseModel):
-    type: Literal["text", "image"] = "text"
+    type: Literal["text", "image", "record"] = "text"
     text: str | None = None
     path: str | None = None
     mention: str | None = None
