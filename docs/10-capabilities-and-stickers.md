@@ -58,10 +58,11 @@
 
 规格：[2026-10-29-tts-voice-system-design.md](./superpowers/specs/2026-10-29-tts-voice-system-design.md)
 
-- 协议：OpenAI 兼容 `POST /v1/audio/speech`（`chatTtsBaseUrl` / `ApiKey` / `Model`）
-- 触发：人设声明 `{"type":"tts","text":"…"}` → 异步 job → QQ `segment.record`
-- 音色：面板「语音 TTS」上传全局 `server/data/tts/default.wav`（可填参考文本）；试听走 `/api/tts/preview`
-- 出站成功时**只发语音条**；关 `chatTtsEnabled` 或不配模型/无音色则不注入工具面
+- 协议：OpenAI 兼容 `POST /v1/audio/speech`（模型配置里的「语音 TTS」）
+- 触发：配齐 `chatTtsModel`（及可用 Key/地址）后人设可声明 `{"type":"tts","text":"…"}` → 异步 job → QQ `segment.record`
+- `chatTtsExtra`：JSON 合并进请求体的厂商补充参数；不覆盖 `input/model/voice/speed/ref_*`
+- 音色：面板模型配置下上传全局 `server/data/tts/default.wav`；试听 `/api/tts/preview`
+- 出站成功时**只发语音条**；模型名为空则不注入工具面
 - 改完需 `#重启悠悠`
 
 ## 3. 纯媒体与开口

@@ -398,6 +398,92 @@ export const WEB_FIELDS = [
     layout: 'row',
     help: '关则仅关键词；失败自动降级',
   },
+  {
+    key: 'chatTtsBaseUrl',
+    section: 'chat',
+    group: 'models',
+    subgroup: 'tts',
+    subgroupLabel: '语音 TTS',
+    label: '地址',
+    type: 'text',
+    help: 'OpenAI 兼容根，如 http://127.0.0.1:8080/v1；空则回退文本模型地址。配齐模型名即启用语音',
+  },
+  {
+    key: 'chatTtsApiKey',
+    section: 'chat',
+    group: 'models',
+    subgroup: 'tts',
+    subgroupLabel: '语音 TTS',
+    label: 'API Key',
+    type: 'password',
+    help: '空则回退文本模型 Key',
+  },
+  {
+    key: 'chatTtsModel',
+    section: 'chat',
+    group: 'models',
+    subgroup: 'tts',
+    subgroupLabel: '语音 TTS',
+    label: '模型名称',
+    type: 'text',
+    help: '必填才会注入语音工具；留空=关闭 TTS',
+  },
+  {
+    key: 'chatTtsVoice',
+    section: 'chat',
+    group: 'models',
+    subgroup: 'tts',
+    subgroupLabel: '语音 TTS',
+    label: 'Voice id',
+    type: 'text',
+    help: '后端预设音色；有本地参考音频时仍会附带 ref_audio',
+  },
+  {
+    key: 'chatTtsSpeed',
+    section: 'chat',
+    group: 'models',
+    subgroup: 'tts',
+    subgroupLabel: '语音 TTS',
+    label: '默认语速',
+    type: 'number',
+    min: 0.5,
+    max: 2,
+    step: 0.1,
+    help: '0.5–2.0；模型声明可覆盖',
+  },
+  {
+    key: 'chatTtsFormat',
+    section: 'chat',
+    group: 'models',
+    subgroup: 'tts',
+    subgroupLabel: '语音 TTS',
+    label: '音频格式',
+    type: 'text',
+    help: '请求 response_format，默认 wav',
+  },
+  {
+    key: 'chatTtsMaxChars',
+    section: 'chat',
+    group: 'models',
+    subgroup: 'tts',
+    subgroupLabel: '语音 TTS',
+    label: '单次字数上限',
+    type: 'number',
+    min: 8,
+    max: 200,
+    help: '超长截断后再合成',
+  },
+  {
+    key: 'chatTtsExtra',
+    section: 'chat',
+    group: 'models',
+    subgroup: 'tts',
+    subgroupLabel: '语音 TTS',
+    label: '补充请求体 JSON',
+    type: 'json',
+    span: 'full',
+    help: '合并进 /v1/audio/speech 的厂商参数，如 {"emotion":"happy","speech_rate":20}。不能覆盖 input/model/voice/speed/ref_*',
+  },
 
   {
     key: 'chatMemoryEnabled',
@@ -622,101 +708,6 @@ export const WEB_FIELDS = [
     max: 10,
     help: '回注给人设的搜索条数。打开正文另走 web_fetch，搜索本身不抓页面',
   },
-  {
-    key: 'chatTtsEnabled',
-    section: 'chat',
-    group: 'tts',
-    groupLabel: '语音 TTS',
-    label: '允许语音回复',
-    type: 'switch',
-    layout: 'row',
-    help: '模型可声明 tts 发 QQ 语音条。需配置兼容 /v1/audio/speech 的地址，或上传默认参考音色',
-  },
-  {
-    key: 'chatTtsInclude',
-    section: 'chat',
-    group: 'tts',
-    label: 'TTS 白名单群',
-    type: 'groups',
-    help: '非空则仅这些群可用语音；空=不额外限制（仍受聊天白名单约束）',
-  },
-  {
-    key: 'chatTtsExclude',
-    section: 'chat',
-    group: 'tts',
-    label: 'TTS 黑名单群',
-    type: 'groups',
-    help: '命中则关闭语音',
-  },
-  {
-    key: 'chatTtsBaseUrl',
-    section: 'chat',
-    group: 'tts',
-    subgroup: 'ttsEndpoint',
-    subgroupLabel: 'TTS 模型配置',
-    label: 'Base URL',
-    type: 'text',
-    help: 'OpenAI 兼容根，如 http://127.0.0.1:8080/v1；空则回退文本模型地址',
-  },
-  {
-    key: 'chatTtsApiKey',
-    section: 'chat',
-    group: 'tts',
-    subgroup: 'ttsEndpoint',
-    subgroupLabel: 'TTS 模型配置',
-    label: 'API Key',
-    type: 'password',
-    help: '空则回退文本模型 Key',
-  },
-  {
-    key: 'chatTtsModel',
-    section: 'chat',
-    group: 'tts',
-    subgroup: 'ttsEndpoint',
-    subgroupLabel: 'TTS 模型配置',
-    label: 'Model',
-    type: 'text',
-    help: '必填才会注入语音工具',
-  },
-  {
-    key: 'chatTtsVoice',
-    section: 'chat',
-    group: 'tts',
-    subgroup: 'ttsEndpoint',
-    subgroupLabel: 'TTS 模型配置',
-    label: 'Voice id',
-    type: 'text',
-    help: '后端预设音色 id；有本地参考音频时仍会附带 ref_audio',
-  },
-  {
-    key: 'chatTtsSpeed',
-    section: 'chat',
-    group: 'tts',
-    label: '默认语速',
-    type: 'number',
-    min: 0.5,
-    max: 2,
-    step: 0.1,
-    help: '0.5–2.0；模型声明可覆盖',
-  },
-  {
-    key: 'chatTtsFormat',
-    section: 'chat',
-    group: 'tts',
-    label: '音频格式',
-    type: 'text',
-    help: '请求 response_format，默认 wav',
-  },
-  {
-    key: 'chatTtsMaxChars',
-    section: 'chat',
-    group: 'tts',
-    label: '单次字数上限',
-    type: 'number',
-    min: 8,
-    max: 200,
-    help: '超长截断后再合成',
-  },
 ]
 
 export function fieldVisible(field, config) {
@@ -733,11 +724,25 @@ function coerceNumberList(current, key, value) {
   return parts.map(Number).filter((n) => n > 0)
 }
 
+function coerceJsonObject(key, value) {
+  if (key !== 'chatTtsExtra') return value
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value
+  if (typeof value !== 'string') return {}
+  const s = value.trim()
+  if (!s) return {}
+  try {
+    const parsed = JSON.parse(s)
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {}
+  } catch {
+    return value
+  }
+}
+
 export function mergeConfigPatch(current, patch) {
   const next = { ...current }
   for (const [key, value] of Object.entries(patch)) {
     if (value === undefined) continue
-    next[key] = coerceNumberList(current, key, value)
+    next[key] = coerceJsonObject(key, coerceNumberList(current, key, value))
   }
   return next
 }

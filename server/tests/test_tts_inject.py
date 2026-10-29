@@ -31,7 +31,6 @@ async def test_build_messages_injects_tts_when_ready(tmp_path, monkeypatch):
     monkeypatch.setattr("src.chat.tts.paths._SERVER_ROOT", tmp_path)
     save_default_voice(b"x", filename="a.wav", prompt_text="hi")
     settings = Settings(
-        chat_tts_enabled=True,
         chat_tts_base_url="http://tts/v1",
         chat_tts_api_key="k",
         chat_tts_model="m",
@@ -52,14 +51,13 @@ async def test_build_messages_injects_tts_when_ready(tmp_path, monkeypatch):
 
 
 @pytest.mark.asyncio
-async def test_build_messages_hides_tts_when_disabled(tmp_path, monkeypatch):
+async def test_build_messages_hides_tts_when_no_model(tmp_path, monkeypatch):
     monkeypatch.setattr("src.chat.tts.paths._SERVER_ROOT", tmp_path)
     save_default_voice(b"x", filename="a.wav", prompt_text="hi")
     settings = Settings(
-        chat_tts_enabled=False,
         chat_tts_base_url="http://tts/v1",
         chat_tts_api_key="k",
-        chat_tts_model="m",
+        chat_tts_model="",
         chat_memory_enabled=False,
         chat_game_kb_enabled=False,
         chat_web_search_enabled=False,

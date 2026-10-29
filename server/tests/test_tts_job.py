@@ -22,7 +22,6 @@ async def test_run_tts_job_writes_voice_file(tmp_path, monkeypatch):
         done["result"] = result
 
     settings = Settings(
-        chat_tts_enabled=True,
         chat_tts_base_url="http://x/v1",
         chat_tts_api_key="k",
         chat_tts_model="m",

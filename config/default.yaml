@@ -115,10 +115,7 @@ chatHeroLookMaxPerTurn: 1
 # 联网搜索（无 API Key：DuckDuckGo HTML，不够再换 Bing）
 chatWebSearchEnabled: true
 chatWebSearchMaxResults: 10
-# TTS（OpenAI 兼容 POST /v1/audio/speech；面板上传全局默认参考音色）
-chatTtsEnabled: false
-chatTtsInclude: []
-chatTtsExclude: []
+# TTS（OpenAI 兼容 POST /v1/audio/speech；配齐 Model 即启用；面板可上传参考音色）
 chatTtsBaseUrl: ""
 chatTtsApiKey: ""
 chatTtsModel: ""
@@ -126,4 +123,6 @@ chatTtsVoice: default
 chatTtsSpeed: 1.0
 chatTtsFormat: wav
 chatTtsMaxChars: 80
+# 合并进 speech 请求体的补充字段（厂商私有参数）；核心 input/model/voice/speed 不会被覆盖
+chatTtsExtra: {}
 

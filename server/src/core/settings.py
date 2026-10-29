@@ -115,10 +115,7 @@ class Settings(BaseSettings):
     # 联网搜索（DuckDuckGo HTML → Bing，无 API Key）
     chat_web_search_enabled: bool = Field(default=True, alias="CHAT_WEB_SEARCH_ENABLED")
     chat_web_search_max_results: int = Field(default=10, alias="CHAT_WEB_SEARCH_MAX_RESULTS")
-    # TTS（OpenAI 兼容 /v1/audio/speech）
-    chat_tts_enabled: bool = Field(default=False, alias="CHAT_TTS_ENABLED")
-    chat_tts_include: list[str] = Field(default_factory=list, alias="CHAT_TTS_INCLUDE")
-    chat_tts_exclude: list[str] = Field(default_factory=list, alias="CHAT_TTS_EXCLUDE")
+    # TTS（OpenAI 兼容 /v1/audio/speech；配齐模型即启用，无单独开关）
     chat_tts_base_url: str = Field(default="", alias="CHAT_TTS_BASE_URL")
     chat_tts_api_key: str = Field(default="", alias="CHAT_TTS_API_KEY")
     chat_tts_model: str = Field(default="", alias="CHAT_TTS_MODEL")
@@ -126,6 +123,7 @@ class Settings(BaseSettings):
     chat_tts_speed: float = Field(default=1.0, alias="CHAT_TTS_SPEED")
     chat_tts_format: str = Field(default="wav", alias="CHAT_TTS_FORMAT")
     chat_tts_max_chars: int = Field(default=80, alias="CHAT_TTS_MAX_CHARS")
+    chat_tts_extra: dict = Field(default_factory=dict, alias="CHAT_TTS_EXTRA")
 
     model_config = {"populate_by_name": True, "extra": "ignore"}
 
@@ -267,7 +265,6 @@ def _merge_plugin_yaml(settings: Settings) -> Settings:
         "chatGameKbEnabled": "chat_game_kb_enabled",
         "chatHeroLookEnabled": "chat_hero_look_enabled",
         "chatWebSearchEnabled": "chat_web_search_enabled",
-        "chatTtsEnabled": "chat_tts_enabled",
     }
     for yk, sk in _YAML_BOOL.items():
         if yk in cfg:
@@ -325,13 +322,19 @@ def _merge_plugin_yaml(settings: Settings) -> Settings:
             updates["chat_tts_speed"] = float(cfg["chatTtsSpeed"])
         except (TypeError, ValueError):
             pass
-    for yk, sk in (
-        ("chatTtsInclude", "chat_tts_include"),
-        ("chatTtsExclude", "chat_tts_exclude"),
-    ):
-        raw = cfg.get(yk)
-        if isinstance(raw, list):
-            updates[sk] = [str(x).strip() for x in raw if str(x).strip()]
+    if "chatTtsExtra" in cfg:
+        raw_extra = cfg.get("chatTtsExtra")
+        if isinstance(raw_extra, dict):
+            updates["chat_tts_extra"] = dict(raw_extra)
+        elif isinstance(raw_extra, str) and raw_extra.strip():
+            import json
+
+            try:
+                parsed = json.loads(raw_extra)
+                if isinstance(parsed, dict):
+                    updates["chat_tts_extra"] = parsed
+            except json.JSONDecodeError:
+                pass
     if updates:
         return settings.model_copy(update=updates)
     return settings

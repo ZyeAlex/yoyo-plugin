@@ -69,10 +69,35 @@ function fieldId(field) {
 }
 
 function readFieldValue(field) {
-  return draft[field.key]
+  const v = draft[field.key]
+  if (field.type === 'json') {
+    if (v && typeof v === 'object') {
+      try {
+        return JSON.stringify(v, null, 2)
+      } catch {
+        return '{}'
+      }
+    }
+    return typeof v === 'string' ? v : '{}'
+  }
+  return v
 }
 
 function writeFieldValue(field, value) {
+  if (field.type === 'json') {
+    const s = String(value ?? '').trim()
+    if (!s) {
+      draft[field.key] = {}
+      return
+    }
+    try {
+      const parsed = JSON.parse(s)
+      draft[field.key] = parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {}
+    } catch {
+      draft[field.key] = s
+    }
+    return
+  }
   draft[field.key] = value
 }
 
@@ -206,6 +231,8 @@ function renderControl(field) {
           <button type="button" class="secret-toggle" data-secret-toggle aria-label="显示密钥" title="显示 / 隐藏">显示</button>
         </div>
       `
+    case 'json':
+      return `<textarea data-field-id="${id}" rows="6" spellcheck="false" class="json-input">${escapeHtml(val ?? '{}')}</textarea>`
     default:
       return `<input type="text" data-field-id="${id}" value="${escapeAttr(val ?? '')}" />`
   }
@@ -295,23 +322,25 @@ function renderForm() {
   }
 
   form.innerHTML = groupedFields(fields).map((group) => renderGroupCard(group)).join('')
-  if (activeSection === 'chat' && fields.some((f) => f.group === 'tts')) {
-    form.insertAdjacentHTML('beforeend', renderTtsVoiceCard())
-    bindTtsVoiceCard()
+  if (activeSection === 'chat' && fields.some((f) => f.subgroup === 'tts')) {
+    const modelsCard = form.querySelector('.group-card')
+    // 挂在「模型配置」卡片末尾：默认参考音色上传
+    const cards = [...form.querySelectorAll('.group-card')]
+    const models = cards.find((c) => c.textContent?.includes('模型配置')) || cards[0]
+    if (models) {
+      models.insertAdjacentHTML('beforeend', renderTtsVoiceCardInner())
+      bindTtsVoiceCard()
+    }
   }
   bindFormEvents()
 }
 
-function renderTtsVoiceCard() {
+function renderTtsVoiceCardInner() {
   return `
-    <section class="group-card" id="tts-voice-card">
-      <div class="group-head">
-        <h3>默认参考音色</h3>
-        <p class="help">上传 3–15 秒清晰人声（wav/mp3）可同步克隆音色；仅限本人或已授权声音。试听不发到群。</p>
-      </div>
-      <div class="form-grid">
+      <div class="subgroup-head"><h4>默认参考音色</h4></div>
+      <div class="form-grid" id="tts-voice-card">
         <div class="field span-full">
-          <div class="field-head"><label>状态</label></div>
+          <div class="help">上传 3–15 秒清晰人声（wav/mp3）可同步克隆；仅限本人或已授权声音。试听不发到群。</div>
           <div id="tts-voice-status" class="help">读取中…</div>
         </div>
         <div class="field span-2">
@@ -325,11 +354,10 @@ function renderTtsVoiceCard() {
         <div class="field span-full" style="display:flex;gap:8px;flex-wrap:wrap">
           <button type="button" class="btn" id="tts-voice-upload">上传并保存</button>
           <button type="button" class="btn" id="tts-voice-preview">试听</button>
-          <button type="button" class="btn btn-danger" id="tts-voice-clear">清除</button>
+          <button type="button" class="btn" id="tts-voice-clear">清除</button>
         </div>
         <audio id="tts-voice-player" controls class="span-full" style="width:100%;display:none"></audio>
       </div>
-    </section>
   `
 }
 
@@ -448,7 +476,7 @@ function bindFormEvents() {
     })
   })
 
-  form.querySelectorAll('select, input[type="text"], input[type="number"], input[type="password"]').forEach((el) => {
+  form.querySelectorAll('select, input[type="text"], input[type="number"], input[type="password"], textarea').forEach((el) => {
     if (el.dataset.tagInput) return
     const sync = () => {
       const field = findFieldById(el.dataset.fieldId)

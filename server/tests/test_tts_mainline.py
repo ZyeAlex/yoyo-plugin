@@ -43,7 +43,6 @@ async def test_tts_job_outbox_record_only(tmp_path, monkeypatch):
         chat_web_search_enabled=False,
         chat_hero_look_enabled=False,
         tools_enabled=False,
-        chat_tts_enabled=True,
         chat_tts_base_url="http://tts/v1",
         chat_tts_api_key="k",
         chat_tts_model="m",
