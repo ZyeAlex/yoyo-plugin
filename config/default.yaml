@@ -34,14 +34,27 @@ chatWakeWords:
   - 悠悠
   - 小悠
 chatBufferSize: 20
-chatMaxReplies: 1
+chatMaxReplies: 2
 chatReplyDelayMinMs: 500
 chatReplyDelayMaxMs: 2000
 chatInterruptEnabled: true
 chatProactiveEnabled: true
-chatProactiveCooldownSec: 45
-chatProactiveMaxPerMin: 3
-chatHeatEnabled: true # 冷热温度调度；关则退回短问正则
+chatHeatEnabled: true # 时间看群；关则仅硬触发
+chatHeatDebounceSec: 1.5
+chatHeatEngagedSec: 90 # 遗留，P0 不驱动
+chatHeatObserveSec: 90 # 遗留，P0 不驱动
+chatGlanceIdleSec: [1500, 3600]
+chatGlanceChatSec: [20, 40]
+chatGlanceFocusSec: [3, 8]
+chatSpeakMinGapSec: [3, 5] # 两次决定开口的最短间隔，取左端
+chatAtReactionSec: [2, 8] # 保留；不再在被 @ 后额外延迟
+chatUnansweredGiveUpSec: 480
+chatAttentionDecayPerMin: 0.92
+chatDwellHotSec: [60, 180]
+chatDwellChatSec: [30, 90]
+chatDwellIdleSec: [10, 30]
+chatBackoffRetrySec: [90, 300, 900, 1800, 3600]
+chatBackoffAttentionFactor: 0.5
 chatToolsEnabled: true
 chatDrawMockDelaySec: 3
 # 文本模型
@@ -52,6 +65,12 @@ chatLlmModel: deepseek-ai/DeepSeek-V4-Flash
 chatVisionBaseUrl: ""
 chatVisionApiKey: ""
 chatVisionModel: ""
+# 图生成/编辑（无参考图→generations用 chatDrawModel；有图→edits/图生图用 chatDrawEditModel，空则跟主模型）
+chatDrawBaseUrl: ""
+chatDrawApiKey: ""
+chatDrawModel: ""
+chatDrawEditModel: ""
+chatDrawSize: "1080x1920"
 # 快速响应（是否接话等）；空=跟文本模型
 chatFastBaseUrl: ""
 chatFastApiKey: ""
@@ -83,4 +102,28 @@ chatStickerReplyEnabled: true
 chatStickerMaxPerReply: 1
 chatStickerShelfEnabled: true
 chatStickerShelfSize: 5
+# 非斗图时注入表情货架的概率（斗图/对方发表情必开）。0=仅斗图；1=每轮都开
+chatStickerShelfChance: 0.45
+# 游戏图鉴（Chat 只读 data/game；L0 常驻世界观+自己）
+chatGameKbEnabled: true
+chatGameSelfHeroId: "101003"
+chatGameL0MaxChars: 2800
+chatGameLookupMax: 2
+# 角色外观 look（本地立绘索引 data/cache/hero_imgs.json）
+chatHeroLookEnabled: true
+chatHeroLookMaxPerTurn: 1
+# 联网搜索（无 API Key：DuckDuckGo HTML，不够再换 Bing）
+chatWebSearchEnabled: true
+chatWebSearchMaxResults: 10
+# TTS（OpenAI 兼容 POST /v1/audio/speech；面板上传全局默认参考音色）
+chatTtsEnabled: false
+chatTtsInclude: []
+chatTtsExclude: []
+chatTtsBaseUrl: ""
+chatTtsApiKey: ""
+chatTtsModel: ""
+chatTtsVoice: default
+chatTtsSpeed: 1.0
+chatTtsFormat: wav
+chatTtsMaxChars: 80
 
