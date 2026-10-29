@@ -384,16 +384,23 @@ function bindTtsVoiceCard() {
     const file = $('#tts-voice-file')?.files?.[0]
     if (!file) return alert('请先选择音频文件')
     const prompt_text = $('#tts-voice-prompt')?.value || ''
-    const buf = await file.arrayBuffer()
-    const bytes = new Uint8Array(buf)
-    let binary = ''
-    for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i])
-    const audio_base64 = btoa(binary)
     try {
-      await api('/tts/voice', {
-        method: 'POST',
-        body: JSON.stringify({ audio_base64, filename: file.name, prompt_text }),
-      })
+      const headers = {
+        'Content-Type': 'application/octet-stream',
+        'X-Filename': file.name || 'default.wav',
+        'X-Prompt-Text': encodeURIComponent(prompt_text),
+      }
+      if (panelToken) headers['X-Yoyo-Token'] = panelToken
+      const res = await fetch(`${API}/tts/voice`, { method: 'POST', headers, body: file })
+      const body = await res.json().catch(() => ({}))
+      if (res.status === 401) {
+        sessionStorage.removeItem('yoyo_panel_token')
+        panelToken = ''
+        throw new Error(body.message || '未登录或令牌已过期')
+      }
+      if (!res.ok || body.code !== 200) {
+        throw new Error(body.message || `上传失败 (${res.status})`)
+      }
       await refreshTtsVoiceStatus()
       alert('音色已保存')
     } catch (err) {

@@ -235,15 +235,33 @@ export function registerWebPanel() {
     }
   })
 
-  router.post('/api/tts/voice', express.json({ limit: '12mb' }), (req, res) => {
+  // 二进制直传，避开全局 express.json 默认 ~100KB 限制（base64 JSON 很容易爆）
+  const readTtsUploadBody = async (req) => {
+    if (Buffer.isBuffer(req.body) && req.body.length) return req.body
+    if (typeof req.body === 'string' && req.body) return Buffer.from(req.body)
+    const chunks = []
+    let size = 0
+    for await (const chunk of req) {
+      size += chunk.length
+      if (size > 8_000_000) throw new Error('音频过大')
+      chunks.push(chunk)
+    }
+    return chunks.length ? Buffer.concat(chunks) : Buffer.alloc(0)
+  }
+
+  router.post('/api/tts/voice', async (req, res) => {
     try {
-      const b64 = String(req.body?.audio_base64 || '').replace(/^data:[^;]+;base64,/, '')
-      if (!b64) return json(res, 400, {}, '缺少 audio_base64')
-      const buf = Buffer.from(b64, 'base64')
-      if (buf.length < 64) return json(res, 400, {}, '音频太短')
-      if (buf.length > 8_000_000) return json(res, 400, {}, '音频过大')
-      const filename = String(req.body?.filename || 'default.wav')
-      const prompt_text = String(req.body?.prompt_text || '')
+      const buf = await readTtsUploadBody(req)
+      if (buf.length < 64) return json(res, 400, {}, '音频太短或未收到文件')
+      const filename = String(req.headers['x-filename'] || 'default.wav')
+        .replace(/[^\w.\u4e00-\u9fff()-]+/g, '_')
+        .slice(0, 80) || 'default.wav'
+      let prompt_text = ''
+      try {
+        prompt_text = decodeURIComponent(String(req.headers['x-prompt-text'] || ''))
+      } catch {
+        prompt_text = String(req.headers['x-prompt-text'] || '')
+      }
       fs.writeFileSync(ttsWav(), buf)
       fs.writeFileSync(
         ttsMeta(),
