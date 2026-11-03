@@ -107,16 +107,42 @@ def test_wants_dou_tu_from_text_or_sticker_refs():
         recent=[],
     ) is True
     assert wants_dou_tu(text="你好呀", message={}, recent=[]) is False
+    assert wants_dou_tu(
+        text="你好呀",
+        message={},
+        recent=[{"message": [{"type": "image", "url": "https://x/old.jpg", "sub_type": 1}]}],
+    ) is False
 
 
-def test_build_sticker_shelf_only_when_dou_tu():
+def test_build_sticker_shelf_gated_like_tool_surface():
+    """平时默认不注入货架；斗图必开；非斗图按 chance + rng。"""
     store = FakeStore()
-    settings = Settings(chat_sticker_shelf_enabled=True, chat_sticker_reply_enabled=True)
-    assert build_sticker_shelf(store, settings, text="你好", message={}, recent=[]) == []
-    items = build_sticker_shelf(store, settings, text="发个表情包", message={}, recent=[])
+    settings = Settings(
+        chat_sticker_shelf_enabled=True,
+        chat_sticker_reply_enabled=True,
+        chat_sticker_shelf_chance=0.25,
+    )
+    assert build_sticker_shelf(store, settings, text="你好", message={}, recent=[], rng=lambda: 0.99) == []
+    opened = build_sticker_shelf(store, settings, text="你好", message={}, recent=[], rng=lambda: 0.0)
+    assert len(opened) >= 1
+    assert "可发表情" in format_shelf_prompt(opened)
+    items = build_sticker_shelf(
+        store, settings, text="发个表情包", message={}, recent=[], rng=lambda: 0.99
+    )
     assert len(items) >= 1
     assert items[0].id == "s1"
-    assert "可发表情" in format_shelf_prompt(items)
+    assert "s1" in format_shelf_prompt(items)
+
+
+def test_build_sticker_shelf_chance_zero_only_dou_tu():
+    store = FakeStore()
+    settings = Settings(
+        chat_sticker_shelf_enabled=True,
+        chat_sticker_reply_enabled=True,
+        chat_sticker_shelf_chance=0.0,
+    )
+    assert build_sticker_shelf(store, settings, text="你好", message={}, recent=[], rng=lambda: 0.0) == []
+    assert len(build_sticker_shelf(store, settings, text="斗图", message={}, recent=[])) >= 1
 
 
 def test_resolve_by_shelf_id():
@@ -132,6 +158,18 @@ def test_resolve_by_shelf_id():
     assert replies[0] == ReplyBubble(type="text", text="来啊")
     assert any(r.type == "image" and r.path == _OK_STICKER and r.sticker_desc == "无奈" for r in replies)
     assert store.used == ["h1"]
+
+
+def test_text_and_sticker_both_go_out():
+    settings = Settings(chat_sticker_reply_enabled=True, chat_sticker_max_per_reply=1)
+    items = [ShelfItem(id="s1", hash="h1", path=_OK_STICKER, caption="无奈", emotions=["无奈"])]
+    replies = resolve_sticker_bubbles(
+        [{"type": "text", "text": "来啊"}, {"type": "sticker", "id": "s1"}],
+        FakeStore(),
+        settings,
+        shelf_items=items,
+    )
+    assert [r.type for r in replies] == ["text", "image"]
 
 
 def test_resolve_none_or_missing_does_not_auto_send():
@@ -177,41 +215,64 @@ def test_resolve_skips_when_disabled_or_bad_id():
 
 @pytest.mark.asyncio
 async def test_generate_resolves_sticker_id_to_image():
+    import asyncio
+
     settings = Settings(
         llm_api_key="x",
         max_replies=1,
         chat_sticker_reply_enabled=True,
         chat_sticker_shelf_enabled=True,
         chat_memory_enabled=False,
+        chat_heat_debounce_sec=0.05,
+        chat_at_reaction_sec=(0.0, 0.0),
     )
     store = FakeStore()
     mgr = reset_mainline_manager_for_tests(
         MainlineManager(settings=settings, llm_complete=_sticker_llm, sticker_store=store)
     )
-    data = await mgr.handle(_req(text="来张表情包"))
-    assert data.action == "reply"
-    assert any(r.type == "image" and r.path == _OK_STICKER for r in data.replies)
-    assert any(r.type == "text" and r.text == "来啊" for r in data.replies)
-    assert "sticker" not in {r.type for r in data.replies}
+    data = await mgr.handle(_req(text="来张表情包", at_bot=True))
+    assert data.reason == "hold"
+    pending = None
+    for _ in range(40):
+        await asyncio.sleep(0.05)
+        pending = mgr.drain_pending("group:1:bot:2")
+        if pending and pending.replies:
+            break
+    assert pending is not None
+    assert any(r.type == "image" and r.path == _OK_STICKER for r in pending.replies)
+    assert any(r.type == "text" and r.text == "来啊" for r in pending.replies)
+    assert "sticker" not in {r.type for r in pending.replies}
     assert store.used == ["h1"]
 
 
 @pytest.mark.asyncio
 async def test_generate_text_only_does_not_auto_send_sticker():
+    import asyncio
+
     settings = Settings(
         llm_api_key="x",
         max_replies=1,
         chat_sticker_reply_enabled=True,
         chat_sticker_shelf_enabled=True,
         chat_memory_enabled=False,
+        chat_heat_debounce_sec=0.05,
+        chat_at_reaction_sec=(0.0, 0.0),
     )
     store = FakeStore()
     mgr = reset_mainline_manager_for_tests(
         MainlineManager(settings=settings, llm_complete=_text_only_llm, sticker_store=store)
     )
-    data = await mgr.handle(_req(text="来张表情包"))
-    assert any(r.type == "text" for r in data.replies)
-    assert all(r.type != "image" for r in data.replies)
+    data = await mgr.handle(_req(text="来张表情包", at_bot=True))
+    assert data.reason == "hold"
+    pending = None
+    for _ in range(40):
+        await asyncio.sleep(0.05)
+        pending = mgr.drain_pending("group:1:bot:2")
+        if pending and pending.replies:
+            break
+    assert pending is not None
+    assert any(r.type == "text" for r in pending.replies)
+    assert all(r.type != "image" for r in pending.replies)
     assert store.used == []
 
 

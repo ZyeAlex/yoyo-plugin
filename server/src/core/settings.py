@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-from functools import lru_cache
 from pathlib import Path
 
 import yaml
@@ -88,11 +87,7 @@ class Settings(BaseSettings):
     chat_vision_include_recent_on_refer: bool = Field(
         default=True, alias="CHAT_VISION_INCLUDE_RECENT_ON_REFER"
     )
-    # 多模态（视觉 / 表情包打标）；空字段回落到文本模型
-    chat_vision_base_url: str = Field(default="", alias="CHAT_VISION_BASE_URL")
-    chat_vision_api_key: str = Field(default="", alias="CHAT_VISION_API_KEY")
-    chat_vision_model: str = Field(default="", alias="CHAT_VISION_MODEL")
-    # 快速响应（温度 judge 等）；空字段回落到文本模型
+    # 快速响应（温度 judge 等）；空字段回落到大模型
     chat_fast_base_url: str = Field(default="", alias="CHAT_FAST_BASE_URL")
     chat_fast_api_key: str = Field(default="", alias="CHAT_FAST_API_KEY")
     chat_fast_model: str = Field(default="", alias="CHAT_FAST_MODEL")
@@ -112,14 +107,16 @@ class Settings(BaseSettings):
     # 角色外观 look + draw.use_ref
     chat_hero_look_enabled: bool = Field(default=True, alias="CHAT_HERO_LOOK_ENABLED")
     chat_hero_look_max_per_turn: int = Field(default=1, alias="CHAT_HERO_LOOK_MAX_PER_TURN")
-    # 联网搜索（DuckDuckGo HTML → Bing，无 API Key）
+    # 联网搜索（仅 Bing HTML；成功后自动抓 Top1 正文，无 API Key）
     chat_web_search_enabled: bool = Field(default=True, alias="CHAT_WEB_SEARCH_ENABLED")
     chat_web_search_max_results: int = Field(default=10, alias="CHAT_WEB_SEARCH_MAX_RESULTS")
-    # TTS（OpenAI 兼容 /v1/audio/speech；配齐模型即启用，无单独开关）
+    # TTS：doubao-seed | qwen | openai；配齐 key+model 即启用（openai 还需 base_url）
+    chat_tts_provider: str = Field(default="doubao-seed", alias="CHAT_TTS_PROVIDER")
     chat_tts_base_url: str = Field(default="", alias="CHAT_TTS_BASE_URL")
     chat_tts_api_key: str = Field(default="", alias="CHAT_TTS_API_KEY")
     chat_tts_model: str = Field(default="", alias="CHAT_TTS_MODEL")
-    chat_tts_voice: str = Field(default="default", alias="CHAT_TTS_VOICE")
+    # 兼容旧配置；面板已移除，请用 chat_tts_extra
+    chat_tts_voice: str = Field(default="", alias="CHAT_TTS_VOICE")
     chat_tts_speed: float = Field(default=1.0, alias="CHAT_TTS_SPEED")
     chat_tts_format: str = Field(default="wav", alias="CHAT_TTS_FORMAT")
     chat_tts_max_chars: int = Field(default=80, alias="CHAT_TTS_MAX_CHARS")
@@ -140,16 +137,13 @@ class Settings(BaseSettings):
         return bool((self.chat_draw_model or "").strip())
 
     def profile(self, kind: str = "text") -> "Settings":
-        """Return a copy with llm_* filled for text | vision | fast | draw."""
+        """Return a copy with llm_* filled for text | fast | draw.
+
+        文字和看图共用这一套大模型，没有单独的视觉端点。
+        """
         k = (kind or "text").strip().lower()
-        if k == "vision":
-            return self.model_copy(
-                update={
-                    "llm_base_url": (self.chat_vision_base_url or "").strip() or self.llm_base_url,
-                    "llm_api_key": (self.chat_vision_api_key or "").strip() or self.llm_api_key,
-                    "llm_model": (self.chat_vision_model or "").strip() or self.llm_model,
-                }
-            )
+        if k in {"text", "vision"}:
+            return self
         if k == "fast":
             return self.model_copy(
                 update={
@@ -296,9 +290,6 @@ def _merge_plugin_yaml(settings: Settings) -> Settings:
         "chatEmbeddingModel": "chat_embedding_model",
         "chatEmbeddingBaseUrl": "chat_embedding_base_url",
         "chatEmbeddingApiKey": "chat_embedding_api_key",
-        "chatVisionBaseUrl": "chat_vision_base_url",
-        "chatVisionApiKey": "chat_vision_api_key",
-        "chatVisionModel": "chat_vision_model",
         "chatDrawBaseUrl": "chat_draw_base_url",
         "chatDrawApiKey": "chat_draw_api_key",
         "chatDrawModel": "chat_draw_model",
@@ -308,9 +299,7 @@ def _merge_plugin_yaml(settings: Settings) -> Settings:
         "chatFastApiKey": "chat_fast_api_key",
         "chatFastModel": "chat_fast_model",
         "chatGameSelfHeroId": "chat_game_self_hero_id",
-        "chatTtsBaseUrl": "chat_tts_base_url",
-        "chatTtsApiKey": "chat_tts_api_key",
-        "chatTtsModel": "chat_tts_model",
+        "chatTtsProvider": "chat_tts_provider",
         "chatTtsVoice": "chat_tts_voice",
         "chatTtsFormat": "chat_tts_format",
     }
@@ -322,33 +311,109 @@ def _merge_plugin_yaml(settings: Settings) -> Settings:
             updates["chat_tts_speed"] = float(cfg["chatTtsSpeed"])
         except (TypeError, ValueError):
             pass
-    if "chatTtsExtra" in cfg:
-        raw_extra = cfg.get("chatTtsExtra")
-        if isinstance(raw_extra, dict):
-            updates["chat_tts_extra"] = dict(raw_extra)
-        elif isinstance(raw_extra, str) and raw_extra.strip():
-            import json
 
-            try:
-                parsed = json.loads(raw_extra)
-                if isinstance(parsed, dict):
-                    updates["chat_tts_extra"] = parsed
-            except json.JSONDecodeError:
-                pass
+    # 三套预设各自独立；按 chatTtsProvider 解析到统一 chat_tts_* 供客户端使用
+    provider = str(
+        updates.get("chat_tts_provider")
+        or cfg.get("chatTtsProvider")
+        or settings.chat_tts_provider
+        or "doubao-seed"
+    ).strip().lower()
+    if provider in {"doubao", "seed-audio"}:
+        provider = "doubao-seed"
+    if provider in {"dashscope", "qwen-tts"}:
+        provider = "qwen"
+    if provider in {"openai-compat", "compatible", "auto"}:
+        provider = "openai" if provider != "auto" else provider
+    # 旧 auto → 按模型猜
+    if provider == "auto":
+        legacy_model = str(cfg.get("chatTtsModel") or "").strip().lower()
+        if legacy_model.startswith("seed-audio"):
+            provider = "doubao-seed"
+        elif legacy_model.startswith("qwen") and "tts" in legacy_model:
+            provider = "qwen"
+        else:
+            provider = "openai"
+    updates["chat_tts_provider"] = provider
+
+    def _extra_from(*keys: str) -> dict:
+        import json
+
+        for k in keys:
+            raw = cfg.get(k)
+            if isinstance(raw, dict):
+                return dict(raw)
+            if isinstance(raw, str) and raw.strip():
+                try:
+                    parsed = json.loads(raw)
+                    if isinstance(parsed, dict):
+                        return parsed
+                except json.JSONDecodeError:
+                    pass
+        return {}
+
+    # 兼容旧单套 chatTtsApiKey / Model / BaseUrl / Extra
+    legacy_key = str(cfg.get("chatTtsApiKey") or "").strip()
+    legacy_model = str(cfg.get("chatTtsModel") or "").strip()
+    legacy_base = str(cfg.get("chatTtsBaseUrl") or "").strip()
+    legacy_extra = _extra_from("chatTtsExtra")
+
+    if provider == "doubao-seed":
+        key = str(cfg.get("chatTtsDoubaoApiKey") or "").strip() or legacy_key
+        model = str(cfg.get("chatTtsDoubaoModel") or "").strip() or legacy_model or "seed-audio-1.0"
+        extra = _extra_from("chatTtsDoubaoExtra") or legacy_extra
+        updates["chat_tts_base_url"] = ""
+        updates["chat_tts_api_key"] = key
+        updates["chat_tts_model"] = model
+        updates["chat_tts_extra"] = extra
+    elif provider == "qwen":
+        key = str(cfg.get("chatTtsQwenApiKey") or "").strip() or legacy_key
+        model = str(cfg.get("chatTtsQwenModel") or "").strip() or legacy_model or "qwen3-tts-flash"
+        extra = _extra_from("chatTtsQwenExtra") or legacy_extra
+        updates["chat_tts_base_url"] = ""
+        updates["chat_tts_api_key"] = key
+        updates["chat_tts_model"] = model
+        updates["chat_tts_extra"] = extra
+    else:
+        key = str(cfg.get("chatTtsOpenaiApiKey") or "").strip() or legacy_key
+        model = str(cfg.get("chatTtsOpenaiModel") or "").strip() or legacy_model
+        base = str(cfg.get("chatTtsOpenaiBaseUrl") or "").strip() or legacy_base
+        extra = _extra_from("chatTtsOpenaiExtra") or legacy_extra
+        updates["chat_tts_base_url"] = base
+        updates["chat_tts_api_key"] = key
+        updates["chat_tts_model"] = model
+        updates["chat_tts_extra"] = extra
+
     if updates:
         return settings.model_copy(update=updates)
     return settings
 
 
-@lru_cache
+_settings_cache: Settings | None = None
+_settings_mtime: float | None = None
+
+
 def get_settings() -> Settings:
+    """按 config.yaml mtime 热加载；面板改 Key 后无需重启 Brain。"""
+    global _settings_cache, _settings_mtime
+    path = _plugin_config_path()
+    try:
+        mtime = path.stat().st_mtime if path.exists() else None
+    except OSError:
+        mtime = None
+    if _settings_cache is not None and mtime == _settings_mtime:
+        return _settings_cache
+    # pydantic 已吃环境变量；yaml 补空字段（含 TTS 三套预设）。
+    # 旧逻辑在存在 CHAT_LLM_API_KEY 时直接跳过 yaml，会导致面板 TTS 配置永不生效。
     base = Settings()
-    # env overrides yaml; yaml fills blanks
-    if os.getenv("CHAT_LLM_API_KEY"):
-        return base
-    return _merge_plugin_yaml(base)
+    settings = _merge_plugin_yaml(base)
+    _settings_cache = settings
+    _settings_mtime = mtime
+    return settings
 
 
 def reload_settings() -> Settings:
-    get_settings.cache_clear()
+    global _settings_cache, _settings_mtime
+    _settings_cache = None
+    _settings_mtime = None
     return get_settings()

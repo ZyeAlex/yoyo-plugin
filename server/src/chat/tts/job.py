@@ -33,8 +33,16 @@ async def run_tts_job(
             speed=speed,
             style=style,
         )
-        fmt = (settings.chat_tts_format or "wav").strip().lower() or "wav"
-        ext = ".mp3" if fmt == "mp3" else ".wav"
+        # 以实际字节魔数定后缀（豆包常回 mp3，配置写 wav 会骗过 QQ）
+        if audio[:3] == b"ID3" or audio[:2] == b"\xff\xfb" or audio[:2] == b"\xff\xf3":
+            ext = ".mp3"
+        elif audio[:4] == b"RIFF":
+            ext = ".wav"
+        elif audio[:4] == b"OggS":
+            ext = ".ogg"
+        else:
+            fmt = (settings.chat_tts_format or "wav").strip().lower() or "wav"
+            ext = ".mp3" if fmt == "mp3" else ".wav"
         path = voice_media_dir() / f"{job_id or uuid.uuid4().hex[:12]}{ext}"
         path.write_bytes(audio)
         result: dict[str, Any] = {

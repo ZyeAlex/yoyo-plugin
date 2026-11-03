@@ -2,9 +2,10 @@ import fs from 'fs'
 import path from 'path'
 import plugin from '#plugin'
 import setting from '#setting'
-import { chat as chatApi, fetchPending } from '../api/chat/client.js'
+import { chat as chatApi, fetchPending, ingestMedia } from '../api/chat/client.js'
 import { append, isChatGroup, sessionId } from '../api/chat/buffer.js'
 import { buildChatPayload } from '../api/chat/buildPayload.js'
+import { expandForwardInPlace } from '../api/chat/expandForward.js'
 import { isActiveInitiate } from '../api/chat/trigger.js'
 import { sendReplies } from '../api/chat/reply.js'
 import { isChatServerRunning } from '../utils/chat-server.js'
@@ -24,63 +25,59 @@ function debugLog(line) {
   } catch {}
 }
 
-// 模块载入即打点，确认 Yunzai 是否 import 到本文件
 debugLog(`module_load pid=${process.pid}`)
 
 /**
- * 用 Bot.on 收消息，不走 rule/accept 链。
- * Yunzai 的 onlyReplyAt / 先前插件 return / enable 白名单都可能让 accept+rule 进不去。
+ * 走 Yunzai 标准 rule 链（不要 Bot.on）。
+ * priority 很大：签到/图片/图鉴等先匹配并处理后 loader 直接 return，本插件收不到。
+ * 未被其它插件认领的群消息才落到这里 → 闲聊脑。
+ * 非白名单群 return false，把机会让给更后面的插件。
  */
 export const Chat = plugin({
   name: '[悠悠助手]Chat',
-  event: 'message',
-  priority: 20000,
-  func: [init],
+  event: 'message.group',
+  priority: 50000,
+  rule: [
+    {
+      // 兜底：任意群消息；真正过滤在 onGroupMessage
+      reg: /[\s\S]*/,
+      fnc: onGroupMessage,
+      log: false,
+    },
+  ],
 })
 
-let hooked = false
-
-async function init() {
-  debugLog(`init_start hooked=${hooked} hasBot=${typeof Bot !== 'undefined'}`)
-  if (hooked) return
-  if (typeof Bot === 'undefined' || typeof Bot.on !== 'function') {
-    debugLog('init_fail no Bot.on')
-    logger.error('[yoyo-chat] Bot.on 不可用，Chat 无法挂载')
-    return
-  }
-  hooked = true
-  Bot.on('message', e => {
-    void handleMessage(e)
-  })
-  debugLog('init_ok Bot.on(message) registered')
-  logger.info('[yoyo-chat] 已挂载 Bot.on(message)')
-}
-
-async function handleMessage(e) {
+async function onGroupMessage(e) {
   try {
     const mid = String(e?.message_id || '')
     const preview = String(e?.raw_message || e?.msg || '').slice(0, 80)
     debugLog(
-      `msg type=${e?.message_type} group=${e?.group_id} mid=${mid} preview=${preview}`,
+      `msg type=${e?.message_type} group=${e?.group_id} name=${e?.group_name || ''} mid=${mid} preview=${preview}`,
     )
 
-    if (!e?.isGroup && e?.message_type !== 'group') return
-    // dealEvent 可能尚未跑完；兼容未设置 isGroup 的原始事件
+    if (!e?.isGroup && e?.message_type !== 'group') return false
     if (!e.isGroup) e.isGroup = true
 
     const cfg = setting.config
     if (!isChatGroup(e, cfg)) {
       debugLog(`skip not_whitelist group=${e.group_id}`)
-      return
+      return false
     }
 
     if (mid) {
-      if (seenMessageIds.has(mid)) return
+      if (seenMessageIds.has(mid)) return true
       seenMessageIds.add(mid)
       if (seenMessageIds.size > 500) {
         const first = seenMessageIds.values().next().value
         seenMessageIds.delete(first)
       }
+    }
+
+    // 合并转发只有 id：先拉平正文，再进 buffer / 主线，否则人设只看见 CQ:forward
+    try {
+      await expandForwardInPlace(e)
+    } catch (err) {
+      debugLog(`forward_expand_err ${err?.message || err}`)
     }
 
     await append(e, cfg)
@@ -96,14 +93,16 @@ async function handleMessage(e) {
         debugLog(`queue_err ${err.message}`)
       })
     sessionQueues.set(sid, current)
+    // 已接手：return true 吃掉这条，后面的插件不再处理。模型失败只在 runChat 里静默。
+    return true
   } catch (err) {
     logger.error(`[yoyo-chat] handle ${err.message}`)
     debugLog(`handle_err ${err.message}`)
+    return false
   }
 }
 
 async function runChat(e, cfg) {
-  // dealEvent 填充 atBot；若 Bot.on 早于 deal，补一次 hints 用字段
   if (e.atBot && !e.atme) e.atme = true
 
   const payload = buildChatPayload(e, cfg)
@@ -113,9 +112,16 @@ async function runChat(e, cfg) {
 
   if (!isChatServerRunning(cfg)) {
     debugLog('server_down')
-    if (active) await e.reply('悠悠还没启动，主人可以发 #启动悠悠~')
-    return
+    if (active) return
   }
+
+  const ingestPayload = {
+    group_id: String(payload.session?.group_id || e.group_id || ''),
+    message: payload.message,
+  }
+  void ingestMedia(ingestPayload, cfg).catch(err => {
+    debugLog(`ingest_err ${err.message}`)
+  })
 
   let body
   try {
@@ -123,8 +129,7 @@ async function runChat(e, cfg) {
   } catch (err) {
     logger.warn(`[yoyo-chat] 请求失败: ${err.message}`)
     debugLog(`api_err ${err.message}`)
-    if (active) await e.reply('刚才脑子短路了一下，稍后再找我~')
-    return
+    if (active)   return
   }
 
   const data = body?.data || {}
@@ -136,8 +141,13 @@ async function runChat(e, cfg) {
   sessionTurnGen.set(sid, turnGen)
 
   const busy = Array.isArray(data.busy?.tools) && data.busy.tools.length > 0
-  if (busy || data.reason === 'tool_started') {
-    startPendingPoller(e, cfg, sid)
+  if (
+    busy ||
+    data.reason === 'tool_started' ||
+    data.reason === 'hold' ||
+    data.reason === 'tool_running_listen'
+  ) {
+    startPendingPoller(e, cfg, sid, { fromHold: data.reason === 'hold' })
   }
 
   if (data.action === 'skip' || data.aborted) return
@@ -149,13 +159,16 @@ async function runChat(e, cfg) {
   })
 }
 
-function startPendingPoller(e, cfg, sid) {
+function startPendingPoller(e, cfg, sid, opts = {}) {
   if (pendingPollers.has(sid)) return
   let ticks = 0
+  let emptyAfterClear = 0
+  let sawBusy = false
+  const fromHold = !!opts.fromHold
   const timer = setInterval(() => {
     void (async () => {
       ticks++
-      if (ticks > 60) {
+      if (ticks > 120) {
         clearInterval(timer)
         pendingPollers.delete(sid)
         return
@@ -163,14 +176,23 @@ function startPendingPoller(e, cfg, sid) {
       try {
         const body = await fetchPending(sid, cfg)
         const data = body?.data
+        const stillBusy = Array.isArray(data?.busy?.tools) && data.busy.tools.length > 0
+        if (stillBusy) {
+          sawBusy = true
+          emptyAfterClear = 0
+        }
         if (!data || data.action === 'skip' || !data.replies?.length) {
-          // 仍 busy 则继续；否则多空几轮后停
-          if (!data?.busy?.tools?.length && ticks > 8) {
-            clearInterval(timer)
-            pendingPollers.delete(sid)
+          if (!stillBusy) {
+            emptyAfterClear++
+            const limit = sawBusy ? 25 : fromHold ? 50 : 8
+            if (emptyAfterClear > limit) {
+              clearInterval(timer)
+              pendingPollers.delete(sid)
+            }
           }
           return
         }
+        emptyAfterClear = 0
         const turnGen = Number(data.turn_gen) || 0
         sessionTurnGen.set(sid, turnGen)
         debugLog(`pending_outbox replies=${data.replies.length} reason=${data.reason}`)
@@ -178,7 +200,7 @@ function startPendingPoller(e, cfg, sid) {
           turnGen,
           getCurrentTurnGen: () => sessionTurnGen.get(sid),
         })
-        if (!data.busy?.tools?.length) {
+        if (!stillBusy) {
           clearInterval(timer)
           pendingPollers.delete(sid)
         }

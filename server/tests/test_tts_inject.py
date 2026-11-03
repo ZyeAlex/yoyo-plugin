@@ -2,7 +2,6 @@ import pytest
 
 from src.chat.mainline import MainlineManager
 from src.chat.schema import ChatHints, ChatRequest, SessionInfo
-from src.chat.tts.voice import save_default_voice
 from src.core.settings import Settings
 
 
@@ -29,7 +28,6 @@ def _req(group_name: str = "随便聊聊", group_id: str = "g1") -> ChatRequest:
 @pytest.mark.asyncio
 async def test_build_messages_injects_tts_when_ready(tmp_path, monkeypatch):
     monkeypatch.setattr("src.chat.tts.paths._SERVER_ROOT", tmp_path)
-    save_default_voice(b"x", filename="a.wav", prompt_text="hi")
     settings = Settings(
         chat_tts_base_url="http://tts/v1",
         chat_tts_api_key="k",
@@ -53,7 +51,6 @@ async def test_build_messages_injects_tts_when_ready(tmp_path, monkeypatch):
 @pytest.mark.asyncio
 async def test_build_messages_hides_tts_when_no_model(tmp_path, monkeypatch):
     monkeypatch.setattr("src.chat.tts.paths._SERVER_ROOT", tmp_path)
-    save_default_voice(b"x", filename="a.wav", prompt_text="hi")
     settings = Settings(
         chat_tts_base_url="http://tts/v1",
         chat_tts_api_key="k",

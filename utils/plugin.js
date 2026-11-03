@@ -1,5 +1,6 @@
 import setting from '#setting'
 import plugin from '../../../lib/plugins/plugin.js'
+
 function getPlugin(config) {
     const rules = []
     const funcs = []

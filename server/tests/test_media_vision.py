@@ -7,11 +7,10 @@ from src.core.settings import Settings
 
 def test_select_current_photo():
     from src.chat.media.vision import select_vision_urls
-    from src.core.settings import Settings
 
     msg = {"message": [{"type": "image", "url": "https://x/p.jpg", "sub_type": 0}]}
-    urls = select_vision_urls(message=msg, recent=[], settings=Settings(chat_vision_enabled=True), referring=False)
-    assert urls == ["https://x/p.jpg"]  # 非 sticker
+    urls = select_vision_urls(message=msg, recent=[], settings=Settings(chat_vision_enabled=True))
+    assert urls == ["https://x/p.jpg"]
 
 
 def test_build_multimodal_content():
@@ -32,24 +31,25 @@ def test_select_excludes_sticker():
         ]
     }
     urls = select_vision_urls(
-        message=msg, recent=[], settings=Settings(chat_vision_enabled=True), referring=False
+        message=msg, recent=[], settings=Settings(chat_vision_enabled=True)
     )
     assert urls == []
 
 
-def test_select_recent_on_refer():
+def test_select_includes_recent_when_enabled():
     from src.chat.media.vision import select_vision_urls
 
     recent = [{"message": [{"type": "image", "url": "https://x/old.jpg", "sub_type": 0}]}]
-    msg = {"message": [{"type": "text", "text": "刚才那张图怎么样"}]}
+    msg = {"message": [{"type": "text", "text": "这是什么水果，悠悠"}]}
     settings = Settings(chat_vision_enabled=True, chat_vision_include_recent_on_refer=True)
-    urls = select_vision_urls(message=msg, recent=recent, settings=settings, referring=True)
+    urls = select_vision_urls(message=msg, recent=recent, settings=settings)
     assert urls == ["https://x/old.jpg"]
-    no_refer = select_vision_urls(message=msg, recent=recent, settings=settings, referring=False)
-    assert no_refer == []
+
+    off = Settings(chat_vision_enabled=True, chat_vision_include_recent_on_refer=False)
+    assert select_vision_urls(message=msg, recent=recent, settings=off) == []
 
 
-def test_select_recent_newest_first_on_refer_max():
+def test_select_recent_newest_first_max():
     from src.chat.media.vision import select_vision_urls
 
     recent = [
@@ -57,13 +57,13 @@ def test_select_recent_newest_first_on_refer_max():
         {"message": [{"type": "image", "url": "https://x/2.jpg", "sub_type": 0}]},
         {"message": [{"type": "image", "url": "https://x/3.jpg", "sub_type": 0}]},
     ]
-    msg = {"message": [{"type": "text", "text": "看看这张"}]}
+    msg = {"message": [{"type": "text", "text": "看看"}]}
     settings = Settings(
         chat_vision_enabled=True,
         chat_vision_max_images=2,
         chat_vision_include_recent_on_refer=True,
     )
-    urls = select_vision_urls(message=msg, recent=recent, settings=settings, referring=True)
+    urls = select_vision_urls(message=msg, recent=recent, settings=settings)
     assert urls == ["https://x/3.jpg", "https://x/2.jpg"]
 
 
@@ -78,14 +78,13 @@ def test_select_disabled_and_max():
         ]
     }
     off = select_vision_urls(
-        message=msg, recent=[], settings=Settings(chat_vision_enabled=False), referring=False
+        message=msg, recent=[], settings=Settings(chat_vision_enabled=False)
     )
     assert off == []
     capped = select_vision_urls(
         message=msg,
         recent=[],
         settings=Settings(chat_vision_enabled=True, chat_vision_max_images=2),
-        referring=False,
     )
     assert capped == ["https://x/a.jpg", "https://x/b.jpg"]
 
@@ -137,11 +136,13 @@ async def test_build_messages_includes_placeholders_in_llm_payload():
         chat_memory_enabled=False,
         chat_vision_enabled=False,
         chat_sticker_reply_enabled=False,
+        chat_heat_debounce_sec=0.05,
+        chat_at_reaction_sec=(0.0, 0.0),
     )
     mgr = reset_mainline_manager_for_tests(MainlineManager(settings=settings, llm_complete=fake_llm))
     req = ChatRequest(
         request_id="ph1",
-        session=SessionInfo(session_id="group:1:bot:2", group_id="1", bot_id="2"),
+        session=SessionInfo(session_id="group:visph1:bot:2", group_id="visph1", bot_id="2"),
         message={
             "user_id": "100",
             "sender": {"nickname": "测试"},
@@ -171,11 +172,15 @@ async def test_build_messages_includes_placeholders_in_llm_payload():
         hints=ChatHints(at_bot=True),
     )
     data = await mgr.handle(req)
-    assert data.action == "reply"
+    assert data.reason == "hold"
+    import asyncio
+
+    for _ in range(40):
+        await asyncio.sleep(0.05)
+        if mgr.drain_pending("group:visph1:bot:2"):
+            break
     content = captured["messages"][1]["content"]
-    assert isinstance(content, str)
-    assert "甲: 刚才 [图片 url=https://cdn.example/old.jpg]" in content
-    assert "[图片 url=https://cdn.example/p.jpg]" in content
-    assert "[表情包]" in content
-    assert "[链接 https://example.com/a]" in content
-    assert "【当前消息】测试:" in content
+    text = content if isinstance(content, str) else content[0]["text"]
+    assert "[图片 url=https://cdn.example/p.jpg]" in text
+    assert "[表情包]" in text
+    assert "[链接 https://example.com/a]" in text

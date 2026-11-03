@@ -9,7 +9,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
-from src.chat.jobs import new_job_id, parse_size_spec, run_draw_job
+from src.chat.jobs import ensure_default_draw_style, new_job_id, parse_size_spec, run_draw_job
 from src.chat.tts import run_tts_job, tts_ready
 from src.chat.llm import LLMError, complete, parse_persona_json, parse_replies_json
 from src.chat.media.segments import (
@@ -18,14 +18,21 @@ from src.chat.media.segments import (
     render_media_placeholders,
 )
 from src.chat.media.sticker_store import default_store
-from src.chat.media.vision import build_user_content, is_referring, select_vision_urls
+from src.chat.media.vision import build_user_content, select_vision_urls
 from src.chat.memory.assembler import build_memory_context
 from src.chat.memory.extract import schedule_extract_memory
 from src.chat.memory.store import get_memory_store
 from src.chat.outbound import build_known_users, sanitize_outgoing
 from src.chat.group_scope import group_scope_note, is_xingyuan_group
 from src.chat.help_capabilities import capability_block
-from src.chat.persona import load_persona, load_plain_persona, load_xingyuan_persona
+from src.chat.persona import (
+    heat_mode_label,
+    load_heat_prompt,
+    load_persona,
+    load_plain_persona,
+    load_xingyuan_persona,
+    resolve_heat_mode,
+)
 from src.chat.schema import BusyInfo, BusyTool, ChatData, ChatRequest, ReplyBubble
 from src.chat.should_respond import decide, is_game_command
 from src.chat.trace import append_trace, shrink
@@ -52,12 +59,25 @@ from src.chat.temperature import (
     thread_addresses_bot,
     speak_gap_wait,
 )
+from src.chat.speakers import (
+    collect_cast,
+    display_nickname,
+    format_bot_line,
+    format_message_line,
+    format_speaker_head,
+    sender_qq,
+    sender_role,
+)
 from src.chat.transcript import (
     append_transcript,
+    bot_transcript_line,
+    cast_ids_from_transcript,
     format_now,
     load_transcript_lines,
     load_transcript_since_bot,
+    message_meta,
     render_cq_string,
+    stamp_line,
     transcript_line,
     unstamp_line,
     visible_text,
@@ -70,6 +90,10 @@ _REMEMBER_RE = re.compile(r"^(?:记住|记得)[:：]\s*(.+)$", re.S)
 _FORGET_RE = re.compile(r"^(?:忘记|忘掉)[:：]\s*(.+)$", re.S)
 _DOU_TU_RE = re.compile(r"斗图|来张|接一个|表情包|发个.*表情")
 _HARD_SPEAK_REASONS = frozenset({"at_bot", "wake_word", "reply_to_bot", "bot_name"})
+# 画画/改图进行中：不挡聊天，只用来拒绝再开一张。语音(tts)本来就可并行。
+_BLOCKING_JOB_MODES = frozenset({"edit", "generate"})
+# 非星原群里 @ 她发这些，直接空回，不叫模型编「别@我」。
+_OUTSIDER_CMD_RE = re.compile(r"(?:[#～~]\S+)|面板|图鉴|签到|抽卡|攻略|看角色|查图鉴|天赋")
 
 # server/src/chat/mainline.py → parents[2] is server/
 _SERVER_ROOT = Path(__file__).resolve().parents[2]
@@ -223,7 +247,9 @@ def format_shelf_prompt(items: list[ShelfItem]) -> str:
     lines.append(
         "以上是本轮可选表情包。"
         '要用就写 {"type":"sticker","id":"s1"}，id 必须是上面的；'
-        "不用就只回文字，别写 sticker，也别说已经发了图。"
+        "对方刷表情时优先只回一张 sticker 斗图（可不配字）；"
+        "不用就空着或只回文字，别写 sticker，也别说已经发了图；"
+        "禁止点评/嘲「发图不说话」「闷声发大财」之类。"
     )
     return "\n".join(lines)
 
@@ -336,15 +362,90 @@ def _chat_visible_text(message: dict[str, Any] | None) -> str:
     return (_message_text(message) or "").strip()
 
 
+def _user_wants_voice(text: str) -> bool:
+    """用户明确要听语音 / 发语音条。"""
+    t = (text or "").strip().lower()
+    if not t:
+        return False
+    keys = (
+        "语音",
+        "声音",
+        "发音",
+        "念一",
+        "念一句",
+        "读一",
+        "读出来",
+        "说一句",
+        "发一句语音",
+        "发语音",
+        "听听你",
+        "听你声音",
+        "voice",
+        "tts",
+    )
+    return any(k in t for k in keys)
+
+
+def _promote_text_to_tts(bubbles: list, *, max_chars: int) -> list:
+    """用户要语音但模型只回了 text 时，把首条短 text 提升为 tts。"""
+    out: list = []
+    spoken: str | None = None
+    limit = max(8, int(max_chars or 80))
+    for b in list(bubbles or []):
+        if (
+            spoken is None
+            and isinstance(b, dict)
+            and b.get("type") == "text"
+            and str(b.get("text") or "").strip()
+        ):
+            candidate = str(b.get("text") or "").strip()
+            if len(candidate) <= limit:
+                spoken = candidate
+                out.append({"type": "tts", "text": candidate})
+                continue
+        out.append(b)
+    if spoken:
+        out = [
+            b
+            for b in out
+            if not (
+                isinstance(b, dict)
+                and b.get("type") == "text"
+                and str(b.get("text") or "").strip() == spoken
+            )
+        ]
+    return out
+
+
 def _sender_label(message: dict[str, Any]) -> str:
-    sender = message.get("sender") or {}
-    if isinstance(sender, dict):
-        return str(sender.get("card") or sender.get("nickname") or message.get("user_id") or "?")
-    return str(message.get("user_id") or "?")
+    return format_speaker_head(
+        qq=sender_qq(message),
+        role=sender_role(message),
+        nickname=display_nickname(message),
+    )
 
 
 def _sender_id(message: dict[str, Any]) -> str:
-    return str(message.get("user_id") or "")
+    return sender_qq(message)
+
+
+def _bot_nickname(req: ChatRequest) -> str:
+    return str(getattr(req.session, "bot_nickname", None) or "悠悠").strip() or "悠悠"
+
+
+def _format_history_message_line(item: dict[str, Any]) -> str:
+    """近期消息 → `[时间] QQ 身份 昵称: 正文`。"""
+    if not isinstance(item, dict):
+        return ""
+    line = transcript_line(item)
+    if not line:
+        plain = visible_text(item) or str(item.get("raw_message") or "")
+        if "[CQ:" in plain:
+            plain = render_cq_string(plain)
+        if not plain:
+            return ""
+        line = format_message_line(item, plain)
+    return stamp_line(line, item.get("time"))
 
 
 def _recent_speakers(ml: "GroupMainline", req: ChatRequest) -> list[str]:
@@ -457,6 +558,14 @@ class GroupMainline:
     def running_jobs(self) -> list[dict[str, Any]]:
         return [j for j in self.jobs if j.get("status") == "running"]
 
+    def blocking_jobs(self) -> list[dict[str, Any]]:
+        """进行中的画画/改图。不挡别的话，只拒绝叠开第二张。"""
+        return [
+            j
+            for j in self.running_jobs()
+            if str(j.get("mode") or "") in _BLOCKING_JOB_MODES
+        ]
+
     def busy_info(self) -> BusyInfo | None:
         jobs = self.running_jobs()
         tools = [
@@ -465,6 +574,14 @@ class GroupMainline:
         ]
         if self.awaiting_outbox:
             tools.append(BusyTool(id="deliver", name="收尾发送", status="running"))
+        # hold 防抖 / 人设推理中尚无 job：插件仍须轮询，否则静默 TTS 写完 outbox 时已停
+        speak = self.speak_task or self.engage_task
+        if speak is not None and not speak.done():
+            tools.append(BusyTool(id="speak", name="准备开口", status="running"))
+        elif self.phase == "thinking" or (
+            self.in_flight_task is not None and not self.in_flight_task.done()
+        ):
+            tools.append(BusyTool(id="think", name="思考中", status="running"))
         if not tools:
             return None
         return BusyInfo(tools=tools)
@@ -489,6 +606,8 @@ class GroupMainline:
 
 class MainlineManager:
     def __init__(self, settings: Settings | None = None, llm_complete=None, sticker_store=None):
+        # 显式传入 settings（测试）时不在 handle 里被 yaml 热加载冲掉
+        self._settings_pinned = settings is not None
         self.settings = settings or get_settings()
         self._sessions: dict[str, GroupMainline] = {}
         self._llm_complete = llm_complete or complete
@@ -561,27 +680,67 @@ class MainlineManager:
             return
         try:
             line = transcript_line(req.message)
-            if line:
-                append_transcript(gid, line)
+            if not line:
+                return
+            meta = message_meta(req.message)
+            append_transcript(
+                gid,
+                line,
+                user_id=str(meta.get("user_id") or ""),
+                nickname=str(meta.get("nickname") or ""),
+                role=str(meta.get("role") or ""),
+                is_bot=False,
+                when=(req.message or {}).get("time") if isinstance(req.message, dict) else None,
+            )
+            # 用 Yunzai 传来的昵称回写画像，保持稳定
+            uid = str(meta.get("user_id") or "")
+            nick = str(meta.get("nickname") or "")
+            if uid and nick and self.settings.chat_memory_enabled:
+                try:
+                    get_memory_store().update_user(gid, uid, {"nickname": nick})
+                except Exception as err:
+                    _logger.debug("touch nickname failed: %s", err)
         except Exception as err:
             _logger.warning("transcript append failed: %s", err)
 
-    def _archive_bot(self, group_id: str, replies: list[ReplyBubble]) -> None:
+    def _archive_bot(
+        self,
+        group_id: str,
+        replies: list[ReplyBubble],
+        *,
+        bot_id: str = "",
+        bot_nickname: str = "悠悠",
+    ) -> None:
         if not group_id:
             return
         # 多气泡各自一行，和群里延时分开发一致；禁止拼成「A / B」
+        nick = (bot_nickname or "悠悠").strip() or "悠悠"
+        bid = str(bot_id or "").strip()
         lines: list[str] = []
         for r in replies:
             if r.type == "text" and r.text and r.text.strip():
-                lines.append(f"悠悠: {r.text.strip()}")
+                lines.append(
+                    bot_transcript_line(r.text.strip(), bot_id=bid, bot_nickname=nick)
+                )
             elif r.type == "image":
                 desc = (r.sticker_desc or "").strip() or "表情"
-                lines.append(f"悠悠: [表情包 {desc}]")
+                lines.append(
+                    bot_transcript_line(
+                        f"[表情包 {desc}]", bot_id=bid, bot_nickname=nick
+                    )
+                )
         if not lines:
             return
         try:
             for line in lines:
-                append_transcript(group_id, line)
+                append_transcript(
+                    group_id,
+                    line,
+                    user_id=bid,
+                    nickname=nick,
+                    role="member",
+                    is_bot=True,
+                )
         except Exception as err:
             _logger.warning("transcript bot append failed: %s", err)
 
@@ -661,7 +820,16 @@ class MainlineManager:
         return enter_dwelling(state, now, **self._dwell_bounds())
 
     def _busy(self, ml: GroupMainline) -> bool:
-        return ml.phase in {"thinking", "tool_running"} or ml.awaiting_outbox
+        """人设推理或收尾发送占线。后台画画/语音不挡下一句。"""
+        if ml.awaiting_outbox or ml.phase == "thinking":
+            return True
+        task = ml.in_flight_task
+        if task is not None and not task.done():
+            return True
+        speak = ml.speak_task or ml.engage_task
+        if speak is not None and not speak.done():
+            return True
+        return False
 
     def _arm_glance_timer(self, ml: GroupMainline, group_id: str) -> None:
         """away：进场节拍；dwelling：到期退出。"""
@@ -936,12 +1104,16 @@ class MainlineManager:
             self._save_group_heat(req, state)
             return finish("skip", "glance_wait")
 
-        # away 到期 → 进 dwelling（消息路径必有人说话，不做 cold_skip）
-        if not is_dwelling(state):
-            self._enter_dwell(state, now)
-            kind = "dwell_enter"
+        # 已在 dwelling（热）：跳过快判，交给人设自己决定接不接（可空 replies）
+        if is_dwelling(state):
+            kind = "dwell_persona"
+            self._save_group_heat(req, state)
+            self._arm_glance_timer(ml, self._group_of(req))
+            return finish("reply", "heat_reply", judge="persona")
 
-        kind = "dwell_judge" if kind != "dwell_enter" else "dwell_enter"
+        # away 到期 → 进 dwelling；冷/温进场仍用快判门闩
+        self._enter_dwell(state, now)
+        kind = "dwell_enter"
         judged = await self._judge(req, ml)
         if judged == "reply":
             # 快判要开口就进人设；节奏交给 glance 间隔、防抖，以及两次决定之间的开口底线
@@ -975,8 +1147,9 @@ class MainlineManager:
             "reply：有人@/点名悠悠；话是说给你的（追问、要你补充、在等你答）；"
             "刚被点名的提问还没答上（别被中间表情/路人图带偏）；"
             "或插一句会明显加分的开放求助/好玩话题。\n"
-            "silent：纯刷表情/图；别人互聊与你无关；围观吐槽机器人/模型；"
-            "已经接过一轮还在空吵「是不是机器人」——别跟着吵。\n"
+            "silent：纯刷路人图；不想斗的表情刷屏；别人互聊与你无关；围观吐槽机器人/模型；"
+            "已经接过一轮还在空吵「是不是机器人」——别跟着吵。"
+            "（若仍 reply：只能斗图接表情，禁止用嘴点评「发图不说话」。）\n"
             "克制（不是禁言）：若悠悠刚说过话，先想「这轮还轮到我吗」——"
             "有人在等你续答/追问你/需要你补一句 → reply；"
             "话题已落地、只是闲扯或别人接话了 → silent。克制=少抢话，不是有问也不回。\n"
@@ -1116,9 +1289,23 @@ class MainlineManager:
         )
 
     async def handle(self, req: ChatRequest) -> ChatData:
+        # 面板改 TTS / 联网等配置后按 yaml mtime 热加载；测试钉死的 settings 跳过
+        if not self._settings_pinned:
+            self.settings = get_settings()
         ml = self.get(req.session.session_id, group_id=req.session.group_id)
-        self._archive_user(req)
         text = _chat_visible_text(req.message)
+        # 游戏/插件指令：不进 transcript / 热度 / 人设（正常应由 Yunzai rule 先吃掉）
+        if is_game_command(text):
+            return ChatData(action="skip", reason="game_command", turn_gen=ml.turn_gen)
+        # 非星原群：别人 @ / 回复她发指令，不进模型，空回。
+        if (
+            not is_xingyuan_group(req.session.group_name)
+            and (req.hints.at_bot or req.hints.reply_to_bot)
+            and _OUTSIDER_CMD_RE.search(text or "")
+        ):
+            return ChatData(action="skip", reason="outsider_command", turn_gen=ml.turn_gen)
+
+        self._archive_user(req)
         active = self._is_active_initiate(req)
         # 纯表情/纯图不再一刀切 skip；是否开口交给热度 / decide
 
@@ -1126,53 +1313,6 @@ class MainlineManager:
         mem_cmd = self._try_memory_command(req, text)
         if mem_cmd is not None:
             return mem_cmd
-
-        async with ml.lock:
-            # 工具进行中 + 主动发起 → 记 pending + ack_busy（不取消 job）
-            if active and ml.running_jobs():
-                ml.phase = "tool_running"
-                turn = ml.bump()
-                user_ev = {
-                    "type": "user",
-                    "user": _sender_label(req.message),
-                    "user_id": _sender_id(req.message),
-                    "text": text,
-                    "active": True,
-                }
-                ml.append_timeline(user_ev, self.settings.timeline_limit)
-                ml.pending_users.append(user_ev)
-                names = "、".join(j["name"] for j in ml.running_jobs())
-                bubble = ReplyBubble(
-                    type="text",
-                    text=f"别急别急，我正在{names}呢，你先等等~",
-                )
-                ml.note_bot_reply()
-                return ChatData(
-                    action="ack_busy",
-                    reason="tool_running",
-                    turn_gen=turn,
-                    busy=ml.busy_info(),
-                    replies=[bubble],
-                )
-
-            # 工具进行中 + 非主动：只记账，不说话（仍可后续被主线用）
-            if ml.running_jobs() and not active:
-                ml.append_timeline(
-                    {
-                        "type": "user",
-                        "user": _sender_label(req.message),
-                        "user_id": _sender_id(req.message),
-                        "text": text,
-                        "active": False,
-                    },
-                    self.settings.timeline_limit,
-                )
-                return ChatData(
-                    action="skip",
-                    reason="tool_running_listen",
-                    turn_gen=ml.turn_gen,
-                    busy=ml.busy_info(),
-                )
 
         action, reason = await self._choose_action(req, ml, text)
 
@@ -1228,12 +1368,11 @@ class MainlineManager:
             )
 
     def _draw_sources(self, req: ChatRequest) -> list[str]:
-        """本条普通图优先；指代时再补 recent。表情包不进编辑参考。"""
+        """本条普通图优先；开启近期图时再补 recent。表情包不进编辑参考。"""
         urls = select_vision_urls(
             message=req.message,
             recent=list(req.recent or []),
             settings=self.settings,
-            referring=is_referring(_chat_visible_text(req.message)),
         )
         # 即使 vision 关着，画画仍可用本条 photo url
         if urls:
@@ -1259,7 +1398,9 @@ class MainlineManager:
         """由 agent JSON {"type":"draw"} 触发；有参考图则改图，否则文生图。"""
         refs = sources if sources is not None else self._draw_sources(req)
         is_edit = bool(refs)
-        draw_prompt = (prompt or text or "").strip() or (text or "cute illustration")
+        draw_prompt = ensure_default_draw_style(
+            (prompt or text or "").strip() or (text or "cute illustration")
+        )
         job_id = new_job_id()
         job = {
             "id": job_id,
@@ -1864,16 +2005,7 @@ class MainlineManager:
                 recent=list(req.recent or []),
             )
             messages = await self._build_messages(req, ml, text, shelf_items=shelf_items)
-            use_vision = any(
-                isinstance(m.get("content"), list)
-                and any(
-                    isinstance(p, dict) and p.get("type") == "image_url"
-                    for p in (m.get("content") or [])
-                )
-                for m in messages
-                if isinstance(m, dict)
-            )
-            call_settings = self.settings.profile("vision" if use_vision else "text")
+            call_settings = self.settings
             raw = await self._llm_complete(messages, call_settings, abort_event=abort_event)
             self._write_trace(
                 req,
@@ -1910,10 +2042,17 @@ class MainlineManager:
                     in {"lookup", "expand", "web_search", "web_fetch", "look"}
                 )
             ]
+            gid = req.session.group_id or _group_id_from_session(req.session.session_id)
+            max_tts_chars = int(getattr(self.settings, "chat_tts_max_chars", 80) or 80)
+            if (
+                tts_ready(self.settings, group_id=gid)
+                and _user_wants_voice(text)
+                and not any(isinstance(b, dict) and b.get("type") == "tts" for b in bubbles)
+            ):
+                bubbles = _promote_text_to_tts(bubbles, max_chars=max_tts_chars)
             tts_req = next((b for b in bubbles if isinstance(b, dict) and b.get("type") == "tts"), None)
             if tts_req:
                 spoken = str(tts_req.get("text") or "").strip()
-                gid = req.session.group_id or _group_id_from_session(req.session.session_id)
                 if spoken and tts_ready(self.settings, group_id=gid):
                     speed = tts_req.get("speed")
                     try:
@@ -1936,7 +2075,11 @@ class MainlineManager:
                 ]
 
             draw_req = next((b for b in bubbles if isinstance(b, dict) and b.get("type") == "draw"), None)
-            if draw_req and self.settings.tools_enabled:
+            if draw_req and self.settings.tools_enabled and ml.blocking_jobs():
+                # 上一张还在画：丢掉这张，不启动 job。别的气泡也不沿用，避免答应了却没画。
+                self._write_trace(req, {"event": "draw_skipped", "reason": "already_running"})
+                bubbles = [{"type": "text", "text": "上一张还在画，这张先不叠"}]
+            elif draw_req and self.settings.tools_enabled:
                 try:
                     ack = ""
                     for b in bubbles:
@@ -2033,7 +2176,12 @@ class MainlineManager:
             ml.note_bot_reply()
             self._apply_heat_engagement(req, ml, engagement, reason=reason)
             self._persist_and_extract(req, text, replies)
-            self._archive_bot(self._group_of(req), replies)
+            self._archive_bot(
+                self._group_of(req),
+                replies,
+                bot_id=str(req.session.bot_id or ""),
+                bot_nickname=_bot_nickname(req),
+            )
             self._write_trace(
                 req,
                 {
@@ -2047,13 +2195,6 @@ class MainlineManager:
             if "aborted" in str(err).lower() or abort_event.is_set():
                 return ChatData(action="skip", reason="aborted", turn_gen=turn, aborted=True)
             _logger.warning("llm failed: %s", err)
-            if self._is_active_initiate(req) or reason in {"heat_reply", "bot_name"}:
-                return ChatData(
-                    action="reply",
-                    reason="llm_error",
-                    turn_gen=turn,
-                    replies=[ReplyBubble(type="text", text="刚才脑子短路了一下，稍后再找我~")],
-                )
             return ChatData(action="skip", reason="llm_error", turn_gen=turn)
 
     def _scrub_mentions(
@@ -2128,6 +2269,22 @@ class MainlineManager:
     ) -> list[dict[str, Any]]:
         persona = load_persona()
         group_id = req.session.group_id or _group_id_from_session(req.session.session_id)
+        bot_id = str(req.session.bot_id or "").strip()
+        bot_nick = _bot_nickname(req)
+        disk_cast_ids: list[str] = []
+        if group_id:
+            try:
+                disk_cast_ids = cast_ids_from_transcript(group_id)
+            except Exception:
+                disk_cast_ids = []
+        cast = collect_cast(
+            message=req.message if isinstance(req.message, dict) else None,
+            recent=list(req.recent or []),
+            bot_id=bot_id,
+            bot_nickname=bot_nick,
+            extra_user_ids=disk_cast_ids,
+            max_cast=8,
+        )
         mem_extra = ""
         if self.settings.chat_memory_enabled and group_id:
             try:
@@ -2136,6 +2293,7 @@ class MainlineManager:
                     group_id=group_id,
                     user_id=_sender_id(req.message),
                     message_text=text,
+                    cast=cast,
                 )
                 mem_extra = inject.system_extra
             except Exception as e:
@@ -2153,7 +2311,51 @@ class MainlineManager:
             except Exception as err:
                 _logger.warning("help capabilities failed: %s", err)
 
-        system = persona
+        # 优先级：看群/开口说明必须在 system 最前 → 人设语气 → 工具 → 记忆垫底
+        heat_extra = ""
+        heat_mode = ""
+        if self.settings.chat_heat_enabled:
+            try:
+                heat = self._ensure_heat(ml, req)
+                mode = resolve_heat_mode(heat)
+                heat_mode = mode
+                heat_block = load_heat_prompt(mode)
+                uid = _sender_id(req.message)
+                partner = str(heat.partner_id or "").strip()
+                known = build_known_users(
+                    message=req.message if isinstance(req.message, dict) else None,
+                    recent=list(req.recent or []),
+                    focus_user_ids=[partner] if partner else None,
+                )
+                qq_to_nick: dict[str, str] = {}
+                for nick, qq in known.items():
+                    if nick == qq:
+                        continue
+                    qq_to_nick.setdefault(qq, nick)
+                cur_nick = qq_to_nick.get(uid or "", "")
+                cur = f"{cur_nick}({uid})" if cur_nick and uid else (uid or "未知")
+                if mode == "hot":
+                    header = (
+                        f"【本轮】你刚看了一眼群。这句是 {cur} 说的，"
+                        "不代表他在跟你说话。\n"
+                        "默认不要填 mention。若确需 @，mention 只能填括号里的纯数字 QQ。"
+                    )
+                else:
+                    header = (
+                        f"【开口判定｜本轮】模式={heat_mode_label(mode)}；相关发送者：{cur}。"
+                        "「相关发送者」=谁触发本轮，**不是**在跟你说话的证明。"
+                        "拿不准就空 `replies`。\n"
+                        "默认不要填 mention。若确需 @，mention 只能填括号里的纯数字 QQ。"
+                    )
+                # 开口判定全文置顶；heat_block 内仍有完整判断法
+                heat_extra = f"{heat_block}\n\n{header}" if heat_block else header
+            except Exception as err:
+                _logger.warning("focus inject failed: %s", err)
+        if heat_extra:
+            system = f"{heat_extra}\n\n{persona}"
+        else:
+            system = persona
+
         if caps:
             system = f"{system}\n\n{caps}"
         if xingyuan and getattr(self.settings, "chat_game_kb_enabled", True):
@@ -2195,9 +2397,9 @@ class MainlineManager:
                 "replies 里声明 web_search。"
                 f"{atlas_line}\n"
                 '- 搜索：{"type":"web_search","q":"检索词","intent":"general|tech|academic|finance|social|privacy"}\n'
-                '- 打开某条结果正文：{"type":"web_fetch","url":"上一步结果里的真实链接"}\n'
-                "- 搜索只返回标题、摘要和链接，不抓正文。无结果或失败就说没搜到，禁止编造 URL。\n"
-                "- 有【工具结果】再用 text 短句回答；链接必须来自结果，不要凭记忆补。"
+                "- 搜索走 Bing；成功后系统会自动抓取第一条结果正文，一并给你。\n"
+                '- 若要打开其它结果：{"type":"web_fetch","url":"结果里的真实链接"}\n'
+                "- 无结果或失败就说没搜到，禁止编造 URL；回答只用【工具结果】里的事实和链接。"
             )
         if xingyuan and getattr(self.settings, "chat_hero_look_enabled", True):
             system = (
@@ -2216,19 +2418,29 @@ class MainlineManager:
                 '{"type":"draw","prompt":"画面或修改说明","size":"可选宽x高如1920x1080"}；'
                 "也可写 width/height。"
                 + ("按 look 长相时加 \"use_ref\":true。" if xingyuan else "")
-                + "默认竖屏手机比例；用户明确说横图/方图/具体分辨率时再填 size。"
+                + "prompt 写清场景与主体；用户指定了画风就写进 prompt，未指定时系统会默认补「日系二次元」。"
+                "默认竖屏手机比例；用户明确说横图/方图/具体分辨率时再填 size。"
                 "改图不填 size 时按原图宽高。可同时有一句短 text 作应答。"
                 "当前消息带普通图时会按参考图编辑，否则文生图"
                 + ("（或 use_ref 挂 look 立绘）" if xingyuan else "")
                 + "。"
                 "不要假装已经画好或已发出图片；工具异步完成后系统会再让你收尾。"
+                "已经有一张在画时不要再声明 draw；别人说别的事照常接，不要回「正在改图你先等等」。"
             )
         gid_tts = req.session.group_id or _group_id_from_session(req.session.session_id)
         if tts_ready(self.settings, group_id=gid_tts):
             max_c = int(getattr(self.settings, "chat_tts_max_chars", 80) or 80)
+            want_voice = _user_wants_voice(text)
+            must = (
+                "- **本轮用户在要语音**：replies 里必须有一条 "
+                '{"type":"tts","text":"短句"}，不要只用 text 敷衍。\n'
+                if want_voice
+                else ""
+            )
             system = (
                 f"{system}\n\n"
                 "【语音工具｜本轮可声明】\n"
+                f"{must}"
                 "- 想发 QQ 语音条时，在 replies 里加 "
                 '{"type":"tts","text":"要念的短句","speed":1.0,"style":"可选情绪"}。\n'
                 f"- text 必填，尽量短（上限约 {max_c} 字）；speed/style 可选。\n"
@@ -2236,63 +2448,41 @@ class MainlineManager:
                 "- 长解释、列表、指令引导用 text；语音留给短句、情绪、强调。"
             )
         if mem_extra:
-            system = f"{system}\n\n{mem_extra}"
-
-        if self.settings.chat_heat_enabled:
-            try:
-                heat = self._ensure_heat(ml, req)
-                sess = "dwelling" if str(heat.session or "") == "dwelling" else "away"
-                uid = _sender_id(req.message)
-                partner = str(heat.partner_id or "").strip()
-                known = build_known_users(
-                    message=req.message if isinstance(req.message, dict) else None,
-                    recent=list(req.recent or []),
-                    focus_user_ids=[partner] if partner else None,
-                )
-                qq_to_nick: dict[str, str] = {}
-                for nick, qq in known.items():
-                    if nick == qq:
-                        continue
-                    qq_to_nick.setdefault(qq, nick)
-                cur_nick = qq_to_nick.get(uid or "", "")
-                cur = f"{cur_nick}({uid})" if cur_nick and uid else (uid or "未知")
-                system = (
-                    f"{system}\n\n"
-                    f"【看群状态】session={sess}；本轮触发相关发送者：{cur}。\n"
-                    "你在刷群/驻留时开口，不是私聊接龙，也不是每条都要接："
-                    "多数时候旁听就好；只对真正需要你的那句/话题开口。"
-                    "别人互聊、起哄、刷表情时用空 replies:[]，别句句插嘴嘲讽。\n"
-                    "若近期有人 @你 提问还没答上，优先答问，别被表情/路人图带跑。\n"
-                    "engagement：hold 继续待着，down 兴趣下降少说话，leave 不想再听。\n"
-                    "默认不要填 mention。若确需 @，mention 只能填括号里的纯数字 QQ，禁止填昵称。"
-                )
-            except Exception as err:
-                _logger.warning("focus inject failed: %s", err)
+            system = (
+                f"{system}\n\n"
+                "【记忆与日誌｜仅背景，优先级低于开口纪律】\n"
+                "不要被旧记忆带跑；说不说仍以【看群状态】为准。\n"
+                f"{mem_extra}"
+            )
 
         disk_lines: list[str] = []
         if group_id:
             try:
                 # 人设上下文：优先「上次开口之后」未读，避免长时间 away 后失忆
-                disk_lines = load_transcript_since_bot(group_id, with_time=True)
+                disk_lines = load_transcript_since_bot(
+                    group_id,
+                    with_time=True,
+                    bot_id=bot_id,
+                    bot_nickname=bot_nick,
+                )
             except Exception as err:
                 _logger.warning("transcript load failed: %s", err)
         recent_lines: list[str] = []
         for item in (req.recent or [])[-20:]:
             if not isinstance(item, dict):
                 continue
-            u = ""
-            sender = item.get("sender") or {}
-            if isinstance(sender, dict):
-                u = str(sender.get("card") or sender.get("nickname") or item.get("user_id") or "")
-            plain = visible_text(item)
-            if not plain:
-                plain = str(item.get("raw_message") or _message_text(item) or "")
-            if "[CQ:" in plain:
-                plain = render_cq_string(plain)
-            body = _with_media_placeholders(item, plain)
-            if body:
-                recent_lines.append(f"{u}: {body}")
+            line = _format_history_message_line(item)
+            if line:
+                recent_lines.append(line)
         current_line = transcript_line(req.message)
+        current_stamped = (
+            stamp_line(
+                current_line,
+                (req.message or {}).get("time") if isinstance(req.message, dict) else None,
+            )
+            if current_line
+            else ""
+        )
         merged: list[str] = []
         seen: set[str] = set()
         for line in disk_lines + recent_lines:
@@ -2307,35 +2497,73 @@ class MainlineManager:
         for ev in ml.timeline[-20:]:
             typ = ev.get("type")
             if typ == "user":
-                timeline_lines.append(f"{ev.get('user')}: {ev.get('text')}")
+                # timeline 可能已是新署名，也可能是旧昵称
+                who = str(ev.get("user") or "").strip() or "?"
+                timeline_lines.append(f"{who}: {ev.get('text')}")
             elif typ == "bot":
                 for r in ev.get("replies") or []:
                     if not isinstance(r, dict):
                         continue
                     if r.get("text"):
-                        timeline_lines.append(f"悠悠: {r['text']}")
+                        timeline_lines.append(
+                            format_bot_line(
+                                str(r["text"]),
+                                bot_id=bot_id,
+                                bot_nickname=bot_nick,
+                            )
+                        )
                     elif r.get("type") == "image":
                         desc = str(r.get("sticker_desc") or "").strip() or "表情"
-                        timeline_lines.append(f"悠悠: [表情包 {desc}]")
+                        timeline_lines.append(
+                            format_bot_line(
+                                f"[表情包 {desc}]",
+                                bot_id=bot_id,
+                                bot_nickname=bot_nick,
+                            )
+                        )
             elif typ == "tool_started":
                 timeline_lines.append(f"[工具开始] {ev.get('name')}")
             elif typ == "tool_done":
                 timeline_lines.append(f"[工具完成] {ev.get('name')}")
 
-        jobs = ml.running_jobs()
-        busy = "、".join(j["name"] for j in jobs) if jobs else "无"
+        blocking = ml.blocking_jobs()
+        tts_n = sum(1 for j in ml.running_jobs() if str(j.get("mode") or "") == "tts")
+        if blocking:
+            busy = "、".join(str(j["name"]) for j in blocking) + "（后台进行，可以接着聊天办事；不要再声明第二张 draw）"
+        elif tts_n:
+            busy = f"语音×{tts_n}（不占线，可继续聊/可再发语音）"
+        else:
+            busy = "无"
 
+        self_head = format_speaker_head(qq=bot_id or "?", role="member", nickname=bot_nick)
         user_payload = (
             f"【现在】{format_now()}\n"
-            "【近期群聊】\n"
+            f"【自己】{self_head}\n"
+            "【近期群聊】每行格式：`[时间] QQ 身份 昵称: 正文`（身份=群主/管理/群成员）\n"
             + ("\n".join(recent_lines) or "（无）")
             + "\n\n【主线摘要】\n"
             + ("\n".join(timeline_lines) or "（无）")
             + f"\n\n【进行中工具】{busy}\n"
             + f"【本轮合并输入】{_sender_label(req.message)} 相关：{_with_media_placeholders(req.message, text)}\n"
-            + "（时间看群：以上是触发本轮时的相关输入+近况，不是命令你必须回「最后一个人」。"
-            "看整段决定对谁、对哪个话题开口；有未答的@提问优先答。）\n"
-            + "请按 persona 用 JSON replies 回复：默认只 1 条短句，勿刷屏。"
+            + (f"（本轮时间戳行）{current_stamped}\n" if current_stamped else "")
+            + (
+                "【本轮指向】"
+                f"@你={'是' if req.hints.at_bot else '否'}；"
+                f"回复你={'是' if req.hints.reply_to_bot else '否'}；"
+                f"唤醒词={'是' if req.hints.wake_word else '否'}。\n"
+                + (
+                    "【你在干嘛】你刚看了一眼群。上面三个标记只说明这句怎么点到你，不是必须开口。\n"
+                    "说不说按看群状态：可以顺着刚参与的对话往下说，不一定是追问，话也不必关于你本人；"
+                    "自己在历史里几乎没开口、话题你感兴趣、插一句又不打扰别人，也可以主动插。"
+                    "已经插过且没人接，就别再插。拿不准就看着，`replies` 为空。\n"
+                    if heat_mode == "hot"
+                    else
+                    "【开口二元】三者有一个「是」，或正文明确在给你下指令/短窗追问你 "
+                    "→ 该回（至少 1 条 text/sticker，禁止空 replies）；"
+                    "否则不该回 → {\"engagement\":\"hold\",\"replies\":[]}。"
+                    "不要因为群热闹或相关发送者有人就接话。\n"
+                )
+            )
         )
         if shelf_items:
             user_payload += format_shelf_prompt(list(shelf_items))
@@ -2343,7 +2571,6 @@ class MainlineManager:
             message=req.message,
             recent=list(req.recent or []),
             settings=self.settings,
-            referring=is_referring(text),
         )
         system = f"{system}\n\n{group_scope_note(req.session.group_name)}"
         if not xingyuan:

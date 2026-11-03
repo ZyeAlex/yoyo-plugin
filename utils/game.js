@@ -250,6 +250,16 @@ class Game {
     }
     return this.heros
   }
+  _writeHeroImgsIndex() {
+    // Chat Brain look 工具：Python 只读此索引，不复刻 getHeroId
+    try {
+      const indexPath = path.join(setting.path, 'data/cache/hero_imgs.json')
+      fs.mkdirSync(path.dirname(indexPath), { recursive: true })
+      fs.writeFileSync(indexPath, JSON.stringify(this.heroImgs || {}), 'utf8')
+    } catch (e) {
+      logger?.warn?.(`[yoyo-plugin][game] write hero_imgs index failed: ${e}`)
+    }
+  }
   async getHeroImgs() {
     this.heroImgs = {}
     if (!fs.existsSync(path.join(setting.path, '/resources/img/hero'))) {
@@ -275,6 +285,7 @@ class Game {
         }
       })
     })
+    this._writeHeroImgsIndex()
   }
   async syncIdMapCatalog(mode, { catalogType, targetKey, idsKey, storagePath, postProcess }) {
     const cacheMissing = !this.dataFileExists(storagePath)
@@ -538,6 +549,7 @@ class Game {
         str += `❌图片上传失败：${err.message}\n`
       }
     }
+    this._writeHeroImgsIndex()
     str += `成功上传${imgCount}张${this.heros[heroId].name}图片`
     return str
   }
@@ -548,6 +560,7 @@ class Game {
         this.heroImgs[heroId] = this.heroImgs[heroId].filter(file => file !== imgFile)
       }
     })
+    this._writeHeroImgsIndex()
     return true
   }
 }

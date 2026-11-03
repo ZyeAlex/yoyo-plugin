@@ -1,4 +1,4 @@
-from src.chat.should_respond import decide, is_draw_intent, is_game_command
+from src.chat.should_respond import decide, is_game_command
 
 
 def test_decide_at_bot_with_empty_text_still_replies():
@@ -33,12 +33,29 @@ def test_plain_skip():
 
 
 def test_game_command_skip():
+    from src.chat.help_capabilities import capability_block, reset_help_cache_for_tests
+
+    reset_help_cache_for_tests()
+    # config.yaml rulePrefix[0] 当前是 ~
+    assert is_game_command("~角色图鉴")
     assert is_game_command("#角色图鉴")
+    assert is_game_command("~签到")
+    assert is_game_command("#签到")
+    assert is_game_command("~芙宁娜图鉴")
     assert not is_game_command("[图片]")
     assert not is_game_command("")
-    action, reason = decide(hints_at_bot=True, text="#角色图鉴")
+    assert not is_game_command("晚上吃什么好呢？")
+    action, reason = decide(hints_at_bot=True, text="~角色图鉴")
     assert action == "skip"
     assert reason == "game_command"
+
+    caps = capability_block()
+    assert "~角色图鉴" in caps
+    assert "#角色图鉴" not in caps
+    assert "不需要 @你" in caps or "不需要 @悠悠" in caps
+    assert "指令前缀是「~」" in caps
+    assert "少个~" in caps
+    assert "不要当老师" in caps
 
 
 def test_bot_name_in_text():
@@ -47,30 +64,14 @@ def test_bot_name_in_text():
     assert reason == "bot_name"
 
 
-def test_proactive_question():
-    action, reason = decide(text="晚上吃什么好呢？", proactive_enabled=True, last_bot_reply_at=0)
-    assert action == "reply"
-    assert reason == "proactive_question"
-
-
-def test_proactive_cooldown():
-    now = 1000.0
-    action, reason = decide(
-        text="在吗",
-        proactive_enabled=True,
-        last_bot_reply_at=990.0,
-        proactive_cooldown_sec=45,
-        now=now,
-    )
+def test_question_no_longer_proactive():
+    """问句不再靠启发式立刻开口，交给热度攒批。"""
+    action, reason = decide(text="晚上吃什么好呢？")
     assert action == "skip"
-    assert reason == "proactive_cooldown"
+    assert reason == "no_trigger"
 
 
-def test_proactive_disabled():
-    action, reason = decide(text="晚上好", proactive_enabled=False)
+def test_greeting_no_longer_proactive():
+    action, reason = decide(text="晚上好")
     assert action == "skip"
-
-
-def test_draw_intent():
-    assert is_draw_intent("帮我画一只猫")
-    assert not is_draw_intent("今天天气真好")
+    assert reason == "no_trigger"

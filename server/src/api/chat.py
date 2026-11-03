@@ -38,7 +38,7 @@ async def chat_pending(session_id: str = Query(..., min_length=3)) -> ChatRespon
             action="skip",
             reason="empty",
             turn_gen=ml.turn_gen,
-            busy=busy if busy.tools else None,
+            busy=busy if (busy and busy.tools) else None,
         )
     return ChatResponse(code=0, message="ok", data=data)
 

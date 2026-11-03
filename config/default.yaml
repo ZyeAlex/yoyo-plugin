@@ -57,25 +57,21 @@ chatBackoffRetrySec: [90, 300, 900, 1800, 3600]
 chatBackoffAttentionFactor: 0.5
 chatToolsEnabled: true
 chatDrawMockDelaySec: 3
-# 文本模型
+# 大模型：文字回复、看图、表情包打标共用
 chatLlmApiKey: ""
 chatLlmBaseUrl: ""
 chatLlmModel: deepseek-ai/DeepSeek-V4-Flash
-# 多模态（看图 / 表情包打标）；空=跟文本模型
-chatVisionBaseUrl: ""
-chatVisionApiKey: ""
-chatVisionModel: ""
 # 图生成/编辑（无参考图→generations用 chatDrawModel；有图→edits/图生图用 chatDrawEditModel，空则跟主模型）
 chatDrawBaseUrl: ""
 chatDrawApiKey: ""
 chatDrawModel: ""
 chatDrawEditModel: ""
 chatDrawSize: "1080x1920"
-# 快速响应（是否接话等）；空=跟文本模型
+# 快速响应（是否接话等）；空=跟大模型
 chatFastBaseUrl: ""
 chatFastApiKey: ""
 chatFastModel: ""
-# Embedding；空地址/Key=跟文本模型
+# Embedding；空地址/Key=跟大模型
 chatEmbeddingEnabled: true
 chatEmbeddingModel: BAAI/bge-m3
 chatEmbeddingBaseUrl: ""
@@ -112,17 +108,19 @@ chatGameLookupMax: 2
 # 角色外观 look（本地立绘索引 data/cache/hero_imgs.json）
 chatHeroLookEnabled: true
 chatHeroLookMaxPerTurn: 1
-# 联网搜索（无 API Key：DuckDuckGo HTML，不够再换 Bing）
+# 联网搜索（无 API Key：仅 Bing HTML；成功后自动抓 Top1 正文）
 chatWebSearchEnabled: true
 chatWebSearchMaxResults: 10
-# TTS（OpenAI 兼容 POST /v1/audio/speech；配齐 Model 即启用；面板可上传参考音色）
-chatTtsBaseUrl: ""
-chatTtsApiKey: ""
-chatTtsModel: ""
-chatTtsVoice: default
-chatTtsSpeed: 1.0
-chatTtsFormat: wav
-chatTtsMaxChars: 80
-# 合并进 speech 请求体的补充字段（厂商私有参数）；核心 input/model/voice/speed 不会被覆盖
-chatTtsExtra: {}
+# TTS：三套预设配置互相独立（切换预设只换表单，不共用 Key）
+chatTtsProvider: doubao-seed
+chatTtsDoubaoApiKey: ""
+chatTtsDoubaoModel: seed-audio-1.0
+chatTtsDoubaoExtra: {}
+chatTtsQwenApiKey: ""
+chatTtsQwenModel: qwen3-tts-flash
+chatTtsQwenExtra: {}
+chatTtsOpenaiBaseUrl: ""
+chatTtsOpenaiApiKey: ""
+chatTtsOpenaiModel: tts-1
+chatTtsOpenaiExtra: {}
 

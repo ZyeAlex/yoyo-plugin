@@ -202,96 +202,11 @@ export function registerWebPanel() {
     }
   })
 
-  const ttsDir = () => {
-    const dir = path.join(setting.path, 'server/data/tts')
-    fs.mkdirSync(dir, { recursive: true })
-    return dir
-  }
-  const ttsWav = () => path.join(ttsDir(), 'default.wav')
-  const ttsMeta = () => path.join(ttsDir(), 'default.json')
-  const readTtsStatus = () => {
-    const wav = ttsWav()
-    if (!fs.existsSync(wav)) return { exists: false, prompt_text: '', filename: '', bytes: 0 }
-    let prompt_text = ''
-    let filename = 'default.wav'
-    try {
-      const meta = JSON.parse(fs.readFileSync(ttsMeta(), 'utf8'))
-      prompt_text = String(meta?.prompt_text || '')
-      filename = String(meta?.filename || filename)
-    } catch {}
-    return { exists: true, prompt_text, filename, bytes: fs.statSync(wav).size }
-  }
   const chatBrainBase = () => {
     const cfg = setting.reloadConfig()
     const port = Number(cfg.chatPort || 8787)
     return `http://127.0.0.1:${Number.isFinite(port) ? port : 8787}`
   }
-
-  router.get('/api/tts/voice', (_req, res) => {
-    try {
-      json(res, 200, readTtsStatus())
-    } catch (err) {
-      json(res, 500, {}, err.message || '读取音色失败')
-    }
-  })
-
-  // 二进制直传，避开全局 express.json 默认 ~100KB 限制（base64 JSON 很容易爆）
-  const readTtsUploadBody = async (req) => {
-    if (Buffer.isBuffer(req.body) && req.body.length) return req.body
-    if (typeof req.body === 'string' && req.body) return Buffer.from(req.body)
-    const chunks = []
-    let size = 0
-    for await (const chunk of req) {
-      size += chunk.length
-      if (size > 8_000_000) throw new Error('音频过大')
-      chunks.push(chunk)
-    }
-    return chunks.length ? Buffer.concat(chunks) : Buffer.alloc(0)
-  }
-
-  router.post('/api/tts/voice', async (req, res) => {
-    try {
-      const buf = await readTtsUploadBody(req)
-      if (buf.length < 64) return json(res, 400, {}, '音频太短或未收到文件')
-      let filename = 'default.wav'
-      try {
-        filename = decodeURIComponent(String(req.headers['x-filename'] || 'default.wav'))
-      } catch {
-        filename = String(req.headers['x-filename'] || 'default.wav')
-      }
-      filename =
-        filename.replace(/[^\w.\u4e00-\u9fff()-]+/g, '_').slice(0, 80) || 'default.wav'
-      let prompt_text = ''
-      try {
-        prompt_text = decodeURIComponent(String(req.headers['x-prompt-text'] || ''))
-      } catch {
-        prompt_text = String(req.headers['x-prompt-text'] || '')
-      }
-      fs.writeFileSync(ttsWav(), buf)
-      fs.writeFileSync(
-        ttsMeta(),
-        JSON.stringify({ prompt_text, filename, updated_at: Date.now() / 1000 }, null, 2),
-        'utf8',
-      )
-      json(res, 200, readTtsStatus(), '音色已保存')
-    } catch (err) {
-      logger.error(`[yoyo-plugin] /api/tts/voice 上传失败: ${err.message}`)
-      json(res, 500, {}, err.message || '上传失败')
-    }
-  })
-
-  router.delete('/api/tts/voice', (_req, res) => {
-    try {
-      for (const p of [ttsWav(), ttsMeta()]) {
-        try {
-          fs.unlinkSync(p)
-        } catch {}
-      }
-      json(res, 200, readTtsStatus(), '已清除默认音色')
-    } catch (err) {
-      json(res, 500, {}, err.message || '清除失败')
-    }
-  })
 
   router.post('/api/tts/preview', express.json({ limit: '1mb' }), async (req, res) => {
     try {

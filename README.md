@@ -1,21 +1,19 @@
-<img decoding="async" align=right src="https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/tex_icon_hero_l_101003.png" width="200px">
+![](https://gitee.com/yoyo-plugin/yoyo-icon/raw/master/tex_icon_hero_l_101003.png)
 
-<div align="left">
 
-# <div align="center">悠悠助手 （ yoyo-plugin ）</div>
 
-<div align="center"> <i>云崽 QQ 机器人的「蓝色星原：旅谣」插件</i> </div>
-<br/>
-<div align="center">
+# 悠悠助手 （ yoyo-plugin ）
+
+*云崽 QQ 机器人的「蓝色星原：旅谣」插件*
+
+  
+
 
 ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgitee.com%2Fyoyo-plugin%2Fyoyo-plugin%2Fraw%2Fmaster%2Fpackage.json&query=%24.version&label=最新版本)
-[<img src="https://img.shields.io/badge/插件交流群-991709221-blue" />](https://qm.qq.com/q/Mk3jyhIqSm)
-<img src="https://gitee.com/yoyo-plugin/yoyo-plugin/badge/star.svg"/>
+![](https://img.shields.io/badge/插件交流群-991709221-blue)
+![](https://gitee.com/yoyo-plugin/yoyo-plugin/badge/star.svg)
 
-</div>
-<div align="center"><img src="https://api.moedog.org/count/@ZyeAlex:yoyo-plugin?theme=asoul"  /></div>
-</div>
-
+![](https://api.moedog.org/count/@ZyeAlex:yoyo-plugin?theme=asoul)
 
 ---
 
@@ -73,7 +71,7 @@
 
 ## 开发说明
 
-- **开发记忆库**：[memory/README.md](./memory/README.md) — Wiki 数据、渲染缓存、Guoba 配置等专题文档
+- **开发记忆库**：[docs/README.md](./docs/README.md) — Wiki / UI / Guoba / **Chat Brain 主线与记忆层** 等专题（给 AI 渐进阅读）
 - **模块 API 速查**：[插件开发API说明.md](./插件开发API说明.md)
 - **插件交流群**：[991709221](https://qm.qq.com/q/Mk3jyhIqSm)
 - **游戏交流群**：[点击加群](https://qm.qq.com/q/CwZDY3kUtc)
@@ -85,28 +83,21 @@
 ## 安装方法
 
 1. 确保已部署 Yunzai Bot。未安装时可参考 [LLBot](https://luckylillia.com/guide/getting-started) + [TRSS-Yunzai](https://gitee.com/TimeRainStarSky/Yunzai)。
-
 2. 在 Yunzai 根目录执行（推荐使用 gitee）：
-
    ```shell
-   git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-plugin.git ./plugins/yoyo-plugin
+    git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-plugin.git ./plugins/yoyo-plugin
    ```
-
 3. 安装依赖：
-
    ```shell
-   cd plugins/yoyo-plugin
-   pnpm install
+    cd plugins/yoyo-plugin
+    pnpm install
    ```
-
 4. **（可选）** 安装图片库 [yoyo-image](https://gitee.com/yoyo-plugin/yoyo-image)，用于签到等娱乐功能的默认图片：
-
    ```shell
-   git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-image.git ./plugins/yoyo-image
+    git clone --depth=1 https://gitee.com/yoyo-plugin/yoyo-image.git ./plugins/yoyo-image
    ```
 
-   也可自行上传角色图到 `yoyo-plugin/resources/img/hero/`，按角色名分文件夹存放。
-
+    也可自行上传角色图到 `yoyo-plugin/resources/img/hero/`，按角色名分文件夹存放。
 5. 首次安装插件后，会从 [BWIKI](https://wiki.biligame.com/ap/) 同步图鉴数据并下载 UI 资源，过程在后台进行，请耐心等待完成后再使用图鉴指令。
 
 ---
@@ -121,15 +112,6 @@
 
 感谢以下贡献者对本项目做出的贡献
 
-<a href="https://gitee.com/yoyo-plugin/yoyo-plugin/contributors">
-  <img src="https://gitee.com/ZyeAlex.png" width="50" title="ZyeAlex" />
-</a>
+![](https://gitee.com/ZyeAlex.png "ZyeAlex")
 
 [查看全部贡献者 →](https://gitee.com/yoyo-plugin/yoyo-plugin/contributors)
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->

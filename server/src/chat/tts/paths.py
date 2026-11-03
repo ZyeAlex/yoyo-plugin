@@ -15,11 +15,3 @@ def voice_media_dir() -> Path:
     d = _SERVER_ROOT / "data" / "media" / "voice"
     d.mkdir(parents=True, exist_ok=True)
     return d
-
-
-def default_voice_wav_path() -> Path:
-    return tts_data_dir() / "default.wav"
-
-
-def default_voice_meta_path() -> Path:
-    return tts_data_dir() / "default.json"

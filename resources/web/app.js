@@ -322,126 +322,7 @@ function renderForm() {
   }
 
   form.innerHTML = groupedFields(fields).map((group) => renderGroupCard(group)).join('')
-  if (activeSection === 'chat' && fields.some((f) => f.subgroup === 'tts')) {
-    const modelsCard = form.querySelector('.group-card')
-    // 挂在「模型配置」卡片末尾：默认参考音色上传
-    const cards = [...form.querySelectorAll('.group-card')]
-    const models = cards.find((c) => c.textContent?.includes('模型配置')) || cards[0]
-    if (models) {
-      models.insertAdjacentHTML('beforeend', renderTtsVoiceCardInner())
-      bindTtsVoiceCard()
-    }
-  }
   bindFormEvents()
-}
-
-function renderTtsVoiceCardInner() {
-  return `
-      <div class="subgroup-head"><h4>默认参考音色</h4></div>
-      <div class="form-grid" id="tts-voice-card">
-        <div class="field span-full">
-          <div class="help">上传 3–15 秒清晰人声（wav/mp3）可同步克隆；仅限本人或已授权声音。试听不发到群。</div>
-          <div id="tts-voice-status" class="help">读取中…</div>
-        </div>
-        <div class="field span-2">
-          <div class="field-head"><label>参考音频</label></div>
-          <input type="file" id="tts-voice-file" accept="audio/*,.wav,.mp3,.m4a,.ogg" />
-        </div>
-        <div class="field span-2">
-          <div class="field-head"><label>参考文本（可选）</label></div>
-          <input type="text" id="tts-voice-prompt" placeholder="音频里说的那句话" />
-        </div>
-        <div class="field span-full" style="display:flex;gap:8px;flex-wrap:wrap">
-          <button type="button" class="btn" id="tts-voice-upload">上传并保存</button>
-          <button type="button" class="btn" id="tts-voice-preview">试听</button>
-          <button type="button" class="btn" id="tts-voice-clear">清除</button>
-        </div>
-        <audio id="tts-voice-player" controls class="span-full" style="width:100%;display:none"></audio>
-      </div>
-  `
-}
-
-async function refreshTtsVoiceStatus() {
-  const el = $('#tts-voice-status')
-  if (!el) return
-  try {
-    const { data } = await api('/tts/voice')
-    if (data.exists) {
-      el.textContent = `已上传：${data.filename || 'default.wav'}（${data.bytes || 0} bytes）${data.prompt_text ? `｜参考：「${data.prompt_text}」` : ''}`
-      const prompt = $('#tts-voice-prompt')
-      if (prompt && data.prompt_text && !prompt.value) prompt.value = data.prompt_text
-    } else {
-      el.textContent = '尚未上传默认音色（仍可用配置里的 Voice id 预设）'
-    }
-  } catch (err) {
-    el.textContent = err.message || '读取失败'
-  }
-}
-
-function bindTtsVoiceCard() {
-  refreshTtsVoiceStatus()
-  $('#tts-voice-upload')?.addEventListener('click', async () => {
-    const file = $('#tts-voice-file')?.files?.[0]
-    if (!file) return alert('请先选择音频文件')
-    const prompt_text = $('#tts-voice-prompt')?.value || ''
-    try {
-      const headers = {
-        'Content-Type': 'application/octet-stream',
-        // fetch 要求 header 为 ISO-8859-1，中文文件名/参考文本必须编码
-        'X-Filename': encodeURIComponent(file.name || 'default.wav'),
-        'X-Prompt-Text': encodeURIComponent(prompt_text),
-      }
-      if (panelToken) headers['X-Yoyo-Token'] = panelToken
-      const res = await fetch(`${API}/tts/voice`, { method: 'POST', headers, body: file })
-      const body = await res.json().catch(() => ({}))
-      if (res.status === 401) {
-        sessionStorage.removeItem('yoyo_panel_token')
-        panelToken = ''
-        throw new Error(body.message || '未登录或令牌已过期')
-      }
-      if (!res.ok || body.code !== 200) {
-        throw new Error(body.message || `上传失败 (${res.status})`)
-      }
-      await refreshTtsVoiceStatus()
-      alert('音色已保存')
-    } catch (err) {
-      alert(err.message || '上传失败')
-    }
-  })
-  $('#tts-voice-clear')?.addEventListener('click', async () => {
-    if (!confirm('清除全局默认参考音色？')) return
-    try {
-      await api('/tts/voice', { method: 'DELETE' })
-      await refreshTtsVoiceStatus()
-    } catch (err) {
-      alert(err.message || '清除失败')
-    }
-  })
-  $('#tts-voice-preview')?.addEventListener('click', async () => {
-    const player = $('#tts-voice-player')
-    try {
-      const headers = { 'Content-Type': 'application/json' }
-      if (panelToken) headers['X-Yoyo-Token'] = panelToken
-      const res = await fetch(`${API}/tts/preview`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify({ text: '你好，我是悠悠。' }),
-      })
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}))
-        throw new Error(body.message || `试听失败 (${res.status})`)
-      }
-      const blob = await res.blob()
-      const url = URL.createObjectURL(blob)
-      if (player) {
-        player.src = url
-        player.style.display = 'block'
-        player.play().catch(() => {})
-      }
-    } catch (err) {
-      alert(err.message || '试听失败')
-    }
-  })
 }
 
 function findFieldById(id) {
@@ -486,13 +367,17 @@ function bindFormEvents() {
 
   form.querySelectorAll('select, input[type="text"], input[type="number"], input[type="password"], textarea').forEach((el) => {
     if (el.dataset.tagInput) return
-    const sync = () => {
+    const sync = (ev) => {
       const field = findFieldById(el.dataset.fieldId)
       if (!field) return
       let value = el.value
       if (field.type === 'number') value = value === '' ? '' : Number(value)
       writeFieldValue(field, value)
       setDirty(true)
+      // 切换 TTS 预设：只换可见表单（三套 Key/模型各自独立），不改写其它预设的值
+      if (field.key === 'chatTtsProvider' && ev?.type === 'change') {
+        renderForm()
+      }
     }
     el.addEventListener('change', sync)
     el.addEventListener('input', sync)
@@ -711,6 +596,13 @@ async function boot() {
     const { data } = await api('/meta')
     meta = data
     draft = structuredClone(data.config || {})
+    // 缺省字段用 default.yaml 补齐（如新建的三套 TTS 预设）
+    const defaults = data.defaults || {}
+    for (const f of data.fields || []) {
+      if (draft[f.key] === undefined && defaults[f.key] !== undefined) {
+        draft[f.key] = structuredClone(defaults[f.key])
+      }
+    }
     if (data.plugin?.subtitle) $('#brand-sub').textContent = data.plugin.subtitle
     renderNav()
     renderForm()

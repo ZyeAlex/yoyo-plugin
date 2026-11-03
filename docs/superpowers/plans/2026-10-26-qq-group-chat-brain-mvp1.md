@@ -230,7 +230,7 @@ chatInterruptEnabled: true
 
 **Files:**
 - Modify: `docs/superpowers/specs/2026-10-26-qq-group-chat-brain-design.md` status → MVP-1 implementing/done
-- Modify: `memory/README.md` — link to spec
+- Modify: `docs/README.md` — link to spec
 
 - [ ] **Step 1: Update docs**
 - [ ] **Step 2: Commit** `docs: point memory index to Chat Brain spec`

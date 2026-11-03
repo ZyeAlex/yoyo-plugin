@@ -1,4 +1,6 @@
 /** 群会话近期消息（进程内） */
+import { normalizeSender } from './normalizeSender.js'
+
 const recentRings = new Map()
 
 export function sessionId(e) {
@@ -22,10 +24,11 @@ function recentLimit(cfg) {
 }
 
 async function buildEntry(e) {
+  const sender = normalizeSender(e)
   const entry = {
     message_id: String(e.message_id),
-    user_id: String(e.user_id),
-    sender: e.sender,
+    user_id: String(e.user_id || sender.user_id || ''),
+    sender,
     message: e.message,
     raw_message: e.raw_message,
     time: e.time,

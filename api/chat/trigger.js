@@ -18,16 +18,36 @@ export function messageAtBot(e) {
   return false
 }
 
+/**
+ * 唤醒词：避免「寒悠悠图片」嵌套误触。
+ * 规则：命中处左边若是汉字，视为更长角色名的一部分；「悠悠在吗」左边为空，算唤醒。
+ */
 export function hasWakeWord(text, wakeWords = []) {
-  const raw = String(text || '')
-  if (!raw) return false
+  const raw = String(text || '').replace(/\[CQ:[^\]]+\]/gi, ' ')
+  if (!raw.trim()) return false
   const list = Array.isArray(wakeWords) ? wakeWords : []
-  return list.some((w) => w && raw.includes(String(w)))
+  const isHan = (c) => /[\u4e00-\u9fff]/.test(c)
+  const isAlnum = (c) => /[A-Za-z0-9]/.test(c)
+  for (const w of list) {
+    const word = String(w || '').trim()
+    if (!word) continue
+    let idx = 0
+    while ((idx = raw.indexOf(word, idx)) !== -1) {
+      const before = idx > 0 ? raw[idx - 1] : ''
+      const after = raw[idx + word.length] || ''
+      // 嵌在「寒悠悠」里 / 贴着英文数字 → 不算
+      if (isHan(before) || isAlnum(before) || isAlnum(after)) {
+        idx += word.length
+        continue
+      }
+      return true
+    }
+  }
+  return false
 }
 
 export function replyToBot(e) {
   const reply = e?.source || e?.reply || null
-  // Yunzai 各适配器字段不一：常见 reply 段或 getReply
   if (Array.isArray(e?.message)) {
     const hasReplySeg = e.message.some((seg) => seg?.type === 'reply')
     if (hasReplySeg && e.atme) return true
@@ -39,8 +59,9 @@ export function replyToBot(e) {
 }
 
 export function buildHints(e, cfg = {}) {
-  const wakeWords = cfg.chatWakeWords || cfg.agentWakeWords || ['悠悠', '小悠']
-  const text = e.raw_message || e.msg || ''
+  const wakeWords = cfg.chatWakeWords || ['悠悠', '小悠']
+  // 用去掉 CQ 后的可读文本，减少 raw 噪声
+  const text = String(e.msg || e.raw_message || '')
   return {
     at_bot: messageAtBot(e) || Boolean(e.atme),
     wake_word: hasWakeWord(text, wakeWords),

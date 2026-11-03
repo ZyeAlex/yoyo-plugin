@@ -3,8 +3,8 @@ title: 游戏信息整理合集
 kind: reference
 description: 官方情报合集：开发历程、元素职业、角色奇波索引等
 sourceUrl: https://wiki.biligame.com/ap/%E6%B8%B8%E6%88%8F%E4%BF%A1%E6%81%AF%E6%95%B4%E7%90%86%E5%90%88%E9%9B%86
-fetchedAt: 2026-09-18T05:40:07.708Z
-sectionCount: 18
+fetchedAt: 2026-10-31T10:30:45.489Z
+sectionCount: 20
 sections:
   - id: 前言
     title: 前言
@@ -31,11 +31,11 @@ sections:
     title: 本页面更新时间线
     level: 2
     text: |-
-      2026年04月03日 - 至今：游戏内外后续卫星内容收集整理
+      2026年04月03日 - 至今：游戏内外后续卫星内容收集整理，「旅迹测试」信息收集
       2025年08月18日 - 2026年04月03日：「星至测试」——「恒序测试」游戏本体外情报收集整理
       2025年08月15日 - 2025年08月18日：「星至测试」期间中的游戏本体内相关情报
       2024年03月20日 - 2025年08月15日：游戏本体外情报收集整理
-    charCount: 167
+    charCount: 178
   - id: 游戏开发历程
     title: 游戏开发历程
     level: 2
@@ -48,7 +48,9 @@ sections:
       普罗米利亚大陆存在不同的国家/阵营/聚落，目前已知有：
 
       普罗米利亚大陆存在不同的智慧种族，目前已知有：
-    charCount: 52
+
+      普罗米利亚大陆节日信息对照：
+    charCount: 68
   - id: 元素
     title: 元素
     level: 2
@@ -64,18 +66,23 @@ sections:
     level: 2
     text: 此处不再收录测试中可操作角色，请前往已击毁的卫星查看
     charCount: 26
-  - id: 二测未实装角色
-    title: 二测未实装角色
+  - id: 三测已实装角色
+    title: 三测已实装角色
     level: 3
-    text: 以下角色极大概率为可操作角色，但未必会在公测版本实装。
-    charCount: 27
-  - id: npc角色
-    title: NPC角色
+    text: ""
+    charCount: 0
+  - id: 目前未实装角色
+    title: 目前未实装角色
     level: 3
-    text: 以下角色在二测中是明确的NPC形象，不排除未来升格为可操作角色的可能。
-    charCount: 35
-  - id: 未知角色
-    title: 未知角色
+    text: 除实机角色外还包括剧情角色，不确定后续是否实装，仅为罗列。
+    charCount: 29
+  - id: 特殊建模npc角色
+    title: 特殊建模NPC角色
+    level: 3
+    text: 以下NPC角色采用特殊建模，不排除未来作为角色实装。
+    charCount: 26
+  - id: 未知情况
+    title: 未知情况
     level: 3
     text: 以下角色信息较少，或可能属于NPC
     charCount: 17
@@ -87,10 +94,15 @@ sections:
 
       表中顺序大体上按各PV、测试、动态时间顺序排序，存在进化关系的排一起
 
-      目前，奇波进化阶段至少包括：幼年期——成长期——成熟期——超限体（首领）。
+      目前，奇波进化阶段至少包括：幼年期——成长期——成熟期——完全体（首领）。
     charCount: 97
-  - id: 二测未实装奇波
-    title: 二测未实装奇波
+  - id: 三测已实装奇波
+    title: 三测已实装奇波
+    level: 3
+    text: ""
+    charCount: 0
+  - id: 三测未实装奇波
+    title: 三测未实装奇波
     level: 3
     text: ""
     charCount: 0
@@ -126,10 +138,10 @@ sections:
     text: |-
       测试中的凶兽均不可捕捉。
 
-      凶兽存在位阶的设定，其中暗焰兽为厄位凶兽，厄位凶兽不需要睡眠也不需要繁殖，只要不击碎核心就会不断重生。
+      凶兽存在位阶的设定，其中暗焰兽为厄位凶兽，厄位凶兽不需要睡眠也不需要繁殖，只要不击碎核心就会不断重生；灾陨者被记录为祸位凶兽。
 
       暂时不明确凶兽是否存在分类和成长阶段。
-    charCount: 86
+    charCount: 98
   - id: 官方插画合集
     title: 官方插画合集
     level: 2

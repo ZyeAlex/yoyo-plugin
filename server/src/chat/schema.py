@@ -9,6 +9,7 @@ class SessionInfo(BaseModel):
     session_id: str
     group_id: str = ""
     bot_id: str = ""
+    bot_nickname: str = "悠悠"
     group_name: str = ""
 
 

@@ -4,7 +4,6 @@ import pytest
 
 from src.chat.mainline import MainlineManager, reset_mainline_manager_for_tests
 from src.chat.schema import ChatHints, ChatRequest, SessionInfo
-from src.chat.tts.voice import save_default_voice
 from src.core.settings import Settings
 
 
@@ -25,7 +24,6 @@ async def test_tts_job_outbox_record_only(tmp_path, monkeypatch):
         "src.chat.mainline._OUTBOUND_IMAGE_ROOTS",
         (tmp_path / "data" / "stickers", tmp_path / "data" / "media"),
     )
-    save_default_voice(b"ref", filename="a.wav", prompt_text="hi")
 
     async def fake_synth(**k):
         return b"VOICEWAV"
@@ -80,3 +78,59 @@ async def test_tts_job_outbox_record_only(tmp_path, monkeypatch):
     rec = next(r for r in pending.replies if r.type == "record")
     assert rec.path
     assert open(rec.path, "rb").read() == b"VOICEWAV"
+
+
+@pytest.mark.asyncio
+async def test_tts_running_does_not_ack_busy(tmp_path, monkeypatch):
+    """语音 job 进行中：主动找她不回「别急我正在语音」，也不挡主线。"""
+
+    async def persona(messages, settings, *, abort_event=None):
+        return '{"engagement":"hold","replies":[{"type":"text","text":"在呢"}]}'
+
+    settings = Settings(
+        llm_api_key="x",
+        chat_heat_enabled=False,
+        chat_memory_enabled=False,
+        chat_game_kb_enabled=False,
+        chat_web_search_enabled=False,
+        chat_hero_look_enabled=False,
+        tools_enabled=False,
+        chat_tts_base_url="http://tts/v1",
+        chat_tts_api_key="k",
+        chat_tts_model="m",
+        chat_tts_voice="default",
+        chat_heat_debounce_sec=0.05,
+        proactive_enabled=True,
+    )
+    mgr = reset_mainline_manager_for_tests(MainlineManager(settings=settings, llm_complete=persona))
+    sid = "group:tts2:bot:2"
+    ml = mgr.get(sid, group_id="tts2")
+    ml.jobs.append(
+        {
+            "id": "tts-fake",
+            "name": "语音",
+            "status": "running",
+            "mode": "tts",
+            "prompt": "嗨",
+        }
+    )
+    ml.phase = "tool_running"
+
+    req = ChatRequest(
+        request_id="t2",
+        session=SessionInfo(session_id=sid, group_id="tts2", bot_id="2", group_name="闲聊"),
+        message={
+            "user_id": "100",
+            "sender": {"nickname": "测"},
+            "raw_message": "你在吗",
+            "message": [{"type": "text", "text": "你在吗"}],
+        },
+        recent=[],
+        hints=ChatHints(at_bot=True),
+    )
+    second = await mgr.handle(req)
+    assert second.action != "ack_busy"
+    assert second.reason != "tool_running"
+    assert not any(
+        r.type == "text" and "正在语音" in (r.text or "") for r in (second.replies or [])
+    )

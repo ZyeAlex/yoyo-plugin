@@ -1,7 +1,7 @@
 # QQ 群聊 Chat Brain 设计
 
 日期：2026-10-26  
-状态：MVP-2 实现中（主动插话 + 异步工具主线）  
+状态：记忆层已落地（会话 / 画像 / 黑话 / 日誌 / 向量）  
 范围：yoyo-plugin 插件适配层 + yoyo-sauce（`server/`）群聊大脑
 
 ## 1. 目标与非目标
@@ -259,6 +259,47 @@ SSE 可作为后续增强；MVP 以同步 JSON + 主线队列为准。
 - 更智能的 should_respond（小模型分类）
 - 无人点名时的低频率插话
 - SSE 流式
+- 日终日誌自动摘要强化
+
+## 9.5 记忆层
+
+同群单主线不变；记忆是主线上下文的**输入/输出**，不开第二会话。
+
+### 能力
+
+| 能力 | 落盘 | 读路径 | 写路径 |
+|------|------|--------|--------|
+| 跨轮会话 | `group/{id}/session.jsonl` | 启动预热 timeline | reply 成功后 append |
+| 群/用户画像 | `MEMORY.md` / `users.yaml` | assembler 注入 | 异步 extract + 「记住：」 |
+| 黑话 | `slang.yaml` | 命中扫描注入 | extract / 释义对话 |
+| 日誌 | `logs/YYYY-MM-DD.md` | 近 2 日摘要注入 | extract daily_note |
+| 向量 | `index/memory.vec.db` | hybrid retrieve | extract 后 index；可关 |
+
+根目录：`server/data/memory/`（gitignore 运行数据）。
+
+### 注入顺序（system）
+
+persona → 群画像 → 当前用户画像 → 命中黑话 → 长期检索 → 近日日誌 →（user 侧）近期群聊 + timeline + 当前句。
+
+硬上限：`chatMemoryMaxInjectChars`（默认 900）。Embedding 关或失败 → 仅关键词。
+
+### 守卫
+
+拒写：角色数值、wiki lore、API Key、提示词原文、工具实现细节。  
+允许：人际关系、偏好、忌讳、群规、称呼、黑话释义。
+
+### 运维
+
+- `@`/`唤醒` + `记住：…` / `忘记：…` 同步写 store  
+- `POST /api/memory/reindex` 重建某群向量（本机）
+
+### 明确不做
+
+不接 Mem0/DSH 云记忆；不做跨群共享用户画像；embedding 失败不阻塞气泡。
+
+## 9.6 多模态与表情包
+
+入站图片/链接占位、一轮 vision、QQ 表情包旁路缓存与出站斗图见独立规格：[多模态图片 + QQ 表情包设计](./2026-10-26-multimodal-sticker-design.md)（配置键在面板「群聊 → 媒体 / 表情包」）。
 
 ## 10. 测试要点
 

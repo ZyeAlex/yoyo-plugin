@@ -4,7 +4,8 @@
 状态：已实现（待试验群验收）  
 范围：旁路入库、主线感知、候选注入决策、出站与 transcript 回写  
 前置：[`2026-10-26-multimodal-sticker-design.md`](./2026-10-26-multimodal-sticker-design.md)（多模态 + 表情包初版）  
-决策分叉：**候选注入（一轮 completion）**；漏选策略 **B**（只文字，不服务端偷偷塞图）
+决策分叉：**候选注入（一轮 completion）**；漏选策略 **B**（只文字，不服务端偷偷塞图）  
+频率 / 货架按需注入（已实现）：见 [`2026-10-28-sticker-frequency-design.md`](./2026-10-28-sticker-frequency-design.md)。原「每次开口注入」已改为斗图必开 + `chatStickerShelfChance`。
 
 ---
 
@@ -30,8 +31,8 @@
 |----|------|------|
 | A1 | 白名单群发动画表情 | ingest 落盘 + VLM 成功 → 进可发表货架；主线可稍后看到标签 |
 | A2 | VLM 失败 | 不进货架；主线最多见 `[表情包 未识别]`；chat 仍正常 |
-| A3 | `@悠悠` + 普通闲聊无斗图意图 | 不注入候选或注入为空提示；不强制发图 |
-| A4 | `@悠悠 发个表情包` 且货架有货 | prompt 含候选；模型选 id → 出站 image + transcript 含短描述 |
+| A3 | `@悠悠` + 普通闲聊 | 货架可注入。模型写文字就发文字，不因为有货架就改成只发图 |
+| A4 | `@悠悠 发个表情包` 且货架有货 | 模型选 id → 出站 image。若同时写了文字，文字也发 |
 | A5 | 同上但模型选 `none` / 漏选 | **仅文字**；文案须承认没发（persona 约束）；**不**自动塞图 |
 | A6 | 候选 id 伪造 / 过期 | 丢弃该 sticker 气泡；文字照发；不报崩溃 |
 | A7 | 纯表情消息 | `media_only` skip；ingest 仍可跑 |
@@ -63,7 +64,8 @@
        should_respond / heat（不变）
        → 装配 messages：
             · 收到表情 → 短标签占位
-            · 若斗图倾向 → 【可发表情候选】≤K
+            · 每次开口注入【可发表情候选】≤K，发不发由模型自己写
+            · 模型写了文字就发文字，选了 id 就发图，两个都写就都发
        → 一轮 LLM → JSON replies
        → resolve：sticker_id → path（仅本轮注入过的 id）
        → 插件发 text / image
@@ -99,7 +101,7 @@
 
 ### 4.3 打标
 
-- 调用 **vision profile**（`chatVisionBaseUrl` / `ApiKey` / `Model`）；`chatStickerVlmModel` 非空时覆盖 model。
+- 调用 **vision profile**（`chatVisionBaseUrl` / `ApiKey` / `Model`）。
 - 禁止用纯文本聊天模型硬打图（避免 `At most 0 image(s)`）。
 - 输出 JSON：`emotion[]`、`scene[]`、`ocr_text`、`aliases[]`、`usable_for[]`。
 - **成功** → upsert 货架；**失败** → 删除本次缓存文件（或移入 pending，默认不对主线 shelf 可见），打日志。
@@ -173,7 +175,7 @@
 }
 ```
 
-- 兼容过渡：旧 `{"type":"sticker","query":"..."}` 可在有货架时降级为「用 query 在本轮候选里再搜一次」；搜不到视为 `none`（策略 B，不整库盲发）。
+- 表情气泡只认货架 `id`；无 id / `none` / 不在货架内则不发。
 - Persona / Extra 提示与上表一致；默认示例 JSON **必须包含** sticker 字段说明，避免模型只学 text。
 
 ### 6.4 策略 B：漏选 / none
@@ -219,7 +221,6 @@
 | 键 | 默认 | 说明 |
 |----|------|------|
 | `chatStickerCacheEnabled` | true | 旁路入库 |
-| `chatStickerVlmModel` | `""` | 空则跟 vision model |
 | `chatVision*` | （已有） | VLM / 主视觉 |
 | `chatStickerLibraryCap` | 120 | 库上限 |
 | `chatStickerReplyEnabled` | true | 允许出站表情 |

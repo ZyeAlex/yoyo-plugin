@@ -5,3 +5,13 @@ __pycache__/
 *.log
 .pytest_cache/
 .python-version
+uv.lock
+# 运行时记忆数据（保留 data/memory/.gitkeep）
+data/memory/**
+!data/memory/.gitkeep
+# 媒体缓存 / 表情包文件（保留 gitkeep）
+data/media/**
+!data/media/.gitkeep
+data/stickers/files/**
+!data/stickers/.gitkeep
+

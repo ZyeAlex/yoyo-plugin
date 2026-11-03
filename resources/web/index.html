@@ -3,27 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>yoyo-plugin 配置中心</title>
+  <title>yoyo · 配置中心</title>
   <base href="/yoyo/" />
   <link rel="icon" href="/yoyo/theme/logo_c.png" type="image/png" />
-  <link rel="stylesheet" href="/yoyo/style.css?v=17" />
+  <link rel="stylesheet" href="/yoyo/style.css" />
 </head>
 <body>
-  <div class="bg-glow"></div>
+  <div class="hud-bg" aria-hidden="true">
+    <div class="hud-grid"></div>
+    <div class="hud-flare hud-flare-a"></div>
+    <div class="hud-flare hud-flare-b"></div>
+  </div>
+
   <div class="layout">
     <aside class="sidebar">
       <div class="brand">
-        <img class="brand-logo" src="/yoyo/theme/logo_c.png" alt="" />
-        <p id="brand-sub">配置中心</p>
+        <img class="brand-logo" src="/yoyo/theme/logo_c.png" alt="蓝色星原旅谣" />
+        <div class="brand-meta">
+          <span class="brand-kicker">YOYO PANEL</span>
+          <p id="brand-sub">配置中心</p>
+        </div>
       </div>
+      <div class="sidebar-rail" aria-hidden="true"></div>
       <nav id="nav" class="nav"></nav>
+      <div class="sidebar-foot">
+        <span class="sys-dot"></span>
+        <span>SYSTEM ONLINE</span>
+      </div>
     </aside>
 
     <main class="main">
-      <header class="section-hero card" id="section-hero">
-        <div class="section-hero-main">
+      <header class="section-hero" id="section-hero">
+        <div class="hero-frame">
+          <div class="hero-corners" aria-hidden="true"></div>
           <p class="eyebrow" id="section-eyebrow">config/config.yaml</p>
-          <h2 id="section-title"><span class="title-accent">基础配置</span></h2>
+          <h1 id="section-title">插件配置</h1>
           <p id="section-desc" class="muted">修改写入 config/config.yaml</p>
         </div>
       </header>
@@ -35,12 +49,35 @@
           <span id="save-hint" class="muted">所有修改写入 config/config.yaml</span>
           <span id="dirty-dot" class="dirty-dot hidden" title="有未保存修改"></span>
         </div>
-        <button type="button" class="btn btn-primary" id="btn-save">保存配置</button>
+        <button type="button" class="btn btn-primary" id="btn-save">
+          <span class="btn-glow" aria-hidden="true"></span>
+          保存配置
+        </button>
       </footer>
     </main>
   </div>
 
   <div id="toast" class="toast hidden"></div>
-  <script src="/yoyo/app.js?v=30" type="module"></script>
+
+  <div id="group-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-modal-close></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="group-modal-title">
+      <header class="modal-head">
+        <h3 id="group-modal-title">选择群聊</h3>
+        <button type="button" class="modal-x" data-modal-close aria-label="关闭">×</button>
+      </header>
+      <div class="modal-toolbar">
+        <input type="search" id="group-modal-search" placeholder="搜索群名 / 群号" autocomplete="off" />
+        <span id="group-modal-count" class="muted"></span>
+      </div>
+      <div id="group-modal-list" class="modal-list"></div>
+      <footer class="modal-foot">
+        <button type="button" class="btn btn-ghost" data-modal-close>取消</button>
+        <button type="button" class="btn btn-primary" id="group-modal-ok">确定</button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="/yoyo/app.js" type="module"></script>
 </body>
 </html>

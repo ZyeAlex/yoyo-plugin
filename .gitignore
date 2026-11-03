@@ -30,3 +30,6 @@ server/.venv/
 server/.yoagent.pid
 server/*.log
 server/.pytest_cache/
+
+.yoagent.pid
+server/yoagent.pid

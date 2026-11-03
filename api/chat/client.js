@@ -30,6 +30,21 @@ export async function chat(payload, cfg = {}) {
   return body
 }
 
+/** 旁路媒体入库；失败不影响 chat */
+export async function ingestMedia(payload, cfg = {}) {
+  if (!isChatServerRunning(cfg)) return null
+  const base = getChatBaseURL(cfg)
+  const res = await fetch(`${base}/api/media/ingest`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(30000),
+  })
+  const body = await res.json().catch(() => ({}))
+  if (!res.ok) return null
+  return body
+}
+
 export async function health(cfg = {}) {
   const base = getChatBaseURL(cfg)
   const res = await fetch(`${base}/api/health`, { signal: AbortSignal.timeout(3000) })

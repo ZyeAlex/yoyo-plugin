@@ -1,6 +1,7 @@
 import { execSync, spawn } from 'child_process'
 import fs from 'fs'
 import http from 'http'
+import net from 'net'
 import path from 'path'
 import { getChatPort } from '../api/chat/schema.js'
 import { resolveUvBin } from './uv.js'
@@ -19,9 +20,28 @@ function venvUvicorn(pluginPath) {
   return fs.existsSync(bin) ? bin : null
 }
 
+/** 同步探活：优先读 /proc/net/tcp，避免依赖 ss（沙箱/精简 PATH 下易误判） */
 export function isChatPortListening(port) {
+  const p = Number(port)
+  if (!Number.isFinite(p) || p <= 0) return false
+  const hex = p.toString(16).toUpperCase().padStart(4, '0')
   try {
-    execSync(`ss -ltn | grep -q ':${port} '`, { stdio: 'ignore' })
+    const tcp = fs.readFileSync('/proc/net/tcp', 'utf8')
+    // local_address 形如 00000000:2253（0.0.0.0:8787）或 0100007F:2253
+    if (new RegExp(`:[0-9A-Fa-f]*${hex} `, 'm').test(tcp) === false) {
+      // fallthrough — 再试 tcp6 / ss
+    } else if (tcp.split('\n').some((line) => {
+      const parts = line.trim().split(/\s+/)
+      if (parts.length < 4) return false
+      const local = parts[1] || ''
+      const state = parts[3]
+      return state === '0A' && local.toUpperCase().endsWith(`:${hex}`)
+    })) {
+      return true
+    }
+  } catch {}
+  try {
+    execSync(`ss -ltn 2>/dev/null | grep -qE ':${p}\\s'`, { stdio: 'ignore' })
     return true
   } catch {
     return false
@@ -32,11 +52,25 @@ export function isChatServerRunning(cfg = {}) {
   return isChatPortListening(getChatPort(cfg))
 }
 
+function probePortOnce(port) {
+  return new Promise((resolve) => {
+    const sock = net.connect({ host: '127.0.0.1', port: Number(port) }, () => {
+      sock.destroy()
+      resolve(true)
+    })
+    sock.on('error', () => resolve(false))
+    sock.setTimeout(800, () => {
+      sock.destroy()
+      resolve(false)
+    })
+  })
+}
+
 function waitPort(port, timeoutMs = 20000) {
   const start = Date.now()
   return new Promise((resolve, reject) => {
-    const tick = () => {
-      if (isChatPortListening(port)) return resolve(true)
+    const tick = async () => {
+      if (isChatPortListening(port) || (await probePortOnce(port))) return resolve(true)
       if (Date.now() - start > timeoutMs) return reject(new Error(`等待端口 ${port} 超时`))
       setTimeout(tick, 400)
     }
@@ -95,6 +129,8 @@ export async function startChatServer(pluginPath, config, uvBin) {
   const out = fs.openSync(logPath, 'a')
   const child = spawn(
     uvicornBin,
+    // Plugin dials 127.0.0.1 only. /api/media/ingest does server-side GETs;
+    // do not publish chatPort. Fetch refuses non-global IPs (download.py).
     ['src.main:app', '--host', '0.0.0.0', '--port', String(port)],
     {
       cwd: dir,
